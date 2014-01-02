@@ -218,7 +218,7 @@ public class Block extends net.minecraft.block.BlockContainer{
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public Icon getIcon(int side, int meta){
+	public final Icon getIcon(int side, int meta){
 		// I dont know what the left, right, and back
 		// are represented by, so I guessed.
 		// If stuff is screwy, blame it on this
@@ -243,7 +243,7 @@ public class Block extends net.minecraft.block.BlockContainer{
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World world) {
+	public final TileEntity createNewTileEntity(World world) {
 		return null;
 	}
 	
