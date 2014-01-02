@@ -50,6 +50,24 @@ public class _World {
 	}
 	
 	/**
+	 * @param l The location
+	 * @param world The world
+	 * @param blockID What to set the block to
+	 */
+	public static void setBlockAt(Location l, String world, int blockID){
+		getWorld(world).setBlock(l.x, l.y, l.z, blockID);
+	}
+	
+	/**
+	 * @param l The location
+	 * @param world The world
+	 * @param blockID What to set the block to
+	 */
+	public static void setBlockAt(Location l, int world, int blockID){
+		getWorld(world).setBlock(l.x, l.y, l.z, blockID);
+	}
+	
+	/**
 	 * @param world The name of the world you want to edit
 	 * @param x The block x
 	 * @param y The block y
@@ -76,6 +94,28 @@ public class _World {
 	}
 	
 	/**
+	 * @param world The id of the world you want to edit
+	 * @param l The location of the block
+	 * @param blockID The block ID to set to
+	 * @param meta The metadata to set to
+	 */
+	public static void setBlockAtWithMetadata(int world, Location l, int blockID, int meta){
+		getWorld(world).setBlock(l.x, l.y, l.z, blockID);
+		getWorld(world).setBlockMetadataWithNotify(l.x, l.y, l.z, meta, 0);
+	}
+
+	/**
+	 * @param world The id of the world you want to edit
+	 * @param l The location of the block
+	 * @param blockID The block ID to set to
+	 * @param meta The metadata to set to
+	 */
+	public static void setBlockAtWithMetadata(String world, Location l, int blockID, int meta){
+		getWorld(world).setBlock(l.x, l.y, l.z, blockID);
+		getWorld(world).setBlockMetadataWithNotify(l.x, l.y, l.z, meta, 0);
+	}
+	
+	/**
 	 * @param world The world
 	 * @param x The block x
 	 * @param y The block y
@@ -95,5 +135,14 @@ public class _World {
 	 */
 	public static int[] getBlockAt(int world, int x, int y, int z){
 		return new int[]{ getWorld(world).getBlockId(x, y, z), getWorld(world).getBlockMetadata(x, y, z) };
+	}
+	
+	/**
+	 * @param world The world
+	 * @param l The location
+	 * @return The block ID and metadata
+	 */
+	public static int[] getBlockAt(int world, Location l){
+		return new int[]{ getWorld(world).getBlockId(l.x, l.y, l.z), getWorld(world).getBlockMetadata(l.x, l.y, l.z) };
 	}
 }
