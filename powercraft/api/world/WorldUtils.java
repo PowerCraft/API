@@ -32,4 +32,21 @@ public class WorldUtils {
 	public static net.minecraft.world.World getWorldByName(String name){
 		return _World.getWorld(name);
 	}
+	
+	/**
+	 * @param id The world ID
+	 * @return the name of the world ID
+	 */
+	public static String getWorldNameByID(int id){
+		switch(id){
+		case 0:
+			return "world";
+		case 1:
+			return "end";
+		case -1:
+			return "nether";
+		default:
+			return "world";
+		}
+	}
 }
