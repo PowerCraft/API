@@ -1,6 +1,6 @@
 package powercraft.api.item.internal;
 
-import powercraft.api.block.internal.BlockUtils;
+import powercraft.api.block.BlockUtils;
 
 /**
  * @author James
