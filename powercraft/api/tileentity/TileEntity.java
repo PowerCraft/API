@@ -29,4 +29,11 @@ public class TileEntity extends net.minecraft.tileentity.TileEntity {
 	public Location getBlockLocation(){
 		return new Location(this.xCoord, this.yCoord, this.zCoord);
 	}
+	
+	/**
+	 * @return The block ID, metadata
+	 */
+	public int[] getBlockIDWithMeta(){
+		return new int[]{ this.blockType.blockID, this.blockMetadata };
+	}
 }
