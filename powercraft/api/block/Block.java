@@ -18,6 +18,8 @@ import powercraft.api.stepsound.StepSoundUtil;
  */
 public class Block extends net.minecraft.block.BlockContainer{
 
+	// Blah blah blah
+	
 	/**
 	 * The name of the block
 	 */
