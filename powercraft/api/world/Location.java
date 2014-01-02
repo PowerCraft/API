@@ -5,6 +5,35 @@ package powercraft.api.world;
  * Locations for use in the API
  */
 public class Location {
+	
+	/**
+	 * The weird consctructor
+	 */
+	public Location(){}
+
+	/**
+	 * Use this constructor if there is no y
+	 * (Chunks, rows of blocks)
+	 * @param x The x
+	 * @param z The z
+	 */
+	public Location(int x, int z){
+		this.x = x;
+		this.z = z;
+	}
+	
+	/**
+	 * The normal constructor
+	 * @param x The x
+	 * @param y The y
+	 * @param z The z
+	 */
+	public Location(int x, int y, int z){
+		this.x = x;
+		this.y = y;
+		this.z = z;
+	}
+	
 	@SuppressWarnings("javadoc")
 	public int x;
 	@SuppressWarnings("javadoc")
