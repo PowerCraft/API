@@ -18,7 +18,7 @@ public class PC_Exception extends Exception{
 		this.issue = issue;
 		if(issue == null || issue == ""){
 			try {
-				throw new PC_Exception("Custom thrown exception has no value!");
+				throw new PC_Exception("Custom thrown exception has no value, throwing exception!");
 			} catch (PC_Exception e) {
 				e.printStackTrace();
 				Logger.log(LogLevel.severe, e.getMessage());
