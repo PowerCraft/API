@@ -8,6 +8,8 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 
+import powercraft.api.lists.*;
+
 /**
  * @author James
  * The powercraft mod class
@@ -21,6 +23,16 @@ public class PowerCraft {
 	 */
 	@Instance(value="PowerCraft")
 	public static PowerCraft pc;
+	
+	/**
+	 * The list of custom added blocks
+	 */
+	public CustomBlocksList blocksList = new CustomBlocksList();
+	
+	/**
+	 * The list of custom added items
+	 */
+	public CustomItemsList itemsList = new CustomItemsList();
 	
 	/**
 	 * The preinit for powercraft
