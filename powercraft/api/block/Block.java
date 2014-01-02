@@ -38,6 +38,7 @@ public class Block extends net.minecraft.block.BlockContainer{
 	private String[] iconBaseS = new String[1];
 	private String[] iconTopS = new String[1];
 	
+	TileEntity thisTileEntity = null;
 	
 	/**
 	 * @param id The block ID
@@ -47,6 +48,18 @@ public class Block extends net.minecraft.block.BlockContainer{
 	public Block(int id, String material, String name){
 		super(id, MaterialUtil.getMaterialFromName(material));
 		this.blockName = name;
+	}
+
+	/**
+	 * @param id The block ID
+	 * @param material The material name
+	 * @param name The name of the block
+	 * @param te The tile entity to use for this block
+	 */
+	public Block(int id, String material, String name, TileEntity te){
+		super(id, MaterialUtil.getMaterialFromName(material));
+		this.blockName = name;
+		this.thisTileEntity = te;
 	}
 	
 	/**
@@ -244,7 +257,7 @@ public class Block extends net.minecraft.block.BlockContainer{
 
 	@Override
 	public final TileEntity createNewTileEntity(World world) {
-		return null;
+		return this.thisTileEntity;
 	}
 	
 	/**
