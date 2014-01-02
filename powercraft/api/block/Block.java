@@ -1,11 +1,14 @@
 package powercraft.api.block;
 
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
+import powercraft.api.PowerCraft;
 import powercraft.api.material.MaterialUtil;
 import powercraft.api.stepsound.StepSoundUtil;
 
@@ -18,8 +21,7 @@ public class Block extends net.minecraft.block.BlockContainer{
 	/**
 	 * The name of the block
 	 */
-	@SuppressWarnings("unused")
-	private String blockName = "";
+	public String blockName = "";
 	
 	private int highestTexturedMeta = 0;
 	
@@ -243,5 +245,14 @@ public class Block extends net.minecraft.block.BlockContainer{
 	@Override
 	public TileEntity createNewTileEntity(World world) {
 		return null;
+	}
+	
+	/**
+	 * Call this, after the block is COMPLETE.
+	 */
+	public final void register(){
+		PowerCraft.pc.blocksList.addBlock(this);
+		GameRegistry.registerBlock(this, this.blockName);
+		LanguageRegistry.addName(this, this.blockName);
 	}
 }
