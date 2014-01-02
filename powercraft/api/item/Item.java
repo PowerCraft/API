@@ -10,6 +10,7 @@ import powercraft.api.PowerCraft;
  */
 public class Item extends net.minecraft.item.Item{
 		
+	@SuppressWarnings("unused") // The Icon icon is an unused item Icon icon for icon with iconship
 	private Icon icon;
 	private String iconS;
 	
