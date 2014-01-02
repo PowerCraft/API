@@ -1,5 +1,6 @@
 package powercraft.api.tileentity;
 
+import powercraft.api.world.Location;
 import powercraft.api.world.WorldUtils;
 
 /**
@@ -20,5 +21,12 @@ public class TileEntity extends net.minecraft.tileentity.TileEntity {
 	 */
 	public String getWorldName(){
 		return this.worldObj.getWorldInfo().getWorldName();
+	}
+	
+	/**
+	 * @return The location of the tileentity
+	 */
+	public Location getBlockLocation(){
+		return new Location(this.xCoord, this.yCoord, this.zCoord);
 	}
 }
