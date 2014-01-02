@@ -1,6 +1,8 @@
 package powercraft.api.item;
 
+import powercraft.api.PowerCraft;
 import powercraft.api.block.BlockUtils;
+import powercraft.api.lists.CustomItemsList;
 
 /**
  * @author James
@@ -350,8 +352,16 @@ public class ItemUtils {
 		case "written book":
 			return net.minecraft.item.Item.writtenBook;
 		default:
-			return null;
+			break;
 		}
+		
+		CustomItemsList cbl = PowerCraft.pc.itemsList;
+		for(int i = 0; i < cbl.items.length; i++){
+			if(name == cbl.items[i].itemName){
+				return cbl.items[i];
+			}
+		}
+		return null;
 	}
 
 	/**
