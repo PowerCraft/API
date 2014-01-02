@@ -16,9 +16,11 @@ public class Item extends net.minecraft.item.Item{
 	
 	/**
 	 * @param par1 Item ID
+	 * @param name The item name
 	 */
-	public Item(int par1) {
+	public Item(int par1, String name) {
 		super(par1);
+		this.itemName = name;
 	}
 
 	// MASSIVE todo
