@@ -1,7 +1,11 @@
 package powercraft.api.block;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
+import net.minecraft.world.World;
 import powercraft.api.material.MaterialUtil;
 import powercraft.api.stepsound.StepSoundUtil;
 
@@ -9,7 +13,7 @@ import powercraft.api.stepsound.StepSoundUtil;
  * @author James
  * An independant block
  */
-public class Block extends net.minecraft.block.Block{
+public class Block extends net.minecraft.block.BlockContainer{
 
 	/**
 	 * The name of the block
@@ -19,16 +23,16 @@ public class Block extends net.minecraft.block.Block{
 	
 	private int highestTexturedMeta = 0;
 	
-	private Icon[] iconSidesNorth = new Icon[1];
-	private Icon[] iconSidesSouth = new Icon[1];
-	private Icon[] iconSidesEast = new Icon[1];
-	private Icon[] iconSidesWest = new Icon[1];
+	private Icon[] iconSidesfront = new Icon[1];
+	private Icon[] iconSidesback = new Icon[1];
+	private Icon[] iconSidesleft = new Icon[1];
+	private Icon[] iconSidesright = new Icon[1];
 	private Icon[] iconBase = new Icon[1];
 	private Icon[] iconTop = new Icon[1];
-	private String[] iconSidesNorthS = new String[1];
-	private String[] iconSidesSouthS = new String[1];
-	private String[] iconSidesEastS = new String[1];
-	private String[] iconSidesWestS = new String[1];
+	private String[] iconSidesfrontS = new String[1];
+	private String[] iconSidesbackS = new String[1];
+	private String[] iconSidesrightS = new String[1];
+	private String[] iconSidesleftS = new String[1];
 	private String[] iconBaseS = new String[1];
 	private String[] iconTopS = new String[1];
 	
@@ -47,39 +51,43 @@ public class Block extends net.minecraft.block.Block{
 	 * Set the stepsound of a block to something
 	 * @param step The name of the step sound
 	 */
-	public void setStep(String step){
+	public final void setStep(String step){
 		this.setStepSound(StepSoundUtil.getStepSoundFromName(step));
 	}
+	
+	// Yeah yeah, I know the setTexture and my current textures settup
+	// Aren't very efficient. Feel free to fix, but for now, it should
+	// work, so it might as well stay
 	
 	/**
 	 * Register a texture to the game
 	 * @param meta The metadata that uses the texture
 	 * @param path The path of the texture
 	 */
-	public void setTexture(int meta, String path){
+	public final void setTexture(int meta, String path){
 		if(this.highestTexturedMeta < meta){
 			this.highestTexturedMeta = meta;
 			String[] tmp = new String[this.highestTexturedMeta + 1];
 			for(int i = 0; i < this.highestTexturedMeta - 1; i++){
-				tmp[i] = this.iconSidesNorthS[i];
+				tmp[i] = this.iconSidesfrontS[i];
 			}
 			tmp[this.highestTexturedMeta] = path;
-			this.iconSidesNorthS = tmp;
+			this.iconSidesfrontS = tmp;
 			for(int i = 0; i < this.highestTexturedMeta - 1; i++){
-				tmp[i] = this.iconSidesSouthS[i];
+				tmp[i] = this.iconSidesbackS[i];
 			}
 			tmp[this.highestTexturedMeta] = path;
-			this.iconSidesSouthS = tmp;
+			this.iconSidesbackS = tmp;
 			for(int i = 0; i < this.highestTexturedMeta - 1; i++){
-				tmp[i] = this.iconSidesEastS[i];
+				tmp[i] = this.iconSidesleftS[i];
 			}
 			tmp[this.highestTexturedMeta] = path;
-			this.iconSidesEastS = tmp;
+			this.iconSidesleftS = tmp;
 			for(int i = 0; i < this.highestTexturedMeta - 1; i++){
-				tmp[i] = this.iconSidesWestS[i];
+				tmp[i] = this.iconSidesrightS[i];
 			}
 			tmp[this.highestTexturedMeta] = path;
-			this.iconSidesWestS = tmp;
+			this.iconSidesrightS = tmp;
 			for(int i = 0; i < this.highestTexturedMeta - 1; i++){
 				tmp[i] = this.iconTopS[i];
 			}
@@ -91,10 +99,10 @@ public class Block extends net.minecraft.block.Block{
 			tmp[this.highestTexturedMeta] = path;
 			this.iconBaseS = tmp;
 		}
-		this.iconSidesNorthS[meta] = path;
-		this.iconSidesSouthS[meta] = path;
-		this.iconSidesEastS[meta] = path;
-		this.iconSidesWestS[meta] = path;
+		this.iconSidesfrontS[meta] = path;
+		this.iconSidesbackS[meta] = path;
+		this.iconSidesleftS[meta] = path;
+		this.iconSidesrightS[meta] = path;
 		this.iconTopS[meta] = path;
 		this.iconBaseS[meta] = path;
 	}
@@ -105,55 +113,55 @@ public class Block extends net.minecraft.block.Block{
 	 * @param path The path of the texture
 	 * @param side The side of the block to assign to
 	 */
-	public void setTexture(int meta, String path, String side){
+	public final void setTexture(int meta, String path, String side){
 		switch(side){
-		case "north":
+		case "front":
 			if(this.highestTexturedMeta < meta){
 				this.highestTexturedMeta = meta;
 				String[] tmp = new String[this.highestTexturedMeta + 1];
 				for(int i = 0; i < this.highestTexturedMeta - 1; i++){
-					tmp[i] = this.iconSidesNorthS[i];
+					tmp[i] = this.iconSidesfrontS[i];
 				}
 				tmp[this.highestTexturedMeta] = path;
-				this.iconSidesNorthS = tmp;
+				this.iconSidesfrontS = tmp;
 			}
-			this.iconSidesNorthS[meta] = path;
+			this.iconSidesfrontS[meta] = path;
 			break;
-		case "south":
+		case "back":
 			if(this.highestTexturedMeta < meta){
 				this.highestTexturedMeta = meta;
 				String[] tmp = new String[this.highestTexturedMeta + 1];
 				for(int i = 0; i < this.highestTexturedMeta - 1; i++){
-					tmp[i] = this.iconSidesSouthS[i];
+					tmp[i] = this.iconSidesbackS[i];
 				}
 				tmp[this.highestTexturedMeta] = path;
-				this.iconSidesSouthS = tmp;
+				this.iconSidesbackS = tmp;
 			}
-			this.iconSidesSouthS[meta] = path;
+			this.iconSidesbackS[meta] = path;
 			break;
-		case "east":
+		case "left":
 			if(this.highestTexturedMeta < meta){
 				this.highestTexturedMeta = meta;
 				String[] tmp = new String[this.highestTexturedMeta + 1];
 				for(int i = 0; i < this.highestTexturedMeta - 1; i++){
-					tmp[i] = this.iconSidesEastS[i];
+					tmp[i] = this.iconSidesleftS[i];
 				}
 				tmp[this.highestTexturedMeta] = path;
-				this.iconSidesEastS = tmp;
+				this.iconSidesleftS = tmp;
 			}
-			this.iconSidesEastS[meta] = path;
+			this.iconSidesleftS[meta] = path;
 			break;
-		case "west":
+		case "right":
 			if(this.highestTexturedMeta < meta){
 				this.highestTexturedMeta = meta;
 				String[] tmp = new String[this.highestTexturedMeta + 1];
 				for(int i = 0; i < this.highestTexturedMeta - 1; i++){
-					tmp[i] = this.iconSidesWestS[i];
+					tmp[i] = this.iconSidesrightS[i];
 				}
 				tmp[this.highestTexturedMeta] = path;
-				this.iconSidesWestS = tmp;
+				this.iconSidesrightS = tmp;
 			}
-			this.iconSidesWestS[meta] = path;
+			this.iconSidesrightS[meta] = path;
 			break;
 		case "top":
 			if(this.highestTexturedMeta < meta){
@@ -184,13 +192,56 @@ public class Block extends net.minecraft.block.Block{
 				this.highestTexturedMeta = meta;
 				String[] tmp = new String[this.highestTexturedMeta + 1];
 				for(int i = 0; i < this.highestTexturedMeta - 1; i++){
-					tmp[i] = this.iconSidesNorthS[i];
+					tmp[i] = this.iconSidesfrontS[i];
 				}
 				tmp[this.highestTexturedMeta] = path;
-				this.iconSidesNorthS = tmp;
+				this.iconSidesfrontS = tmp;
 			}
-			this.iconSidesNorthS[meta] = path;
+			this.iconSidesfrontS[meta] = path;
 			break;
 		}
+	}
+	
+	@Override 
+	public final void registerIcons(IconRegister ir){
+		for(int i = 0; this.highestTexturedMeta < i + 1; i++){
+			this.iconBase[i] = ir.registerIcon(this.iconBaseS[i]);
+			this.iconTop[i] = ir.registerIcon(this.iconTopS[i]);
+			this.iconSidesfront[i] = ir.registerIcon(this.iconSidesfrontS[i]);
+			this.iconSidesback[i] = ir.registerIcon(this.iconSidesbackS[i]);
+			this.iconSidesleft[i] = ir.registerIcon(this.iconSidesleftS[i]);
+			this.iconSidesright[i] = ir.registerIcon(this.iconSidesrightS[i]);
+		}
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public Icon getIcon(int side, int meta){
+		// I dont know what the left, right, and back
+		// are represented by, so I guessed.
+		// If stuff is screwy, blame it on this
+		
+		switch(side){
+		case 0:
+			return this.iconBase[meta];
+		case 1:
+			return this.iconTop[meta];
+		case 2:
+			return this.iconSidesback[meta];
+		case 3:
+			// I accidentally screwed up the naming, so left = right, right = left
+			return this.iconSidesleft[meta];
+		case 4:
+			return this.iconSidesfront[meta];
+		case 5:
+			return this.iconSidesleft[meta];
+		default:
+			return this.iconSidesfront[meta];
+		}
+	}
+
+	@Override
+	public TileEntity createNewTileEntity(World world) {
+		return null;
 	}
 }
