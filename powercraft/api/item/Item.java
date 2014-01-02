@@ -1,5 +1,7 @@
 package powercraft.api.item;
 
+import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.util.Icon;
 import powercraft.api.PowerCraft;
 
 /**
@@ -8,7 +10,12 @@ import powercraft.api.PowerCraft;
  */
 public class Item extends net.minecraft.item.Item{
 		
-	@SuppressWarnings("javadoc")
+	private Icon icon;
+	private String iconS;
+	
+	/**
+	 * @param par1 Item ID
+	 */
 	public Item(int par1) {
 		super(par1);
 	}
@@ -25,5 +32,21 @@ public class Item extends net.minecraft.item.Item{
 	 */
 	public final void register(){
 		PowerCraft.pc.itemsList.addItem(this);
+	}
+	
+	/**
+	 * Set the texture path
+	 * @param path The texture path
+	 */
+	public final void setTexture(String path){
+		this.iconS = path;
+	}
+	
+	/**
+	 * @param ir The icon register
+	 */
+	@Override
+	public final void registerIcons(IconRegister ir){
+		this.icon = ir.registerIcon(this.iconS);
 	}
 }
