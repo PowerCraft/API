@@ -1,5 +1,8 @@
 package powercraft.api.block;
 
+import powercraft.api.PowerCraft;
+import powercraft.api.lists.CustomBlocksList;
+
 /**
  * @author James
  * Block for use in ONLY powercraft API
@@ -332,7 +335,15 @@ public class BlockUtils {
 		case "wood slab":
 			return net.minecraft.block.Block.woodSingleSlab;
 		default:
-			return null;
+			break;
 		}
+		
+		CustomBlocksList cbl = PowerCraft.pc.blocksList;
+		for(int i = 0; i < cbl.blocks.length; i++){
+			if(name == cbl.blocks[i].blockName){
+				return cbl.blocks[i];
+			}
+		}
+		return null;
 	}
 }
