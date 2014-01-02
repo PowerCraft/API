@@ -1,0 +1,4 @@
+Dont wrap these with the API:
+
+NBTTagCompound <Not really importaint, shouldnt change at all>:
+- Will wrap, but for now use directly
