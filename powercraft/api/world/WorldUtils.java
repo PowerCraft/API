@@ -15,7 +15,7 @@ public class WorldUtils {
 	 * @param name The world's name
 	 * @return the world's id
 	 */
-	public static int getWorldIDByName(String name){
+	public static short getWorldIDByName(String name){
 		switch(name){
 		case "world":
 			return 0;
@@ -157,8 +157,8 @@ public class WorldUtils {
 	 * @param z The block z
 	 * @return The block ID and metadata
 	 */
-	public static int[] getBlockAt(String world, int x, int y, int z){
-		return new int[]{ getWorld(world).getBlockId(x, y, z), getWorld(world).getBlockMetadata(x, y, z) };
+	public static short[] getBlockAt(String world, int x, int y, int z){
+		return new short[]{ (short) getWorld(world).getBlockId(x, y, z), (short) getWorld(world).getBlockMetadata(x, y, z) };
 	}
 	
 	/**
@@ -168,8 +168,8 @@ public class WorldUtils {
 	 * @param z The block z
 	 * @return The block ID and metadata
 	 */
-	public static int[] getBlockAt(int world, int x, int y, int z){
-		return new int[]{ getWorld(world).getBlockId(x, y, z), getWorld(world).getBlockMetadata(x, y, z) };
+	public static short[] getBlockAt(int world, int x, int y, int z){
+		return new short[]{ (short) getWorld(world).getBlockId(x, y, z), (short) getWorld(world).getBlockMetadata(x, y, z) };
 	}
 	
 	/**
@@ -177,7 +177,7 @@ public class WorldUtils {
 	 * @param l The location
 	 * @return The block ID and metadata
 	 */
-	public static int[] getBlockAt(int world, Location l){
-		return new int[]{ getWorld(world).getBlockId(l.x, l.y, l.z), getWorld(world).getBlockMetadata(l.x, l.y, l.z) };
+	public static short[] getBlockAt(int world, Location l){
+		return new short[]{ (short) getWorld(world).getBlockId(l.x, l.y, l.z), (short) getWorld(world).getBlockMetadata(l.x, l.y, l.z) };
 	}
 }
