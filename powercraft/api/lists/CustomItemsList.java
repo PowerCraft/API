@@ -8,7 +8,7 @@ import powercraft.api.item.PC_Item;
  */
 public class CustomItemsList {
 
-	private int itemsAmount = 0;
+	private short itemsAmount = 0;
 	
 	/**
 	 * The blocks list
@@ -21,7 +21,7 @@ public class CustomItemsList {
 	 */
 	public void addItem(PC_Item item){
 		PC_Item[] tmp = new PC_Item[this.itemsAmount + 1];
-		for(int i = 0; i < this.itemsAmount + 1; i++){
+		for(short i = 0; i < this.itemsAmount + 1; i++){
 			tmp[i] = this.items[i];
 		}
 		tmp[this.itemsAmount] = item;
