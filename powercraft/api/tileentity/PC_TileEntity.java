@@ -12,7 +12,7 @@ public class PC_TileEntity extends net.minecraft.tileentity.TileEntity {
 	/**
 	 * @return The world ID
 	 */
-	public int getWorldID(){
+	public short getWorldID(){
 		return WorldUtils.getWorldIDByName(this.worldObj.getWorldInfo().getWorldName());
 	}
 	
@@ -33,7 +33,7 @@ public class PC_TileEntity extends net.minecraft.tileentity.TileEntity {
 	/**
 	 * @return The block ID, metadata
 	 */
-	public int[] getBlockIDWithMeta(){
-		return new int[]{ this.blockType.blockID, this.blockMetadata };
+	public short[] getBlockIDWithMeta(){
+		return new short[]{ (short) this.blockType.blockID, (short) this.blockMetadata };
 	}
 }
