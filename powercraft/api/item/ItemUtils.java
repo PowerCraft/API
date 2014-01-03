@@ -19,6 +19,19 @@ public class ItemUtils {
 		return canHarvestBlock(getItemFromName(itemname), blockname);
 	}
 	
+	/*
+	 * Warning: The following code is a
+       _..--=--..._
+    .-'            '-.  .-.
+   /.'              '.\/  /
+  |=-                -=| (
+   \'.              .'/\  \
+    '-.,_____ _____.-'  '-'
+         [_____]=8
+            
+         Shrink it if you want
+	 */
+	
 	/**
 	 * Gets the net.minecraft.item.Item from it's name
 	 * @param name The name of the item 
