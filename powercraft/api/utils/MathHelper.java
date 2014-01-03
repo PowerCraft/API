@@ -13,31 +13,20 @@ import cpw.mods.fml.relauncher.SideOnly;
  */
 @SuppressWarnings("javadoc")
 public class MathHelper {
-	/**
-	 * Awesome C code
-	 * 
-	 * Convert it and you get a free cookie
-	 * [literally, Im not kidding, you WILL
-	 * get a cookie. No, not a web cookie,
-	 * no, not "some time in your life"]
-	 * 
-	 * Yes, these:
-	 * * ( long * )
-	 * * ( float * )
-	 */
-	/*float Q_rsqrt( float number )
-	{
-	  long i;
-	  float x2, y;
-	  final float threehalfs = 1.5F;
 
-	  x2 = number * 0.5F;
-	  y  = number;
-	  i  = * ( long * ) &y;  
-	  i  = 0x5f3759df - ( i >> 1 );
-	  y  = * ( float * ) &i;
-	  y  = y * ( threehalfs - ( x2 * y * y ) );
-	}*/
+	public static double Q_rsqrt(double number){
+		double x = number;
+		double xhalf = 0.5d*x;
+	    long i = Double.doubleToLongBits(x);
+	    i = 0x5fe6ec85e7de30daL - (i>>1);
+	    x = Double.longBitsToDouble(i);
+	    for(int it = 0; it < 4; it++){
+	    	x = x*(1.5d - xhalf*x*x);
+	    }
+	    x *= number;
+	    return x;
+	}
+	
     /**
      * A table of sin values computed from 0 (inclusive) to 2*pi (exclusive), with steps of 2*PI / 65536.
      */
