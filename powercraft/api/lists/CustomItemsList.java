@@ -1,6 +1,6 @@
 package powercraft.api.lists;
 
-import powercraft.api.item.Item;
+import powercraft.api.item.PC_Item;
 
 /**
  * @author James
@@ -13,14 +13,14 @@ public class CustomItemsList {
 	/**
 	 * The blocks list
 	 */
-	public Item[] items;
+	public PC_Item[] items;
 	
 	/**
 	 * Adds an item to the items list
 	 * @param item The item to be added
 	 */
-	public void addItem(Item item){
-		Item[] tmp = new Item[this.itemsAmount + 1];
+	public void addItem(PC_Item item){
+		PC_Item[] tmp = new PC_Item[this.itemsAmount + 1];
 		for(int i = 0; i < this.itemsAmount + 1; i++){
 			tmp[i] = this.items[i];
 		}
