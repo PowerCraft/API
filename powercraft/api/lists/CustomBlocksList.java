@@ -1,6 +1,6 @@
 package powercraft.api.lists;
 
-import powercraft.api.block.Block;
+import powercraft.api.block.PC_Block;
 
 /**
  * @author James
@@ -13,14 +13,14 @@ public class CustomBlocksList {
 	/**
 	 * The blocks list
 	 */
-	public Block[] blocks;
+	public PC_Block[] blocks;
 	
 	/**
 	 * Adds a block to the block list
 	 * @param block The block to be added
 	 */
-	public void addBlock(Block block){
-		Block[] tmp = new Block[this.blocksAmount + 1];
+	public void addBlock(PC_Block block){
+		PC_Block[] tmp = new PC_Block[this.blocksAmount + 1];
 		for(int i = 0; i < this.blocksAmount + 1; i++){
 			tmp[i] = this.blocks[i];
 		}
