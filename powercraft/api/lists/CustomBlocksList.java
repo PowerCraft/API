@@ -8,7 +8,7 @@ import powercraft.api.block.PC_Block;
  */
 public class CustomBlocksList {
 
-	private int blocksAmount = 0;
+	private short blocksAmount = 0;
 	
 	/**
 	 * The blocks list
@@ -21,7 +21,7 @@ public class CustomBlocksList {
 	 */
 	public void addBlock(PC_Block block){
 		PC_Block[] tmp = new PC_Block[this.blocksAmount + 1];
-		for(int i = 0; i < this.blocksAmount + 1; i++){
+		for(short i = 0; i < this.blocksAmount + 1; i++){
 			tmp[i] = this.blocks[i];
 		}
 		tmp[this.blocksAmount] = block;
