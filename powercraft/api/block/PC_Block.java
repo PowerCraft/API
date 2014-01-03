@@ -23,7 +23,7 @@ public class PC_Block extends net.minecraft.block.BlockContainer{
 	 */
 	public String blockName = "";
 	
-	private int highestTexturedMeta = 0;
+	private short highestTexturedMeta = 0;
 	
 	private Icon[] iconSidesfront = new Icon[1];
 	private Icon[] iconSidesback = new Icon[1];
@@ -79,7 +79,7 @@ public class PC_Block extends net.minecraft.block.BlockContainer{
 	 * @param meta The metadata that uses the texture
 	 * @param path The path of the texture
 	 */
-	public final void setTexture(int meta, String path){
+	public final void setTexture(short meta, String path){
 		if(this.highestTexturedMeta < meta){
 			this.highestTexturedMeta = meta;
 			String[] tmp = new String[this.highestTexturedMeta + 1];
@@ -128,7 +128,7 @@ public class PC_Block extends net.minecraft.block.BlockContainer{
 	 * @param path The path of the texture
 	 * @param side The side of the block to assign to
 	 */
-	public final void setTexture(int meta, String path, String side){
+	public final void setTexture(short meta, String path, String side){
 		switch(side){
 		case "front":
 			if(this.highestTexturedMeta < meta){
