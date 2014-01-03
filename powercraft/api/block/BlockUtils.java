@@ -339,7 +339,7 @@ public class BlockUtils {
 		}
 		
 		CustomBlocksList cbl = PowerCraft.pc.blocksList;
-		for(int i = 0; i < cbl.blocks.length; i++){
+		for(short i = 0; i < cbl.blocks.length; i++){
 			if(name == cbl.blocks[i].blockName){
 				return cbl.blocks[i];
 			}
