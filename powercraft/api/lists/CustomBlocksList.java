@@ -28,6 +28,6 @@ public class CustomBlocksList {
 		}
 		tmp[this.blocksAmount] = block;
 		this.blocks = tmp;
-		//TODO you are never increasing blocksAmount, it will be always 0!!
+		this.blocksAmount++;
 	}
 }
