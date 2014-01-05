@@ -4,6 +4,7 @@ package powercraft.api.logging;
  * @author James
  * The exeption that is thrown by PC
  */
+ // TODO change to RuntimeException, Exception can only be thrown in methods with throws PC_Exception
 public class PC_Exception extends Exception{
 
 	String issue;
@@ -16,6 +17,7 @@ public class PC_Exception extends Exception{
 	@SuppressWarnings("javadoc")
 	public PC_Exception(String issue){
 		this.issue = issue;
+		// Why throw a exception and catch it then? Why not only write into the Logger?
 		if(issue == null || issue == ""){
 			try {
 				throw new PC_Exception("Custom thrown exception has no value, throwing exception!");

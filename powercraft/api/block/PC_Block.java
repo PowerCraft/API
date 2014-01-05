@@ -25,6 +25,8 @@ public class PC_Block extends net.minecraft.block.BlockContainer{
 	
 	private short highestTexturedMeta = 0;
 	
+	// Why not use 1 2d Array? 1 fors side, inner for icons?
+	// This would be easier to access later by variable
 	private Icon[] iconSidesfront = new Icon[1];
 	private Icon[] iconSidesback = new Icon[1];
 	private Icon[] iconSidesleft = new Icon[1];
@@ -38,6 +40,9 @@ public class PC_Block extends net.minecraft.block.BlockContainer{
 	private String[] iconBaseS = new String[1];
 	private String[] iconTopS = new String[1];
 	
+	// TODO this is not right, you give every block the same tileentity.
+	// Every Block should have diferent ones. You should get the Class
+	// and create new instances of this.
 	TileEntity thisTileEntity = null;
 	
 	/**

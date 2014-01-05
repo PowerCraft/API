@@ -6,6 +6,7 @@ import powercraft.api.item.PC_Item;
  * @author James
  * What the custom items added are
  */
+ // TODO same things like in CustomBlocksList
 public class CustomItemsList {
 
 	private short itemsAmount = 0;

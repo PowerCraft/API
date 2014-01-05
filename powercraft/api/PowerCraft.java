@@ -15,6 +15,7 @@ import powercraft.api.lists.*;
  * The powercraft mod class
  */
 @Mod(modid = "PowerCraft", name="PowerCraft", version="4.0.0")
+// TODO not needed on the server?
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class PowerCraft {
 	

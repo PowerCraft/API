@@ -6,8 +6,10 @@ import powercraft.api.block.PC_Block;
  * @author James
  * What the custom blocks added are
  */
+ //TODO why not using HashMap<String, PC_Block> for fast access to Blocks by names????
 public class CustomBlocksList {
 
+	// TODO why not using blocks.length instead of blocksAmount??
 	private short blocksAmount = 0;
 	
 	/**
@@ -26,5 +28,6 @@ public class CustomBlocksList {
 		}
 		tmp[this.blocksAmount] = block;
 		this.blocks = tmp;
+		//TODO you are never increasing blocksAmount, it will be always 0!!
 	}
 }
