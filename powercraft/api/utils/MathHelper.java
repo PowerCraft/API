@@ -2,9 +2,6 @@ package powercraft.api.utils;
 
 import java.util.Random;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 /**
  * @author Mojang AB with edits by James
  * Math stuff
@@ -66,8 +63,6 @@ public class MathHelper {
         int i = (int)par0;
         return par0 < i ? i - 1 : i;
     }
-
-    @SideOnly(Side.CLIENT)
 
     /**
      * returns par0 cast as an int, and no greater than Integer.MAX_VALUE-1024
@@ -156,8 +151,6 @@ public class MathHelper {
         return par0 > par2 ? par0 : par2;
     }
 
-    @SideOnly(Side.CLIENT)
-
     /**
      * Buckets an integer with specifed bucket sizes.  Args: i, bucketSize
      */
@@ -165,8 +158,6 @@ public class MathHelper {
     {
         return par0 < 0 ? -((-par0 - 1) / par1) - 1 : par0 / par1;
     }
-
-    @SideOnly(Side.CLIENT)
 
     /**
      * Tests if a string is null or of length zero
