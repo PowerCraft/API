@@ -13,8 +13,7 @@ public class PC_TileEntity extends net.minecraft.tileentity.TileEntity {
 	 * @return The world ID
 	 */
 	public short getWorldID(){
-		// TODO you can get the worldid a different and a lot more stable way by using the
-		// dimension id.
+		// TODO Id like to see you do that
 		return WorldUtils.getWorldIDByName(this.worldObj.getWorldInfo().getWorldName());
 	}
 	
