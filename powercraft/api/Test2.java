@@ -1,6 +1,5 @@
 package powercraft.api;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 import powercraft.api.annotation.Test;
@@ -15,16 +14,12 @@ public class Test2 {
 	@SuppressWarnings("javadoc")
 	public static void main(String[] args){
 		try{
-			// TODO the class powercraft.api.annotation.Test2 don't exist
-			// Use Test.class.getMethods() instead
-			for(Method method : Test2.class.getClassLoader().loadClass("powercraft.api.annotation.Test2").getMethods()){
+			// I forgot to update the package
+			for(Method method : Test2.class.getMethods()){
 				if(method.isAnnotationPresent(Test.class)){
-					// Why this loop, not needed, works without it.
-					for(@SuppressWarnings("unused") Annotation anno : method.getDeclaredAnnotations()){
-						Test methodAnno = method.getAnnotation(Test.class);
-						System.out.println(methodAnno.valueOfAnote());
-						System.out.println(methodAnno.valueOfAnoteInt());
-					}
+					Test methodAnno = method.getAnnotation(Test.class);
+					System.out.println(methodAnno.valueOfAnote());
+					System.out.println(methodAnno.valueOfAnoteInt());
 				}
 			}
 		}
