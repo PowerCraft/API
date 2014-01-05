@@ -40,9 +40,6 @@ public class PC_Block extends net.minecraft.block.BlockContainer{
 	private String[] iconBaseS = new String[1];
 	private String[] iconTopS = new String[1];
 	
-	// TODO this is not right, you give every block the same tileentity.
-	// Every Block should have diferent ones. You should get the Class
-	// and create new instances of this.
 	TileEntity thisTileEntity = null;
 	
 	/**
@@ -254,7 +251,7 @@ public class PC_Block extends net.minecraft.block.BlockContainer{
 		case 4:
 			return this.iconSidesfront[meta];
 		case 5:
-			return this.iconSidesleft[meta];
+			return this.iconSidesright[meta];
 		default:
 			return this.iconSidesfront[meta];
 		}
