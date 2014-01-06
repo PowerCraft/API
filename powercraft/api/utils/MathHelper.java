@@ -10,7 +10,7 @@ import java.util.Random;
  */
 @SuppressWarnings("javadoc")
 public class MathHelper {
-
+	
 	public static double Q_rsqrt(double number){
 		double x = number;
 		double xhalf = 0.5d*x;
