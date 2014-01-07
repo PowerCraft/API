@@ -36,7 +36,7 @@ public class ItemUtils {
 	 * Gets the net.minecraft.item.Item from it's name
 	 * @param name The name of the item 
 	 */
-	private static net.minecraft.item.Item getItemFromName(String name) {
+	private static final net.minecraft.item.Item getItemFromName(String name) {
 		switch(name){
 		case "gold apple":
 			return net.minecraft.item.Item.appleGold;
@@ -382,7 +382,7 @@ public class ItemUtils {
 	 * @param name The block to be harvested
 	 * @return Can the item harvest the block?
 	 */
-	public static boolean canHarvestBlock(net.minecraft.item.Item item, String name){
+	public static final boolean canHarvestBlock(net.minecraft.item.Item item, String name){
 		return item.canHarvestBlock(BlockUtils.getBlockFromName(name));
 	}
 }
