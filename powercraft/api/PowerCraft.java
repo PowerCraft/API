@@ -28,19 +28,19 @@ public class PowerCraft {
 	/**
 	 * The list of custom added blocks
 	 */
-	public CustomBlocksList blocksList = new CustomBlocksList();
+	public final CustomBlocksList blocksList = new CustomBlocksList();
 	
 	/**
 	 * The list of custom added items
 	 */
-	public CustomItemsList itemsList = new CustomItemsList();
+	public final CustomItemsList itemsList = new CustomItemsList();
 	
 	/**
 	 * The preinit for powercraft
 	 * @param evt The event that triggered it
 	 */
 	@EventHandler
-	public void preinit(FMLPreInitializationEvent evt) {
+	public final void preinit(FMLPreInitializationEvent evt) {
 		preinit();
 	}
 	
@@ -49,7 +49,7 @@ public class PowerCraft {
 	 * @param evt The event that triggered it
 	 */
 	@EventHandler
-	public void init(FMLInitializationEvent evt) {
+	public final void init(FMLInitializationEvent evt) {
 		init();
 	}
 	
@@ -58,7 +58,7 @@ public class PowerCraft {
 	 * @param evt The event that triggered it
 	 */
 	@EventHandler
-	public void postinit(FMLPostInitializationEvent evt) {
+	public final void postinit(FMLPostInitializationEvent evt) {
 		postinit();
 	}
 	
