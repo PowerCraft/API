@@ -14,7 +14,7 @@ public class BlockUtils {
 	 * @param name The block name
 	 * @return The minecraft block
 	 */
-	public static net.minecraft.block.Block getBlockFromName(String name){
+	public static final net.minecraft.block.Block getBlockFromName(String name){
 		switch(name){
 		case "anvil":
 			return net.minecraft.block.Block.anvil;
