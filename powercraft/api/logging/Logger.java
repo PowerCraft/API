@@ -13,7 +13,7 @@ public class Logger {
 	 * @param l The log level
 	 * @param message The message to log
 	 */
-	public static void log(LogLevel l, String message){
+	public static final void log(LogLevel l, String message){
 		java.util.logging.Logger _l_ = java.util.logging.Logger.getLogger("PowerCraft");
 		java.util.logging.Logger _l = java.util.logging.Logger.getGlobal();
 		
