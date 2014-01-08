@@ -11,7 +11,6 @@ import powercraft.api.PowerCraft;
  */
 public class PC_Item extends net.minecraft.item.Item{
 		
-	@SuppressWarnings("unused") // The Icon icon is an unused item Icon icon for icon with iconship
 	private Icon icon;
 	private String iconS;
 	
@@ -61,5 +60,10 @@ public class PC_Item extends net.minecraft.item.Item{
 	@Override
 	public final void registerIcons(IconRegister ir){
 		this.icon = ir.registerIcon(this.iconS);
+	}
+	
+	@Override
+	public final Icon getIcon(ItemStack s, int pass){
+		return this.icon;
 	}
 }
