@@ -1,6 +1,7 @@
 package powercraft.api.item;
 
 import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
 import powercraft.api.PowerCraft;
 
@@ -23,7 +24,16 @@ public class PC_Item extends net.minecraft.item.Item{
 		this.itemName = name;
 	}
 
-	// MASSIVE todo
+	@SuppressWarnings("deprecation")
+	@Override
+	public final ItemStack onItemRightClick(net.minecraft.item.ItemStack i, net.minecraft.world.World w, net.minecraft.entity.player.EntityPlayer p){
+		return onItemRightClick(new PC_ItemStack(i.itemID, i.stackSize, i.getItemDamage()), w.getWorldInfo().getVanillaDimension(), p.posX, p.posY, p.posZ).getStack();
+	}
+	
+	@SuppressWarnings("javadoc")
+	public static PC_ItemStack onItemRightClick(PC_ItemStack i, @SuppressWarnings("unused") int dim, @SuppressWarnings("unused") double x, @SuppressWarnings("unused") double y, @SuppressWarnings("unused") double z){
+		return i;
+	}
 	
 	/**
 	 * The name of the item
