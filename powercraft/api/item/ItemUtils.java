@@ -369,13 +369,8 @@ public class ItemUtils {
 			break;
 		}
 		
-		CustomItemsList cbl = PowerCraft.pc.itemsList;
-		for(int i = 0; i < cbl.items.length; i++){
-			if(name == cbl.items[i].itemName){
-				return cbl.items[i];
-			}
-		}
-		return null;
+		CustomItemsList cil = PowerCraft.pc.itemsList;
+		return cil.items.getOrDefault(name, null);
 	}
 
 	/**
