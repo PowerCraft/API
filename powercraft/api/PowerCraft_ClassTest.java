@@ -11,7 +11,11 @@ import powercraft.api.utils.MathHelper;
  * without needing to use a seprate project, ect
  */
 public class PowerCraft_ClassTest {
-	@SuppressWarnings("javadoc")
+	
+	/**
+	 * The entry point for the tester
+	 * @param args The command line arguments
+	 */
 	public static void main(String[] args){
 		try{
 			// I forgot to update the package
@@ -33,13 +37,17 @@ public class PowerCraft_ClassTest {
 		System.out.println(MathHelper.Q_rsqrt(16));
 	}
 
-	@SuppressWarnings("javadoc")
+	/**
+	 * Pointless test method
+	 */
 	@Test(valueOfAnoteInt = 0)
 	public void methodThing() { 
 	//
 	}
 	
-	@SuppressWarnings("javadoc")
+	/**
+	 * Pointless test method
+	 */
 	@Test(valueOfAnoteInt = 0, valueOfAnote = "Apple pie")
 	public void methodThing2() { 
 	//
