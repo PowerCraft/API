@@ -15,7 +15,6 @@ import powercraft.api.lists.*;
  * The powercraft mod class
  */
 @Mod(modid = "PowerCraft", name="PowerCraft", version="4.0.0")
-// Clients can function without the server having mods!
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class PowerCraft {
 	
