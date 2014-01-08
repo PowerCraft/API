@@ -34,10 +34,18 @@ public class Location {
 		this.z = z;
 	}
 	
-	@SuppressWarnings("javadoc")
+	/**
+	 * The x position in the location
+	 */
 	public int x;
-	@SuppressWarnings("javadoc")
+
+	/**
+	 * The y position in the location
+	 */
 	public int y;
-	@SuppressWarnings("javadoc")
+
+	/**
+	 * The z position in the location
+	 */
 	public int z;
 }
