@@ -29,8 +29,17 @@ public class PC_Item extends net.minecraft.item.Item{
 		return onItemRightClick(new PC_ItemStack(i.itemID, i.stackSize, i.getItemDamage()), w.getWorldInfo().getVanillaDimension(), p.posX, p.posY, p.posZ).getStack();
 	}
 	
-	@SuppressWarnings("javadoc")
-	public static PC_ItemStack onItemRightClick(PC_ItemStack i, @SuppressWarnings("unused") int dim, @SuppressWarnings("unused") double x, @SuppressWarnings("unused") double y, @SuppressWarnings("unused") double z){
+	/**
+	 * A method meant to be overriden by other mods
+	 * @param i The itemstack
+	 * @param dim The dimension ID
+	 * @param x The player x
+	 * @param y The player y
+	 * @param z The player z
+	 * @return The new itemstack
+	 */
+	@SuppressWarnings("static-method")
+	public PC_ItemStack onItemRightClick(PC_ItemStack i, int dim, double x, double y, double z){
 		return i;
 	}
 	
