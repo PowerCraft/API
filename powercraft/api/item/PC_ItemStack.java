@@ -55,17 +55,23 @@ public class PC_ItemStack {
 		}
 	}
 	
-	@SuppressWarnings("javadoc")
+	/**
+	 * @return The item ID of the item stack
+	 */
 	public int getID(){
 		return this.i.itemID;
 	}
 	
-	@SuppressWarnings("javadoc")
+	/**
+	 * @return The meta/damage of the item stack items
+	 */
 	public int getMeta(){
 		return this.i.getItemDamage();
 	}
 	
-	@SuppressWarnings("javadoc")
+	/**
+	 * @return The amount of items in the itemstack
+	 */
 	public int getAmount(){
 		return this.i.stackSize;
 	}
