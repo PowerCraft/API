@@ -6,7 +6,11 @@ package powercraft.api.logging;
  */
 public class PC_CrashReport extends net.minecraft.crash.CrashReport{
 
-	@SuppressWarnings("javadoc")
+	/**
+	 * The normal crash report constructor
+	 * @param par1Str The issue description
+	 * @param par2Throwable The throwable
+	 */
 	public PC_CrashReport(String par1Str, Throwable par2Throwable) {
 		super("Error in PowerCraft: " + par1Str, par2Throwable);
 	}
