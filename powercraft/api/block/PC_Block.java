@@ -11,6 +11,7 @@ import net.minecraft.world.World;
 import powercraft.api.PowerCraft;
 import powercraft.api.material.MaterialUtil;
 import powercraft.api.stepsound.StepSoundUtil;
+import powercraft.api.tileentity.PC_TileEntity;
 
 /**
  * @author James
@@ -254,7 +255,15 @@ public class PC_Block extends net.minecraft.block.BlockContainer{
 
 	@Override
 	public final TileEntity createNewTileEntity(World world) {
-		return this.thisTileEntity;
+		return createNewTileEntity(world.getWorldInfo().getVanillaDimension());
+	}
+	
+	/**
+	 * @param dim Dimension ID
+	 * @return The tileentity to use
+	 */
+	public PC_TileEntity createNewTileEntity(int dim){
+		return (PC_TileEntity) this.thisTileEntity;
 	}
 	
 	/**
