@@ -35,8 +35,9 @@ public class ItemUtils {
 	/**
 	 * Gets the net.minecraft.item.Item from it's name
 	 * @param name The name of the item 
+	 * @return The item with that name
 	 */
-	private static final net.minecraft.item.Item getItemFromName(String name) {
+	public static final net.minecraft.item.Item getItemFromName(String name) {
 		switch(name){
 		case "gold apple":
 			return net.minecraft.item.Item.appleGold;
