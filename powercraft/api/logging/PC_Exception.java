@@ -13,7 +13,9 @@ public class PC_Exception extends RuntimeException{
 	 */
 	private static final long serialVersionUID = 8163311288878326493L;
 
-	@SuppressWarnings("javadoc")
+	/**
+	 * @param issue The issue that makes the exception happen
+	 */
 	public PC_Exception(String issue){
 		this.issue = issue;
 		if(issue == null || issue == ""){
