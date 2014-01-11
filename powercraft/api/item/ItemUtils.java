@@ -370,7 +370,7 @@ public class ItemUtils {
 		}
 		
 		CustomItemsList cil = PowerCraft.pc.itemsList;
-		return cil.items.getOrDefault(name, null);
+		return cil.items.get(name);
 	}
 
 	/**
