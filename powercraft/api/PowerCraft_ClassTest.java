@@ -1,7 +1,9 @@
 package powercraft.api;
 
 import java.lang.reflect.Method;
+import java.util.Random;
 
+import net.minecraft.block.Block;
 import powercraft.api.annotation.Test;
 import powercraft.api.utils.MathHelper;
 
@@ -17,7 +19,7 @@ public class PowerCraft_ClassTest {
 	 * @param args The command line arguments
 	 */
 	public static void main(String[] args){
-		try{
+		/*try{
 			// I forgot to update the package
 			for(Method method : PowerCraft_ClassTest.class.getMethods()){
 				if(method.isAnnotationPresent(Test.class)){
@@ -34,7 +36,21 @@ public class PowerCraft_ClassTest {
 		System.out.println(MathHelper.Q_rsqrt(4));
 		System.out.println(MathHelper.Q_rsqrt(9));
 		System.out.println(MathHelper.Q_rsqrt(11));
-		System.out.println(MathHelper.Q_rsqrt(16));
+		System.out.println(MathHelper.Q_rsqrt(16));*/
+		
+		Random rand = new Random();
+		
+		int r = 6;
+   		for (int loop = 0; loop < 10; loop++){
+   			int angle = (rand.nextInt(16) + 1);
+   			double x = r * Math.cos((Math.PI * 2) / angle);
+			//System.out.println((int)Math.cos((float) (Math.PI / angle)));
+   			double z = r * Math.sin((Math.PI * 2) / angle);
+   			System.out.println(z);
+   			//for(int y = 1; y < 256; y++){
+   				System.out.println(String.valueOf((int)x + 10) + " " +  String.valueOf(0 + 10) + " " +  String.valueOf((int)z + 10));
+   			//}
+   		}
 	}
 
 	/**
