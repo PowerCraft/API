@@ -15,7 +15,7 @@ import powercraft.api.tileentity.PC_TileEntity;
 
 /**
  * @author James
- * An independant block
+ * An independent block
  */
 public class PC_Block extends net.minecraft.block.BlockContainer{
 
@@ -40,7 +40,7 @@ public class PC_Block extends net.minecraft.block.BlockContainer{
 	private String[] iconBaseS = new String[1];
 	private String[] iconTopS = new String[1];
 	
-	TileEntity thisTileEntity = null;
+	PC_TileEntity thisTileEntity = null;
 	
 	/**
 	 * @param id The block ID
@@ -58,7 +58,7 @@ public class PC_Block extends net.minecraft.block.BlockContainer{
 	 * @param name The name of the block
 	 * @param te The tile entity to use for this block
 	 */
-	public PC_Block(int id, String material, String name, TileEntity te){
+	public PC_Block(int id, String material, String name, PC_TileEntity te){
 		super(id, MaterialUtil.getMaterialFromName(material));
 		this.blockName = name;
 		this.thisTileEntity = te;
@@ -260,10 +260,10 @@ public class PC_Block extends net.minecraft.block.BlockContainer{
 	
 	/**
 	 * @param dim Dimension ID
-	 * @return The tileentity to use
+	 * @return The tile entity to use
 	 */
 	public PC_TileEntity createNewTileEntity(int dim){
-		return (PC_TileEntity) this.thisTileEntity;
+		return this.thisTileEntity;
 	}
 	
 	/**
