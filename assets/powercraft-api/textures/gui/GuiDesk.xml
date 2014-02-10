@@ -1,0 +1,54 @@
+<Textures>
+	<Texture textureName="Gui.png">
+		<Subtexture name="Window" size="20, 20" frame="4, 4, 4, 4" loc_active="0, 0" loc_mouseDown="0, 0" loc_mouseOver="0, 0" loc_disabled="0, 0"></Subtexture>
+		<Subtexture name="Frame" size="20, 20" frame="1, 1, 1, 1" loc_active="0, 20" loc_mouseDown="0, 20" loc_mouseOver="0, 20" loc_disabled="0, 20"></Subtexture>
+		<Subtexture name="Button" size="30, 15" frame="2, 2, 2, 3" loc_active="20, 0" loc_mouseDown="20, 30" loc_mouseOver="20, 15" loc_disabled="20, 45"></Subtexture>
+		<Subtexture name="Slot" size="4, 4" frame="1, 1, 1, 1" loc_active="0, 40" loc_mouseDown="0, 40" loc_mouseOver="0, 40" loc_disabled="0, 40"></Subtexture>
+		<Subtexture name="FireOn" size="14, 14" frame="0, 0, 0, 14" loc_active="50, 0" loc_mouseDown="50, 0" loc_mouseOver="50, 0" loc_disabled="50, 0"></Subtexture>
+		<Subtexture name="FireShadow" size="14, 14" frame="0, 0, 0, 14" loc_active="64, 0" loc_mouseDown="64, 0" loc_mouseOver="64, 0" loc_disabled="64, 0"></Subtexture>
+		<Subtexture name="CheckBox" size="9, 9" frame="9, 9, 0, 0" loc_active="50, 14" loc_mouseDown="50, 32" loc_mouseOver="50, 23" loc_disabled="50, 41"></Subtexture>
+		<Subtexture name="CheckBoxChecked" size="9, 9" frame="9, 9, 0, 0" loc_active="59, 14" loc_mouseDown="59, 32" loc_mouseOver="59, 23" loc_disabled="59, 41"></Subtexture>
+		<Subtexture name="RadioButton" size="9, 9" frame="9, 9, 0, 0" loc_active="68, 14" loc_mouseDown="68, 32" loc_mouseOver="68, 23" loc_disabled="68, 41"></Subtexture>
+		<Subtexture name="RadioButtonChecked" size="9, 9" frame="9, 9, 0, 0" loc_active="77, 14" loc_mouseDown="77, 32" loc_mouseOver="77, 23" loc_disabled="77, 41"></Subtexture>
+		<Subtexture name="TextEdit" size="4, 4" frame="1, 1, 1, 1" loc_active="4, 40" loc_mouseDown="4, 40" loc_mouseOver="4, 40" loc_disabled="4, 40"></Subtexture>
+		<Subtexture name="TextEditSelect" size="1, 4" frame="0, 0, 0, 0" loc_active="8, 40" loc_mouseDown="8, 40" loc_mouseOver="8, 40" loc_disabled="8, 40"></Subtexture>
+		<Subtexture name="ScrollH" size="28, 12" frame="1, 1, 1, 1" loc_active="86, 0" loc_mouseDown="86, 24" loc_mouseOver="86, 12" loc_disabled="86, 36"></Subtexture>
+		<Subtexture name="ScrollHFrame" size="7, 14" frame="1, 1, 1, 1" loc_active="79, 0" loc_mouseDown="79, 0" loc_mouseOver="79, 0" loc_disabled="79, 0"></Subtexture>
+		<Subtexture name="ScrollV" size="12, 28" frame="1, 1, 1, 1" loc_active="114, 0" loc_mouseDown="138, 0" loc_mouseOver="126, 0" loc_disabled="150, 0"></Subtexture>
+		<Subtexture name="ScrollVFrame" size="14, 7" frame="1, 1, 1, 1" loc_active="114, 28" loc_mouseDown="114, 28" loc_mouseOver="114, 28" loc_disabled="114, 28"></Subtexture>
+		<Subtexture name="Progressbar" size="11, 11" frame="1, 11, 1, 0" loc_active="9, 40" loc_mouseDown="9, 40" loc_mouseOver="9, 40" loc_disabled="9, 40"></Subtexture>
+		<Subtexture name="Progressbar_Content1" size="32, 9" frame="0, 9, 0, 0" loc_active="50, 50" loc_mouseDown="50, 50" loc_mouseOver="50, 50" loc_disabled="50, 50"></Subtexture>
+		<Subtexture name="Progressbar_Content2" size="32, 9" frame="0, 9, 0, 0" loc_active="50, 59" loc_mouseDown="50, 59" loc_mouseOver="50, 59" loc_disabled="50, 59"></Subtexture>
+		<Subtexture name="Progressbar_Content3" size="32, 9" frame="0, 9, 0, 0" loc_active="50, 68" loc_mouseDown="50, 68" loc_mouseOver="50, 68" loc_disabled="50, 68"></Subtexture>
+		<Subtexture name="TabFrame" size="20, 20" frame="2, 14, 2, 1" loc_active="0, 51" loc_mouseDown="0, 51" loc_mouseOver="0, 51" loc_disabled="0, 51"></Subtexture>
+		<Subtexture name="Tab" size="18, 12" frame="1, 12, 1, 0" loc_active="20, 60" loc_mouseDown="20, 84" loc_mouseOver="20, 72" loc_disabled="20, 60"></Subtexture>
+		<Subtexture name="TabScroll" size="18, 1" frame="1, 1, 1, 0" loc_active="0, 71" loc_mouseDown="0, 72" loc_mouseOver="0, 72" loc_disabled="0, 71"></Subtexture>
+		<Subtexture name="F1" size="16, 16" frame="0, 0, 0, 0" loc_active="86, 52" loc_mouseDown="86, 52" loc_mouseOver="86, 52" loc_disabled="86, 52"></Subtexture>
+		<Subtexture name="H1" size="1, 1" frame="0, 0, 0, 0" loc_active="86, 50" loc_mouseDown="86, 50" loc_mouseOver="86, 50" loc_disabled="86, 50"></Subtexture>
+		<Subtexture name="V1" size="1, 1" frame="0, 0, 0, 0" loc_active="86, 50" loc_mouseDown="86, 50" loc_mouseOver="86, 50" loc_disabled="86, 50"></Subtexture>
+		<Subtexture name="F2" size="16, 16" frame="0, 0, 0, 0" loc_active="103, 52" loc_mouseDown="103, 52" loc_mouseOver="103, 52" loc_disabled="103, 52"></Subtexture>
+		<Subtexture name="H2" size="1, 1" frame="0, 0, 0, 0" loc_active="87, 50" loc_mouseDown="87, 50" loc_mouseOver="87, 50" loc_disabled="87, 50"></Subtexture>
+		<Subtexture name="V2" size="1, 1" frame="0, 0, 0, 0" loc_active="87, 50" loc_mouseDown="87, 50" loc_mouseOver="87, 50" loc_disabled="87, 50"></Subtexture>
+		<Subtexture name="F3" size="16, 16" frame="0, 0, 0, 0" loc_active="120, 52" loc_mouseDown="120, 52" loc_mouseOver="120, 52" loc_disabled="120, 52"></Subtexture>
+		<Subtexture name="H3" size="1, 1" frame="0, 0, 0, 0" loc_active="88, 50" loc_mouseDown="88, 50" loc_mouseOver="88, 50" loc_disabled="88, 50"></Subtexture>
+		<Subtexture name="V3" size="1, 1" frame="0, 0, 0, 0" loc_active="88, 50" loc_mouseDown="88, 50" loc_mouseOver="88, 50" loc_disabled="88, 50"></Subtexture>
+		<Subtexture name="F4" size="16, 16" frame="0, 0, 0, 0" loc_active="86, 69" loc_mouseDown="86, 69" loc_mouseOver="86, 69" loc_disabled="86, 69"></Subtexture>
+		<Subtexture name="H4" size="1, 1" frame="0, 0, 0, 0" loc_active="89, 50" loc_mouseDown="89, 50" loc_mouseOver="89, 50" loc_disabled="89, 50"></Subtexture>
+		<Subtexture name="V4" size="1, 1" frame="0, 0, 0, 0" loc_active="89, 50" loc_mouseDown="89, 50" loc_mouseOver="89, 50" loc_disabled="89, 50"></Subtexture>
+		<Subtexture name="F5" size="16, 16" frame="0, 0, 0, 0" loc_active="103, 69" loc_mouseDown="103, 69" loc_mouseOver="103, 69" loc_disabled="103, 69"></Subtexture>
+		<Subtexture name="H5" size="1, 1" frame="0, 0, 0, 0" loc_active="90, 50" loc_mouseDown="90, 50" loc_mouseOver="90, 50" loc_disabled="90, 50"></Subtexture>
+		<Subtexture name="V5" size="1, 1" frame="0, 0, 0, 0" loc_active="90, 50" loc_mouseDown="90, 50" loc_mouseOver="90, 50" loc_disabled="90, 50"></Subtexture>
+		<Subtexture name="F6" size="16, 16" frame="0, 0, 0, 0" loc_active="120, 69" loc_mouseDown="120, 69" loc_mouseOver="120, 69" loc_disabled="120, 69"></Subtexture>
+		<Subtexture name="H6" size="1, 1" frame="0, 0, 0, 0" loc_active="91, 50" loc_mouseDown="91, 50" loc_mouseOver="91, 50" loc_disabled="91, 50"></Subtexture>
+		<Subtexture name="V6" size="1, 1" frame="0, 0, 0, 0" loc_active="91, 50" loc_mouseDown="91, 50" loc_mouseOver="91, 50" loc_disabled="91, 50"></Subtexture>
+		<Subtexture name="NULL" size="1, 1" frame="0, 0, 0, 0" loc_active="250, 250" loc_mouseDown="250, 250" loc_mouseOver="250, 250" loc_disabled="250, 250"></Subtexture>
+	</Texture>
+	<Texture textureName="Images.png">
+		<Subtexture name="I_ON" size="16, 16" frame="16, 16, 0, 0" loc_active="0, 0" loc_mouseDown="0, 0" loc_mouseOver="0, 0" loc_disabled="0, 0"></Subtexture>
+		<Subtexture name="I_OFF" size="16, 16" frame="16, 16, 0, 0" loc_active="16, 0" loc_mouseDown="16, 0" loc_mouseOver="16, 0" loc_disabled="16, 0"></Subtexture>
+		<Subtexture name="I_HFL" size="16, 16" frame="16, 16, 0, 0" loc_active="32, 0" loc_mouseDown="32, 0" loc_mouseOver="32, 0" loc_disabled="32, 0"></Subtexture>
+		<Subtexture name="I_LFL" size="16, 16" frame="16, 16, 0, 0" loc_active="48, 0" loc_mouseDown="48, 0" loc_mouseOver="48, 0" loc_disabled="48, 0"></Subtexture>
+		<Subtexture name="I_FL" size="16, 16" frame="16, 16, 0, 0" loc_active="0, 16" loc_mouseDown="0, 16" loc_mouseOver="0, 16" loc_disabled="0, 16"></Subtexture>
+		<Subtexture name="IO_CONF" size="16, 16" frame="16, 16, 0, 0" loc_active="16, 16" loc_mouseDown="16, 16" loc_mouseOver="16, 16" loc_disabled="16, 16"></Subtexture>
+	</Texture>
+</Textures>
