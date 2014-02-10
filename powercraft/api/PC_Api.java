@@ -3,6 +3,7 @@ package powercraft.api;
 
 import net.minecraft.item.ItemStack;
 import powercraft.api.block.PC_Blocks;
+import powercraft.api.gres.PC_Gres;
 import powercraft.api.item.PC_Items;
 import powercraft.api.network.PC_PacketHandler;
 import powercraft.api.script.miniscript.PC_Miniscript;
@@ -51,6 +52,7 @@ public final class PC_Api extends PC_Module {
 		PC_WorldGeneriator.register();
 		PC_FuelHandler.register();
 		PC_Miniscript.register();
+		PC_Gres.register();
 		
 	}
 

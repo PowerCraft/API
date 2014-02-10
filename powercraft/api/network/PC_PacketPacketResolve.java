@@ -1,7 +1,10 @@
 package powercraft.api.network;
 
-import net.minecraft.network.INetHandler;
+import powercraft.api.PC_Utils;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.network.INetHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public final class PC_PacketPacketResolve extends PC_PacketServerToClient {
 
@@ -19,11 +22,7 @@ public final class PC_PacketPacketResolve extends PC_PacketServerToClient {
 	protected void fromByteBuffer(ByteBuf buf) {
 		packetClasses = new String[buf.readInt()];
 		for(int i=0; i<packetClasses.length; i++){
-			char[] chars = new char[buf.readUnsignedShort()];
-			for(int j=0; j<chars.length; j++){
-				chars[i] = buf.readChar();
-			}
-			packetClasses[i] = new String(chars);
+			packetClasses[i] = PC_Utils.readStringFromBuf(buf);
 		}
 	}
 
@@ -31,14 +30,12 @@ public final class PC_PacketPacketResolve extends PC_PacketServerToClient {
 	protected void toByteBuffer(ByteBuf buf) {
 		buf.writeInt(packetClasses.length);
 		for(int i=0; i<packetClasses.length; i++){
-			buf.writeShort(packetClasses[i].length());
-			for(int j=0; j<packetClasses.length; j++){
-				buf.writeChar(packetClasses[i].charAt(j));
-			}
+			PC_Utils.writeStringToBuf(buf, packetClasses[i]);
 		}
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	protected PC_Packet doAndReply(INetHandler iNetHandler) {
 		PC_PacketHandler.setPackets(packetClasses);
 		return null;

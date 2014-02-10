@@ -85,4 +85,9 @@ public final class PC_ClientUtils extends PC_Utils {
 		isClient.set(false);
 	}
 	
+	@Override
+	protected EntityPlayer iGetClientPlayer() {
+		return mc().thePlayer;
+	}
+	
 }

@@ -1,5 +1,7 @@
 package powercraft.api;
 
+import io.netty.buffer.ByteBuf;
+
 import java.io.File;
 import java.util.List;
 
@@ -486,6 +488,29 @@ public class PC_Utils {
 			tag.setTag("PowerCraft", pctag);
 			return pctag;
 		}
+	}
+
+	public static EntityPlayer getClientPlayer() {
+		return INSTANCE.iGetClientPlayer();
+	}
+	
+	protected EntityPlayer iGetClientPlayer() {
+		return null;
+	}
+
+	public static void writeStringToBuf(ByteBuf buf, String string) {
+		buf.writeShort(string.length());
+		for(int j=0; j<string.length(); j++){
+			buf.writeChar(string.charAt(j));
+		}
+	}
+	
+	public static String readStringFromBuf(ByteBuf buf) {
+		char[] chars = new char[buf.readUnsignedShort()];
+		for(int i=0; i<chars.length; i++){
+			chars[i] = buf.readChar();
+		}
+		return new String(chars);
 	}
 	
 }

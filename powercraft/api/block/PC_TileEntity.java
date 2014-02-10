@@ -9,6 +9,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
@@ -233,6 +234,18 @@ public class PC_TileEntity extends TileEntity {
 
 	public boolean set3DRotation(PC_3DRotation rotation) {
 		return false;
+	}
+
+	public void openContainer(Container container) {
+		
+	}
+
+	public void closeContainer(Container container) {
+		
+	}
+
+	public void sendProgressBarUpdates() {
+		
 	}
 
 }
