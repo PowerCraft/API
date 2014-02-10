@@ -17,5 +17,4 @@ Install instructions (for eclipse)
 7. create in eclipse a new Java Project called Powercraft
 8. clone this and the Modules Repro into an empty directory
 9. change the GIT_LOC var (in eclipse) to your git repro folder
-10. wonder where minilib.jar is
-11. You're done!
+10. You're done!
