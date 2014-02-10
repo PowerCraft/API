@@ -1,7 +1,7 @@
 package powercraft.api;
 
 
-public class PC_Security {
+public final class PC_Security {
 
 	public static boolean allowedCaller(String funktion, Class<?>... allowedCallers){
 		Class<?> caller = PC_Reflection.getCallerClass(1);
@@ -22,6 +22,10 @@ public class PC_Security {
 			}
 		}
 		return false;
+	}
+	
+	private PC_Security() {
+		throw new InstantiationError();
 	}
 	
 }

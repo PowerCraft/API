@@ -28,6 +28,8 @@ public class PC_Renderer implements ISimpleBlockRenderingHandler, IItemRenderer 
 	}
 	
 	private PC_Renderer(){
+		if(instance!=null)
+			throw new InstantiationError();
 		renderID = RenderingRegistry.getNextAvailableRenderId();
 		RenderingRegistry.registerBlockHandler(this);
 	}

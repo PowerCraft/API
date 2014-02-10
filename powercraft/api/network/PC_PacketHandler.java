@@ -29,6 +29,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import cpw.mods.fml.common.network.internal.FMLProxyPacket;
 import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public final class PC_PacketHandler extends SimpleChannelInboundHandler<PC_Packet> {
 
@@ -140,6 +141,7 @@ public final class PC_PacketHandler extends SimpleChannelInboundHandler<PC_Packe
 	}
 
 	@SuppressWarnings("unchecked")
+	@SideOnly(Side.CLIENT)
 	static void setPackets(String[] packetClasses) {
 		if(PC_Utils.mcs()!=null)
 			return;

@@ -47,7 +47,7 @@ public class PC_Utils {
 	
 	public static final int BLOCK_NOTIFY = 1, BLOCK_UPDATE = 2, BLOCK_ONLY_SERVERSIDE = 4;
 	
-	public PC_Utils() throws InstanceAlreadyExistsException {
+	PC_Utils() throws InstanceAlreadyExistsException {
 		if(INSTANCE!=null){
 			throw new InstanceAlreadyExistsException();
 		}
@@ -405,12 +405,12 @@ public class PC_Utils {
 		}
 	}
 
-	protected File iGetPowerCraftFile() {
+	File iGetPowerCraftFile() {
 		return mcs().getFile("PowerCraft");
 	}
 
 
-	protected GameType iGetGameTypeFor(EntityPlayer player) {
+	GameType iGetGameTypeFor(EntityPlayer player) {
 
 		return ((EntityPlayerMP) player).theItemInWorldManager.getGameType();
 	}
@@ -428,7 +428,7 @@ public class PC_Utils {
 		return INSTANCE.iGetSide();
 	}
 	
-	protected PC_Side iGetSide(){
+	PC_Side iGetSide(){
 		return PC_Side.SERVER;
 	}
 	
@@ -436,7 +436,7 @@ public class PC_Utils {
 		INSTANCE.iMarkThreadAsServer();
 	}
 	
-	protected void iMarkThreadAsServer(){
+	void iMarkThreadAsServer(){
 		
 	}
 	
@@ -494,7 +494,7 @@ public class PC_Utils {
 		return INSTANCE.iGetClientPlayer();
 	}
 	
-	protected EntityPlayer iGetClientPlayer() {
+	EntityPlayer iGetClientPlayer() {
 		return null;
 	}
 

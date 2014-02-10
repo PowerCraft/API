@@ -3,7 +3,7 @@ package powercraft.api;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 
-public class PC_Bootstrap {
+class PC_Bootstrap {
 
 	private static boolean loaded;
 	

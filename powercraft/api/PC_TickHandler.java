@@ -21,7 +21,7 @@ public class PC_TickHandler {
 	private static final List<PC_IPlayerTickHandler> playerTickHandlers = new ArrayList<PC_IPlayerTickHandler>();
 	private static final List<PC_IRenderTickHandler> renderTickHandlers = new ArrayList<PC_IRenderTickHandler>();
 
-	public static void register(){
+	static void register(){
 		PC_Security.allowedCaller("PC_TickHandler.register()", PC_Api.class);
 		FMLCommonHandler.instance().bus().register(INSTANCE);
 	}

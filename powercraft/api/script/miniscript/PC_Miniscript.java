@@ -10,7 +10,6 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import javax.tools.DiagnosticListener;
 
-import net.minecraft.item.Item;
 import miniscript.MiniScriptLang;
 import powercraft.api.PC_Api;
 import powercraft.api.PC_Security;
@@ -41,11 +40,6 @@ public final class PC_Miniscript {
 	
 	private PC_Miniscript(){
 		throw new InstantiationError();
-	}
-
-	public static int getItemWrapper(Item item) {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 	
 }

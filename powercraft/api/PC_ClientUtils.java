@@ -28,7 +28,7 @@ public final class PC_ClientUtils extends PC_Utils {
 	/**
 	 * Will be called from Forge
 	 */
-	public PC_ClientUtils() throws InstanceAlreadyExistsException {
+	PC_ClientUtils() throws InstanceAlreadyExistsException {
 
 		PC_Renderer.getInstance();
 		isClient.set(true);
@@ -49,7 +49,7 @@ public final class PC_ClientUtils extends PC_Utils {
 	 * @return the file
 	 */
 	@Override
-	protected File iGetPowerCraftFile() {
+	File iGetPowerCraftFile() {
 
 		return new File(mc().mcDataDir, "PowerCraft");
 	}
@@ -60,7 +60,7 @@ public final class PC_ClientUtils extends PC_Utils {
 	 * @return the game type
 	 */
 	@Override
-	protected GameType iGetGameTypeFor(EntityPlayer player) {
+	GameType iGetGameTypeFor(EntityPlayer player) {
 
 		return PC_Reflection.getValue(PlayerControllerMP.class, mc().playerController, 11, GameType.class);
 	}
@@ -70,7 +70,7 @@ public final class PC_ClientUtils extends PC_Utils {
 	 * @return always yes
 	 */
 	@Override
-	protected PC_Side iGetSide(){
+	PC_Side iGetSide(){
 		Boolean isClient = PC_ClientUtils.isClient.get();
 		if(isClient==null){
 			return PC_Side.CLIENT;
@@ -81,12 +81,12 @@ public final class PC_ClientUtils extends PC_Utils {
 	}
 	
 	@Override
-	protected void iMarkThreadAsServer(){
+	void iMarkThreadAsServer(){
 		isClient.set(false);
 	}
 	
 	@Override
-	protected EntityPlayer iGetClientPlayer() {
+	EntityPlayer iGetClientPlayer() {
 		return mc().thePlayer;
 	}
 	

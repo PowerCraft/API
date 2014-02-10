@@ -49,8 +49,7 @@ public final class PC_Api extends PC_Module {
 
 		PC_PacketHandler.register();
 		PC_TickHandler.register();
-		PC_WorldGeneriator.register();
-		PC_FuelHandler.register();
+		PC_ForgeHandler.register();
 		PC_Miniscript.register();
 		PC_Gres.register();
 		

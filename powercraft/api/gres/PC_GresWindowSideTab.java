@@ -8,7 +8,6 @@ import org.lwjgl.opengl.GL11;
 import powercraft.api.PC_RectI;
 import powercraft.api.PC_Vec2I;
 import powercraft.api.PC_Vec3;
-import powercraft.api.block.PC_ISidedInventory;
 import powercraft.api.gres.PC_GresAlign.H;
 import powercraft.api.gres.PC_GresAlign.V;
 import powercraft.api.gres.events.PC_GresEvent;
@@ -16,6 +15,7 @@ import powercraft.api.gres.events.PC_GresMouseButtonEvent;
 import powercraft.api.gres.events.PC_GresMouseButtonEvent.Event;
 import powercraft.api.gres.events.PC_IGresEventListener;
 import powercraft.api.gres.layout.PC_GresLayoutVertical;
+import powercraft.api.inventory.PC_ISidedInventory;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

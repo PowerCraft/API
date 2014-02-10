@@ -1,7 +1,6 @@
-package powercraft.api.block;
+package powercraft.api.inventory;
 
 import net.minecraft.util.IIcon;
-import powercraft.api.inventory.PC_IInventory;
 
 public interface PC_ISidedInventory extends PC_IInventory {
 
