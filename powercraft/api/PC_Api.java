@@ -53,6 +53,8 @@ public final class PC_Api extends PC_Module {
 		PC_Miniscript.register();
 		PC_Gres.register();
 		
+		PC_Blocks.construct();
+		PC_Items.construct();
 	}
 
 
@@ -64,8 +66,7 @@ public final class PC_Api extends PC_Module {
 
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
-		PC_Blocks.construct();
-		PC_Items.construct();
+		
 	}
 	
 	@EventHandler

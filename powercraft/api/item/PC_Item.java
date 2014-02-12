@@ -43,6 +43,10 @@ public abstract class PC_Item extends Item implements PC_IItem{
 		return getClass().getSimpleName();
 	}
 	
+	public String getTextureFolderName() {
+		return getClass().getSimpleName().replaceAll("PC.*_", "");
+	}
+	
 	@Override
 	public Item setCreativeTab(CreativeTabs creativeTab) {
 		if(creativeTab==null){

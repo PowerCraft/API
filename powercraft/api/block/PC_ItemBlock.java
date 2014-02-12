@@ -1,6 +1,7 @@
 package powercraft.api.block;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -10,6 +11,8 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import powercraft.api.PC_Direction;
+import powercraft.api.PC_IconRegistry;
+import powercraft.api.PC_IconRegistryImpl;
 import powercraft.api.PC_Utils;
 import powercraft.api.item.PC_IItem;
 import cpw.mods.fml.relauncher.Side;
@@ -87,6 +90,16 @@ public class PC_ItemBlock extends ItemBlock implements PC_IItem {
 	@Override
 	public int getBurnTime(ItemStack fuel) {
 		return 0;
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public final void registerIcons(IIconRegister iconRegister) {
+		registerIcons(new PC_IconRegistryImpl(iconRegister, this));
+	}
+
+	public void registerIcons(PC_IconRegistry iconRegistry){
+		
 	}
 
 }

@@ -58,6 +58,10 @@ public abstract class PC_AbstractBlockBase extends Block {
 		return getClass().getSimpleName();
 	}
 	
+	public String getTextureFolderName() {
+		return getClass().getSimpleName().replaceAll("PC.*_", "");
+	}
+	
 	public final PC_Module getModule() {
 		return (PC_Module)module.getMod();
 	}
