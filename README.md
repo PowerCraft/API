@@ -20,8 +20,7 @@ Instructions:
 7. copy EclipseConfiguration.zip from /GitHub/API/ repo into /PowerCraft/ and unzip it.
 8. now open Eclipse using /workspace/ as the workspace.
 9. start to create a new project
-10.uncheck "use default location" and select /minecraft/as project location. If the name isn't filled in automatically give
-	it any name. (furthermore called "projMinecraft")
+10.uncheck "use default location" and select /minecraft/as project location. If the name isn't filled in automatically give it any name. (furthermore called "projMinecraft")
 11.finish the creation of the project(click on "finish")
 12.now start again to create a project. Use the name of /PowerCraft/ as projects name. Eclipse should realize that there already is a project dir.
 13.click finish. (this project is furthermore called "projPowerCraft")
