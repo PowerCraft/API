@@ -19,7 +19,7 @@ Prerequisites/This has to be done once even if you create several projects:
 
 5. apply and "ok" every dialog now until you're in the main window of eclipse.
 
-6. close eclipse now and follow the follwing instructions.
+6. close eclipse now and follow the following instructions.
 
 Instructions:
 
