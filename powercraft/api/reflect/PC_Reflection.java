@@ -189,6 +189,7 @@ public final class PC_Reflection {
 					PC_Logger.severe("Wrong arguments for field %s.%s", c, field);
 				}
 			}
+			c = c.getSuperclass();
 		}
 		return null;
 	}

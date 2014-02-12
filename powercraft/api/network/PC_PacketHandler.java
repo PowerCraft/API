@@ -20,6 +20,10 @@ import powercraft.api.PC_Api;
 import powercraft.api.PC_Logger;
 import powercraft.api.PC_Side;
 import powercraft.api.PC_Utils;
+import powercraft.api.network.packet.PC_PacketPasswordReply;
+import powercraft.api.network.packet.PC_PacketPasswordRequest;
+import powercraft.api.network.packet.PC_PacketTileEntitySync;
+import powercraft.api.network.packet.PC_PacketWrongPassword;
 import powercraft.api.reflect.PC_Security;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -28,6 +32,7 @@ import cpw.mods.fml.common.network.FMLNetworkEvent.ServerConnectionFromClientEve
 import cpw.mods.fml.common.network.FMLOutboundHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
+import cpw.mods.fml.common.network.handshake.NetworkDispatcher;
 import cpw.mods.fml.common.network.internal.FMLProxyPacket;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -40,7 +45,7 @@ public final class PC_PacketHandler extends SimpleChannelInboundHandler<PC_Packe
 	@SuppressWarnings("unchecked")
 	private static Class<? extends PC_Packet>[] packets = new Class[]{PC_PacketPacketResolve.class};
 	private static HashMap<Class<? extends PC_Packet>, Integer> packetID = new HashMap<Class<? extends PC_Packet>, Integer>();
-
+	
 	static{
 		packetID.put(PC_PacketPacketResolve.class, 0);
 	}
@@ -54,6 +59,10 @@ public final class PC_PacketHandler extends SimpleChannelInboundHandler<PC_Packe
 			channel = channels.get(Side.SERVER);
 			channel.pipeline().addAfter(channel.findChannelHandlerNameForType(Indexer.class), PC_PacketHandler.class.getName(), new PC_PacketHandler(PC_Side.SERVER));
 			FMLCommonHandler.instance().bus().register(new Listener());
+			PC_PacketHandler.registerPacket(PC_PacketTileEntitySync.class);
+			PC_PacketHandler.registerPacket(PC_PacketPasswordRequest.class);
+			PC_PacketHandler.registerPacket(PC_PacketPasswordReply.class);
+			PC_PacketHandler.registerPacket(PC_PacketWrongPassword.class);
 		}
 	}
 	
@@ -65,7 +74,10 @@ public final class PC_PacketHandler extends SimpleChannelInboundHandler<PC_Packe
 		
 		@SubscribeEvent
 		public void clientConnected(ServerConnectionFromClientEvent event){
+			NetworkDispatcher old = channels.get(Side.SERVER).attr(NetworkDispatcher.FML_DISPATCHER).get();
+			channels.get(Side.SERVER).attr(NetworkDispatcher.FML_DISPATCHER).set(new NetworkDispatcher(event.manager, PC_Utils.mcs().getConfigurationManager()));
 			sendPacketResolveTo(((NetHandlerPlayServer)event.handler).playerEntity);
+			channels.get(Side.SERVER).attr(NetworkDispatcher.FML_DISPATCHER).set(old);
 		}
 		
 	}
@@ -92,7 +104,11 @@ public final class PC_PacketHandler extends SimpleChannelInboundHandler<PC_Packe
 	}
 	
 	public static Packet getPacketFrom(PC_Packet packet){
-        return channels.get(Side.SERVER).generatePacketFrom(packet);
+		Packet pkt = channels.get(Side.SERVER).generatePacketFrom(packet);
+		if(pkt==null){
+			PC_Logger.severe("Anything went wrong");
+		}
+		return pkt;
     }
 	
 	public static void registerPacket(Class<? extends PC_Packet> packet){
@@ -140,7 +156,11 @@ public final class PC_PacketHandler extends SimpleChannelInboundHandler<PC_Packe
 	}
 
 	static void writePacketToByteBuf(PC_Packet packet, ByteBuf buf) {
-		int id = packetID.get(packet.getClass());
+		Integer id = packetID.get(packet.getClass());
+		if(id==null){
+			PC_Logger.severe("YOU HAVE TO REGISTER CLASS %s", packet.getClass());
+			return;
+		}
 		buf.writeInt(id);
 		packet.toByteBuffer(buf);
 	}
@@ -221,7 +241,7 @@ public final class PC_PacketHandler extends SimpleChannelInboundHandler<PC_Packe
 	
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, PC_Packet msg) throws Exception {
-		INetHandler iNetHandler = ctx.attr(NetworkRegistry.NET_HANDLER).get();
+		INetHandler iNetHandler = channels.get(side.side).attr(NetworkRegistry.NET_HANDLER).get();
 		PC_Packet result = msg.doAndReply(side, iNetHandler);
         if (result != null)
         {

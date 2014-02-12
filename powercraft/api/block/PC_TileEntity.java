@@ -202,15 +202,21 @@ public class PC_TileEntity extends TileEntity {
 
 	public boolean onBlockActivated(EntityPlayer player, PC_Direction side) {
 		
+		System.out.println("onBlockActivated:"+worldObj.isRemote);
+		
 		if(this instanceof PC_IGresGuiOpenHandler){
 			
 			if(!isClient()){
 				
 				if(canDoWithoutPassword(player)){
 					
+					System.out.println("canDoWithoutPassword:"+worldObj.isRemote);
+					
 					PC_Gres.openGui(player, this);
 					
 				}else if(canDoWithPassword(player)){
+					
+					System.out.println("canDoWithPassword:"+worldObj.isRemote);
 					
 					PC_PacketHandler.sendTo(new PC_PacketPasswordRequest(this), (EntityPlayerMP)player);
 					
@@ -220,7 +226,7 @@ public class PC_TileEntity extends TileEntity {
 			
 		}
 		
-		return false;
+		return true;
 	}
 
 	public int getWeakRedstonePower(PC_Direction side) {
@@ -384,6 +390,19 @@ public class PC_TileEntity extends TileEntity {
 		return canDoWithoutPassword(player) || (this.password!=null && this.password.equals(password));
 	}
 	
+	public final boolean setPassword(EntityPlayer player, String newPassword){
+		if(canDoWithoutPassword(player)){
+			if(newPassword==null){
+				password = null;
+			}else{
+				password = PC_Utils.getMD5(newPassword);
+			}
+			owner = PC_Utils.getUsername(player);
+			return true;
+		}
+		return false;
+	}
+	
 	public final boolean guiOpenPasswordReply(EntityPlayer player, String password) {
 		password = PC_Utils.getMD5(password);
 		if(checkPassword(player, password)){
@@ -408,6 +427,7 @@ public class PC_TileEntity extends TileEntity {
 
 	@SideOnly(Side.CLIENT)
 	public void openPasswordGui() {
+		System.out.println("openPasswordGui:"+worldObj.isRemote);
 		PC_Gres.openClientGui(PC_ClientUtils.mc().thePlayer, new PC_GuiPasswordInput(this), -1);
 	}
 

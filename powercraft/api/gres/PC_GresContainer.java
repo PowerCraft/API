@@ -154,6 +154,8 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 		} else {
 			if (minSize == null) {
 				this.minSize.setTo(calculateMinSize());
+				this.minSize.x += frame.x + frame.width;
+				this.minSize.y += frame.y + frame.height;
 				minSizeSet = false;
 			} else {
 				this.minSize.setTo(minSize);
@@ -191,6 +193,10 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 		} else {
 			if (prefSize == null) {
 				this.prefSize.setTo(calculatePrefSize());
+				if(this.prefSize.x!=-1)
+					this.prefSize.x += frame.x + frame.width;
+				if(this.prefSize.y!=-1)
+					this.prefSize.y += frame.y + frame.height;
 				prefSizeSet = false;
 			} else {
 				this.prefSize.setTo(prefSize);
