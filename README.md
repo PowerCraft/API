@@ -8,6 +8,7 @@ easier- even when the API comes along!
 Install instructions (for eclipse)
 --------------------
 Prerequisites:
+
 a directory furthermore called /GitHub/ is already set up that contains the directories GitHub/API and GitHub/Modules
 
 Instructions:
