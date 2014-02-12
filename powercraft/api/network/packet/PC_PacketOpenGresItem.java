@@ -1,4 +1,4 @@
-package powercraft.api.packet;
+package powercraft.api.network.packet;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.item.Item;

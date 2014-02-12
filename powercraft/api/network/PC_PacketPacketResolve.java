@@ -1,6 +1,5 @@
 package powercraft.api.network;
 
-import powercraft.api.PC_Utils;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.INetHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -22,7 +21,7 @@ public final class PC_PacketPacketResolve extends PC_PacketServerToClient {
 	protected void fromByteBuffer(ByteBuf buf) {
 		packetClasses = new String[buf.readInt()];
 		for(int i=0; i<packetClasses.length; i++){
-			packetClasses[i] = PC_Utils.readStringFromBuf(buf);
+			packetClasses[i] = readStringFromBuf(buf);
 		}
 	}
 
@@ -30,7 +29,7 @@ public final class PC_PacketPacketResolve extends PC_PacketServerToClient {
 	protected void toByteBuffer(ByteBuf buf) {
 		buf.writeInt(packetClasses.length);
 		for(int i=0; i<packetClasses.length; i++){
-			PC_Utils.writeStringToBuf(buf, packetClasses[i]);
+			writeStringToBuf(buf, packetClasses[i]);
 		}
 	}
 

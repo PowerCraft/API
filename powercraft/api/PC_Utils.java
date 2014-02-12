@@ -1,7 +1,5 @@
 package powercraft.api;
 
-import io.netty.buffer.ByteBuf;
-
 import java.io.File;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -422,6 +420,14 @@ public class PC_Utils {
 		return new ResourceLocation(module.getMetadata().modId.toLowerCase(), file);
 	}
 
+	public static boolean isOP(EntityPlayer player) {
+		return isOP(getUsername(player));
+	}
+	
+	public static String getUsername(EntityPlayer player) {
+		return player.getGameProfile().getName();
+	}
+	
 	public static boolean isOP(String username) {
 		return mcs().getConfigurationManager().getOps().contains(username);
 	}
@@ -498,21 +504,6 @@ public class PC_Utils {
 	
 	EntityPlayer iGetClientPlayer() {
 		return null;
-	}
-
-	public static void writeStringToBuf(ByteBuf buf, String string) {
-		buf.writeShort(string.length());
-		for(int j=0; j<string.length(); j++){
-			buf.writeChar(string.charAt(j));
-		}
-	}
-	
-	public static String readStringFromBuf(ByteBuf buf) {
-		char[] chars = new char[buf.readUnsignedShort()];
-		for(int i=0; i<chars.length; i++){
-			chars[i] = buf.readChar();
-		}
-		return new String(chars);
 	}
 	
 	private static MessageDigest digest;

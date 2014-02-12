@@ -16,7 +16,7 @@ import powercraft.api.gres.events.PC_GresMouseButtonEvent.Event;
 import powercraft.api.gres.events.PC_IGresEventListener;
 import powercraft.api.gres.layout.PC_GresLayoutVertical;
 import powercraft.api.network.PC_PacketHandler;
-import powercraft.api.packet.PC_PacketPasswordReply;
+import powercraft.api.network.packet.PC_PacketPasswordReply;
 
 final class PC_GuiPasswordInput implements PC_IGresGui, PC_IGresEventListener {
 

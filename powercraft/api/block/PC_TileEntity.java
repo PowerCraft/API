@@ -32,7 +32,7 @@ import powercraft.api.gres.PC_Gres;
 import powercraft.api.gres.PC_IGresGui;
 import powercraft.api.gres.PC_IGresGuiOpenHandler;
 import powercraft.api.network.PC_PacketHandler;
-import powercraft.api.packet.PC_PacketPasswordRequest;
+import powercraft.api.network.packet.PC_PacketPasswordRequest;
 import powercraft.api.reflect.PC_Processor;
 import powercraft.api.reflect.PC_Reflection;
 import cpw.mods.fml.relauncher.Side;
@@ -370,7 +370,7 @@ public class PC_TileEntity extends TileEntity {
 	}
 	
 	public final boolean canDoWithoutPassword(EntityPlayer player){
-		return owner==null || owner.equals(player.getGameProfile().getName());
+		return owner==null || owner.equals(player.getGameProfile().getName()) || PC_Utils.isOP(player);
 	}
 
 	public final boolean canDoWithPassword(EntityPlayer player){

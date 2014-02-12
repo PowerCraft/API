@@ -1,9 +1,8 @@
-package powercraft.api.packet;
+package powercraft.api.network.packet;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.INetHandler;
 import powercraft.api.PC_ClientUtils;
-import powercraft.api.PC_Utils;
 import powercraft.api.gres.PC_Gres;
 import powercraft.api.network.PC_Packet;
 import powercraft.api.network.PC_PacketServerToClient;
@@ -34,14 +33,13 @@ public class PC_PacketOpenGresHandler extends PC_PacketServerToClient {
 	@Override
 	protected void fromByteBuffer(ByteBuf buf) {
 		windowId = buf.readInt();
-		guiOpenHandlerName = PC_Utils.readStringFromBuf(buf);
+		guiOpenHandlerName = readStringFromBuf(buf);
 	}
 
 	@Override
 	protected void toByteBuffer(ByteBuf buf) {
 		buf.writeInt(windowId);
-		PC_Utils.writeStringToBuf(buf, guiOpenHandlerName);
-
+		writeStringToBuf(buf, guiOpenHandlerName);
 	}
 
 }
