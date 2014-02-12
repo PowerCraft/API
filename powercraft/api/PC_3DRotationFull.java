@@ -1,6 +1,7 @@
 package powercraft.api;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -10,6 +11,10 @@ public class PC_3DRotationFull implements PC_3DRotation {
 		// TODO Auto-generated constructor stub
 	}
 
+	public PC_3DRotationFull(NBTTagCompound nbtTagCompound){
+		
+	}
+	
 	@Override
 	public PC_Direction getSidePosition(PC_Direction side) {
 		// TODO Auto-generated method stub
@@ -38,6 +43,12 @@ public class PC_3DRotationFull implements PC_3DRotation {
 	public AxisAlignedBB rotateBox(AxisAlignedBB box) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void saveToNBT(NBTTagCompound nbtTagCompound) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -12,7 +12,7 @@ import javax.tools.DiagnosticListener;
 
 import miniscript.MiniScriptLang;
 import powercraft.api.PC_Api;
-import powercraft.api.PC_Security;
+import powercraft.api.reflect.PC_Security;
 
 public final class PC_Miniscript {
 

@@ -6,16 +6,17 @@ import javax.script.CompiledScript;
 import javax.script.ScriptException;
 import javax.tools.DiagnosticCollector;
 
-import net.minecraft.nbt.NBTTagCompound;
 import powercraft.api.PC_Utils;
 import powercraft.api.script.miniscript.PC_Miniscript;
 
 public abstract class PC_TileEntityScriptable extends PC_TileEntity {
 
+	@PC_Field
 	private int[] ext;
 	
 	private CompiledScript script;
 	
+	@PC_Field
 	private String source;
 	
 	protected DiagnosticCollector<Void> diagnostic;
@@ -67,18 +68,8 @@ public abstract class PC_TileEntityScriptable extends PC_TileEntity {
 		}
 	}
 
-	@Override
-	public void readFromNBT(NBTTagCompound nbtTagCompound) {
-		ext = nbtTagCompound.getIntArray("ext");
-		setSource(nbtTagCompound.getString("source"));
-		super.readFromNBT(nbtTagCompound);
-	}
-
-	@Override
-	public void writeToNBT(NBTTagCompound nbtTagCompound) {
-		nbtTagCompound.setIntArray("ext", ext);
-		nbtTagCompound.setString("source", source);
-		super.writeToNBT(nbtTagCompound);
+	public void onLoadedFromNBT(){
+		setSource(source);
 	}
 	
 }

@@ -9,6 +9,7 @@ import net.minecraft.world.chunk.IChunkProvider;
 import powercraft.api.block.PC_AbstractBlockBase;
 import powercraft.api.block.PC_Blocks;
 import powercraft.api.item.PC_IItem;
+import powercraft.api.reflect.PC_Security;
 import cpw.mods.fml.common.IFuelHandler;
 import cpw.mods.fml.common.IWorldGenerator;
 import cpw.mods.fml.common.registry.GameRegistry;

@@ -1,7 +1,10 @@
 package powercraft.api.block;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.particle.EffectRenderer;
@@ -9,8 +12,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
@@ -18,12 +23,36 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.IPlantable;
 import powercraft.api.PC_3DRotation;
+import powercraft.api.PC_ClientUtils;
 import powercraft.api.PC_Direction;
+import powercraft.api.PC_NBTTagHandler;
+import powercraft.api.PC_Utils;
+import powercraft.api.block.PC_Field.Flag;
+import powercraft.api.gres.PC_Gres;
+import powercraft.api.gres.PC_IGresGui;
+import powercraft.api.gres.PC_IGresGuiOpenHandler;
+import powercraft.api.network.PC_PacketHandler;
+import powercraft.api.packet.PC_PacketPasswordRequest;
+import powercraft.api.reflect.PC_Processor;
+import powercraft.api.reflect.PC_Reflection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class PC_TileEntity extends TileEntity {
 
+	private static Random sessionRand = new Random();
+	
+	private String owner;
+	private String password;
+	
+	private long session;
+	
+	public boolean isClient() {
+
+		if (this.worldObj == null) return PC_Utils.isClient();
+		return this.worldObj.isRemote;
+	}
+	
 	public void onBreak() {
 		
 	}
@@ -169,6 +198,25 @@ public class PC_TileEntity extends TileEntity {
 	}
 
 	public boolean onBlockActivated(EntityPlayer player, PC_Direction side) {
+		
+		if(this instanceof PC_IGresGuiOpenHandler){
+			
+			if(!isClient()){
+				
+				if(canDoWithoutPassword(player)){
+					
+					PC_Gres.openGui(player, this);
+					
+				}else if(canDoWithPassword(player)){
+					
+					PC_PacketHandler.sendTo(new PC_PacketPasswordRequest(this), (EntityPlayerMP)player);
+					
+				}
+				
+			}
+			
+		}
+		
 		return false;
 	}
 
@@ -248,4 +296,124 @@ public class PC_TileEntity extends TileEntity {
 		
 	}
 
+	public final String getOwner(){
+		return owner;
+	}
+	
+	private final void readFromNBT(final NBTTagCompound nbtTagCompound, final Flag flag){
+		PC_Reflection.processFields(this, new PC_Processor(){
+
+			@Override
+			public void process(Field field, Object value, EnumMap<Result, Object> results) {
+				PC_Field info = field.getAnnotation(PC_Field.class);
+				if(info!=null && flag.isIn(info)){
+					String name = info.name();
+					if(name.isEmpty()){
+						name = field.getName();
+					}
+					Class<?> type = field.getType();
+					value = PC_NBTTagHandler.loadFromNBT(nbtTagCompound, name, type);
+					results.put(Result.SET, value);
+				}
+			}
+			
+		});
+	}
+	
+	private final void writeToNBT(final NBTTagCompound nbtTagCompound, final Flag flag){
+		PC_Reflection.processFields(this, new PC_Processor(){
+
+			@Override
+			public void process(Field field, Object value, EnumMap<Result, Object> results) {
+				if(value==null)
+					return;
+				PC_Field info = field.getAnnotation(PC_Field.class);
+				if(info!=null && flag.isIn(info)){
+					String name = info.name();
+					if(name.isEmpty()){
+						name = field.getName();
+					}
+					PC_NBTTagHandler.saveToNBT(nbtTagCompound, name, value);
+				}
+			}
+			
+		});
+	}
+	
+	@Override
+	public final void readFromNBT(NBTTagCompound nbtTagCompound) {
+		readFromNBT(nbtTagCompound, Flag.SAVE);
+		if(nbtTagCompound.hasKey("owner")){
+			owner = nbtTagCompound.getString("owner");
+			if(nbtTagCompound.hasKey("password")){
+				password = nbtTagCompound.getString("password");
+			}
+		}
+		super.readFromNBT(nbtTagCompound);
+		onLoadedFromNBT();
+	}
+
+	@Override
+	public final void writeToNBT(NBTTagCompound nbtTagCompound) {
+		writeToNBT(nbtTagCompound, Flag.SAVE);
+		if(owner!=null){
+			nbtTagCompound.setString("owner", owner);
+			if(password!=null){
+				nbtTagCompound.setString("password", password);
+			}
+		}
+		super.writeToNBT(nbtTagCompound);
+	}
+	
+	public void onLoadedFromNBT(){
+		
+	}
+	
+	public final boolean canDoWithoutPassword(EntityPlayer player){
+		return owner==null || owner.equals(player.getGameProfile().getName());
+	}
+
+	public final boolean canDoWithPassword(EntityPlayer player){
+		return owner==null || owner.equals(player.getGameProfile().getName()) || password!=null;
+	}
+	
+	public final boolean checkPassword(EntityPlayer player, String password){
+		return canDoWithoutPassword(player) || (this.password!=null && this.password.equals(password));
+	}
+	
+	public final boolean guiOpenPasswordReply(EntityPlayer player, String password) {
+		password = PC_Utils.getMD5(password);
+		if(checkPassword(player, password)){
+			PC_Gres.openGui(player, this);
+			return true;
+		}
+		return false;
+	}
+	
+	public long getSession(){
+		return session;
+	}
+	
+	public void setSession(long session){
+		this.session = session;
+	}
+
+	public long getNewSession() {
+		session = sessionRand.nextLong();
+		return session;
+	}
+
+	@SideOnly(Side.CLIENT)
+	public void openPasswordGui() {
+		PC_Gres.openClientGui(PC_ClientUtils.mc().thePlayer, new PC_GuiPasswordInput(this), -1);
+	}
+
+	@SideOnly(Side.CLIENT)
+	public void wrongPasswordInput() {
+		PC_IGresGui gui = PC_Gres.getCurrentClientGui();
+		if(gui instanceof PC_GuiPasswordInput){
+			((PC_GuiPasswordInput)gui).wrongPassword(this);
+		}
+	}
+	
 }

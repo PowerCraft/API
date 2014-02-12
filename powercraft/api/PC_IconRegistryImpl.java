@@ -2,6 +2,7 @@ package powercraft.api;
 
 import powercraft.api.block.PC_AbstractBlockBase;
 import powercraft.api.item.PC_Item;
+import powercraft.api.reflect.PC_Security;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.util.IIcon;
 import cpw.mods.fml.relauncher.Side;

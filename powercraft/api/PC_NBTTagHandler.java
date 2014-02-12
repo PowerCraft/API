@@ -9,6 +9,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTBase.NBTPrimitive;
 import net.minecraft.nbt.NBTTagByte;
@@ -103,6 +104,18 @@ public final class PC_NBTTagHandler {
 			NBTTagList list = new NBTTagList();
 			for(int i=0; i<array.length; i++){
 				list.appendTag(new NBTTagFloat(array[i]));
+			}
+			return list;
+		}else if(c==ItemStack[].class){
+			ItemStack[] array = (ItemStack[])value;
+			NBTTagList list = new NBTTagList();
+			for (int i = 0; i < array.length; i++) {
+				ItemStack itemStack = array[i];
+				NBTTagCompound nbtTagCompound = new NBTTagCompound();
+				if (itemStack != null) {
+					itemStack.writeToNBT(nbtTagCompound);
+				}
+				list.appendTag(nbtTagCompound);
 			}
 			return list;
 		}else if(c.isArray()){
@@ -223,6 +236,17 @@ public final class PC_NBTTagHandler {
 			float[] array = new float[size];
 			for(int i=0; i<size; i++){
 				array[i] = list.func_150308_e(i);
+			}
+			return c.cast(array);
+		}else if(c==ItemStack[].class){
+			NBTTagList list = (NBTTagList) base;
+			int size = list.tagCount();
+			ItemStack[] array = new ItemStack[size];
+			for (int i = 0; i < array.length; i++) {
+				NBTTagCompound nbtTagCompound = list.getCompoundTagAt(i);
+				if(nbtTagCompound.hasKey("id")){
+					array[i] = ItemStack.loadItemStackFromNBT(nbtTagCompound);
+				}
 			}
 			return c.cast(array);
 		}else if(c.isArray()){

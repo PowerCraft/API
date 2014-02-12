@@ -1,8 +1,12 @@
-package powercraft.api;
+package powercraft.api.reflect;
 
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.EnumMap;
+
+import powercraft.api.PC_Logger;
+import powercraft.api.reflect.PC_Processor.Result;
 
 
 public final class PC_Reflection {
@@ -156,6 +160,39 @@ public final class PC_Reflection {
 		}
 	}
 
+	public static Field[] getDeclaredFields(Class<?> c){
+		return c.getDeclaredFields();
+	}
+	
+	public static Object processFields(Object obj, PC_Processor processor){
+		Class<?> c = obj.getClass();
+		EnumMap<Result, Object> results = new EnumMap<Result, Object>(Result.class);
+		while(c!=Object.class){
+			Field[] fields = PC_Reflection.getDeclaredFields(c);
+			for(Field field:fields){
+				results.clear();
+				try{
+					field.setAccessible(true);
+					Object value = field.get(obj);
+					processor.process(field, value, results);
+					if(results!=null){
+						if(results.containsKey(Result.SET)){
+							field.set(obj, results.get(Result.SET));
+						}
+						if(results.containsKey(Result.STOP)){
+							return results.get(Result.STOP);
+						}
+					}
+				}catch(IllegalAccessException e){
+					PC_Logger.severe("Cannot access field %s.%s", c, field);
+				}catch(IllegalArgumentException e){
+					PC_Logger.severe("Wrong arguments for field %s.%s", c, field);
+				}
+			}
+		}
+		return null;
+	}
+	
 	private PC_Reflection() {
 		throw new InstantiationError();
 	}

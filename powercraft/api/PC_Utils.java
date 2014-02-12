@@ -3,6 +3,8 @@ package powercraft.api;
 import io.netty.buffer.ByteBuf;
 
 import java.io.File;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import javax.management.InstanceAlreadyExistsException;
@@ -511,6 +513,20 @@ public class PC_Utils {
 			chars[i] = buf.readChar();
 		}
 		return new String(chars);
+	}
+	
+	private static MessageDigest digest;
+	
+	static{
+		try {
+			digest = MessageDigest.getInstance("MD5");
+		} catch (NoSuchAlgorithmException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public static String getMD5(String s){
+		return new String(digest.digest(s.getBytes()));
 	}
 	
 }

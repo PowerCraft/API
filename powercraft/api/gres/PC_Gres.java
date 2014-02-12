@@ -30,11 +30,14 @@ import powercraft.api.PC_Api;
 import powercraft.api.PC_ClientUtils;
 import powercraft.api.PC_Logger;
 import powercraft.api.PC_RectI;
-import powercraft.api.PC_Security;
 import powercraft.api.PC_Utils;
 import powercraft.api.PC_Vec2I;
 import powercraft.api.block.PC_TileEntity;
 import powercraft.api.network.PC_PacketHandler;
+import powercraft.api.packet.PC_PacketOpenGresHandler;
+import powercraft.api.packet.PC_PacketOpenGresItem;
+import powercraft.api.packet.PC_PacketOpenGresTileEntity;
+import powercraft.api.reflect.PC_Security;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -104,16 +107,17 @@ public class PC_Gres {
 		if (player instanceof EntityPlayerMP && tileEntity instanceof PC_IGresGuiOpenHandler) {
 			EntityPlayerMP playerMP = (EntityPlayerMP) player;
 			PC_GresBaseWithInventory container = ((PC_IGresGuiOpenHandler) tileEntity).openServerGui(player);
+			long session = tileEntity.getNewSession();
 			if (container != null) {
 				playerMP.getNextWindowId();
 				playerMP.closeContainer();
 				int windowId = playerMP.currentWindowId;
-				PC_PacketHandler.sendTo(new PC_PacketOpenGresTileEntity(tileEntity, windowId), (EntityPlayerMP)player);
+				PC_PacketHandler.sendTo(new PC_PacketOpenGresTileEntity(tileEntity, windowId, session), (EntityPlayerMP)player);
 				player.openContainer = container;
 				player.openContainer.windowId = windowId;
 				player.openContainer.addCraftingToCrafters(playerMP);
 			} else {
-				PC_PacketHandler.sendTo(new PC_PacketOpenGresTileEntity(tileEntity, -1), (EntityPlayerMP)player);
+				PC_PacketHandler.sendTo(new PC_PacketOpenGresTileEntity(tileEntity, -1, session), (EntityPlayerMP)player);
 			}
 		}
 	}

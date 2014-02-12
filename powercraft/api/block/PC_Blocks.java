@@ -6,7 +6,7 @@ import java.util.List;
 import powercraft.api.PC_Api;
 import powercraft.api.PC_ImmutableList;
 import powercraft.api.PC_Logger;
-import powercraft.api.PC_Security;
+import powercraft.api.reflect.PC_Security;
 
 public final class PC_Blocks {
 

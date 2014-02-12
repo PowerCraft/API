@@ -3,7 +3,7 @@ package powercraft.api;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public interface PC_3DRotation {
+public interface PC_3DRotation extends PC_INBT {
 
 	public PC_Direction getSidePosition(PC_Direction side);
 
