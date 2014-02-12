@@ -31,7 +31,7 @@ public final class PC_IconRegistryImpl implements PC_IconRegistry {
 
 	@Override
 	public IIcon registerIcon(String name) {
-		return iconRegister.registerIcon("PowerCraft/"+module.getName()+":"+namePrefix+"_"+name);
+		return iconRegister.registerIcon("powercraft-"+module.getName()+"/textures/:"+namePrefix+"_"+name);
 	}
 	
 }
