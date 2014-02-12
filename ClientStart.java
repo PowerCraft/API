@@ -17,6 +17,7 @@ public class ClientStart {
 	 * @param args only allowed --username yourName
 	 */
 	public static void main(String args[]){
+		System.setProperty("fml.ignoreInvalidMinecraftCertificates", "true");
 		String userName = System.getProperty("user.name", "PowerCraftPlayer"+(Minecraft.getSystemTime()%1000));
 		if(args!=null){
 			for(int i=0; i<args.length-1; i++){
