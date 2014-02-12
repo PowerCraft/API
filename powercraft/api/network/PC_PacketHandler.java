@@ -15,6 +15,7 @@ import java.util.List;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.NetHandlerPlayServer;
+import net.minecraft.network.Packet;
 import powercraft.api.PC_Api;
 import powercraft.api.PC_Logger;
 import powercraft.api.PC_Side;
@@ -89,6 +90,10 @@ public final class PC_PacketHandler extends SimpleChannelInboundHandler<PC_Packe
 		}
 		
 	}
+	
+	public static Packet getPacketFrom(PC_Packet packet){
+        return channels.get(Side.SERVER).generatePacketFrom(packet);
+    }
 	
 	public static void registerPacket(Class<? extends PC_Packet> packet){
 		if(done){

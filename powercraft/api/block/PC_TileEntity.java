@@ -16,6 +16,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
@@ -31,8 +32,10 @@ import powercraft.api.block.PC_Field.Flag;
 import powercraft.api.gres.PC_Gres;
 import powercraft.api.gres.PC_IGresGui;
 import powercraft.api.gres.PC_IGresGuiOpenHandler;
+import powercraft.api.network.PC_Packet;
 import powercraft.api.network.PC_PacketHandler;
 import powercraft.api.network.packet.PC_PacketPasswordRequest;
+import powercraft.api.network.packet.PC_PacketTileEntitySync;
 import powercraft.api.reflect.PC_Processor;
 import powercraft.api.reflect.PC_Reflection;
 import cpw.mods.fml.relauncher.Side;
@@ -414,6 +417,25 @@ public class PC_TileEntity extends TileEntity {
 		if(gui instanceof PC_GuiPasswordInput){
 			((PC_GuiPasswordInput)gui).wrongPassword(this);
 		}
+	}
+
+	@Override
+	public final Packet getDescriptionPacket() {
+		return PC_PacketHandler.getPacketFrom(getSyncPacket());
+	}
+	
+	public final PC_Packet getSyncPacket(){
+		NBTTagCompound nbtTagCompound = new NBTTagCompound();
+		makeSync(nbtTagCompound);
+		return new PC_PacketTileEntitySync(this, nbtTagCompound);
+	}
+
+	public final void makeSync(NBTTagCompound nbtTagCompound) {
+		writeToNBT(nbtTagCompound, Flag.SYNC);
+	}
+	
+	public final void applySync(NBTTagCompound nbtTagCompound) {
+		readFromNBT(nbtTagCompound, Flag.SYNC);
 	}
 	
 }

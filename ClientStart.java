@@ -18,10 +18,12 @@ public class ClientStart {
 	 */
 	public static void main(String args[]){
 		String userName = System.getProperty("user.name", "PowerCraftPlayer"+(Minecraft.getSystemTime()%1000));
-		for(int i=0; i<args.length; i++){
-			if(args[i].equals("--username")){
-				userName = args[i+1];
-				break;
+		if(args!=null){
+			for(int i=0; i<args.length-1; i++){
+				if(args[i].equals("--username")){
+					userName = args[i+1];
+					break;
+				}
 			}
 		}
 		Launch.main(new String[]{"--version", "1.6", "--tweakClass", "cpw.mods.fml.common.launcher.FMLTweaker", "--accessToken", "0", "--username", userName});
