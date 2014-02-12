@@ -186,14 +186,11 @@ public class PC_Gres {
 			Document doc = docBuilder.parse(new ByteArrayInputStream(page.getBytes("UTF-8")));
 			doc.getDocumentElement().normalize();
 			NodeList textureNodes = ((Element)doc.getChildNodes().item(0)).getChildNodes();
-			System.out.println("Load:"+textureNodes.getLength());
 			for (int i = 0; i < textureNodes.getLength(); i++) {
 				Node texureNode = textureNodes.item(i);
-				System.out.println("Load:"+texureNode.getNodeName());
 				if (texureNode.getNodeName().equals("Texture")) {
 					Element texureElement = (Element) texureNode;
 					String textureName = texureElement.getAttribute("textureName");
-					System.out.println("Load:"+textureName);
 					ResourceLocation resourceLocation = PC_Utils.getResourceLocation(PC_Api.INSTANCE, "textures/gui/" + textureName);
 					NodeList subTextureNodes = texureNode.getChildNodes();
 					for (int j = 0; j < subTextureNodes.getLength(); j++) {

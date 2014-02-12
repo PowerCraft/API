@@ -63,7 +63,7 @@ public final class PC_ClientUtils extends PC_Utils {
 	@Override
 	GameType iGetGameTypeFor(EntityPlayer player) {
 
-		return PC_Reflection.getValue(PlayerControllerMP.class, mc().playerController, 11, GameType.class);
+		return PC_Reflection.getValue(PlayerControllerMP.class, mc().playerController, 10, GameType.class);
 	}
 
 	/**

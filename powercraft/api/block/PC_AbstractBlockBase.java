@@ -59,7 +59,7 @@ public abstract class PC_AbstractBlockBase extends Block {
 	}
 	
 	public String getTextureFolderName() {
-		return getClass().getSimpleName().replaceAll("PC.*_", "");
+		return getClass().getSimpleName().replaceAll("PC.*_(Block)?", "");
 	}
 	
 	public final PC_Module getModule() {
@@ -121,7 +121,7 @@ public abstract class PC_AbstractBlockBase extends Block {
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(int side, int metadata) {
+	public final IIcon getIcon(int side, int metadata) {
 		return getIcon(PC_Direction.fromSide(side), metadata);
 	}
 

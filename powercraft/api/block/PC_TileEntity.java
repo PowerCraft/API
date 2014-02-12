@@ -202,21 +202,15 @@ public class PC_TileEntity extends TileEntity {
 
 	public boolean onBlockActivated(EntityPlayer player, PC_Direction side) {
 		
-		System.out.println("onBlockActivated:"+worldObj.isRemote);
-		
 		if(this instanceof PC_IGresGuiOpenHandler){
 			
 			if(!isClient()){
 				
 				if(canDoWithoutPassword(player)){
 					
-					System.out.println("canDoWithoutPassword:"+worldObj.isRemote);
-					
 					PC_Gres.openGui(player, this);
 					
 				}else if(canDoWithPassword(player)){
-					
-					System.out.println("canDoWithPassword:"+worldObj.isRemote);
 					
 					PC_PacketHandler.sendTo(new PC_PacketPasswordRequest(this), (EntityPlayerMP)player);
 					
@@ -427,7 +421,6 @@ public class PC_TileEntity extends TileEntity {
 
 	@SideOnly(Side.CLIENT)
 	public void openPasswordGui() {
-		System.out.println("openPasswordGui:"+worldObj.isRemote);
 		PC_Gres.openClientGui(PC_ClientUtils.mc().thePlayer, new PC_GuiPasswordInput(this), -1);
 	}
 

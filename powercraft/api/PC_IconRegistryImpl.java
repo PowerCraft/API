@@ -14,14 +14,12 @@ public final class PC_IconRegistryImpl implements PC_IconRegistry {
 
 	private IIconRegister iconRegister;
 	private PC_Module module;
-	private String tile;
 	private String tileName;
 	
 	public PC_IconRegistryImpl(IIconRegister iconRegister, PC_AbstractBlockBase block) {
 		PC_Security.allowedCaller("PC_IconRegistryImpl(IIconRegister, PC_AbstractBlockBase)", PC_AbstractBlockBase.class);
 		this.iconRegister = iconRegister;
 		module = block.getModule();
-		tile = "bolcks";
 		tileName = block.getTextureFolderName();
 		System.out.println("tileName:"+tileName);
 	}
@@ -30,7 +28,6 @@ public final class PC_IconRegistryImpl implements PC_IconRegistry {
 		PC_Security.allowedCaller("PC_IconRegistryImpl(IIconRegister, PC_Item)", PC_Item.class);
 		this.iconRegister = iconRegister;
 		module = item.getModule();
-		tile = "items";
 		tileName = item.getTextureFolderName();
 	}
 
@@ -39,13 +36,12 @@ public final class PC_IconRegistryImpl implements PC_IconRegistry {
 		this.iconRegister = iconRegister;
 		PC_AbstractBlockBase block = (PC_AbstractBlockBase)itemBlock.field_150939_a;
 		module = block.getModule();
-		tile = "items";
 		tileName = block.getTextureFolderName();
 	}
 
 	@Override
 	public IIcon registerIcon(String name) {
-		return iconRegister.registerIcon("powercraft-"+module.getName()+"/textures/"+tile+"/"+tileName+":"+name);
+		return iconRegister.registerIcon(module.getName()+":"+tileName+"/"+name);
 	}
 	
 }

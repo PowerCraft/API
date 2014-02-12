@@ -149,9 +149,10 @@ public class PC_Utils {
 				if(rotation!=null){
 					return rotation.getSidePosition(side);
 				}
+				return PC_Direction.UNKNOWN;
 			}
 		}
-		return PC_Direction.UNKNOWN;
+		return side;
 	}
 	
 	public static int getRotationMetadata(int metadata, Entity entity) {

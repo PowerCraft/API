@@ -44,7 +44,7 @@ public abstract class PC_Item extends Item implements PC_IItem{
 	}
 	
 	public String getTextureFolderName() {
-		return getClass().getSimpleName().replaceAll("PC.*_", "");
+		return getClass().getSimpleName().replaceAll("PC.*_(Item)?", "");
 	}
 	
 	@Override

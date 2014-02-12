@@ -559,8 +559,10 @@ public abstract class PC_BlockTileEntity extends PC_AbstractBlockBase implements
 	public final void harvestBlock(World world, EntityPlayer player, int x, int y, int z, int metadata){}
 	
 	public void onHarvestBlock(World world, EntityPlayer player, int x, int y, int z){
-		int metadata = PC_Utils.getMetadata(world, x, y, z);
-		super.harvestBlock(world, player, x, y, z, metadata);
+		if(!PC_Utils.isCreativ(player)){
+			int metadata = PC_Utils.getMetadata(world, x, y, z);
+			super.harvestBlock(world, player, x, y, z, metadata);
+		}
 	}
 	
 	@Override
@@ -568,8 +570,9 @@ public abstract class PC_BlockTileEntity extends PC_AbstractBlockBase implements
 		int metadata = PC_Utils.getMetadata(world, x, y, z);
 		if(canHarvestBlock(player, metadata)){
 			onHarvestBlock(world, player, x, y, z);
+			return super.removedByPlayer(world, player, x, y, z);
 		}
-		return super.removedByPlayer(world, player, x, y, z);
+		return false;
 	}
 
 	@Override
