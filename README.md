@@ -7,9 +7,19 @@ easier- even when the API comes along!
 
 Install instructions (for eclipse)
 --------------------
-Prerequisites:
+Prerequisites/This has to be done once even if you create several projects:
 
-a directory furthermore called /GitHub/ is already set up that contains the directories GitHub/API and GitHub/Modules
+1. a directory (furthermore called /GitHub/) that contains the directories GitHub/API and GitHub/Modules is already set up
+
+2. Open eclipse and go to the menu item "window" and click on preferences.
+
+3. click on the small triangle next to the tab "General" then the one next ot the tab "Workspace" and last click on the tab "Linked Resources"
+
+4. Now click on add in the lower part and add the Variable "GIT_LOC". Make it pointing to /GitHub/
+
+5. apply and "ok" every dialog now until you're in the main window of eclipse.
+
+6. close eclipse now and follow the follwing instructions.
 
 Instructions:
 
@@ -41,14 +51,8 @@ Instructions:
 
 14. right click on projPowerCraft and click on build path->configure Build path...
 
-15. enter the tab "Projects". Remove the already existing one and add projMinecraft. Apply now (just apply don't click ok!!)
+15. enter the tab "Projects" and add projMinecraft. Apply now until you're back in the main window.
 
-16. click on the small triangle left of the tab "resource" on the left side. click on "linked resources"
+20. select projPowerCraft make a right click on it and click "refresh" (F5)
 
-17. select the upper tab "Path Variables" and edit "GIT_LOC". Make it pointing to /GitHub/
-
-18. apply and "ok" every dialog now until you're in the main window of eclipse.
-
-19. select projPowerCraft make a right click on it and click "refresh" (F5)
-
-20. Congrats you've set up your PowerCraft workspace!!!
+21. Congrats you've set up your PowerCraft workspace!!!
