@@ -8,6 +8,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.particle.EffectRenderer;
+import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureType;
@@ -236,31 +237,13 @@ public abstract class PC_BlockTileEntity extends PC_AbstractBlockBase implements
 	}
 
 	@Override
-	public int getWeakRedstonePower(IBlockAccess world, int x, int y, int z, PC_Direction side) {
-		PC_TileEntity te = PC_Utils.getTileEntity(world, x, y, z, PC_TileEntity.class);
-		if(te!=null){
-			return te.getWeakRedstonePower(side);
-		}
-		return 0;
-	}
-
-	@Override
 	public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity entity) {
 		PC_TileEntity te = PC_Utils.getTileEntity(world, x, y, z, PC_TileEntity.class);
 		if(te!=null){
 			te.onEntityCollidedWithBlock(entity);
 		}
 	}
-
-	@Override
-	public int getStrongRedstonePower(IBlockAccess world, int x, int y, int z, PC_Direction side) {
-		PC_TileEntity te = PC_Utils.getTileEntity(world, x, y, z, PC_TileEntity.class);
-		if(te!=null){
-			return te.getStrongRedstonePower(side);
-		}
-		return 0;
-	}
-
+	
 	@Override
 	public void onFallenUpon(World world, int x, int y, int z, Entity entity, float fallDistance) {
 		PC_TileEntity te = PC_Utils.getTileEntity(world, x, y, z, PC_TileEntity.class);
@@ -427,15 +410,6 @@ public abstract class PC_BlockTileEntity extends PC_AbstractBlockBase implements
 	}
 
 	@Override
-	public boolean canConnectRedstone(IBlockAccess world, int x, int y, int z, PC_Direction side) {
-		PC_TileEntity te = PC_Utils.getTileEntity(world, x, y, z, PC_TileEntity.class);
-		if(te!=null){
-			return te.canConnectRedstone(side);
-		}
-		return canProvidePower();
-	}
-
-	@Override
 	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z) {
 		PC_TileEntity te = PC_Utils.getTileEntity(world, x, y, z, PC_TileEntity.class);
 		if(te!=null){
@@ -594,6 +568,41 @@ public abstract class PC_BlockTileEntity extends PC_AbstractBlockBase implements
 			te.receiveClientEvent(event, argument);
 		}
 	    return false;
+	}
+
+	@Override
+	public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, int modelId, RenderBlocks renderer) {
+		PC_TileEntity te = PC_Utils.getTileEntity(world, x, y, z, PC_TileEntity.class);
+		if(te!=null){
+			return te.renderWorldBlock(modelId, renderer);
+		}
+		return super.renderWorldBlock(world, x, y, z, modelId, renderer);
+	}
+
+	@Override
+	public boolean canRedstoneConnect(IBlockAccess world, int x, int y, int z, PC_Direction side, int faceSide) {
+		PC_TileEntity te = PC_Utils.getTileEntity(world, x, y, z, PC_TileEntity.class);
+		if(te!=null){
+			return te.canRedstoneConnect(side, faceSide);
+		}
+		return canProvidePower();
+	}
+
+	@Override
+	public int getRedstonePowerValue(IBlockAccess world, int x, int y, int z, PC_Direction side, int faceSide) {
+		PC_TileEntity te = PC_Utils.getTileEntity(world, x, y, z, PC_TileEntity.class);
+		if(te!=null){
+			return te.getRedstonePowerValue(side, faceSide);
+		}
+		return 0;
+	}
+
+	@Override
+	public void setRedstonePowerValue(World world, int x, int y, int z, PC_Direction side, int faceSide, int value) {
+		PC_TileEntity te = PC_Utils.getTileEntity(world, x, y, z, PC_TileEntity.class);
+		if(te!=null){
+			te.setRedstonePowerValue(side, faceSide, value);
+		}
 	}
 	
 }

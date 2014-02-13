@@ -5,6 +5,8 @@ import net.minecraft.util.IIcon;
 import powercraft.api.block.PC_AbstractBlockBase;
 import powercraft.api.block.PC_ItemBlock;
 import powercraft.api.item.PC_Item;
+import powercraft.api.multiblock.PC_MultiblockItem;
+import powercraft.api.multiblock.PC_Multiblocks;
 import powercraft.api.reflect.PC_Security;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -39,6 +41,13 @@ public final class PC_IconRegistryImpl implements PC_IconRegistry {
 		tileName = block.getTextureFolderName();
 	}
 
+	public PC_IconRegistryImpl(PC_IconRegistry iconRegister, PC_MultiblockItem multiblockItem) {
+		PC_Security.allowedCaller("PC_IconRegistryImpl(PC_IconRegistry, PC_MultiblockItem)", PC_Multiblocks.class);
+		this.iconRegister = ((PC_IconRegistryImpl)iconRegister).iconRegister;
+		module = multiblockItem.getModule();
+		tileName = multiblockItem.getTextureFolderName();
+	}
+	
 	@Override
 	public IIcon registerIcon(String name) {
 		return iconRegister.registerIcon(module.getName()+":"+tileName+"/"+name);

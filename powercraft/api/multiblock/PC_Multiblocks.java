@@ -1,0 +1,62 @@
+package powercraft.api.multiblock;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import powercraft.api.PC_Api;
+import powercraft.api.PC_IconRegistry;
+import powercraft.api.PC_IconRegistryImpl;
+import powercraft.api.PC_ImmutableList;
+import powercraft.api.PC_Logger;
+import powercraft.api.reflect.PC_Security;
+
+public class PC_Multiblocks {
+
+	private static boolean done;
+	private static List<PC_MultiblockItem> multiblockItems = new ArrayList<PC_MultiblockItem>();
+	private static List<PC_MultiblockItem> immutableMultiblockItems = new PC_ImmutableList<PC_MultiblockItem>(multiblockItems);
+	private static HashMap<PC_MultiblockItem, Class<? extends PC_MultiblockObject>> itemMapper = new HashMap<PC_MultiblockItem, Class<? extends PC_MultiblockObject>>();
+	private static HashMap<Class<? extends PC_MultiblockObject>, PC_MultiblockItem> itemMapperRev = new HashMap<Class<? extends PC_MultiblockObject>, PC_MultiblockItem>();
+	
+	
+	static void addMultiblock(PC_MultiblockItem multiblockItem, Class<? extends PC_MultiblockObject> multiblockObjectClass) {
+		if(done){
+			PC_Logger.severe("A Multiblock want to register while startup is done");
+		}else{
+			PC_Logger.info("ADD: %s", multiblockItem);
+			multiblockItems.add(multiblockItem);
+			itemMapper.put(multiblockItem, multiblockObjectClass);
+			itemMapperRev.put(multiblockObjectClass, multiblockItem);
+		}
+	}
+	
+	public static List<PC_MultiblockItem> getBlocks(){
+		return immutableMultiblockItems;
+	}
+
+	public static void construct(){
+		PC_Security.allowedCaller("PC_Multiblocks.construct()", PC_Api.class);
+		if(!done){
+			done = true;
+		}
+	}
+	
+	private PC_Multiblocks(){
+		throw new InstantiationError();
+	}
+
+	public static PC_MultiblockItem getItem(PC_MultiblockObject multiblockObject) {
+		return itemMapperRev.get(multiblockObject.getClass());
+	}
+
+	@SideOnly(Side.CLIENT)
+	static void loadMultiblockIcons(PC_IconRegistry iconRegistry) {
+		for(PC_MultiblockItem multiblockItem:multiblockItems){
+			multiblockItem.loadMultiblockIcons(new PC_IconRegistryImpl(iconRegistry, multiblockItem));
+		}
+	}
+	
+}

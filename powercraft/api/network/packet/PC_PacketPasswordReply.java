@@ -4,7 +4,6 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.NetHandlerPlayServer;
-import powercraft.api.PC_ClientUtils;
 import powercraft.api.PC_Utils;
 import powercraft.api.block.PC_TileEntity;
 import powercraft.api.network.PC_Packet;
@@ -30,9 +29,9 @@ public class PC_PacketPasswordReply extends PC_PacketClientToServer {
 	
 	@Override
 	protected PC_Packet doAndReply(INetHandler iNetHandler) {
-		PC_TileEntity te = PC_Utils.getTileEntity(PC_ClientUtils.mc().theWorld, x, y, z, PC_TileEntity.class);
+		EntityPlayer player = ((NetHandlerPlayServer)iNetHandler).playerEntity;
+		PC_TileEntity te = PC_Utils.getTileEntity(player.worldObj, x, y, z, PC_TileEntity.class);
 		if(te!=null){
-			EntityPlayer player = ((NetHandlerPlayServer)iNetHandler).playerEntity;
 			if(!te.guiOpenPasswordReply(player, password)){
 				return new PC_PacketWrongPassword(te);
 			}

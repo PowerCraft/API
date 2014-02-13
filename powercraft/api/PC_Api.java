@@ -5,6 +5,8 @@ import net.minecraft.item.ItemStack;
 import powercraft.api.block.PC_Blocks;
 import powercraft.api.gres.PC_Gres;
 import powercraft.api.item.PC_Items;
+import powercraft.api.multiblock.PC_BlockMultiblock;
+import powercraft.api.multiblock.PC_Multiblocks;
 import powercraft.api.network.PC_PacketHandler;
 import powercraft.api.script.miniscript.PC_Miniscript;
 import cpw.mods.fml.common.Mod;
@@ -35,6 +37,8 @@ public final class PC_Api extends PC_Module {
 	
 	public static final PC_Api INSTANCE = new PC_Api();
 	
+	public static final PC_BlockMultiblock MULTIBLOCK = new PC_BlockMultiblock();
+	
 	@InstanceFactory
 	public static PC_Api factory(){
 		return INSTANCE;
@@ -55,6 +59,7 @@ public final class PC_Api extends PC_Module {
 		
 		PC_Blocks.construct();
 		PC_Items.construct();
+		PC_Multiblocks.construct();
 	}
 
 

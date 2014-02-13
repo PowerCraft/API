@@ -520,5 +520,10 @@ public class PC_Utils {
 	public static String getMD5(String s){
 		return new String(digest.digest(s.getBytes()));
 	}
+
+	public static int getSideRotation(IBlockAccess world, int x, int y, int z, PC_Direction side, int faceSide) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 	
 }

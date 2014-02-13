@@ -88,7 +88,7 @@ public class PC_Renderer implements ISimpleBlockRenderingHandler, IItemRenderer 
 	}
 
 	public static void renderBlockInInventory(Block block, int metadata, int modelId, RenderBlocks renderer){
-		
+		renderer.renderBlockAsItem(block, metadata, 1);
 	}
 	
 	public static boolean renderBlockInWorld(IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer){

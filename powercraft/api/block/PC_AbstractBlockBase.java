@@ -26,13 +26,14 @@ import powercraft.api.PC_IconRegistry;
 import powercraft.api.PC_IconRegistryImpl;
 import powercraft.api.PC_Module;
 import powercraft.api.PC_Utils;
+import powercraft.api.redstone.PC_RedstoneConnectable;
 import powercraft.api.renderer.PC_Renderer;
 import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public abstract class PC_AbstractBlockBase extends Block {
+public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneConnectable {
 
 	private static final CreativeTabs[] NULLCREATIVTABS = {};
 	
@@ -182,25 +183,44 @@ public abstract class PC_AbstractBlockBase extends Block {
 	public final boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
 		return onBlockActivated(world, x, y, z, player, PC_Utils.getSidePosition(world, x, y, z, side));
 	}
-
-	public int getWeakRedstonePower(IBlockAccess world, int x, int y, int z, PC_Direction side) {
-		return 0;
-	}
 	
 	@Override
 	public final int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side) {
-		return getWeakRedstonePower(world, x, y, z, PC_Utils.getSidePosition(world, x, y, z, side));
-	}
-
-	public int getStrongRedstonePower(IBlockAccess world, int x, int y, int z, PC_Direction side) {
-		return 0;
+		return isProvidingStrongPower(world, x, y, z, side);
 	}
 	
 	@Override
 	public final int isProvidingStrongPower(IBlockAccess world, int x, int y, int z, int side) {
-		return getStrongRedstonePower(world, x, y, z, PC_Utils.getSidePosition(world, x, y, z, side));
+		return getRedstonePowerValue(world, x, y, z, PC_Utils.getSidePosition(world, x, y, z, PC_Direction.DOWN), PC_Utils.getSideRotation(world, x, y, z, PC_Direction.DOWN, side));
 	}
 
+	public boolean canRedstoneConnect(IBlockAccess world, int x, int y, int z, PC_Direction side, int faceSide){
+		return canProvidePower();
+	}
+	
+	@Override
+	public final boolean canRedstoneConnectTo(World world, int x, int y, int z, PC_Direction side, int faceSide){
+		return canRedstoneConnect(world, x, y, z, PC_Utils.getSidePosition(world, x, y, z, side), PC_Utils.getSideRotation(world, x, y, z, side, faceSide));
+	}
+	
+	public int getRedstonePowerValue(IBlockAccess world, int x, int y, int z, PC_Direction side, int faceSide){
+		return 0;
+	}
+	
+	@Override
+	public final int getRedstonePower(World world, int x, int y, int z, PC_Direction side, int faceSide){
+		return getRedstonePowerValue(world, x, y, z, PC_Utils.getSidePosition(world, x, y, z, side), PC_Utils.getSideRotation(world, x, y, z, side, faceSide));
+	}
+	
+	public void setRedstonePowerValue(World world, int x, int y, int z, PC_Direction side, int faceSide, int value){
+		
+	}
+	
+	@Override
+	public final void setRedstonePower(World world, int x, int y, int z, PC_Direction side, int faceSide, int value){
+		setRedstonePowerValue(world, x, y, z, PC_Utils.getSidePosition(world, x, y, z, side), PC_Utils.getSideRotation(world, x, y, z, side, faceSide), value);
+	}
+	
 	public int getComparatorInput(World world, int x, int y, int z, PC_Direction side) {
 		return 0;
 	}
@@ -264,14 +284,10 @@ public abstract class PC_AbstractBlockBase extends Block {
 	public final boolean isFireSource(World world, int x, int y, int z, ForgeDirection side) {
 		return isFireSource(world, x, y, z, PC_Utils.getSidePosition(world, x, y, z, side));
 	}
-
-	public boolean canConnectRedstone(IBlockAccess world, int x, int y, int z, PC_Direction side) {
-		return super.canConnectRedstone(world, x, y, z, side.ordinal());
-	}
 	
 	@Override
 	public final boolean canConnectRedstone(IBlockAccess world, int x, int y, int z, int side) {
-		return canConnectRedstone(world, x, y, z, PC_Utils.getSidePosition(world, x, y, z, side));
+		return canRedstoneConnect(world, x, y, z, PC_Utils.getSidePosition(world, x, y, z, PC_Direction.DOWN), PC_Utils.getSideRotation(world, x, y, z, PC_Direction.DOWN, side));
 	}
 
 	public boolean canSustainPlant(IBlockAccess world, int x, int y, int z, PC_Direction side, IPlantable plantable) {

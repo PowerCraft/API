@@ -8,6 +8,7 @@ import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.particle.EffectRenderer;
+import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureType;
@@ -38,6 +39,7 @@ import powercraft.api.network.packet.PC_PacketPasswordRequest;
 import powercraft.api.network.packet.PC_PacketTileEntitySync;
 import powercraft.api.reflect.PC_Processor;
 import powercraft.api.reflect.PC_Reflection;
+import powercraft.api.renderer.PC_Renderer;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -223,14 +225,6 @@ public class PC_TileEntity extends TileEntity {
 		return true;
 	}
 
-	public int getWeakRedstonePower(PC_Direction side) {
-		return 0;
-	}
-
-	public int getStrongRedstonePower(PC_Direction side) {
-		return 0;
-	}
-
 	public int getComparatorInput(PC_Direction side) {
 		return 0;
 	}
@@ -257,10 +251,6 @@ public class PC_TileEntity extends TileEntity {
 
 	public boolean canSilkHarvest(EntityPlayer player) {
 		return false;
-	}
-
-	public boolean canConnectRedstone(PC_Direction side) {
-		return getBlockType().canProvidePower();
 	}
 
 	public boolean canSustainPlant(PC_Direction side, IPlantable plantable) {
@@ -449,6 +439,23 @@ public class PC_TileEntity extends TileEntity {
 	
 	public final void applySync(NBTTagCompound nbtTagCompound) {
 		readFromNBT(nbtTagCompound, Flag.SYNC);
+	}
+
+	@SideOnly(Side.CLIENT)
+	public boolean renderWorldBlock(int modelId, RenderBlocks renderer) {
+		return PC_Renderer.renderBlockInWorld(worldObj, xCoord, yCoord, zCoord, getBlockType(), modelId, renderer);
+	}
+
+	public boolean canRedstoneConnect(PC_Direction side, int faceSide) {
+		return getBlockType().canProvidePower();
+	}
+
+	public int getRedstonePowerValue(PC_Direction side, int faceSide) {
+		return 0;
+	}
+
+	public void setRedstonePowerValue(PC_Direction side, int faceSide, int value) {
+		
 	}
 	
 }
