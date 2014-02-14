@@ -6,6 +6,8 @@ public class PC_EnergyNodeConsumer extends PC_EnergyNode<PC_IEnerigyGridConsumer
 	
 	protected float useable;
 	
+	protected float maxWorkPercient;
+	
 	protected PC_EnergyNodeConsumer(PC_EnergyGrid grid, PC_IEnerigyGridConsumer tile) {
 		super(grid, tile);
 	}
@@ -18,6 +20,7 @@ public class PC_EnergyNodeConsumer extends PC_EnergyNode<PC_IEnerigyGridConsumer
 	@Override
 	public void onTickStart(){
 		reqested = getTile().getEnergyRequested();
+		maxWorkPercient = getTile().getMaxPercientToWork();
 	}
 	
 	@Override
@@ -42,8 +45,10 @@ public class PC_EnergyNodeConsumer extends PC_EnergyNode<PC_IEnerigyGridConsumer
 
 	@Override
 	public float useEnergy(float energy, float p) {
-		useable = reqested*p;
-		energy -= useable;
+		if(maxWorkPercient<=p){
+			useable = reqested*p;
+			energy -= useable;
+		}
 		return energy;
 	}
 	

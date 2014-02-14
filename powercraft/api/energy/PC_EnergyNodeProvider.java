@@ -6,6 +6,8 @@ public class PC_EnergyNodeProvider extends PC_EnergyNode<PC_IEnerigyGridProvider
 	
 	protected float used;
 	
+	protected boolean canWorkProcentual;
+	
 	protected PC_EnergyNodeProvider(PC_EnergyGrid grid, PC_IEnerigyGridProvider tile) {
 		super(grid, tile);
 	}
@@ -18,6 +20,7 @@ public class PC_EnergyNodeProvider extends PC_EnergyNode<PC_IEnerigyGridProvider
 	@Override
 	public void onTickStart() {
 		useable = getTile().getEnergyUseable();
+		canWorkProcentual = getTile().canWorkProcentual();
 	}
 
 	@Override
@@ -32,7 +35,8 @@ public class PC_EnergyNodeProvider extends PC_EnergyNode<PC_IEnerigyGridProvider
 
 	@Override
 	public void addToInfo(PC_EnergyInfo info) {
-		info.notProduceNeccecerly += useable;
+		if(canWorkProcentual)
+			info.notProduceNeccecerly += useable;
 	}
 
 	@Override
@@ -43,8 +47,10 @@ public class PC_EnergyNodeProvider extends PC_EnergyNode<PC_IEnerigyGridProvider
 
 	@Override
 	public float notUsing(float energy, float p) {
-		used = useable*(1-p);
-		energy -= useable-used;
+		if(canWorkProcentual){
+			used = useable*(1-p);
+			energy -= useable-used;
+		}
 		return energy;
 	}
 	
