@@ -6,4 +6,6 @@ public interface PC_IEnerigyGridConsumer extends PC_IEnergyGridTile {
 	
 	public void useEnergy(float energy);
 	
+	public float getMaxPercientToWork();
+	
 }
