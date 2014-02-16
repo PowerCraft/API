@@ -1,14 +1,14 @@
 package powercraft.api.energy;
 
-public class PC_EnergyNodeProvider extends PC_EnergyNode<PC_IEnerigyGridProvider> {
+public class PC_EnergyNodeProvider extends PC_EnergyNode<PC_IEnergyGridProvider> {
 
 	protected float useable;
 	
 	protected float used;
 	
-	protected boolean canWorkProcentual;
+	protected boolean dynamic;
 	
-	protected PC_EnergyNodeProvider(PC_EnergyGrid grid, PC_IEnerigyGridProvider tile) {
+	protected PC_EnergyNodeProvider(PC_EnergyGrid grid, PC_IEnergyGridProvider tile) {
 		super(grid, tile);
 	}
 	
@@ -20,7 +20,7 @@ public class PC_EnergyNodeProvider extends PC_EnergyNode<PC_IEnerigyGridProvider
 	@Override
 	public void onTickStart() {
 		useable = getTile().getEnergyUseable();
-		canWorkProcentual = getTile().canWorkProcentual();
+		dynamic = getTile().dynamic();
 	}
 
 	@Override
@@ -35,7 +35,7 @@ public class PC_EnergyNodeProvider extends PC_EnergyNode<PC_IEnerigyGridProvider
 
 	@Override
 	public void addToInfo(PC_EnergyInfo info) {
-		if(canWorkProcentual)
+		if(dynamic)
 			info.notProduceNeccecerly += useable;
 	}
 
@@ -47,7 +47,7 @@ public class PC_EnergyNodeProvider extends PC_EnergyNode<PC_IEnerigyGridProvider
 
 	@Override
 	public float notUsing(float energy, float p) {
-		if(canWorkProcentual){
+		if(dynamic){
 			used = useable*(1-p);
 			energy -= useable-used;
 		}

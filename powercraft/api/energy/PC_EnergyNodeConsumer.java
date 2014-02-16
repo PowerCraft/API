@@ -1,14 +1,14 @@
 package powercraft.api.energy;
 
-public class PC_EnergyNodeConsumer extends PC_EnergyNode<PC_IEnerigyGridConsumer> {
+public class PC_EnergyNodeConsumer extends PC_EnergyNode<PC_IEnergyGridConsumer> {
 
-	protected float reqested;
+	protected float requested;
 	
 	protected float useable;
 	
-	protected float maxWorkPercient;
+	protected float maxWorkPercent;
 	
-	protected PC_EnergyNodeConsumer(PC_EnergyGrid grid, PC_IEnerigyGridConsumer tile) {
+	protected PC_EnergyNodeConsumer(PC_EnergyGrid grid, PC_IEnergyGridConsumer tile) {
 		super(grid, tile);
 	}
 
@@ -19,8 +19,8 @@ public class PC_EnergyNodeConsumer extends PC_EnergyNode<PC_IEnerigyGridConsumer
 	
 	@Override
 	public void onTickStart(){
-		reqested = getTile().getEnergyRequested();
-		maxWorkPercient = getTile().getMaxPercientToWork();
+		requested = getTile().getEnergyRequested();
+		maxWorkPercent = getTile().getMaxPercentToWork();
 	}
 	
 	@Override
@@ -35,7 +35,7 @@ public class PC_EnergyNodeConsumer extends PC_EnergyNode<PC_IEnerigyGridConsumer
 
 	@Override
 	public void addToInfo(PC_EnergyInfo info) {
-		info.energyRequested += reqested;
+		info.energyRequested += requested;
 	}
 
 	@Override
@@ -45,8 +45,8 @@ public class PC_EnergyNodeConsumer extends PC_EnergyNode<PC_IEnerigyGridConsumer
 
 	@Override
 	public float useEnergy(float energy, float p) {
-		if(maxWorkPercient<=p){
-			useable = reqested*p;
+		if(maxWorkPercent<=p){
+			useable = requested*p;
 			energy -= useable;
 		}
 		return energy;

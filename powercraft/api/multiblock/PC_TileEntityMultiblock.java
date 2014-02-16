@@ -211,5 +211,21 @@ public final class PC_TileEntityMultiblock extends PC_TileEntity {
 		}
 		return true;
 	}
+
+	@Override
+	public void updateEntity() {
+		for(PC_MultiblockObject tile:tiles){
+			if(tile!=null)
+				tile.updateObject();
+		}
+	}
+
+	@Override
+	public void onChunkUnload() {
+		for(PC_MultiblockObject tile:tiles){
+			if(tile!=null)
+				tile.onChunkUnload();
+		}
+	}
 	
 }

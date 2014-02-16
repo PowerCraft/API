@@ -103,5 +103,13 @@ public abstract class PC_MultiblockObject {
 	public boolean onAdded() {
 		return true;
 	}
+
+	public void updateObject() {
+		
+	}
+
+	public void onChunkUnload() {
+		
+	}
 	
 }

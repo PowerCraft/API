@@ -1,6 +1,6 @@
 package powercraft.api.energy;
 
-public interface PC_IEnerigyGridBuffer extends PC_IEnergyGridTile {
+public interface PC_IEnergyGridBuffer extends PC_IEnergyGridTile {
 
 	public float getEnergyLevel();
 	

@@ -5,8 +5,8 @@ import java.util.List;
 
 public class PC_Edge<G extends PC_Grid<G, T, N, E>, T extends PC_IGridTile<G, T, N, E>, N extends PC_Node<G, T, N, E>, E extends PC_Edge<G, T, N, E>> extends PC_TileHolder<G,T,N,E> {
 
-	private N start;
-	private N end;
+	protected N start;
+	protected N end;
 	protected final List<T> tiles = new ArrayList<T>();
 
 	protected PC_Edge(G grid, N start, N end) {

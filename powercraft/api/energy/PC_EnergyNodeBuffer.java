@@ -1,13 +1,13 @@
 package powercraft.api.energy;
 
-public class PC_EnergyNodeBuffer extends PC_EnergyNode<PC_IEnerigyGridBuffer> implements Comparable<PC_EnergyNodeBuffer> {
+public class PC_EnergyNodeBuffer extends PC_EnergyNode<PC_IEnergyGridBuffer> implements Comparable<PC_EnergyNodeBuffer> {
 
 	protected float level;
 	protected float maxIn;
 	protected float maxOut;
 	protected float used;
 	
-	protected PC_EnergyNodeBuffer(PC_EnergyGrid grid, PC_IEnerigyGridBuffer tile) {
+	protected PC_EnergyNodeBuffer(PC_EnergyGrid grid, PC_IEnergyGridBuffer tile) {
 		super(grid, tile);
 	}
 

@@ -1,8 +1,8 @@
 package powercraft.api.energy;
 
-public class PC_EnergyNodeConduit extends PC_EnergyNode<PC_IEnerigyGridConduit> {
+public class PC_EnergyNodeConduit extends PC_EnergyNode<PC_IEnergyGridConduit> {
 
-	protected PC_EnergyNodeConduit(PC_EnergyGrid grid, PC_IEnerigyGridConduit tile) {
+	protected PC_EnergyNodeConduit(PC_EnergyGrid grid, PC_IEnergyGridConduit tile) {
 		super(grid, tile);
 	}
 	

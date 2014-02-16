@@ -1,6 +1,6 @@
 package powercraft.api.energy;
 
-public interface PC_IEnerigyGridConduit extends PC_IEnergyGridTile {
+public interface PC_IEnergyGridConduit extends PC_IEnergyGridTile {
 
 	public float getMaxEnergy();
 	

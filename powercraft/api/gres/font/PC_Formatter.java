@@ -1,0 +1,40 @@
+package powercraft.api.gres.font;
+
+public class PC_Formatter {
+
+	public static char START_SEQ = 65535;
+	public static char COLOR_SEQ = 0;
+	public static char FONT_SEQ = 1;
+	public static char RESET_SEQ = 2;
+	
+	public static byte data[] = {3, 1, 0};
+	
+	public static String reset(){
+		return ""+START_SEQ+RESET_SEQ;
+	}
+	
+	public static String color(int red, int green, int blue){
+		return ""+START_SEQ+COLOR_SEQ+(char)red+(char)green+(char)blue;
+	}
+	
+	public static String font(PC_FontTexture font){
+		return ""+START_SEQ+FONT_SEQ+(char)font.getFontID();
+	}
+	
+	public static String removeFormatting(String s){
+		char[]ca = s.toCharArray();
+		String unFormatted = "";
+		for(int i=0; i<s.length(); i++){
+			if(ca[i]==START_SEQ && i + 1<s.length()){
+				char c = ca[++i];
+				if(c<data.length){
+					i+=data[c];
+				}
+			}else{
+				unFormatted += ca[i];
+			}
+		}
+		return unFormatted;
+	}
+	
+}
