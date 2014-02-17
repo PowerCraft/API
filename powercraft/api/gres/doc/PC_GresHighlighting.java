@@ -47,16 +47,8 @@ public class PC_GresHighlighting {
 		return specialHighlights;
 	}
 	
-	public String getWordHighlighted(String word, String reset) {
-		if(word==null)
-			return "";
-		for(Highlight wordHighlight:wordHighlights){
-			IMultiplePossibilities mp = wordHighlight.getHighlightStrings();
-			if(mp!=null && word.length() == mp.comesNowIn(word, 0)){
-				return wordHighlight.getHighlightingString()+word+reset;
-			}
-		}
-		return word;
+	public List<Highlight> getWordHighlighteds() {
+		return wordHighlights;
 	}
 	
 	public static class BlockHighlight extends Highlight{
@@ -130,7 +122,9 @@ public class PC_GresHighlighting {
 	
 	public static interface IMultiplePossibilities{
 
-		public int comesNowIn(String line, int i);
+		public int comesNowIn(String line, int i, Object lastInfo);
+
+		public Object getInfo();
 		
 	}
 	
@@ -164,7 +158,7 @@ public class PC_GresHighlighting {
 		}
 
 		@Override
-		public int comesNowIn(String line, int i) {
+		public int comesNowIn(String line, int i, Object info) {
 			int l = 0;
 			if(!caseSentive){
 				line = line.toLowerCase();
@@ -175,6 +169,11 @@ public class PC_GresHighlighting {
 				}
 			}
 			return l;
+		}
+
+		@Override
+		public Object getInfo() {
+			return null;
 		}
 		
 	}
@@ -188,11 +187,16 @@ public class PC_GresHighlighting {
 		}
 
 		@Override
-		public int comesNowIn(String line, int i) {
+		public int comesNowIn(String line, int i, Object info) {
 			Matcher match = regex.matcher(line);
 			if(match.find(i) && match.start()==i)
 				return match.end()-i;
 			return 0;
+		}
+		
+		@Override
+		public Object getInfo() {
+			return null;
 		}
 		
 	}
