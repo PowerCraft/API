@@ -41,7 +41,7 @@ public class PC_FontTexture extends AbstractTexture {
 	private int fontSize;
 	private int fontHeight;
 	private int textureSize;
-	private char[] customCharsArray;
+	private char[] customCharsArray = new char[0];
 	private PC_CharData[] charArray = new PC_CharData[256];
 	private Map<Character, PC_CharData> customChars = new HashMap<Character, PC_CharData>();
 	private int fontID;
@@ -103,7 +103,7 @@ public class PC_FontTexture extends AbstractTexture {
 		int lastTextureSize = 0;
 		BufferedImage imgTemp = new BufferedImage(textureSize, textureSize, BufferedImage.TYPE_INT_ARGB);
 		Graphics g = imgTemp.getGraphics();
-		g.setColor(new Color(0, 0, 0, 1));
+		g.setColor(new Color(0, 0, 0, 0));
 		g.fillRect(0, 0, textureSize, textureSize);
 		int rowHeight = 0;
 		int positionX = 0;
@@ -148,7 +148,7 @@ public class PC_FontTexture extends AbstractTexture {
 				positionX = lastTextureSize;
 				BufferedImage newImg = new BufferedImage(textureSize, textureSize, BufferedImage.TYPE_INT_ARGB);
 				Graphics gn = newImg.getGraphics();
-				gn.setColor(new Color(0, 0, 0, 1));
+				gn.setColor(new Color(0, 0, 0, 0));
 				gn.fillRect(0, 0, textureSize, textureSize);
 				gn.drawImage(imgTemp, 0, 0, null);
 				g = gn;
@@ -181,17 +181,15 @@ public class PC_FontTexture extends AbstractTexture {
 					.allocateDirect(textureSize * textureSize * (bpp / 8))
 					.order(ByteOrder.nativeOrder());
 			for (int in:intI) {
+				byteBuffer.put((byte) in);
 				byteBuffer.put((byte) (in >> 8));
 				byteBuffer.put((byte) (in >> 16));
 				byteBuffer.put((byte) (in >> 24));
-				byteBuffer.put((byte) in);
 			}
 		} else {
 			byteBuffer = ByteBuffer
 					.allocateDirect(textureSize * textureSize * (bpp / 8))
-					.order(ByteOrder.nativeOrder())
-					.put(((DataBufferByte) (imgTemp.getData()
-							.getDataBuffer())).getData());
+					.order(ByteOrder.nativeOrder()).put(((DataBufferByte)db).getData());
 		}
 		byteBuffer.flip();
 
@@ -244,6 +242,8 @@ public class PC_FontTexture extends AbstractTexture {
 			((Graphics2D)gt).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 					RenderingHints.VALUE_ANTIALIAS_ON);
 		}
+		gt.setColor(new Color(0, 0, 0, 1));
+		gt.fillRect(0, 0, charwidth, charheight);
 		gt.setFont(font);
 		gt.setColor(Color.WHITE);
 		int charx = 3;

@@ -1,17 +1,20 @@
 package powercraft.api.gres.doc;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import powercraft.api.gres.doc.PC_GresHighlighting.BlockHighlight;
+import powercraft.api.gres.doc.PC_GresHighlighting.Highlight;
+import powercraft.api.gres.doc.PC_GresHighlighting.IMultiplePossibilities;
+import powercraft.api.gres.font.PC_Formatter;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.util.EnumChatFormatting;
-import powercraft.api.gres.doc.PC_GresHighlighting.BlockHighlight;
-import powercraft.api.gres.doc.PC_GresHighlighting.MultiplePossibilities;
-import powercraft.api.gres.doc.PC_GresHighlighting.OperatorHighlight;
 
 @SideOnly(Side.CLIENT)
 public class PC_GresDocumentLine {
 
 	public int indent;
-	public BlockHighlight endsWithBlockHightlight;
+	public List<BlockHighlight> endsWithBlockHightlight;
 	public String line;
 	public PC_GresDocumentLine next;
 	public PC_GresDocumentLine prev;
@@ -27,88 +30,128 @@ public class PC_GresDocumentLine {
 	public boolean recalcHighlighting(PC_GresHighlighting highlighting){
 		resetHighlighting();
 		String hLine = "";
-		BlockHighlight blockHighlight = null;
+		List<BlockHighlight> blockHighlight = null;
 		if(prev!=null&&prev.endsWithBlockHightlight!=null){
 			blockHighlight = prev.endsWithBlockHightlight;
 		}
 		if(blockHighlight!=null){
-			hLine += blockHighlight.getHighlightingString();
+			hLine += blockHighlight.get(0).getHighlightingString();
+		}else{
+			blockHighlight = new ArrayList<BlockHighlight>();
 		}
 		String word = null;
-		for(int i=0; i<line.length(); i++){
-			if(blockHighlight!=null){
-				MultiplePossibilities o = blockHighlight.getEscapeString();
-				int length = o.comesNowIn(line, i);
-				if(length>0){
-					length++;
-					hLine += line.substring(i, i+length);
-					i += length;
-				}
-				MultiplePossibilities s = blockHighlight.getEndString();
-				length = s.comesNowIn(line, i);
-				if(length>0){
-					hLine += line.substring(i, i+length);
-					i += length;
-					hLine += EnumChatFormatting.RESET;
-					blockHighlight = null;
-				}
-			}else{
-				int maxLength = 0;
-				for(BlockHighlight highlight:highlighting.getBlockHighlights()){
-					MultiplePossibilities mp = highlight.getStartString();
-					int length = mp.comesNowIn(line, i);
-					if(length>maxLength){
-						maxLength = length;
-						blockHighlight = highlight;
+		PC_GresHighlighting blockHighlighting = highlighting;
+		for(int i=0; i<line.length();){
+			if(!blockHighlight.isEmpty()){
+				IMultiplePossibilities o = blockHighlight.get(0).getEscapeString();
+				if(o!=null){
+					int length = o.comesNowIn(line, i);
+					if(length>0){
+						length++;
+						hLine += line.substring(i, i+length);
+						i += length;
+						continue;
 					}
 				}
-				if(maxLength>0){
-					hLine += highlighting.getWordHighlighted(word) + blockHighlight.getHighlightingString() + line.substring(i, i+maxLength);
-					word = null;
-					i += maxLength;
-				}else{
-					OperatorHighlight operatorHighlight = null;
-					for(OperatorHighlight highlight:highlighting.getOperatorHighlights()){
-						MultiplePossibilities mp = highlight.getOperatorStrings();
-						int length = mp.comesNowIn(line, i);
-						if(length>maxLength){
-							maxLength = length;
-							operatorHighlight = highlight;
-						}
-					}
-					if(maxLength>0){
-						hLine += highlighting.getWordHighlighted(word) +  operatorHighlight.getHighlightingString() + line.substring(i, i+maxLength) + EnumChatFormatting.RESET;
-						word = null;
-						i += maxLength;
-					}else{
-						char c = line.charAt(i);
-						if(c==' ' || c=='\t' || c=='\r' || c=='\n'){
-							hLine += highlighting.getWordHighlighted(word);
-							word = null;
-							hLine += c;
+				IMultiplePossibilities s = blockHighlight.get(0).getEndString();
+				if(s!=null){
+					int length = s.comesNowIn(line, i);
+					if(length>0){
+						hLine += line.substring(i, i+length);
+						i += length;
+						blockHighlight.remove(0);
+						if(blockHighlight.isEmpty()){
+							blockHighlighting = highlighting;
+							hLine += PC_Formatter.reset();
 						}else{
-							if(word==null){
-								word = "";;
-							}
-							word += c;
+							blockHighlighting = blockHighlight.get(0).getHighlighting();
+							hLine += blockHighlight.get(0).getHighlightingString();
 						}
+						continue;
 					}
 				}
 			}
+			if(blockHighlighting!=null){
+				int maxLength = 0;
+				Highlight bestHighlight = null;
+				for(Highlight highlight:blockHighlighting.getSpecialHighlights()){
+					IMultiplePossibilities mp = highlight.getHighlightStrings();
+					if(mp!=null){
+						int length = mp.comesNowIn(line, i);
+						if(length>maxLength){
+							maxLength = length;
+							bestHighlight = highlight;
+						}
+					}
+				}
+				if(maxLength==0){
+					for(Highlight highlight:blockHighlighting.getOperatorHighlights()){
+						IMultiplePossibilities mp = highlight.getHighlightStrings();
+						if(mp!=null){
+							int length = mp.comesNowIn(line, i);
+							if(length>maxLength){
+								maxLength = length;
+								bestHighlight = highlight;
+							}
+						}
+					}
+				}
+				String reset;
+				if(blockHighlight.isEmpty()){
+					reset = PC_Formatter.reset();
+				}else{
+					reset = blockHighlight.get(0).getHighlightingString();
+				}
+				if(maxLength>0 && bestHighlight!=null){
+					hLine += blockHighlighting.getWordHighlighted(word, reset) + bestHighlight.getHighlightingString() + line.substring(i, i+maxLength);
+					if(bestHighlight instanceof BlockHighlight){
+						blockHighlight.add(0, (BlockHighlight)bestHighlight);
+						blockHighlighting = ((BlockHighlight)bestHighlight).getHighlighting();
+					}else{
+						hLine += reset;
+					}
+					word = null;
+					i += maxLength;
+					continue;
+				}else{
+					char c = line.charAt(i);
+					if(c==' ' || c=='\t' || c=='\r' || c=='\n'){
+						hLine += blockHighlighting.getWordHighlighted(word, reset);
+						word = null;
+						hLine += c;
+					}else{
+						if(word==null){
+							word = "";
+						}
+						word += c;
+					}
+				}
+			}else{
+				hLine += line.charAt(i);
+			}
+			i++;
 		}
-		hLine += highlighting.getWordHighlighted(word);
+		hLine += highlighting.getWordHighlighted(word, "");
 		line = hLine;
 		word = null;
-		if(endsWithBlockHightlight==blockHighlight)
+		endsWithBlockHightlight = null;
+		for(int i=0; i<blockHighlight.size(); i++){
+			if(!blockHighlight.get(i).isMultiline()){
+				while(blockHighlight.size()>i)
+					blockHighlight.remove(i);
+				break;
+			}
+		}
+		if(endsWithBlockHightlight==null?blockHighlight.isEmpty():endsWithBlockHightlight.equals(blockHighlight))
 			return false;
 		endsWithBlockHightlight = null;
-		if(blockHighlight!=null && blockHighlight.isMultiline())
+		if(!blockHighlight.isEmpty())
 			endsWithBlockHightlight = blockHighlight;
 		return true;
 	}
 
 	public String getText() {
-		return EnumChatFormatting.getTextWithoutFormattingCodes(line);
+		return PC_Formatter.removeFormatting(line);
 	}
 
 	public void setText(String text) {

@@ -15,6 +15,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class PC_FontRenderer {
 
 	private PC_FontTexture texture;
+	private float scale = 1.0f;
 	
 	public PC_FontRenderer(PC_FontTexture texture){
 		this.texture = texture;
@@ -28,25 +29,25 @@ public class PC_FontRenderer {
 	}
 	
 	public void drawString(String text, int x, int y){
-		drawString(text, x, y, texture);
+		drawString(text, x, y, texture, scale);
 	}
 	
 	public PC_Vec2I getStringSize(String text){
-		return getStringSize(text, texture);
+		return getStringSize(text, texture, scale);
 	}
 	
 	public PC_Vec2I getCharSize(char c){
-		return getCharSize(c, texture);
+		return getCharSize(c, texture, scale);
 	}
 	
-	public static void drawString(String text, int x, int y, ResourceLocation location){
+	public static void drawString(String text, int x, int y, ResourceLocation location, float scale){
 		ITextureObject textureObject = PC_ClientUtils.mc().renderEngine.getTexture(location);
 		if(textureObject instanceof PC_FontTexture){
-			drawString(text, x, y, (PC_FontTexture)textureObject);
+			drawString(text, x, y, (PC_FontTexture)textureObject, scale);
 		}
 	}
 	
-	public static void drawString(String text, int x, int y, PC_FontTexture texture){
+	public static void drawString(String text, int x, int y, PC_FontTexture texture, float scale){
 		PC_FontTexture activeTexture = texture;
 		PC_ClientUtils.mc().renderEngine.bindTexture(activeTexture.getResourceLocation());
 		Tessellator tessellator = Tessellator.instance;
@@ -70,6 +71,9 @@ public class PC_FontRenderer {
 					PC_ClientUtils.mc().renderEngine.bindTexture(activeTexture.getResourceLocation());
 					tessellator.startDrawingQuads();
 				}else{
+					red = 255;
+					green = 255;
+					blue = 255;
 					activeTexture = texture;
 					tessellator.draw();
 					PC_ClientUtils.mc().renderEngine.bindTexture(activeTexture.getResourceLocation());
@@ -83,25 +87,26 @@ public class PC_FontRenderer {
 					float tw = data.width/size;
 					float th = data.height/size;
 					tessellator.setColorOpaque(red, green, blue);
+					tessellator.addVertexWithUV(x, y+data.height*scale, 0, tx, ty+th);
+					tessellator.addVertexWithUV(x+data.width*scale, y+data.height*scale, 0, tx+tw, ty+th);
+					tessellator.addVertexWithUV(x+data.width*scale, y, 0, tx+tw, ty);
 					tessellator.addVertexWithUV(x, y, 0, tx, ty);
-					tessellator.addVertexWithUV(x+data.width, y, 0, tx+tw, ty);
-					tessellator.addVertexWithUV(x+data.width, y+data.height, 0, tx+tw, ty+th);
-					tessellator.addVertexWithUV(x, y+data.height, 0, tx, ty+th);
 				}
+				x += data.width*scale;
 			}
 		}
 		tessellator.draw();
 	}
 	
-	public static PC_Vec2I getStringSize(String text, ResourceLocation location){
+	public static PC_Vec2I getStringSize(String text, ResourceLocation location, float scale){
 		ITextureObject textureObject = PC_ClientUtils.mc().renderEngine.getTexture(location);
 		if(textureObject instanceof PC_FontTexture){
-			return getStringSize(text, (PC_FontTexture)textureObject);
+			return getStringSize(text, (PC_FontTexture)textureObject, scale);
 		}
 		return null;
 	}
 	
-	public static PC_Vec2I getStringSize(String text, PC_FontTexture texture){
+	public static PC_Vec2I getStringSize(String text, PC_FontTexture texture, float scale){
 		PC_FontTexture activeTexture = texture;
 		PC_Vec2I size = new PC_Vec2I();
 		for(int i=0; i<text.length(); i++){
@@ -121,27 +126,28 @@ public class PC_FontRenderer {
 				if(data!=null){
 					if(data.height>size.y)
 						size.y=data.height;
-					size.x += data.width;
+					size.x += data.width*scale;
 				}
 			}
 		}
+		size.y *= scale;
 		return size;
 	}
 	
-	public static PC_Vec2I getCharSize(char c, ResourceLocation location){
+	public static PC_Vec2I getCharSize(char c, ResourceLocation location, float scale){
 		ITextureObject textureObject = PC_ClientUtils.mc().renderEngine.getTexture(location);
 		if(textureObject instanceof PC_FontTexture){
-			return getCharSize(c, (PC_FontTexture)textureObject);
+			return getCharSize(c, (PC_FontTexture)textureObject, scale);
 		}
 		return null;
 	}
 	
-	public static PC_Vec2I getCharSize(char c, PC_FontTexture texture){
+	public static PC_Vec2I getCharSize(char c, PC_FontTexture texture, float scale){
 		PC_CharData data = texture.getCharData(c);
 		if(data==null){
 			return new PC_Vec2I();
 		}
-		return new PC_Vec2I(data.width, data.height);
+		return new PC_Vec2I((int)(data.width*scale), (int)(data.height*scale));
 	}
 	
 	public static boolean isSupported(String fontname) {

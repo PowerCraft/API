@@ -64,15 +64,15 @@ public class PC_GresRenderer {
         	y2 = tmp;
         }
 
-        float alpha = (color >> 24 & 255) / 255.0F;
-        float red = (color >> 16 & 255) / 255.0F;
-        float green = (color >> 8 & 255) / 255.0F;
-        float blue = (color & 255) / 255.0F;
+        int alpha = (color >> 24 & 255);
+        int red = (color >> 16 & 255);
+        int green = (color >> 8 & 255);
+        int blue = (color & 255) ;
         Tessellator tessellator = Tessellator.instance;
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GL11.glColor4f(red, green, blue, alpha);
         tessellator.startDrawingQuads();
+        tessellator.setColorRGBA(red, green, blue, alpha);
         tessellator.addVertex(x1, y2, 0);
         tessellator.addVertex(x2, y2, 0);
         tessellator.addVertex(x2, y1, 0);

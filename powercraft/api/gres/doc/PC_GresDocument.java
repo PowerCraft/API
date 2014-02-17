@@ -12,8 +12,8 @@ public class PC_GresDocument {
 	private PC_GresHighlighting highlighting;
 	
 	public PC_GresDocument(String text, PC_GresHighlighting highlighting) {
-		add(new PC_Vec2I(), text);
 		this.highlighting = highlighting;
+		add(new PC_Vec2I(), text);
 	}
 
 	public void remove(PC_Vec2I start, PC_Vec2I end){
@@ -60,7 +60,9 @@ public class PC_GresDocument {
 			PC_GresDocumentLine newLine = new PC_GresDocumentLine(inserts[inserts.length-1]+end);
 			actLine.next = newLine;
 			newLine.prev = actLine;
-			last.prev = newLine;
+			newLine.next = last;
+			if(last!=null)
+				last.prev = newLine;
 		}
 		recalcHighlights(line, inserts.length);
 	}
@@ -84,10 +86,10 @@ public class PC_GresDocument {
 	}
 	
 	public PC_GresDocumentLine getLine(int i){
-		if(i>lines)
+		if(i>=lines)
 			return null;
 		PC_GresDocumentLine line = firstLine;
-		while(i-->1 && line!=null)
+		while(i-->0 && line!=null)
 			line = line.next;
 		return line;
 	}
@@ -108,7 +110,7 @@ public class PC_GresDocument {
 	}
 	
 	public PC_Vec2I getLastPos() {
-		return new PC_Vec2I(getLine(lines).getText().length(), lines);
+		return new PC_Vec2I(getLine(lines-1).getText().length(), lines-1);
 	}
 	
 	private PC_Vec2I[] sort(PC_Vec2I start, PC_Vec2I end){
