@@ -7,6 +7,7 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferByte;
@@ -223,12 +224,13 @@ public class PC_FontTexture extends AbstractTexture {
 		}
 		g.setFont(font);
 		FontMetrics fontMetrics = g.getFontMetrics();
-		int charwidth = fontMetrics.charWidth(ch) + 8;
-
+		Rectangle2D r = fontMetrics.getStringBounds(""+ch, g);
+		
+		int charwidth = (int) r.getWidth();
 		if (charwidth <= 0) {
 			charwidth = 7;
 		}
-		int charheight = fontMetrics.getHeight() + 3;
+		int charheight = (int) r.getHeight();
 		if (charheight <= 0) {
 			charheight = fontSize;
 		}
@@ -246,8 +248,8 @@ public class PC_FontTexture extends AbstractTexture {
 		gt.fillRect(0, 0, charwidth, charheight);
 		gt.setFont(font);
 		gt.setColor(Color.WHITE);
-		int charx = 3;
-		int chary = 1;
+		int charx = 0;
+		int chary = 0;
 		gt.drawString(String.valueOf(ch), (charx),
 				(chary) + fontMetrics.getAscent());
 

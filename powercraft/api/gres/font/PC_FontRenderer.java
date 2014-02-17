@@ -47,7 +47,7 @@ public class PC_FontRenderer {
 		}
 	}
 	
-	public static void drawString(String text, int x, int y, PC_FontTexture texture, float scale){
+	public static void drawString(String text, float x, float y, PC_FontTexture texture, float scale){
 		PC_FontTexture activeTexture = texture;
 		PC_ClientUtils.mc().renderEngine.bindTexture(activeTexture.getResourceLocation());
 		Tessellator tessellator = Tessellator.instance;
@@ -126,11 +126,12 @@ public class PC_FontRenderer {
 				if(data!=null){
 					if(data.height>size.y)
 						size.y=data.height;
-					size.x += data.width*scale;
+					size.x += data.width;
 				}
 			}
 		}
 		size.y *= scale;
+		size.x *= scale;
 		return size;
 	}
 	

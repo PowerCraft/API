@@ -60,9 +60,9 @@ public class PC_GresDocumentLine {
 						hLine += line.substring(i, i+length);
 						i += length;
 						blockHighlight.remove(0);
+						hLine += PC_Formatter.reset();
 						if(blockHighlight.isEmpty()){
 							blockHighlighting = highlighting;
-							hLine += PC_Formatter.reset();
 						}else{
 							blockHighlighting = blockHighlight.get(0).getHighlighting();
 							hLine += blockHighlight.get(0).getHighlightingString();
@@ -96,11 +96,9 @@ public class PC_GresDocumentLine {
 						}
 					}
 				}
-				String reset;
-				if(blockHighlight.isEmpty()){
-					reset = PC_Formatter.reset();
-				}else{
-					reset = blockHighlight.get(0).getHighlightingString();
+				String reset = PC_Formatter.reset();
+				if(!blockHighlight.isEmpty()){
+					reset += blockHighlight.get(0).getHighlightingString();
 				}
 				if(maxLength>0 && bestHighlight!=null){
 					hLine += blockHighlighting.getWordHighlighted(word, reset) + bestHighlight.getHighlightingString() + line.substring(i, i+maxLength);

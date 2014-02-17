@@ -316,18 +316,6 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 	}
 
 	@Override
-	protected void handleMouseLeave(PC_Vec2I mouse, int buttons) {
-		// TODO Auto-generated method stub
-		super.handleMouseLeave(mouse, buttons);
-	}
-
-	@Override
-	protected boolean handleMouseButtonClick(PC_Vec2I mouse, int buttons, int eventButton) {
-		// TODO Auto-generated method stub
-		return super.handleMouseButtonClick(mouse, buttons, eventButton);
-	}
-
-	@Override
 	protected void handleMouseWheel(PC_GresMouseWheelEvent event) {
 		// TODO Auto-generated method stub
 		super.handleMouseWheel(event);
