@@ -47,6 +47,7 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 	private Slot lastSlotOver;
 	private int lastClickButton;
 	private boolean takeAll;
+	private int scale;
 	
 	protected PC_GresGuiHandler(PC_IGresGui gui) {
 
@@ -191,6 +192,12 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 		if (!initialized) {
 			gui.initGui(this);
 			initialized = true;
+		}
+		ScaledResolution scaledresolution = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
+		int newScale = scaledresolution.getScaleFactor();
+		if(newScale!=scale){
+			scale = newScale;
+			onScaleChanged(newScale);
 		}
 	}
 

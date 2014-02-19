@@ -117,8 +117,15 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 
 	public void removeAll() {
 
-		while (!children.isEmpty())
-			children.remove(0).setParent(null);
+		while (!children.isEmpty()){
+			PC_GresComponent component = children.remove(0);
+			layoutChildOrder.remove(component);
+			if(component.hasFocus()){
+				takeFocus();
+			}
+			component.setParent(null);
+			notifyChange();
+		}
 		notifyChange();
 	}
 
@@ -346,6 +353,13 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 	protected void moveToBottom(PC_GresComponent component){
 		if(children.remove(component)){
 			children.add(component);
+		}
+	}
+	
+	@Override
+	protected void onScaleChanged(int newScale){
+		for (PC_GresComponent child : children) {
+			child.onScaleChanged(newScale);
 		}
 	}
 	

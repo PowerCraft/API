@@ -18,6 +18,8 @@ public class PC_GresDocumentLine {
 	public String line;
 	public PC_GresDocumentLine next;
 	public PC_GresDocumentLine prev;
+	public Object renderInfo;
+	public Object collectorInfo;
 	
 	public PC_GresDocumentLine(String text) {
 		line = text;

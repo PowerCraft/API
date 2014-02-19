@@ -98,7 +98,7 @@ public abstract class PC_GresComponent {
 	protected void setParent(PC_GresContainer parent) {
 
 		if (parent == null) {
-			if (!this.parent.isChild(this)) {
+			if (this.parent!=null && !this.parent.isChild(this)) {
 				this.parent = null;
 				parentVisible = true;
 				parentEnabled = true;
@@ -823,6 +823,10 @@ public abstract class PC_GresComponent {
 		if(parent!=null){
 			parent.moveToBottom(this);
 		}
+	}
+	
+	protected void onScaleChanged(int newScale){
+		
 	}
 	
 }

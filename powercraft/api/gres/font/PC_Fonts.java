@@ -5,10 +5,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.util.ResourceLocation;
 import powercraft.api.PC_ClientUtils;
 
+@SideOnly(Side.CLIENT)
 public class PC_Fonts {
 
 	private static List<PC_FontTexture> fonts = new ArrayList<PC_FontTexture>();

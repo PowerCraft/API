@@ -1,5 +1,9 @@
 package powercraft.api.gres.font;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+@SideOnly(Side.CLIENT)
 public class PC_Formatter {
 
 	public static char START_SEQ = 65535;
@@ -35,6 +39,29 @@ public class PC_Formatter {
 			}
 		}
 		return unFormatted;
+	}
+	
+	public static String substring(String s, int start, int end){
+		char[]ca = s.toCharArray();
+		int pos = 0;
+		String sub="";
+		for(int i=0; i<s.length(); i++){
+			if(ca[i]==START_SEQ && i + 1<s.length()){
+				char c = ca[++i];
+				if(c<data.length){
+					i+=data[c];
+				}
+			}else{
+				if(pos>=end){
+					return sub;
+				}
+				if(pos>=start){
+					sub += ca[i];
+				}
+				pos++;
+			}
+		}
+		return sub;
 	}
 	
 }

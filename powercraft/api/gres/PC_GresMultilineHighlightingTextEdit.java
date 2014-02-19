@@ -8,8 +8,10 @@ import org.lwjgl.input.Keyboard;
 import powercraft.api.PC_RectI;
 import powercraft.api.PC_Vec2I;
 import powercraft.api.gres.autoadd.PC_AutoAdd;
-import powercraft.api.gres.autoadd.PC_AutoHint;
+import powercraft.api.gres.autoadd.PC_AutoComplete;
+import powercraft.api.gres.autoadd.PC_AutoCompleteDisplay;
 import powercraft.api.gres.autoadd.PC_StringAdd;
+import powercraft.api.gres.doc.PC_GresDocRenderHandler;
 import powercraft.api.gres.doc.PC_GresDocument;
 import powercraft.api.gres.doc.PC_GresDocumentLine;
 import powercraft.api.gres.doc.PC_GresHighlighting;
@@ -17,7 +19,8 @@ import powercraft.api.gres.events.PC_GresMouseWheelEvent;
 import powercraft.api.gres.font.PC_FontRenderer;
 import powercraft.api.gres.font.PC_FontTexture;
 import powercraft.api.gres.font.PC_Fonts;
-import powercraft.api.script.miniscript.PC_Miniscript;
+import powercraft.api.gres.font.PC_Formatter;
+import powercraft.api.script.miniscript.PC_MiniScriptHighlighting;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -26,14 +29,11 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 
 	private static final String scrollH = "ScrollH", scrollHFrame = "ScrollHFrame", scrollV = "ScrollV", scrollVFrame = "ScrollVFrame";
 	
-	private static final float SCALE = 1.0f/4.0f;
-	
 	protected static final String textureName = "TextEdit";
 	protected static final String textureName2 = "TextEditSelect";
 	
 	private PC_GresDocument document;
 	private PC_GresHighlighting highlighting;
-	private int maxLineWidth;
 	private PC_Vec2I mouseSelectStart = new PC_Vec2I(0,0);
 	private PC_Vec2I mouseSelectEnd = new PC_Vec2I(0,0);
 	private int vScrollSize = 0, hScrollSize = 0;
@@ -42,17 +42,21 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 	private int cursorCounter;
 	private PC_FontTexture fontTexture;
 	private PC_AutoAdd autoAdd;
-	private PC_AutoHint autoHint;
+	private PC_AutoComplete autoComplete;
+	private int scale = 1;
+	private DocHandler docHandler;
+	private PC_AutoCompleteDisplay disp = new PC_AutoCompleteDisplay();
 	
 	private static PC_Vec2I lastMousePosition = new PC_Vec2I(0, 0);
 	private static int overBar=-1;
 	private static int selectBar=-1;
 	
 	public PC_GresMultilineHighlightingTextEdit(){
-		highlighting = PC_Miniscript.Highlighting.MINISCRIPT;
-		autoAdd = PC_Miniscript.Highlighting.MINISCRIPT_AUTOADD;
-		document = new PC_GresDocument("", PC_Miniscript.Highlighting.MINISCRIPT);
 		fontTexture = PC_Fonts.create(PC_FontRenderer.getFont("Consolas", 0, 24), null);
+		highlighting = PC_MiniScriptHighlighting.makeHighlighting();
+		autoAdd = PC_MiniScriptHighlighting.makeAutoAdd();
+		autoComplete = PC_MiniScriptHighlighting.makeAutoComplete();
+		document = new PC_GresDocument("", highlighting, docHandler = new DocHandler(), autoComplete==null?null:autoComplete.getInfoCollector());
 	}
 
 	@Override
@@ -72,6 +76,11 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 
 	@Override
 	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp) {
+		
+		if(docHandler.searchNewLengst){
+			docHandler.searchNewLengst = false;
+			docHandler.maxLineLength = -1;
+		}
 		
 		if(!mouseDown){
 			calcScrollPosition();
@@ -116,7 +125,7 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 		int d1 = getTextureDefaultSize(scrollHFrame).y;
 		int d2 = getTextureDefaultSize(scrollVFrame).x;
 		int sizeX = rect.width - d2;
-		int maxSizeX = maxLineWidth;
+		int maxSizeX = docHandler.maxLineLength/scale;
 		int sizeOutOfFrame = maxSizeX - sizeX + 5;
 		if (sizeOutOfFrame < 0) {
 			sizeOutOfFrame = 0;
@@ -142,7 +151,7 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 		int d1 = getTextureDefaultSize(scrollHFrame).y;
 		int d2 = getTextureDefaultSize(scrollVFrame).x;
 		int sizeX = rect.width - d2;
-		int maxSizeX = maxLineWidth;
+		int maxSizeX = docHandler.maxLineLength/scale;
 		int sizeOutOfFrame = maxSizeX - sizeX + 5;
 		if (sizeOutOfFrame < 0) {
 			sizeOutOfFrame = 0;
@@ -181,27 +190,32 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 	
 	private int drawLine(int lineNum, PC_GresDocumentLine line, int x, int y){
 		PC_Vec2I[] selected = sort(mouseSelectStart, mouseSelectEnd);
-		String text = line.getText();
-		PC_Vec2I size = PC_FontRenderer.getStringSize(text.isEmpty()?" ":text, fontTexture, SCALE);
-		if(size.x>maxLineWidth)
-			maxLineWidth = size.x;
+		String text = line.getHighlightedString();
+		PC_Vec2I size = ((LineInfo)line.renderInfo).size;
+		if(size.x>docHandler.maxLineLength){
+			docHandler.maxLineLength = size.x;
+			docHandler.longestLine = line;
+		}
+		size = new PC_Vec2I(size);
+		size.x /= scale;
+		size.y /= scale;
 		if(selected[0].y<=lineNum && lineNum<=selected[1].y && (selected[0].y == selected[1].y?selected[0].x != selected[1].x:true)){
 			int startX = 0;
 			int endX;
 			if(selected[0].y == lineNum){
-				startX = PC_FontRenderer.getStringSize(text.substring(0, selected[0].x), fontTexture, SCALE).x;
+				startX = PC_FontRenderer.getStringSize(PC_Formatter.substring(text, 0, selected[0].x), fontTexture, 1.0f/scale).x;
 			}
 			if(selected[1].y == lineNum){
-				endX = PC_FontRenderer.getStringSize(text.substring(0, selected[1].x), fontTexture, SCALE).x;
+				endX = PC_FontRenderer.getStringSize(PC_Formatter.substring(text, 0, selected[1].x), fontTexture, 1.0f/scale).x;
 			}else{
 				endX = size.x;
 			}
 			drawTexture(textureName2, startX + x, y, endX-startX, size.y);
 		}
-		PC_FontRenderer.drawString(line.getHighlightedString(), x, y, fontTexture, SCALE);
+		PC_FontRenderer.drawString(text, x, y, fontTexture, 1.0f/scale);
 		if (focus && cursorCounter / 6 % 2 == 0 && mouseSelectEnd.y==lineNum) {
-			PC_GresRenderer.drawVerticalLine(x+PC_FontRenderer.getStringSize(text
-					.substring(0, mouseSelectEnd.x), fontTexture, SCALE).x, y,
+			PC_GresRenderer.drawVerticalLine(x+PC_FontRenderer.getStringSize(
+					PC_Formatter.substring(text, 0, mouseSelectEnd.x), fontTexture, 1.0f/scale).x, y,
 					y + size.y - 1, fontColors[0]|0xff000000);
 		}
 		return size.y;
@@ -223,8 +237,16 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 			autoAdd.onCharAdded(addStruct);
 		}
 		setSelected(addStruct.toAdd, addStruct.cursorPos);
+		if(autoComplete!=null){
+			autoComplete.onStringAdded(this, document, document.getLine(mouseSelectStart.y), addStruct.toAdd, mouseSelectEnd.x, disp);
+			showCompleteWindow();
+		}
 	}
 
+	private void showCompleteWindow(){
+		PC_GresAutoCompleteWindow.makeCompleteWindow(getGuiHandler(), this, disp);
+	}
+	
 	private void deleteSelected() {
 		document.remove(mouseSelectStart, mouseSelectEnd);
 		setToStartSelect();
@@ -327,13 +349,13 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 		}
 		int y = scroll.y;
 		PC_GresDocumentLine line = document.getLine(y);
-		int h = PC_FontRenderer.getStringSize(line.getHighlightedString(), fontTexture, SCALE).y;
+		int h = ((LineInfo)line.renderInfo).size.y/scale;
 		while(h<mouse.y-1){
 			line = line.next;
 			if(line==null)
 				break;
 			y++;
-			h += PC_FontRenderer.getStringSize(line.getHighlightedString(), fontTexture, SCALE).y;
+			h += ((LineInfo)line.renderInfo).size.y/scale;
 		}
 		int x = getPositionFromString(new PC_Vec2I((mouse.x+scroll.x-2), y));
 		return new PC_Vec2I(x, y);
@@ -341,7 +363,7 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 	
 	private int getPixelPositionFromString(PC_Vec2I pos){
 		PC_GresDocumentLine line = document.getLine(pos.y);
-		return PC_FontRenderer.getStringSize(line.getText().substring(0, pos.x), fontTexture, SCALE).x;
+		return PC_FontRenderer.getStringSize(PC_Formatter.substring(line.getHighlightedString(), 0, pos.x), fontTexture, 1.0f/scale).x;
 	}
 	
 	private int getPositionFromString(PC_Vec2I pos){
@@ -349,10 +371,11 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 			pos.y=document.getLines()-1;
 		}
 		PC_GresDocumentLine line = document.getLine(pos.y);
-		String text = line.getText();
+		String text = line.getHighlightedString();
+		int length = PC_Formatter.removeFormatting(text).length();
 		int last = 0;
-		for(int i=1; i<=text.length(); i++){
-			int l = PC_FontRenderer.getStringSize(text.substring(0, i), fontTexture, SCALE).x;
+		for(int i=1; i<=length; i++){
+			int l = PC_FontRenderer.getStringSize(PC_Formatter.substring(text, 0, i), fontTexture, 1.0f/scale).x;
 			if(l>pos.x){
 				if((l+last)/2<pos.x){
 					return i;
@@ -361,7 +384,21 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 			}
 			last = l;
 		}
-		return text.length();
+		return length;
+	}
+	
+	public PC_Vec2I getCursorLowerPosition(){
+		int y = 0;
+		PC_GresDocumentLine line = document.getLine(scroll.y);
+		for(int i=scroll.y; i<=mouseSelectEnd.y; i++){
+			y += ((LineInfo)line.renderInfo).size.y;
+			line = line.next;
+		}
+		return new PC_Vec2I(getPixelPositionFromString(mouseSelectEnd), 2+y/scale);
+	}
+	
+	public void autoComplete(String with){
+		setSelected(with, -1);
 	}
 	
 	@Override
@@ -455,6 +492,14 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 				}
 				moveViewToSelect();
 				return true;
+			case Keyboard.KEY_SPACE:
+				if(Keyboard.isKeyDown(Keyboard.KEY_RCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)){
+					if(autoComplete!=null){
+						autoComplete.makeComplete(this, document, document.getLine(mouseSelectEnd.y), mouseSelectEnd.x, disp);
+						showCompleteWindow();
+					}
+					break;
+				}
 			default:
 				if (ChatAllowedCharacters.isAllowedCharacter(key)) {
 					addKey(key);
@@ -472,37 +517,36 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 		int shouldY = mouseSelectEnd.y;
 		PC_GresDocumentLine line = document.getLine(shouldY);
 		String text = line.getHighlightedString();
-		int x = PC_FontRenderer.getStringSize(text.isEmpty()?" ":text, fontTexture, SCALE).x;
-		if(x>maxLineWidth)
-			maxLineWidth = x;
-		int shouldX = PC_FontRenderer.getStringSize(document.getLine(mouseSelectEnd.y).getText().substring(0, mouseSelectEnd.x), fontTexture, SCALE).x;
+		int x = ((LineInfo)line.renderInfo).size.x;
+		if(x>docHandler.maxLineLength){
+			docHandler.maxLineLength = x;
+			docHandler.longestLine = line;
+		}
+		int shouldX = PC_FontRenderer.getStringSize(PC_Formatter.substring(document.getLine(mouseSelectEnd.y).getHighlightedString(), 0, mouseSelectEnd.x), fontTexture, 1.0f/scale).x;
 		if(scroll.x>shouldX){
 			scroll.x = shouldX;
 		}else{
 			int i=1;
-			text = line.getText();
-			if(PC_FontRenderer.getStringSize(text.substring(0, mouseSelectEnd.x), fontTexture, SCALE).x>scroll.x + rect.width-d2-4){
-				while(PC_FontRenderer.getStringSize(text.substring(mouseSelectEnd.x-i, mouseSelectEnd.x), fontTexture, SCALE).x<rect.width-d2-4){
+			if(PC_FontRenderer.getStringSize(PC_Formatter.substring(text, 0, mouseSelectEnd.x), fontTexture, 1.0f/scale).x>scroll.x + rect.width-d2-4){
+				while(PC_FontRenderer.getStringSize(PC_Formatter.substring(text, mouseSelectEnd.x-i, mouseSelectEnd.x), fontTexture, 1.0f/scale).x<rect.width-d2-4){
 					i++;
 					if(i>mouseSelectEnd.x){
 						break;
 					}
 				}
-				scroll.x = PC_FontRenderer.getStringSize(text.substring(0, mouseSelectEnd.x-i+1), fontTexture, SCALE).x;
+				scroll.x = PC_FontRenderer.getStringSize(PC_Formatter.substring(text, 0, mouseSelectEnd.x-i+1), fontTexture, 1.0f/scale).x;
 			}
 		}
 		if(scroll.y>shouldY){
 			scroll.y = shouldY;
 		}else{
-			text = line.getHighlightedString();
-			int h = PC_FontRenderer.getStringSize(text.isEmpty()?" ":text, fontTexture, SCALE).y;
+			int h = ((LineInfo)line.renderInfo).size.y/scale;
 			while(h<rect.height-d1-2){
 				line = line.prev;
 				shouldY--;
 				if(line==null)
 					break;
-				text = line.getHighlightedString();
-				h += PC_FontRenderer.getStringSize(text.isEmpty()?" ":text, fontTexture, SCALE).y;
+				h += ((LineInfo)line.renderInfo).size.y/scale;
 			}
 			shouldY++;
 			if(scroll.y<shouldY)
@@ -588,12 +632,63 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 	
 	@Override
 	public void setText(String text) {
-		document = new PC_GresDocument(text, highlighting);
+		document = new PC_GresDocument(text, highlighting, docHandler = new DocHandler(), autoComplete==null?null:autoComplete.getInfoCollector());
 	}
 
 	@Override
 	public String getText() {
 		return document.getWholeText();
+	}
+	
+	@Override
+	protected void onScaleChanged(int newScale) {
+		scale = newScale;
+	}
+
+	private class DocHandler implements PC_GresDocRenderHandler{
+
+		private PC_GresDocumentLine longestLine;
+		private int maxLineLength = -1;
+		private boolean searchNewLengst = false;
+		private int docLength;
+		
+		@Override
+		public void onLineChange(PC_GresDocumentLine line) {
+			if(longestLine==line){
+				longestLine = null;
+				searchNewLengst = true;
+			}
+			PC_Vec2I size = ((LineInfo)line.renderInfo).size;
+			docLength -= size.y;
+		}
+
+		@Override
+		public void onLineChanged(PC_GresDocumentLine line) {
+			String text = line.getHighlightedString();
+			PC_Vec2I size;
+			if(text.isEmpty()){
+				size = PC_FontRenderer.getCharSize(' ', fontTexture, 1.0f);
+				size.x = 0;
+			}else{
+				size = PC_FontRenderer.getStringSize(text, fontTexture, 1.0f);
+			}
+			docLength += size.y;
+			if(size.x>maxLineLength){
+				maxLineLength = size.x;
+				longestLine = line;
+				searchNewLengst = false;
+			}
+			LineInfo li = new LineInfo();
+			li.size = size;
+			line.renderInfo = li;
+		}
+		
+	}
+	
+	private static class LineInfo{
+		
+		private PC_Vec2I size;
+		
 	}
 	
 }
