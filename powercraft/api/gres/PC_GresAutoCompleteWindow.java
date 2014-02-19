@@ -38,15 +38,25 @@ public class PC_GresAutoCompleteWindow extends PC_GresFrame{
 			PC_GresContainer container = frame.scrollArea.getContainer();
 			container.removeAll();
 			container.setSize(new PC_Vec2I(0, 0));
+			int spl = display.done.lastIndexOf('.')+1;
+			String last = "";
 			for(PC_StringListPart part:display.parts){
 				for(String s:part){
-					PC_GresButton b = new PC_GresButton(s);
+					String t = s.substring(spl);
+					int p = t.indexOf('.');
+					if(p!=-1){
+						t = t.substring(0, p+1);
+						if(t.equals(last))
+							continue;
+					}
+					last = t;
+					PC_GresButton b = new PC_GresButton(t);
 					b.addEventListener(frame.listener);
 					b.setFill(Fill.BOTH);
 					container.add(b);
 				}
 			}
-			frame.done = display.done;
+			frame.done = display.done.length()-spl;
 			frame.takeFocus();
 			textEdit.focus = true;
 			frame.notifyChange();
@@ -87,24 +97,25 @@ public class PC_GresAutoCompleteWindow extends PC_GresFrame{
 	
 	private void makeAdd(String text){
 		textEdit.autoComplete(text.substring(done));
+		if(!text.endsWith("."))
+			close();
 	}
 	
 	@Override
 	protected boolean handleKeyTyped(char key, int keyCode) {
 		switch (keyCode) {
 		case Keyboard.KEY_ESCAPE:
+			close();
 			break;
 		case Keyboard.KEY_RETURN:
 			makeAdd();
 			break;
 		case Keyboard.KEY_SPACE:
 			makeAdd();
-			close();
 			return textEdit.onKeyTyped(key, keyCode);
 		default:
 			return textEdit.onKeyTyped(key, keyCode);
 		}
-		close();
 		return true;
 	}
 
@@ -136,7 +147,6 @@ public class PC_GresAutoCompleteWindow extends PC_GresFrame{
 				if(ev.getEvent()==PC_GresMouseButtonEvent.Event.CLICK){
 					if(ev.getComponent() instanceof PC_GresButton){
 						frame.makeAdd(ev.getComponent().getText());
-						frame.close();
 					}
 				}
 			}

@@ -399,6 +399,10 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 	
 	public void autoComplete(String with){
 		setSelected(with, -1);
+		if(with.endsWith(".") && autoComplete!=null){
+			autoComplete.onStringAdded(this, document, document.getLine(mouseSelectStart.y), with, mouseSelectEnd.x, disp);
+			showCompleteWindow();
+		}
 	}
 	
 	@Override
