@@ -12,6 +12,7 @@ import powercraft.api.gres.events.PC_GresEvent;
 import powercraft.api.gres.events.PC_GresFocusLostEvent;
 import powercraft.api.gres.events.PC_GresMouseButtonEvent;
 import powercraft.api.gres.events.PC_IGresEventListener;
+import powercraft.api.gres.history.PC_GresHistory;
 import powercraft.api.gres.layout.PC_GresLayoutVertical;
 
 @SideOnly(Side.CLIENT)
@@ -68,7 +69,7 @@ public class PC_GresComboBox extends PC_GresComponent {
 	}
 	
 	@Override
-	protected boolean handleMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton) {
+	protected boolean handleMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton, PC_GresHistory history) {
 		if(frame==null){
 			mouseDown = true;
 			frame = new PC_GresComboBoxFrame(this);
@@ -101,12 +102,12 @@ public class PC_GresComboBox extends PC_GresComponent {
 	}
 	
 	@Override
-	protected boolean handleMouseButtonUp(PC_Vec2I mouse, int buttons,int eventButton) {
+	protected boolean handleMouseButtonUp(PC_Vec2I mouse, int buttons,int eventButton, PC_GresHistory history) {
 		return true;
 	}
 	
 	@Override
-	protected void handleMouseLeave(PC_Vec2I mouse, int buttons) {
+	protected void handleMouseLeave(PC_Vec2I mouse, int buttons, PC_GresHistory history) {
 		mouseOver = false;
 	}
 

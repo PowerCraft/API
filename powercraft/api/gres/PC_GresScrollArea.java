@@ -9,6 +9,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import powercraft.api.PC_RectI;
 import powercraft.api.PC_Vec2I;
 import powercraft.api.gres.events.PC_GresMouseWheelEvent;
+import powercraft.api.gres.history.PC_GresHistory;
 
 @SideOnly(Side.CLIENT)
 public class PC_GresScrollArea extends PC_GresComponent {
@@ -163,15 +164,15 @@ public class PC_GresScrollArea extends PC_GresComponent {
 
 
 	@Override
-	protected void tryActionOnKeyTyped(char key, int keyCode) {
+	protected void tryActionOnKeyTyped(char key, int keyCode, PC_GresHistory history) {
 		if (visible) {
-			container.tryActionOnKeyTyped(key, keyCode);
+			container.tryActionOnKeyTyped(key, keyCode, null);
 		}
 	}
 
 	@Override
-	protected boolean handleMouseMove(PC_Vec2I mouse, int buttons) {
-		super.handleMouseMove(mouse, buttons);
+	protected boolean handleMouseMove(PC_Vec2I mouse, int buttons, PC_GresHistory history) {
+		super.handleMouseMove(mouse, buttons, history);
 		if(mouseDown){
 			if(selectBar==0){
 				hScrollPos += mouse.x - lastMousePosition.x;
@@ -253,8 +254,8 @@ public class PC_GresScrollArea extends PC_GresComponent {
 	}
 	
 	@Override
-	protected boolean handleMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton) {
-		super.handleMouseButtonDown(mouse, buttons, eventButton);
+	protected boolean handleMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton, PC_GresHistory history) {
+		super.handleMouseButtonDown(mouse, buttons, eventButton, history);
 		if(mouseDown){
 			lastMousePosition.setTo(mouse);
 			selectBar = mouseOverBar(mouse);
@@ -279,7 +280,7 @@ public class PC_GresScrollArea extends PC_GresComponent {
 	}
 
 	@Override
-	protected void handleMouseWheel(PC_GresMouseWheelEvent event) {
+	protected void handleMouseWheel(PC_GresMouseWheelEvent event, PC_GresHistory history) {
 		if((type & VSCROLL)!=0){
 			vScrollPos -= event.getWheel()*3;
 		}else if((type & HSCROLL)!=0){
@@ -290,7 +291,7 @@ public class PC_GresScrollArea extends PC_GresComponent {
 	}
 
 	@Override
-	protected void handleMouseLeave(PC_Vec2I mouse, int buttons) {
+	protected void handleMouseLeave(PC_Vec2I mouse, int buttons, PC_GresHistory history) {
 		mouseOver = false;
 	}
 	

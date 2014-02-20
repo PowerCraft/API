@@ -20,6 +20,8 @@ import powercraft.api.gres.font.PC_FontRenderer;
 import powercraft.api.gres.font.PC_FontTexture;
 import powercraft.api.gres.font.PC_Fonts;
 import powercraft.api.gres.font.PC_Formatter;
+import powercraft.api.gres.history.PC_GresHistory;
+import powercraft.api.gres.history.PC_IGresHistoryEntry;
 import powercraft.api.script.miniscript.PC_MiniScriptHighlighting;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -46,6 +48,7 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 	private int scale = 1;
 	private DocHandler docHandler;
 	private PC_AutoCompleteDisplay disp = new PC_AutoCompleteDisplay();
+	private boolean newStart = false;
 	
 	private static PC_Vec2I lastMousePosition = new PC_Vec2I(0, 0);
 	private static int overBar=-1;
@@ -221,8 +224,10 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 		return size.y;
 	}
 	
-	protected void addKey(char c) {
+	protected void addKey(char c, PC_GresHistory history) {
+		String removed = "";
 		if(!mouseSelectStart.equals(mouseSelectEnd)){
+			removed = document.getText(mouseSelectStart, mouseSelectEnd);
 			document.remove(mouseSelectStart, mouseSelectEnd);
 		}
 		setToStartSelect();
@@ -236,7 +241,25 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 		if(autoAdd!=null){
 			autoAdd.onCharAdded(addStruct);
 		}
-		setSelected(addStruct.toAdd, addStruct.cursorPos);
+		setSelected(addStruct.toAdd, null, false, false);
+		if(history!=null){
+			history.addHistoryEntry(new HistoryEntry(this, mouseSelectStart, mouseSelectEnd, removed, false, true, true));
+			newStart = false;
+		}
+		if(addStruct.cursorPos!=-1){
+			mouseSelectEnd = new PC_Vec2I(mouseSelectStart.x+addStruct.cursorPos, mouseSelectStart.y);
+			while(mouseSelectEnd.x>document.getLine(mouseSelectEnd.y).getText().length()){
+				mouseSelectEnd.x -= document.getLine(mouseSelectEnd.y).getText().length()+1;
+				mouseSelectEnd.y++;
+				if(mouseSelectEnd.y>=document.getLines()){
+					mouseSelectEnd = mouseSelectStart;
+					moveViewToSelect();
+					break;
+				}
+			}
+		}
+		mouseSelectStart = mouseSelectEnd;
+		moveViewToSelect();
 		if(autoComplete!=null){
 			autoComplete.onStringAdded(this, document, document.getLine(mouseSelectStart.y), addStruct.toAdd, mouseSelectEnd.x, disp);
 			showCompleteWindow();
@@ -247,15 +270,20 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 		PC_GresAutoCompleteWindow.makeCompleteWindow(getGuiHandler(), this, disp);
 	}
 	
-	private void deleteSelected() {
+	private void deleteSelected(PC_GresHistory history) {
+		String removed = document.getText(mouseSelectStart, mouseSelectEnd);
 		document.remove(mouseSelectStart, mouseSelectEnd);
 		setToStartSelect();
+		if(history!=null){
+			history.addHistoryEntry(new HistoryEntry(this, mouseSelectStart, mouseSelectStart, removed, true, false, false));
+			newStart = false;
+		}
 		moveViewToSelect();
 	}
 
-	private void key_backspace() {
+	private void key_backspace(PC_GresHistory history) {
 		if (mouseSelectStart != mouseSelectEnd) {
-			deleteSelected();
+			deleteSelected(history);
 			return;
 		}
 		mouseSelectStart = new PC_Vec2I(mouseSelectStart.x-1, mouseSelectStart.y);
@@ -268,14 +296,19 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 			}
 			mouseSelectStart.x = document.getLine(mouseSelectStart.y).getText().length();
 		}
+		String removed = document.getText(mouseSelectStart, mouseSelectEnd);
 		document.remove(mouseSelectStart, mouseSelectEnd);
 		setToStartSelect();
+		if(history!=null){
+			history.addHistoryEntry(new HistoryEntry(this, mouseSelectStart, mouseSelectStart, removed, newStart, false, true));
+			newStart = false;
+		}
 		moveViewToSelect();
 	}
 
-	private void key_delete() {
+	private void key_delete(PC_GresHistory history) {
 		if (mouseSelectStart != mouseSelectEnd) {
-			deleteSelected();
+			deleteSelected(history);
 			return;
 		}
 		mouseSelectEnd = new PC_Vec2I(mouseSelectStart.x+1, mouseSelectStart.y);
@@ -288,8 +321,13 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 			}
 			mouseSelectEnd.x = 0;
 		}
+		String removed = document.getText(mouseSelectStart, mouseSelectEnd);
 		document.remove(mouseSelectStart, mouseSelectEnd);
 		setToStartSelect();
+		if(history!=null){
+			history.addHistoryEntry(new HistoryEntry(this, mouseSelectStart, mouseSelectStart, removed, newStart, false, true));
+			newStart = false;
+		}
 		moveViewToSelect();
 	}
 	
@@ -297,24 +335,31 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 		return document.getText(mouseSelectStart, mouseSelectEnd);
 	}
 	
-	private void setSelected(String stri, int pos) {
+	private void setSelected(String stri, PC_GresHistory history, boolean block, boolean startToEnd) {
+		String removed = "";
 		if(!mouseSelectStart.equals(mouseSelectEnd)){
+			removed = document.getText(mouseSelectStart, mouseSelectEnd);
 			document.remove(mouseSelectStart, mouseSelectEnd);
 		}
 		setToStartSelect();
 		document.add(mouseSelectStart, stri);
-		mouseSelectEnd = new PC_Vec2I(mouseSelectStart.x+(pos==-1?stri.length():pos), mouseSelectStart.y);
+		mouseSelectEnd = new PC_Vec2I(mouseSelectStart.x+stri.length(), mouseSelectStart.y);
 		while(mouseSelectEnd.x>document.getLine(mouseSelectEnd.y).getText().length()){
 			mouseSelectEnd.x -= document.getLine(mouseSelectEnd.y).getText().length()+1;
 			mouseSelectEnd.y++;
 			if(mouseSelectEnd.y>=document.getLines()){
 				mouseSelectEnd = mouseSelectStart;
-				moveViewToSelect();
-				return;
+				break;
 			}
 		}
-		mouseSelectStart = mouseSelectEnd;
-		moveViewToSelect();
+		if(history!=null){
+			history.addHistoryEntry(new HistoryEntry(this, mouseSelectStart, mouseSelectEnd, removed, block || newStart, true, !block));
+			newStart = false;
+		}
+		if(startToEnd){
+			mouseSelectStart = mouseSelectEnd;
+			moveViewToSelect();
+		}
 	}
 	
 	private void setToStartSelect(){
@@ -397,8 +442,8 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 		return new PC_Vec2I(getPixelPositionFromString(mouseSelectEnd), 2+y/scale);
 	}
 	
-	public void autoComplete(String with){
-		setSelected(with, -1);
+	public void autoComplete(String with, PC_GresHistory history){
+		setSelected(with, history, false, true);
 		if(with.endsWith(".") && autoComplete!=null){
 			autoComplete.onStringAdded(this, document, document.getLine(mouseSelectStart.y), with, mouseSelectEnd.x, disp);
 			showCompleteWindow();
@@ -406,38 +451,40 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 	}
 	
 	@Override
-	protected boolean handleKeyTyped(char key, int keyCode) {
-		super.handleKeyTyped(key, keyCode);
+	protected boolean handleKeyTyped(char key, int keyCode, PC_GresHistory history) {
+		super.handleKeyTyped(key, keyCode, history);
 		cursorCounter = 0;
 		switch (key) {
 		case 3:
 			GuiScreen.setClipboardString(getSelect());
 			break;
 		case 22:
-			setSelected(GuiScreen.getClipboardString(), -1);
+			setSelected(GuiScreen.getClipboardString(), history, true, true);
 			break;
 		case 24:
 			GuiScreen.setClipboardString(getSelect());
-			deleteSelected();
+			deleteSelected(history);
 			break;
 		default:
 			switch (keyCode) {
 			case Keyboard.KEY_RETURN:
-				addKey('\n');
+				addKey('\n', history);
 				return true;
 			case Keyboard.KEY_BACK:
-				key_backspace();
+				key_backspace(history);
 				return true;
 			case Keyboard.KEY_HOME:
 				mouseSelectEnd = mouseSelectStart = new PC_Vec2I();
+				newStart = true;
 				moveViewToSelect();
 				return true;
 			case Keyboard.KEY_END:
 				mouseSelectEnd = mouseSelectStart = document.getLastPos();
+				newStart = true;
 				moveViewToSelect();
 				return true;
 			case Keyboard.KEY_DELETE:
-				key_delete();
+				key_delete(history);
 				return true;
 			case Keyboard.KEY_LEFT:
 				if (mouseSelectEnd.y > 0 || (mouseSelectEnd.y == 0 && mouseSelectEnd.x > 0)) {
@@ -452,6 +499,7 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 					}
 
 				}
+				newStart = true;
 				moveViewToSelect();
 				return true;
 			case Keyboard.KEY_RIGHT:
@@ -470,6 +518,7 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 						.isKeyDown(Keyboard.KEY_LSHIFT))) {
 					mouseSelectStart = mouseSelectEnd;
 				}
+				newStart = true;
 				moveViewToSelect();
 				return true;
 			case Keyboard.KEY_UP:
@@ -482,6 +531,7 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 						mouseSelectStart = mouseSelectEnd;
 					}
 				}
+				newStart = true;
 				moveViewToSelect();
 				return true;
 			case Keyboard.KEY_DOWN:
@@ -494,6 +544,7 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 						mouseSelectStart = mouseSelectEnd;
 					}
 				}
+				newStart = true;
 				moveViewToSelect();
 				return true;
 			case Keyboard.KEY_SPACE:
@@ -506,7 +557,7 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 				}
 			default:
 				if (ChatAllowedCharacters.isAllowedCharacter(key)) {
-					addKey(key);
+					addKey(key, history);
 					return true;
 				}
 				return false;
@@ -560,15 +611,15 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 	}
 	
 	@Override
-	protected void handleMouseWheel(PC_GresMouseWheelEvent event) {
+	protected void handleMouseWheel(PC_GresMouseWheelEvent event, PC_GresHistory history) {
 		scroll.y -= event.getWheel();
 		calcScrollPosition();
 		event.consume();
 	}
 	
 	@Override
-	protected boolean handleMouseMove(PC_Vec2I mouse, int buttons) {
-		super.handleMouseMove(mouse, buttons);
+	protected boolean handleMouseMove(PC_Vec2I mouse, int buttons, PC_GresHistory history) {
+		super.handleMouseMove(mouse, buttons, history);
 		if(mouseDown){
 			if(selectBar==0){
 				hScrollPos += mouse.x - lastMousePosition.x;
@@ -579,6 +630,7 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 				updateScrollPosition();
 				lastMousePosition.setTo(mouse);
 			}else{
+				newStart = true;
 				mouseSelectEnd = getMousePositionInString(mouse);
 				cursorCounter = 0;
 			}
@@ -590,8 +642,8 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 	}
 
 	@Override
-	protected boolean handleMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton) {
-		super.handleMouseButtonDown(mouse, buttons, eventButton);
+	protected boolean handleMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton, PC_GresHistory history) {
+		super.handleMouseButtonDown(mouse, buttons, eventButton, history);
 		if(mouseDown){
 			lastMousePosition.setTo(mouse);
 			selectBar = mouseOverBar(mouse);
@@ -601,6 +653,7 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 		}
 		if(selectBar!=-1 || overBar!=-1)
 			return true;
+		newStart = true;
 		mouseSelectEnd = getMousePositionInString(mouse);
 		if(!(Keyboard.isKeyDown(Keyboard.KEY_RSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)))
 			mouseSelectStart = mouseSelectEnd;
@@ -609,7 +662,7 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 	}
 
 	@Override
-	protected void handleMouseLeave(PC_Vec2I mouse, int buttons) {
+	protected void handleMouseLeave(PC_Vec2I mouse, int buttons, PC_GresHistory history) {
 		mouseOver = false;
 	}
 	
@@ -692,6 +745,92 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 	private static class LineInfo{
 		
 		private PC_Vec2I size;
+		
+	}
+	
+	
+	
+	private static class HistoryEntry implements PC_IGresHistoryEntry{
+
+		private PC_GresMultilineHighlightingTextEdit textEdit;
+		private PC_Vec2I startPoint;
+		private PC_Vec2I endPoint;
+		private String s;
+		private boolean newStart;
+		private boolean add;
+		private boolean mergeable;
+		
+		public HistoryEntry(PC_GresMultilineHighlightingTextEdit textEdit, PC_Vec2I startPoint, PC_Vec2I endPoint, String s, boolean newStart, boolean add, boolean mergeable) {
+			this.textEdit = textEdit;
+			this.startPoint = startPoint;
+			this.endPoint = endPoint;
+			this.s = s;
+			this.newStart = newStart;
+			this.add = add;
+			this.mergeable = mergeable;
+			System.out.println(this);
+		}
+
+		@Override
+		public void doAction() {
+			textEdit.mouseSelectStart = startPoint;
+			textEdit.mouseSelectEnd = endPoint;
+			String ns = textEdit.getSelect();
+			textEdit.setSelected(s, null, true, false);
+			startPoint = textEdit.mouseSelectStart;
+			endPoint = textEdit.mouseSelectEnd;
+			textEdit.mouseSelectStart = textEdit.mouseSelectEnd;
+			s = ns;
+		}
+
+		@Override
+		public void undoAction() {
+			textEdit.mouseSelectStart = startPoint;
+			textEdit.mouseSelectEnd = endPoint;
+			String ns = textEdit.getSelect();
+			textEdit.setSelected(s, null, true, false);
+			startPoint = textEdit.mouseSelectStart;
+			endPoint = textEdit.mouseSelectEnd;
+			textEdit.mouseSelectStart = textEdit.mouseSelectEnd;
+			s = ns;
+		}
+
+		@Override
+		public boolean tryToMerge(PC_IGresHistoryEntry historyEntry) {
+			if(historyEntry instanceof HistoryEntry){
+				HistoryEntry he = (HistoryEntry)historyEntry;
+				if(he.textEdit == textEdit && !he.newStart && he.add == add && mergeable && he.mergeable){
+					if(add){
+						if(he.startPoint.equals(endPoint)){
+							endPoint = he.endPoint;
+						}else if(he.endPoint.equals(startPoint)){
+							startPoint = he.startPoint;
+						}else{
+							return false;
+						}
+					}else{
+						if(he.startPoint.y < startPoint.y || (he.startPoint.y == startPoint.y && he.startPoint.x < startPoint.x)){
+							startPoint = he.startPoint;
+							endPoint = he.startPoint;
+							s = he.s + s;
+						}else{
+							s += he.s;
+						}
+					}
+					System.out.println("Merged:"+this);
+					return true;
+				}
+			}
+			return false;
+		}
+
+		@Override
+		public String toString() {
+			return "HistoryEntry [textEdit=" + textEdit + ", startPoint="
+					+ startPoint + ", endPoint=" + endPoint + ", s=" + s
+					+ ", newStart=" + newStart + ", add=" + add
+					+ ", mergeable=" + mergeable + "]";
+		}
 		
 	}
 	

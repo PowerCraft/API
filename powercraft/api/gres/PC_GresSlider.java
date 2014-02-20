@@ -5,6 +5,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import powercraft.api.PC_RectI;
 import powercraft.api.PC_Vec2I;
 import powercraft.api.gres.events.PC_GresMouseWheelEvent;
+import powercraft.api.gres.history.PC_GresHistory;
 
 @SideOnly(Side.CLIENT)
 public class PC_GresSlider extends PC_GresComponent {
@@ -59,7 +60,7 @@ public class PC_GresSlider extends PC_GresComponent {
 	}
 	
 	@Override
-	protected boolean handleMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton) {
+	protected boolean handleMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton, PC_GresHistory history) {
 		int x = (int) (progress*(rect.width-SLIDER_SIZE)/steps+0.5);
 		if(mouse.x>=x && mouse.x<=x+SLIDER_SIZE && enabled && parentEnabled){
 			mouseDown = true;
@@ -69,7 +70,7 @@ public class PC_GresSlider extends PC_GresComponent {
 	}
 
 	@Override
-	protected boolean handleMouseMove(PC_Vec2I mouse, int buttons) {
+	protected boolean handleMouseMove(PC_Vec2I mouse, int buttons, PC_GresHistory history) {
 		if(mouseDown){
 			moveBarToMouse(mouse);
 			return true;
@@ -86,18 +87,18 @@ public class PC_GresSlider extends PC_GresComponent {
 	}
 	
 	@Override
-	protected boolean handleMouseButtonUp(PC_Vec2I mouse, int buttons, int eventButton) {
+	protected boolean handleMouseButtonUp(PC_Vec2I mouse, int buttons, int eventButton, PC_GresHistory history) {
 		progress = (int)(progress+0.5);
-		return super.handleMouseButtonUp(mouse, buttons, eventButton);
+		return super.handleMouseButtonUp(mouse, buttons, eventButton, history);
 	}
 	
 	@Override
-	protected void handleMouseLeave(PC_Vec2I mouse, int buttons) {
+	protected void handleMouseLeave(PC_Vec2I mouse, int buttons, PC_GresHistory history) {
 		mouseOver = false;
 	}
 
 	@Override
-	protected void handleMouseWheel(PC_GresMouseWheelEvent event) {
+	protected void handleMouseWheel(PC_GresMouseWheelEvent event, PC_GresHistory history) {
 		float bevore = progress;
 		progress += event.getWheel();
 		if(progress<0)

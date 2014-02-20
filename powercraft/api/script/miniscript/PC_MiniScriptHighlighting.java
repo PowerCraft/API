@@ -94,13 +94,14 @@ public class PC_MiniScriptHighlighting {
 		private PC_SortedStringList labelNames = new PC_SortedStringList();
 		private PC_SortedStringList asmInstructions = new PC_SortedStringList();
 		private PC_SortedStringList words = new PC_SortedStringList();
+		private PC_SortedStringList registers = new PC_SortedStringList();
 		
 		private AutoComplete(){
 			for(String asm:MINISCRIPT_ASM){
 				asmInstructions.add(asm);
 			}
 			for(int i=0; i<31; i++){
-				words.add("r"+i);
+				registers.add("r"+i);
 			}
 			words.add("test.a");
 			words.add("test.hallo.whr");
@@ -111,7 +112,8 @@ public class PC_MiniScriptHighlighting {
 		public void onStringAdded(PC_GresComponent component, PC_GresDocument document, PC_GresDocumentLine line, String toAdd, int x, PC_AutoCompleteDisplay info) {
 			if(info.display){
 				if(toAdd.matches("[\\w\\.]+")){
-					info.parts[0].searchForAdd(toAdd);
+					for(PC_StringListPart part:info.parts)
+						part.searchForAdd(toAdd);
 					info.done += toAdd;
 					System.out.println("Better Ideas for "+info.done+":"+Arrays.asList(info.parts[0].toArray()));
 				}else{
@@ -153,7 +155,10 @@ public class PC_MiniScriptHighlighting {
 					info.parts = new PC_StringListPart[]{new PC_StringListPart(labelNames)};
 					break;
 				case WORD:
-					info.parts = new PC_StringListPart[]{new PC_StringListPart(words)};
+					info.parts = new PC_StringListPart[]{new PC_StringListPart(words), new PC_StringListPart(registers)};
+					break;
+				case REGISTERS:
+					info.parts = new PC_StringListPart[]{new PC_StringListPart(registers)};
 					break;
 				default:
 					info.display = false;
@@ -161,7 +166,8 @@ public class PC_MiniScriptHighlighting {
 				}
 			}
 			info.done = start;
-			info.parts[0].searchFor(start);
+			for(PC_StringListPart part:info.parts)
+				part.searchFor(start);
 			System.out.println("Ideas for "+type+" and start "+start+":"+Arrays.asList(info.parts[0].toArray()));
 		}
 
@@ -173,7 +179,8 @@ public class PC_MiniScriptHighlighting {
 		enum Type{
 			INSTRUCTION("\\s*(?<part>[\\w\\.]*)"),
 			LABEL("\\s*(?:(?:jmp|jmpl|jeq|jne|jl|jle|jb|jbe)\\s+|switch.*(:?,\\s*[\\w\\.]*\\s)*,\\s*)(?<part>[\\w\\.]*)"),
-			WORD("\\s*\\w*(?:[\\W&&[^;]]+(?<part>[\\w\\.]*))+");
+			WORD("\\s*(?:ext|cmp|\\w*.*[\\[,])(?:[\\W&&[^;]]+(?<part>[\\w\\.]*))+"),
+			REGISTERS("\\s*\\w*(?:[\\W&&[^;]]+(?<part>[\\w\\.]*))+");
 			
 			public final String regex;
 			

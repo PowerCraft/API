@@ -5,6 +5,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import powercraft.api.PC_RectI;
 import powercraft.api.PC_Vec2I;
 import powercraft.api.gres.events.PC_GresMouseWheelEvent;
+import powercraft.api.gres.history.PC_GresHistory;
 
 @SideOnly(Side.CLIENT)
 class PC_GresScrollAreaContainer extends PC_GresContainer {
@@ -52,8 +53,8 @@ class PC_GresScrollAreaContainer extends PC_GresContainer {
 	}
 
 	@Override
-	protected void handleMouseWheel(PC_GresMouseWheelEvent event) {
-		if(scrollArea.onMouseWheel(event.getMouse(), event.getButtonState(), event.getWheel())){
+	protected void handleMouseWheel(PC_GresMouseWheelEvent event, PC_GresHistory history) {
+		if(scrollArea.onMouseWheel(event.getMouse(), event.getButtonState(), event.getWheel(), null)){
 			event.consume();
 		}
 	}

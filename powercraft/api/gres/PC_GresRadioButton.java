@@ -7,6 +7,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import powercraft.api.PC_RectI;
 import powercraft.api.PC_Vec2I;
+import powercraft.api.gres.history.PC_GresHistory;
 
 @SideOnly(Side.CLIENT)
 public class PC_GresRadioButton extends PC_GresComponent {
@@ -64,7 +65,7 @@ public class PC_GresRadioButton extends PC_GresComponent {
 	}
 
 	@Override
-	protected boolean handleMouseButtonClick(PC_Vec2I mouse, int buttons, int eventButton) {
+	protected boolean handleMouseButtonClick(PC_Vec2I mouse, int buttons, int eventButton, PC_GresHistory history) {
 		if(!state){
 			for(PC_GresRadioButton rb:group){
 				rb.state = false;

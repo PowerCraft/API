@@ -14,6 +14,7 @@ import powercraft.api.gres.events.PC_GresEvent;
 import powercraft.api.gres.events.PC_GresMouseButtonEvent;
 import powercraft.api.gres.events.PC_GresMouseButtonEvent.Event;
 import powercraft.api.gres.events.PC_IGresEventListener;
+import powercraft.api.gres.history.PC_GresHistory;
 import powercraft.api.gres.layout.PC_GresLayoutVertical;
 import powercraft.api.inventory.PC_ISidedInventory;
 import cpw.mods.fml.relauncher.Side;
@@ -145,7 +146,7 @@ public class PC_GresWindowSideTab extends PC_GresContainer {
 	}
 
 	@Override
-	protected boolean handleMouseButtonClick(PC_Vec2I mouse, int buttons, int eventButton) {
+	protected boolean handleMouseButtonClick(PC_Vec2I mouse, int buttons, int eventButton, PC_GresHistory history) {
 		if(openSideTab == this){
 			openSideTab = null;
 		}else{

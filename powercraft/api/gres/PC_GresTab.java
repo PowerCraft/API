@@ -13,6 +13,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import powercraft.api.PC_RectI;
 import powercraft.api.PC_Vec2I;
 import powercraft.api.gres.events.PC_GresMouseWheelEvent;
+import powercraft.api.gres.history.PC_GresHistory;
 
 @SideOnly(Side.CLIENT)
 public class PC_GresTab extends PC_GresContainer {
@@ -180,10 +181,10 @@ public class PC_GresTab extends PC_GresContainer {
 	}
 
 	@Override
-	protected void tryActionOnKeyTyped(char key, int keyCode) {
+	protected void tryActionOnKeyTyped(char key, int keyCode, PC_GresHistory history) {
 
 		if (visible && children.size()>0) {
-			children.get(0).tryActionOnKeyTyped(key, keyCode);
+			children.get(0).tryActionOnKeyTyped(key, keyCode, null);
 		}
 	}
 	
@@ -207,12 +208,12 @@ public class PC_GresTab extends PC_GresContainer {
 	}
 	
 	@Override
-	protected void handleMouseLeave(PC_Vec2I mouse, int buttons) {
+	protected void handleMouseLeave(PC_Vec2I mouse, int buttons, PC_GresHistory history) {
 		mouseOver = false;
 	}
 
 	@Override
-	protected boolean handleMouseMove(PC_Vec2I mouse, int buttons) {
+	protected boolean handleMouseMove(PC_Vec2I mouse, int buttons, PC_GresHistory history) {
 		if(mouseDown){
 			if(Math.abs(mouse.x-xPosDown)>5 || move){
 				move = true;
@@ -239,17 +240,17 @@ public class PC_GresTab extends PC_GresContainer {
 	}
 	
 	@Override
-	protected boolean handleMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton) {
+	protected boolean handleMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton, PC_GresHistory history) {
 		move = false;
 		xPosDown = mouse.x;
-		return super.handleMouseButtonDown(mouse, buttons, eventButton);
+		return super.handleMouseButtonDown(mouse, buttons, eventButton, history);
 	}
 
 	@Override
-	protected boolean handleMouseButtonUp(PC_Vec2I mouse, int buttons, int eventButton) {
+	protected boolean handleMouseButtonUp(PC_Vec2I mouse, int buttons, int eventButton, PC_GresHistory history) {
 		if(!move){
 			moveToTop(mouseOverTab.child);
-			return super.handleMouseButtonUp(mouse, buttons, eventButton);
+			return super.handleMouseButtonUp(mouse, buttons, eventButton, history);
 		}
 		move = false;
 		mouseDown = false;
@@ -257,7 +258,7 @@ public class PC_GresTab extends PC_GresContainer {
 	}
 
 	@Override
-	protected void handleMouseWheel(PC_GresMouseWheelEvent event) {
+	protected void handleMouseWheel(PC_GresMouseWheelEvent event, PC_GresHistory history) {
 		float bev=tabsScroll;
 		if(event.getWheel()>0){
 			tabsScroll--;

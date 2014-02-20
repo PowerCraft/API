@@ -8,6 +8,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import powercraft.api.PC_RectI;
 import powercraft.api.PC_Vec2I;
+import powercraft.api.gres.history.PC_GresHistory;
 
 @SideOnly(Side.CLIENT)
 public class PC_GresTextEdit extends PC_GresComponent {
@@ -116,8 +117,8 @@ public class PC_GresTextEdit extends PC_GresComponent {
 	}
 
 	@Override
-	protected boolean handleKeyTyped(char key, int keyCode) {
-		super.handleKeyTyped(key, keyCode);
+	protected boolean handleKeyTyped(char key, int keyCode, PC_GresHistory history) {
+		super.handleKeyTyped(key, keyCode, history);
 		cursorCounter = 0;
 		if (type == PC_GresInputType.NONE)
 			return true;
@@ -462,8 +463,8 @@ public class PC_GresTextEdit extends PC_GresComponent {
 	}
 
 	@Override
-	protected boolean handleMouseMove(PC_Vec2I mouse, int buttons) {
-		super.handleMouseMove(mouse, buttons);
+	protected boolean handleMouseMove(PC_Vec2I mouse, int buttons, PC_GresHistory history) {
+		super.handleMouseMove(mouse, buttons, history);
 		if (mouseDown) {
 			mouseSelectEnd = getMousePositionInString(mouse.x);
 			cursorCounter = 0;
@@ -473,8 +474,8 @@ public class PC_GresTextEdit extends PC_GresComponent {
 
 	@Override
 	protected boolean handleMouseButtonDown(PC_Vec2I mouse, int buttons,
-			int eventButton) {
-		super.handleMouseButtonDown(mouse, buttons, eventButton);
+			int eventButton, PC_GresHistory history) {
+		super.handleMouseButtonDown(mouse, buttons, eventButton, history);
 		mouseSelectStart = getMousePositionInString(mouse.x);
 		mouseSelectEnd = mouseSelectStart;
 		cursorCounter = 0;

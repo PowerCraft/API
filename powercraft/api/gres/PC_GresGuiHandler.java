@@ -14,6 +14,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
@@ -25,6 +26,7 @@ import powercraft.api.gres.events.PC_GresKeyEvent;
 import powercraft.api.gres.events.PC_GresPaintEvent;
 import powercraft.api.gres.events.PC_GresPrePostEvent.EventType;
 import powercraft.api.gres.events.PC_GresTickEvent;
+import powercraft.api.gres.history.PC_GresHistory;
 import powercraft.api.gres.layout.PC_IGresLayout;
 import powercraft.api.gres.slot.PC_Slot;
 import cpw.mods.fml.relauncher.Side;
@@ -48,6 +50,8 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 	private int lastClickButton;
 	private boolean takeAll;
 	private int scale;
+	
+	private PC_GresHistory history = new PC_GresHistory(100);
 	
 	protected PC_GresGuiHandler(PC_IGresGui gui) {
 
@@ -235,17 +239,32 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 
 
 	protected void eventKeyTyped(char key, int keyCode) {
-
+		
+		switch(keyCode){
+		case Keyboard.KEY_Z:
+			if(Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL)){
+				history.undo();
+				return;
+			}
+			break;
+		case Keyboard.KEY_Y:
+			if(Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL)){
+				history.redo();
+				return;
+			}
+			break;
+		}
+		
 		PC_GresComponent c = focusedComponent;
-		while(c!=null && !c.onKeyTyped(key, keyCode)){
+		while(c!=null && !c.onKeyTyped(key, keyCode, history)){
 			c = c.getParent();
 		}
 		if(c==null){
-			PC_GresKeyEvent event = new PC_GresKeyEvent(this, key, keyCode);
+			PC_GresKeyEvent event = new PC_GresKeyEvent(this, key, keyCode, history);
 			fireEvent(event);
 			if (!event.isConsumed()) {
 				if(!checkHotbarKeys(keyCode)){
-					tryActionOnKeyTyped(key, keyCode);
+					tryActionOnKeyTyped(key, keyCode, history);
 				}
 			}
 		}
@@ -272,8 +291,8 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 			newMouseOverComponent = this;
 		}
 		if (newMouseOverComponent != mouseOverComponent) {
-			mouseOverComponent.onMouseLeave(mouse.sub(mouseOverComponent.getRealLocation()), buttons);
-			newMouseOverComponent.onMouseEnter(mouse.sub(newMouseOverComponent.getRealLocation()), buttons);
+			mouseOverComponent.onMouseLeave(mouse.sub(mouseOverComponent.getRealLocation()), buttons, history);
+			newMouseOverComponent.onMouseEnter(mouse.sub(newMouseOverComponent.getRealLocation()), buttons, history);
 			mouseOverComponent = newMouseOverComponent;
 		}
 	}
@@ -283,14 +302,14 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 
 		setFocus(mouseOverComponent);
 		inventoryMouseDown(mouse, buttons, eventButton);
-		focusedComponent.onMouseButtonDown(mouse.sub(focusedComponent.getRealLocation()), buttons, eventButton);
+		focusedComponent.onMouseButtonDown(mouse.sub(focusedComponent.getRealLocation()), buttons, eventButton, history);
 	}
 
 
 	protected void eventMouseButtonUp(PC_Vec2I mouse, int buttons, int eventButton) {
 
 		inventoryMouseUp(mouse, buttons, eventButton);
-		focusedComponent.onMouseButtonUp(mouse.sub(focusedComponent.getRealLocation()), buttons, eventButton);
+		focusedComponent.onMouseButtonUp(mouse.sub(focusedComponent.getRealLocation()), buttons, eventButton, history);
 	}
 
 
@@ -298,15 +317,15 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 
 		checkMouseOverComponent(mouse, buttons);
 		inventoryMouseMove(mouse, buttons);
-		mouseOverComponent.onMouseMove(mouse.sub(mouseOverComponent.getRealLocation()), buttons);
+		mouseOverComponent.onMouseMove(mouse.sub(mouseOverComponent.getRealLocation()), buttons, history);
 		if(mouseOverComponent!=focusedComponent)
-			focusedComponent.onMouseMove(mouse.sub(focusedComponent.getRealLocation()), buttons);
+			focusedComponent.onMouseMove(mouse.sub(focusedComponent.getRealLocation()), buttons, history);
 	}
 
 
 	protected void eventMouseWheel(PC_Vec2I mouse, int buttons, int wheel) {
 		PC_GresComponent c = focusedComponent;
-		while(c!=null && !c.onMouseWheel(mouse.sub(c.getRealLocation()), buttons, wheel)){
+		while(c!=null && !c.onMouseWheel(mouse.sub(c.getRealLocation()), buttons, wheel, history)){
 			c = c.getParent();
 		}
 	}
@@ -322,12 +341,12 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 	public void setFocus(PC_GresComponent focusedComponent) {
 		if(this.focusedComponent != focusedComponent){
 			if(this.focusedComponent!=null){
-				this.focusedComponent.onFocusLost(focusedComponent);
+				this.focusedComponent.onFocusLost(focusedComponent, history);
 			}
 			PC_GresComponent oldFocusedComponent = this.focusedComponent;
 			this.focusedComponent = focusedComponent;
 			if(focusedComponent!=null){
-				focusedComponent.onFocusGot(oldFocusedComponent);
+				focusedComponent.onFocusGot(oldFocusedComponent, history);
 			}
 		}
 	}
@@ -550,6 +569,10 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 		if (mc.thePlayer != null && gui instanceof PC_GresBaseWithInventory) {
             ((PC_GresBaseWithInventory)gui).onContainerClosed(this.mc.thePlayer);
         }
+	}
+	
+	public PC_GresHistory getHistory(){
+		return history;
 	}
 	
 }

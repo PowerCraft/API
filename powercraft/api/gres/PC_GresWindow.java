@@ -13,6 +13,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import powercraft.api.PC_RectI;
 import powercraft.api.PC_Vec2I;
+import powercraft.api.gres.history.PC_GresHistory;
 
 @SideOnly(Side.CLIENT)
 public class PC_GresWindow extends PC_GresContainer {
@@ -195,10 +196,10 @@ public class PC_GresWindow extends PC_GresContainer {
 	}
 	
 	@Override
-	protected void tryActionOnKeyTyped(char key, int keyCode) {
-		super.tryActionOnKeyTyped(key, keyCode);
+	protected void tryActionOnKeyTyped(char key, int keyCode, PC_GresHistory history) {
+		super.tryActionOnKeyTyped(key, keyCode, history);
 		for(PC_GresWindowSideTab sideTab:sideTabs){
-			sideTab.tryActionOnKeyTyped(key, keyCode);
+			sideTab.tryActionOnKeyTyped(key, keyCode, null);
 		}
 	}
 	

@@ -4,6 +4,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import powercraft.api.PC_RectI;
 import powercraft.api.PC_Vec2I;
+import powercraft.api.gres.history.PC_GresHistory;
 
 @SideOnly(Side.CLIENT)
 public class PC_GresCheckBox extends PC_GresComponent {
@@ -41,9 +42,9 @@ public class PC_GresCheckBox extends PC_GresComponent {
 	}
 	
 	@Override
-	protected boolean handleMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton) {
+	protected boolean handleMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton, PC_GresHistory history) {
 		state=!state;
-		super.handleMouseButtonDown(mouse, buttons, eventButton);
+		super.handleMouseButtonDown(mouse, buttons, eventButton, history);
 		notifyChange();
 		return true;
 	}

@@ -10,6 +10,7 @@ import powercraft.api.gres.events.PC_GresEvent;
 import powercraft.api.gres.events.PC_GresFocusLostEvent;
 import powercraft.api.gres.events.PC_GresMouseButtonEvent;
 import powercraft.api.gres.events.PC_IGresEventListener;
+import powercraft.api.gres.history.PC_GresHistory;
 import powercraft.api.gres.layout.PC_GresLayoutVertical;
 
 public class PC_GresAutoCompleteWindow extends PC_GresFrame{
@@ -88,33 +89,33 @@ public class PC_GresAutoCompleteWindow extends PC_GresFrame{
 		super.onScaleChanged(newScale);
 	}
 	
-	private void makeAdd(){
+	private void makeAdd(PC_GresHistory history){
 		if(scrollArea.getContainer().children.isEmpty())
 			return;
 		String text = scrollArea.getContainer().children.get(0).getText();
-		makeAdd(text);
+		makeAdd(text, history);
 	}
 	
-	private void makeAdd(String text){
-		textEdit.autoComplete(text.substring(done));
+	private void makeAdd(String text, PC_GresHistory history){
+		textEdit.autoComplete(text.substring(done), history);
 		if(!text.endsWith("."))
 			close();
 	}
 	
 	@Override
-	protected boolean handleKeyTyped(char key, int keyCode) {
+	protected boolean handleKeyTyped(char key, int keyCode, PC_GresHistory history) {
 		switch (keyCode) {
 		case Keyboard.KEY_ESCAPE:
 			close();
 			break;
 		case Keyboard.KEY_RETURN:
-			makeAdd();
+			makeAdd(history);
 			break;
 		case Keyboard.KEY_SPACE:
-			makeAdd();
-			return textEdit.onKeyTyped(key, keyCode);
+			makeAdd(history);
+			return textEdit.onKeyTyped(key, keyCode, history);
 		default:
-			return textEdit.onKeyTyped(key, keyCode);
+			return textEdit.onKeyTyped(key, keyCode, history);
 		}
 		return true;
 	}
@@ -146,7 +147,7 @@ public class PC_GresAutoCompleteWindow extends PC_GresFrame{
 				PC_GresMouseButtonEvent ev = (PC_GresMouseButtonEvent) event;
 				if(ev.getEvent()==PC_GresMouseButtonEvent.Event.CLICK){
 					if(ev.getComponent() instanceof PC_GresButton){
-						frame.makeAdd(ev.getComponent().getText());
+						frame.makeAdd(ev.getComponent().getText(), ev.getHistory());
 					}
 				}
 			}
