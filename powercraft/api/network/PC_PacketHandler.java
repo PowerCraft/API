@@ -22,6 +22,8 @@ import powercraft.api.PC_Side;
 import powercraft.api.PC_Utils;
 import powercraft.api.network.packet.PC_PacketPasswordReply;
 import powercraft.api.network.packet.PC_PacketPasswordRequest;
+import powercraft.api.network.packet.PC_PacketTileEntityMessageCTS;
+import powercraft.api.network.packet.PC_PacketTileEntityMessageSTC;
 import powercraft.api.network.packet.PC_PacketTileEntitySync;
 import powercraft.api.network.packet.PC_PacketWrongPassword;
 import powercraft.api.reflect.PC_Security;
@@ -63,6 +65,8 @@ public final class PC_PacketHandler extends SimpleChannelInboundHandler<PC_Packe
 			PC_PacketHandler.registerPacket(PC_PacketPasswordRequest.class);
 			PC_PacketHandler.registerPacket(PC_PacketPasswordReply.class);
 			PC_PacketHandler.registerPacket(PC_PacketWrongPassword.class);
+			PC_PacketHandler.registerPacket(PC_PacketTileEntityMessageCTS.class);
+			PC_PacketHandler.registerPacket(PC_PacketTileEntityMessageSTC.class);
 		}
 	}
 	

@@ -3,6 +3,8 @@ package powercraft.api.gres.font;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.util.ResourceLocation;
@@ -56,6 +58,7 @@ public class PC_FontRenderer {
 		int red = 255;
 		int green = 255;
 		int blue = 255;
+		boolean error = false;
 		for(int i=0; i<text.length(); i++){
 			char c = text.charAt(i);
 			if(c==PC_Formatter.START_SEQ && i + 1 < text.length()){
@@ -70,7 +73,10 @@ public class PC_FontRenderer {
 					tessellator.draw();
 					PC_ClientUtils.mc().renderEngine.bindTexture(activeTexture.getResourceLocation());
 					tessellator.startDrawingQuads();
+				}else if(c==PC_Formatter.ERROR_SEQ){
+					error = true;
 				}else{
+					error = false;
 					red = 255;
 					green = 255;
 					blue = 255;
@@ -91,8 +97,21 @@ public class PC_FontRenderer {
 					tessellator.addVertexWithUV(x+data.width*scale, y+data.height*scale, 0, tx+tw, ty+th);
 					tessellator.addVertexWithUV(x+data.width*scale, y, 0, tx+tw, ty);
 					tessellator.addVertexWithUV(x, y, 0, tx, ty);
+					if(error){
+						tessellator.draw();
+						GL11.glDisable(GL11.GL_TEXTURE_2D);
+						tessellator.startDrawingQuads();
+						tessellator.setColorOpaque(255, 0, 0);
+						tessellator.addVertex(x, y+data.height*scale, 0);
+						tessellator.addVertex(x+data.width*scale, y+data.height*scale, 0);
+						tessellator.addVertex(x+data.width*scale, y+data.height*scale-1, 0);
+						tessellator.addVertex(x, y+data.height*scale-1, 0);
+						tessellator.draw();
+						GL11.glEnable(GL11.GL_TEXTURE_2D);
+						tessellator.startDrawingQuads();
+					}
+					x += data.width*scale;
 				}
-				x += data.width*scale;
 			}
 		}
 		tessellator.draw();
@@ -118,6 +137,7 @@ public class PC_FontRenderer {
 				}else if(c==PC_Formatter.FONT_SEQ){
 					int font = text.charAt(++i);
 					activeTexture = PC_Fonts.get(font);
+				}else if(c==PC_Formatter.ERROR_SEQ){
 				}else{
 					activeTexture = texture;
 				}

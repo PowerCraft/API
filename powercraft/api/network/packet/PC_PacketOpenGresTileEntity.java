@@ -1,6 +1,7 @@
 package powercraft.api.network.packet;
 
 import io.netty.buffer.ByteBuf;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetHandler;
 import powercraft.api.PC_ClientUtils;
 import powercraft.api.PC_Utils;
@@ -16,17 +17,19 @@ public class PC_PacketOpenGresTileEntity extends PC_PacketServerToClient {
 	private int x, y, z;
 	private int windowId;
 	private long session;
+	private NBTTagCompound nbtTagCompound;
 	
 	public PC_PacketOpenGresTileEntity(){
 		
 	}
 	
-	public PC_PacketOpenGresTileEntity(PC_TileEntity tileEntity, int windowId, long session){
+	public PC_PacketOpenGresTileEntity(PC_TileEntity tileEntity, int windowId, long session, NBTTagCompound nbtTagCompound){
 		x = tileEntity.xCoord;
 		y = tileEntity.yCoord;
 		z = tileEntity.zCoord;
 		this.windowId = windowId;
 		this.session = session;
+		this.nbtTagCompound = nbtTagCompound;
 	}
 
 	@Override
@@ -35,7 +38,7 @@ public class PC_PacketOpenGresTileEntity extends PC_PacketServerToClient {
 		PC_TileEntity te = PC_Utils.getTileEntity(PC_ClientUtils.mc().theWorld, x, y, z, PC_TileEntity.class);
 		if(te!=null){
 			te.setSession(session);
-			PC_Gres.openClientGui(PC_ClientUtils.mc().thePlayer, te, windowId);
+			PC_Gres.openClientGui(PC_ClientUtils.mc().thePlayer, te, windowId, nbtTagCompound);
 		}
 		return null;
 	}
@@ -47,6 +50,7 @@ public class PC_PacketOpenGresTileEntity extends PC_PacketServerToClient {
 		y = buf.readInt();
 		z = buf.readInt();
 		session = buf.readLong();
+		nbtTagCompound = readNBTFromBuf(buf);
 	}
 
 	@Override
@@ -56,6 +60,7 @@ public class PC_PacketOpenGresTileEntity extends PC_PacketServerToClient {
 		buf.writeInt(y);
 		buf.writeInt(z);
 		buf.writeLong(session);
+		writeNBTToBuf(buf, nbtTagCompound);
 	}
 
 }

@@ -45,7 +45,7 @@ public class PC_GresLayoutHorizontal implements PC_IGresLayout {
 		for (PC_GresComponent component : container.getLayoutChildOrder()) {
 			PC_RectI padding = component.getPadding();
 			PC_Vec2I minSize = component.getMinSize();
-			minimumSize.y += minSize.x + padding.x + padding.width;
+			minimumSize.x += minSize.x + padding.x + padding.width;
 			int height = minSize.y + padding.y + padding.height;
 			if (height > minimumSize.y) {
 				minimumSize.y= height;

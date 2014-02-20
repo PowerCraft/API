@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Random;
+import java.util.WeakHashMap;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.particle.EffectRenderer;
@@ -27,6 +28,7 @@ import net.minecraftforge.common.IPlantable;
 import powercraft.api.PC_3DRotation;
 import powercraft.api.PC_ClientUtils;
 import powercraft.api.PC_Direction;
+import powercraft.api.PC_Logger;
 import powercraft.api.PC_NBTTagHandler;
 import powercraft.api.PC_Utils;
 import powercraft.api.block.PC_Field.Flag;
@@ -36,6 +38,8 @@ import powercraft.api.gres.PC_IGresGuiOpenHandler;
 import powercraft.api.network.PC_Packet;
 import powercraft.api.network.PC_PacketHandler;
 import powercraft.api.network.packet.PC_PacketPasswordRequest;
+import powercraft.api.network.packet.PC_PacketTileEntityMessageCTS;
+import powercraft.api.network.packet.PC_PacketTileEntityMessageSTC;
 import powercraft.api.network.packet.PC_PacketTileEntitySync;
 import powercraft.api.reflect.PC_Processor;
 import powercraft.api.reflect.PC_Reflection;
@@ -45,6 +49,16 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class PC_TileEntity extends TileEntity {
 
+	private static WeakHashMap<EntityPlayer, Session> sessions = new WeakHashMap<EntityPlayer, Session>();
+	
+	private static class Session{
+		int dimension;
+		int x;
+		int y;
+		int z;
+		long session;
+	}
+	
 	private static Random sessionRand = new Random();
 	
 	private String owner;
@@ -404,11 +418,17 @@ public class PC_TileEntity extends TileEntity {
 		this.session = session;
 	}
 
-	public long getNewSession() {
-		session = sessionRand.nextLong();
-		return session;
+	public long getNewSession(EntityPlayer player) {
+		Session session = new Session();
+		session.session = sessionRand.nextLong();
+		session.dimension = worldObj.getWorldInfo().getVanillaDimension();
+		session.x = xCoord;
+		session.y = yCoord;
+		session.z = zCoord;
+		sessions.put(player, session);
+		return session.session;
 	}
-
+	
 	@SideOnly(Side.CLIENT)
 	public void openPasswordGui() {
 		PC_Gres.openClientGui(PC_ClientUtils.mc().thePlayer, new PC_GuiPasswordInput(this), -1);
@@ -456,6 +476,27 @@ public class PC_TileEntity extends TileEntity {
 
 	public void setRedstonePowerValue(PC_Direction side, int faceSide, int value) {
 		
+	}
+
+	public void onClientMessage(EntityPlayer player, NBTTagCompound nbtTagCompound, long session) {
+		Session pSession = sessions.get(player);
+		if(pSession!=null && pSession.dimension == worldObj.getWorldInfo().getVanillaDimension() && pSession.x == xCoord && pSession.y == yCoord && pSession.z == zCoord && pSession.session == session){
+			onMessage(player, nbtTagCompound);
+		}else{
+			PC_Logger.warning("Player %s tries to send not signated messaged", session);
+		}
+	}
+	
+	public void onMessage(EntityPlayer player, NBTTagCompound nbtTagCompound) {
+		
+	}
+	
+	public void sendMessage(NBTTagCompound nbtTagCompound){
+		if(isClient()){
+			PC_PacketHandler.sendToServer(new PC_PacketTileEntityMessageCTS(this, nbtTagCompound, session));
+		}else{
+			PC_PacketHandler.sendToAllAround(new PC_PacketTileEntityMessageSTC(this, nbtTagCompound), worldObj.getWorldInfo().getVanillaDimension(), xCoord, yCoord, zCoord, 32);
+		}
 	}
 	
 }

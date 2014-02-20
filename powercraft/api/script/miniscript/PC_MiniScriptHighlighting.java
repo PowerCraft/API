@@ -1,8 +1,8 @@
 package powercraft.api.script.miniscript;
 
 import java.awt.Font;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -44,8 +44,8 @@ public class PC_MiniScriptHighlighting {
 		return highlighting;
 	}
 	
-	public static PC_AutoComplete makeAutoComplete(){
-		return new AutoComplete();
+	public static PC_AutoComplete makeAutoComplete(Set<String> words){
+		return new AutoComplete(words);
 	}
 	
 	public static PC_AutoAdd makeAutoAdd(){
@@ -96,18 +96,16 @@ public class PC_MiniScriptHighlighting {
 		private PC_SortedStringList words = new PC_SortedStringList();
 		private PC_SortedStringList registers = new PC_SortedStringList();
 		
-		private AutoComplete(){
+		private AutoComplete(Set<String> words){
 			for(String asm:MINISCRIPT_ASM){
 				asmInstructions.add(asm);
 			}
 			for(int i=0; i<31; i++){
 				registers.add("r"+i);
 			}
-			words.add("test.a");
-			words.add("test.hallo.whr");
-			words.add("test.was");
+			this.words.addAll(words);
 		}
-		
+
 		@Override
 		public void onStringAdded(PC_GresComponent component, PC_GresDocument document, PC_GresDocumentLine line, String toAdd, int x, PC_AutoCompleteDisplay info) {
 			if(info.display){
@@ -115,10 +113,8 @@ public class PC_MiniScriptHighlighting {
 					for(PC_StringListPart part:info.parts)
 						part.searchForAdd(toAdd);
 					info.done += toAdd;
-					System.out.println("Better Ideas for "+info.done+":"+Arrays.asList(info.parts[0].toArray()));
 				}else{
 					info.display = false;
-					System.out.println("Stop Ideas");
 				}
 			}else if(toAdd.equals(".")){
 				makeComplete(component, document, line, x, info);
@@ -168,7 +164,6 @@ public class PC_MiniScriptHighlighting {
 			info.done = start;
 			for(PC_StringListPart part:info.parts)
 				part.searchFor(start);
-			System.out.println("Ideas for "+type+" and start "+start+":"+Arrays.asList(info.parts[0].toArray()));
 		}
 
 		@Override
@@ -179,7 +174,7 @@ public class PC_MiniScriptHighlighting {
 		enum Type{
 			INSTRUCTION("\\s*(?<part>[\\w\\.]*)"),
 			LABEL("\\s*(?:(?:jmp|jmpl|jeq|jne|jl|jle|jb|jbe)\\s+|switch.*(:?,\\s*[\\w\\.]*\\s)*,\\s*)(?<part>[\\w\\.]*)"),
-			WORD("\\s*(?:ext|cmp|\\w*.*[\\[,])(?:[\\W&&[^;]]+(?<part>[\\w\\.]*))+"),
+			WORD("\\s*(?:ext|cmp|[^\\[,]*)(?:[\\W&&[^;]]+(?<part>[\\w\\.]*))+"),
 			REGISTERS("\\s*\\w*(?:[\\W&&[^;]]+(?<part>[\\w\\.]*))+");
 			
 			public final String regex;

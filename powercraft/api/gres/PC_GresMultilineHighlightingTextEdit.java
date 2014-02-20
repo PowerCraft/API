@@ -18,11 +18,9 @@ import powercraft.api.gres.doc.PC_GresHighlighting;
 import powercraft.api.gres.events.PC_GresMouseWheelEvent;
 import powercraft.api.gres.font.PC_FontRenderer;
 import powercraft.api.gres.font.PC_FontTexture;
-import powercraft.api.gres.font.PC_Fonts;
 import powercraft.api.gres.font.PC_Formatter;
 import powercraft.api.gres.history.PC_GresHistory;
 import powercraft.api.gres.history.PC_IGresHistoryEntry;
-import powercraft.api.script.miniscript.PC_MiniScriptHighlighting;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -54,12 +52,12 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 	private static int overBar=-1;
 	private static int selectBar=-1;
 	
-	public PC_GresMultilineHighlightingTextEdit(){
-		fontTexture = PC_Fonts.create(PC_FontRenderer.getFont("Consolas", 0, 24), null);
-		highlighting = PC_MiniScriptHighlighting.makeHighlighting();
-		autoAdd = PC_MiniScriptHighlighting.makeAutoAdd();
-		autoComplete = PC_MiniScriptHighlighting.makeAutoComplete();
-		document = new PC_GresDocument("", highlighting, docHandler = new DocHandler(), autoComplete==null?null:autoComplete.getInfoCollector());
+	public PC_GresMultilineHighlightingTextEdit(PC_FontTexture fontTexture, PC_GresHighlighting highlighting, PC_AutoAdd autoAdd, PC_AutoComplete autoComplete, String text){
+		this.fontTexture = fontTexture;
+		this.highlighting = highlighting;
+		this.autoAdd = autoAdd;
+		this.autoComplete = autoComplete;
+		document = new PC_GresDocument(text, highlighting, docHandler = new DocHandler(), autoComplete==null?null:autoComplete.getInfoCollector());
 	}
 
 	@Override
@@ -768,7 +766,6 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 			this.newStart = newStart;
 			this.add = add;
 			this.mergeable = mergeable;
-			System.out.println(this);
 		}
 
 		@Override
@@ -817,19 +814,10 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 							s += he.s;
 						}
 					}
-					System.out.println("Merged:"+this);
 					return true;
 				}
 			}
 			return false;
-		}
-
-		@Override
-		public String toString() {
-			return "HistoryEntry [textEdit=" + textEdit + ", startPoint="
-					+ startPoint + ", endPoint=" + endPoint + ", s=" + s
-					+ ", newStart=" + newStart + ", add=" + add
-					+ ", mergeable=" + mergeable + "]";
 		}
 		
 	}

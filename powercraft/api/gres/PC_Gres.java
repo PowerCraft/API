@@ -18,6 +18,7 @@ import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
 import org.w3c.dom.Document;
@@ -58,31 +59,31 @@ public class PC_Gres {
 	}
 	
 	@SideOnly(Side.CLIENT)
-	public static void openClientGui(EntityPlayer player, PC_TileEntity tileEntity, int windowId) {
+	public static void openClientGui(EntityPlayer player, PC_TileEntity tileEntity, int windowId, NBTTagCompound nbtTagCompound) {
 
 		if (tileEntity instanceof PC_IGresGuiOpenHandler) {
-			PC_IGresGui gui = ((PC_IGresGuiOpenHandler) tileEntity).openClientGui(player);
+			PC_IGresGui gui = ((PC_IGresGuiOpenHandler) tileEntity).openClientGui(player, nbtTagCompound);
 			openClientGui(player, gui, windowId);
 		}
 	}
 
 
 	@SideOnly(Side.CLIENT)
-	public static void openClientGui(EntityPlayer player, String guiOpenHandlerName, int windowId) {
+	public static void openClientGui(EntityPlayer player, String guiOpenHandlerName, int windowId, NBTTagCompound nbtTagCompound) {
 
 		PC_IGresGuiOpenHandler guiOpenHandler = guiOpenHandlers.get(guiOpenHandlerName);
 		if (guiOpenHandler != null) {
-			PC_IGresGui gui = guiOpenHandler.openClientGui(player);
+			PC_IGresGui gui = guiOpenHandler.openClientGui(player, nbtTagCompound);
 			openClientGui(player, gui, windowId);
 		}
 	}
 
 
 	@SideOnly(Side.CLIENT)
-	public static void openClientGui(EntityPlayer player, Item item, int windowId) {
+	public static void openClientGui(EntityPlayer player, Item item, int windowId, NBTTagCompound nbtTagCompound) {
 
 		if (item instanceof PC_IGresGuiOpenHandler) {
-			PC_IGresGui gui = ((PC_IGresGuiOpenHandler) item).openClientGui(player);
+			PC_IGresGui gui = ((PC_IGresGuiOpenHandler) item).openClientGui(player, nbtTagCompound);
 			openClientGui(player, gui, windowId);
 		}
 	}
@@ -107,17 +108,21 @@ public class PC_Gres {
 		if (player instanceof EntityPlayerMP && tileEntity instanceof PC_IGresGuiOpenHandler) {
 			EntityPlayerMP playerMP = (EntityPlayerMP) player;
 			PC_GresBaseWithInventory container = ((PC_IGresGuiOpenHandler) tileEntity).openServerGui(player);
-			long session = tileEntity.getNewSession();
+			NBTTagCompound sendToClient = ((PC_IGresGuiOpenHandler) tileEntity).sendOnGuiOpenToClient(player);
+			if(sendToClient==null){
+				sendToClient = new NBTTagCompound();
+			}
+			long session = tileEntity.getNewSession(player);
 			if (container != null) {
 				playerMP.getNextWindowId();
 				playerMP.closeContainer();
 				int windowId = playerMP.currentWindowId;
-				PC_PacketHandler.sendTo(new PC_PacketOpenGresTileEntity(tileEntity, windowId, session), (EntityPlayerMP)player);
+				PC_PacketHandler.sendTo(new PC_PacketOpenGresTileEntity(tileEntity, windowId, session, sendToClient), (EntityPlayerMP)player);
 				player.openContainer = container;
 				player.openContainer.windowId = windowId;
 				player.openContainer.addCraftingToCrafters(playerMP);
 			} else {
-				PC_PacketHandler.sendTo(new PC_PacketOpenGresTileEntity(tileEntity, -1, session), (EntityPlayerMP)player);
+				PC_PacketHandler.sendTo(new PC_PacketOpenGresTileEntity(tileEntity, -1, session, sendToClient), (EntityPlayerMP)player);
 			}
 		}
 	}
@@ -130,16 +135,20 @@ public class PC_Gres {
 			if (guiOpenHandler != null) {
 				EntityPlayerMP playerMP = (EntityPlayerMP) player;
 				PC_GresBaseWithInventory container = guiOpenHandler.openServerGui(player);
+				NBTTagCompound sendToClient = guiOpenHandler.sendOnGuiOpenToClient(player);
+				if(sendToClient==null){
+					sendToClient = new NBTTagCompound();
+				}
 				if (container != null) {
 					playerMP.getNextWindowId();
 					playerMP.closeContainer();
 					int windowId = playerMP.currentWindowId;
-					PC_PacketHandler.sendTo(new PC_PacketOpenGresHandler(guiOpenHandlerName, windowId), (EntityPlayerMP)player);
+					PC_PacketHandler.sendTo(new PC_PacketOpenGresHandler(guiOpenHandlerName, windowId, sendToClient), (EntityPlayerMP)player);
 					player.openContainer = container;
 					player.openContainer.windowId = windowId;
 					player.openContainer.addCraftingToCrafters(playerMP);
 				} else {
-					PC_PacketHandler.sendTo(new PC_PacketOpenGresHandler(guiOpenHandlerName, -1), (EntityPlayerMP)player);
+					PC_PacketHandler.sendTo(new PC_PacketOpenGresHandler(guiOpenHandlerName, -1, sendToClient), (EntityPlayerMP)player);
 				}
 			}
 		}
@@ -150,16 +159,20 @@ public class PC_Gres {
 		if (player instanceof EntityPlayerMP && item instanceof PC_IGresGuiOpenHandler) {
 			EntityPlayerMP playerMP = (EntityPlayerMP) player;
 			PC_GresBaseWithInventory container = ((PC_IGresGuiOpenHandler) item).openServerGui(player);
+			NBTTagCompound sendToClient = ((PC_IGresGuiOpenHandler) item).sendOnGuiOpenToClient(player);
+			if(sendToClient==null){
+				sendToClient = new NBTTagCompound();
+			}
 			if (container != null) {
 				playerMP.getNextWindowId();
 				playerMP.closeContainer();
 				int windowId = playerMP.currentWindowId;
-				PC_PacketHandler.sendTo(new PC_PacketOpenGresItem(item, windowId), (EntityPlayerMP)player);
+				PC_PacketHandler.sendTo(new PC_PacketOpenGresItem(item, windowId, sendToClient), (EntityPlayerMP)player);
 				player.openContainer = container;
 				player.openContainer.windowId = windowId;
 				player.openContainer.addCraftingToCrafters(playerMP);
 			} else {
-				PC_PacketHandler.sendTo(new PC_PacketOpenGresItem(item, -1), (EntityPlayerMP)player);
+				PC_PacketHandler.sendTo(new PC_PacketOpenGresItem(item, -1, sendToClient), (EntityPlayerMP)player);
 			}
 		}
 	}
