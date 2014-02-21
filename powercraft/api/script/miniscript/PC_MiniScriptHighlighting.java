@@ -2,6 +2,7 @@ package powercraft.api.script.miniscript;
 
 import java.awt.Font;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,7 +29,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class PC_MiniScriptHighlighting {
 
-	public static PC_GresHighlighting makeHighlighting(){
+	public static PC_GresHighlighting makeHighlighting(Set<String> words){
 		PC_GresHighlighting highlighting = new PC_GresHighlighting();
 		PC_GresHighlighting INNER = new PC_GresHighlighting();
 		INNER.addWordHighlight(PC_GresHighlighting.msp(false, "miniscript"), PC_Formatter.color(84, 217, 255)+PC_Formatter.font(PC_Fonts.create(PC_FontRenderer.getFont("Consolas", Font.ITALIC, 24), null)));
@@ -36,11 +37,15 @@ public class PC_MiniScriptHighlighting {
 		highlighting.addOperatorHighlight(PC_GresHighlighting.msp(true, "+", "-", "*"), "");
 		highlighting.addOperatorHighlight(PC_GresHighlighting.msp(true, "[", "]"), "");
 		highlighting.addOperatorHighlight(PC_GresHighlighting.msp(true, ","), "");
+		ElementHighlight eh = new ElementHighlight();
+		highlighting.addOperatorHighlight(eh, "");
 		highlighting.addBlockHighlight(PC_GresHighlighting.msp(true, ";"), null, null, false, PC_Formatter.color(122, 122, 122), INNER);
 		highlighting.addSpecialHighlight(new MultipleRegexPossibilities(LABEL_REGEX), PC_Formatter.color(100, 240, 135));
 		highlighting.addWordHighlight(new JumperHightlights(), PC_Formatter.color(100, 135, 240));
 		highlighting.addWordHighlight(PC_GresHighlighting.msp(false, MINISCRIPT_ASM), PC_Formatter.color(149, 0, 85)+PC_Formatter.font(PC_Fonts.create(PC_FontRenderer.getFont("Consolas", Font.BOLD, 24), null)));
 		highlighting.addWordHighlight(new MultipleRegexPossibilities(REGISTER_REGEX), PC_Formatter.color(255, 113, 113));
+		highlighting.addWordHighlight(new WordHighlight1(eh, words), PC_Formatter.color(255, 144, 48));
+		highlighting.addWordHighlight(new WordHighlight2(eh, words), PC_Formatter.color(50, 71, 255)+PC_Formatter.font(PC_Fonts.create(PC_FontRenderer.getFont("Consolas", Font.ITALIC, 24), null)));
 		return highlighting;
 	}
 	
@@ -229,6 +234,119 @@ public class PC_MiniScriptHighlighting {
 				i++;
 			}
 		}
+		
+	}
+	
+	private static final class WordHighlight1 implements IMultiplePossibilities{
+
+		private ElementHighlight elementHighlight;
+		private Set<String> words;
+		
+		public WordHighlight1(ElementHighlight elementHighlight, Set<String> words){
+			this.elementHighlight = elementHighlight;
+			this.words = words;
+		}
+		
+		@Override
+		public int comesNowIn(String line, int i, Object lastInfo) {
+			if(lastInfo instanceof WordInfo){
+				return 0;
+			}else{
+				elementHighlight.wordInfo = new WordInfo();
+				elementHighlight.wordInfo.start = "";
+			}
+			char c = line.charAt(i);
+			int length = 0;
+			while(Character.isAlphabetic(c) || Character.isDigit(c)){
+				elementHighlight.wordInfo.start += c;
+				length++;
+				i++;
+				if(i>=line.length())
+					break;
+				c = line.charAt(i);
+			}
+			Iterator<String> it = words.iterator();
+			while(it.hasNext()){
+				if(it.next().startsWith(elementHighlight.wordInfo.start)){
+					return length;
+				}
+			}
+			return 0;
+		}
+
+		@Override
+		public Object getInfo() {
+			return null;
+		}
+		
+	}
+	
+	private static final class WordHighlight2 implements IMultiplePossibilities{
+
+		private ElementHighlight elementHighlight;
+		private Set<String> words;
+		
+		public WordHighlight2(ElementHighlight elementHighlight, Set<String> words){
+			this.elementHighlight = elementHighlight;
+			this.words = words;
+		}
+		
+		@Override
+		public int comesNowIn(String line, int i, Object lastInfo) {
+			if(lastInfo instanceof WordInfo){
+				elementHighlight.wordInfo = (WordInfo) lastInfo;
+				elementHighlight.wordInfo.start += ".";
+			}else{
+				return 0;
+			}
+			char c = line.charAt(i);
+			int length = 0;
+			while(Character.isAlphabetic(c) || Character.isDigit(c)){
+				elementHighlight.wordInfo.start += c;
+				length++;
+				i++;
+				if(i>=line.length())
+					break;
+				c = line.charAt(i);
+			}
+			Iterator<String> it = words.iterator();
+			while(it.hasNext()){
+				if(it.next().startsWith(elementHighlight.wordInfo.start)){
+					return length;
+				}
+			}
+			return 0;
+		}
+
+		@Override
+		public Object getInfo() {
+			return null;
+		}
+		
+	}
+	
+	private static final class ElementHighlight implements IMultiplePossibilities{
+
+		private WordInfo wordInfo;
+		
+		@Override
+		public int comesNowIn(String line, int i, Object lastInfo) {
+			if(line.charAt(i)=='.'){
+				return 1;
+			}
+			return 0;
+		}
+
+		@Override
+		public Object getInfo() {
+			return wordInfo;
+		}
+		
+	}
+	
+	private static final class WordInfo{
+		
+		private String start;
 		
 	}
 	

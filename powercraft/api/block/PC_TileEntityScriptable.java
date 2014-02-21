@@ -38,6 +38,8 @@ public abstract class PC_TileEntityScriptable extends PC_TileEntity {
 			this.source = null;
 			return;
 		}
+		if(this.source!=source)
+			markDirty();
 		this.source = source;
 		if(worldObj==null?PC_Utils.isClient():worldObj.isRemote)
 			return;
@@ -58,8 +60,9 @@ public abstract class PC_TileEntityScriptable extends PC_TileEntity {
 	}
 	
 	protected void invoke(){
-		if(e!=null || script==null || worldObj.isRemote)
+		if(e!=null || script==null || isClient())
 			return;
+		markDirty();
 		try{
 			PC_Miniscript.invoke(script, ext);
 		}catch(ScriptException e) {

@@ -51,6 +51,30 @@ public class PC_Formatter {
 		return unFormatted;
 	}
 	
+	public static String removeErrorFormatting(String s){
+		char[]ca = s.toCharArray();
+		String unFormatted = "";
+		for(int i=0; i<s.length(); i++){
+			if(ca[i]==START_SEQ && i + 1<s.length()){
+				char c = ca[++i];
+				if(c==ERROR_SEQ || c== ERRORSTOP_SEQ){
+					
+				}else{
+					unFormatted += ca[i-1];
+					unFormatted += c;
+					if(c<data.length){
+						for(int j=0; j<data[c]; j++){
+							unFormatted += ca[++i];
+						}
+					}
+				}
+			}else{
+				unFormatted += ca[i];
+			}
+		}
+		return unFormatted;
+	}
+	
 	public static String substring(String s, int start, int end){
 		char[]ca = s.toCharArray();
 		int pos = 0;

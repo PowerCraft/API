@@ -1,6 +1,7 @@
 package powercraft.api.gres.doc;
 
 import powercraft.api.PC_Vec2I;
+import powercraft.api.gres.font.PC_Formatter;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -316,7 +317,7 @@ public class PC_GresDocument {
 		while(line!=null){
 			if(line.errors!=null){
 				line.errors = null;
-				recalcHighlights(line, 1);
+				line.line = PC_Formatter.removeErrorFormatting(line.line);
 			}
 			line = line.next;
 		}
