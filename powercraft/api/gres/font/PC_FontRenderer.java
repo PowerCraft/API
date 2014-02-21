@@ -75,8 +75,9 @@ public class PC_FontRenderer {
 					tessellator.startDrawingQuads();
 				}else if(c==PC_Formatter.ERROR_SEQ){
 					error = true;
-				}else{
+				}else if(c==PC_Formatter.ERRORSTOP_SEQ){
 					error = false;
+				}else{
 					red = 255;
 					green = 255;
 					blue = 255;
@@ -138,6 +139,7 @@ public class PC_FontRenderer {
 					int font = text.charAt(++i);
 					activeTexture = PC_Fonts.get(font);
 				}else if(c==PC_Formatter.ERROR_SEQ){
+				}else if(c==PC_Formatter.ERRORSTOP_SEQ){
 				}else{
 					activeTexture = texture;
 				}

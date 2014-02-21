@@ -20,6 +20,7 @@ public class PC_GresDocumentLine {
 	public PC_GresDocumentLine prev;
 	public Object renderInfo;
 	public Object collectorInfo;
+	public String[] errors;
 	
 	public PC_GresDocumentLine(String text) {
 		line = text;
@@ -151,6 +152,36 @@ public class PC_GresDocumentLine {
 				break;
 			}
 		}
+		if(errors!=null){
+			checkErrors();
+			if(errors!=null){
+				int j=0;
+				oldLine = line;
+				line = "";
+				boolean error = false;
+				for(int i=0; i<oldLine.length(); i++){
+					char c = oldLine.charAt(i);
+					if(c==PC_Formatter.START_SEQ && i + 1 < oldLine.length()){
+						line += c;
+						c = oldLine.charAt(++i);
+						int s = i;
+						i += PC_Formatter.data[c];
+						line += c;
+						line += oldLine.substring(s+1, i+1);
+					}else{
+						if(error && errors[j]==null){
+							error = false;
+							line += PC_Formatter.errorStop();
+						}else if(!error && errors[j]!=null){
+							line += PC_Formatter.error();
+							error = true;
+						}
+						line += c;
+						j++;
+					}
+				}
+			}
+		}
 		if(endsWithBlockHightlight==null?blockHighlight.isEmpty():endsWithBlockHightlight.equals(blockHighlight))
 			return false;
 		endsWithBlockHightlight = null;
@@ -186,6 +217,28 @@ public class PC_GresDocumentLine {
 
 	public String getHighlightedString() {
 		return line;
+	}
+
+	public void checkErrors(){
+		if(errors!=null){
+			for(String error:errors){
+				if(error!=null)
+					return;
+			}
+			errors = null;
+		}
+	}
+	
+	public void addError(int sx, int ex, String message) {
+		if(errors==null){
+			errors = new String[getText().length()];
+		}
+		if(ex==-1){
+			ex = errors.length;
+		}
+		for(int i=sx; i<ex; i++){
+			errors[i] = message;
+		}
 	}
 	
 }

@@ -269,5 +269,17 @@ public class PC_Gres {
 		}
 		return null;
 	}
+	
+	@SideOnly(Side.CLIENT)
+	public static <T> T getCurrentClientGui(Class<T> c) {
+		Minecraft mc = PC_ClientUtils.mc();
+		if(mc.currentScreen instanceof PC_GresGuiScreen){
+			PC_IGresGui gresGui = ((PC_GresGuiScreen)mc.currentScreen).getCurrentClientGui();
+			if(c.isAssignableFrom(gresGui.getClass())){
+				return c.cast(gresGui);
+			}
+		}
+		return null;
+	}
 
 }

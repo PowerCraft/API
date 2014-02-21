@@ -478,13 +478,19 @@ public class PC_TileEntity extends TileEntity {
 		
 	}
 
-	public void onClientMessage(EntityPlayer player, NBTTagCompound nbtTagCompound, long session) {
+	@SideOnly(Side.CLIENT)
+	public final void onClientMessageCheck(EntityPlayer player, NBTTagCompound nbtTagCompound, long session) {
 		Session pSession = sessions.get(player);
 		if(pSession!=null && pSession.dimension == worldObj.getWorldInfo().getVanillaDimension() && pSession.x == xCoord && pSession.y == yCoord && pSession.z == zCoord && pSession.session == session){
 			onMessage(player, nbtTagCompound);
 		}else{
 			PC_Logger.warning("Player %s tries to send not signated messaged", session);
 		}
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public void onClientMessage(EntityPlayer player, NBTTagCompound nbtTagCompound) {
+		onMessage(player, nbtTagCompound);
 	}
 	
 	public void onMessage(EntityPlayer player, NBTTagCompound nbtTagCompound) {

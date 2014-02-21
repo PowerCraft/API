@@ -1,5 +1,11 @@
 package powercraft.api.gres;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import javax.tools.Diagnostic;
+
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ChatAllowedCharacters;
 
@@ -820,6 +826,80 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 			return false;
 		}
 		
+	}
+
+	public void setErrors(List<Diagnostic<? extends Void>> diagnostics) {
+		for(Diagnostic<? extends Void> diagnostic:diagnostics){
+			long line = diagnostic.getLineNumber()-1;
+			String message = diagnostic.getMessage(Locale.US);
+			long startPos = diagnostic.getStartPosition();
+			long endPos = diagnostic.getEndPosition();
+			if(startPos==Diagnostic.NOPOS || endPos==Diagnostic.NOPOS){
+				int x = document.getLine((int)line).getText().length();
+				document.addError(new PC_Vec2I(0, (int)line), new PC_Vec2I(x, (int)line), message);
+			}else{
+				document.addError(document.getPosFrom(startPos), document.getPosFrom(endPos), message);
+			}
+		}
+	}
+	
+	public void removeErrors() {
+		document.removeErrors();
+	}
+	
+	private PC_Vec2I getMousePositionInStringAsCharPos(PC_Vec2I mouse){
+		int y = scroll.y;
+		PC_GresDocumentLine line = document.getLine(y);
+		int h = ((LineInfo)line.renderInfo).size.y/scale;
+		while(h<mouse.y-1){
+			line = line.next;
+			if(line==null)
+				return null;
+			y++;
+			h += ((LineInfo)line.renderInfo).size.y/scale;
+		}
+		int x = getPositionFromStringAsCharPos(new PC_Vec2I((mouse.x+scroll.x-2), y));
+		if(x==-1)
+			return null;
+		return new PC_Vec2I(x, y);
+	}
+	
+	private int getPositionFromStringAsCharPos(PC_Vec2I pos){
+		if(pos.y>=document.getLines()){
+			pos.y=document.getLines()-1;
+		}
+		PC_GresDocumentLine line = document.getLine(pos.y);
+		String text = line.getHighlightedString();
+		int length = PC_Formatter.removeFormatting(text).length();
+		for(int i=1; i<=length; i++){
+			int l = PC_FontRenderer.getStringSize(PC_Formatter.substring(text, 0, i), fontTexture, 1.0f/scale).x;
+			if(l>pos.x){
+				return i-1;
+			}
+		}
+		return -1;
+	}
+
+	@Override
+	protected List<String> getTooltip(PC_Vec2I position) {
+		PC_Vec2I pos = getMousePositionInStringAsCharPos(position);
+		if(pos==null)
+			return null;
+		PC_GresDocumentLine line = document.getLine(pos.y);
+		if(line.errors==null)
+			return null;
+		String s = line.errors[pos.x];
+		if(s==null)
+			return null;
+		List<String> list = new ArrayList<String>();
+		String sl[] = s.split("\n");
+		for(String ss:sl){
+			ss = ss.trim();
+			if(!ss.isEmpty()){
+				list.add(ss);
+			}
+		}
+		return list;
 	}
 	
 }

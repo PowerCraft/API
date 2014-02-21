@@ -39,13 +39,30 @@ public class PC_GresDocument {
 		}
 	}
 	
+	private static String[] subArray(String[] array, int start, int end, String[] array2, int start2, int end2){
+		int size = end-start;
+		int size2 = end2-start2;
+		String[] result = new String[size+size2];
+		for(int i=0; i<size; i++){
+			result[i] = array[i+start];
+		}
+		for(int i=0; i<size2; i++){
+			result[i+size] = array2[i+start2];
+		}
+		return result;
+	}
+	
 	public void remove(PC_Vec2I start, PC_Vec2I end){
 		PC_Vec2I[] selects = sort(start, end);
 		PC_GresDocumentLine line = getLine(selects[0].y);
 		if(selects[0].y == selects[1].y){
 			String text = line.getText();
+			int l = text.length();
 			text = text.substring(0, selects[0].x) + text.substring(selects[1].x);
 			onLineChange(line);
+			if(line.errors!=null){
+				line.errors = subArray(line.errors, 0, selects[0].x, line.errors, selects[1].x, l);
+			}
 			line.setText(text);
 			onLineChanged(line);
 		}else{
@@ -62,6 +79,16 @@ public class PC_GresDocument {
 				onLineChange(l);
 				onLineChange(line);
 			}
+			if(line.errors!=null && line2.errors!=null){
+				line.errors = subArray(line.errors, 0, selects[0].x, line2.errors, selects[1].x, text2.length());
+			}else if(line.errors!=null){
+				String[] errors = line.errors;
+				line.errors = new String[text.length()];
+				System.arraycopy(errors, 0, line.errors, 0, selects[0].x);
+			}else if(line2.errors!=null){
+				line.errors = new String[text.length()];
+				System.arraycopy(line2.errors, selects[1].x, line.errors, 0, text2.length()-selects[1].x);
+			}
 			line.setText(text);
 			onLineChanged(line);
 			line2 = line2.next;
@@ -73,6 +100,19 @@ public class PC_GresDocument {
 		recalcHighlights(line, 1);
 	}
 	
+	private static String[] concat(String[] array, int start, int end, int s, String[] array2, int start2, int end2){
+		int size = end-start;
+		int size2 = end2-start2;
+		String[] result = new String[size+size2+s];
+		for(int i=0; i<size; i++){
+			result[i] = array[i+start];
+		}
+		for(int i=0; i<size2; i++){
+			result[i+size+s] = array2[i+start2];
+		}
+		return result;
+	}
+	
 	public void add(PC_Vec2I pos, String insert){
 		String[] inserts = insert.split("\n", -1);
 		PC_GresDocumentLine line = getLine(pos.y);
@@ -81,11 +121,19 @@ public class PC_GresDocument {
 		String end = text.substring(pos.x);
 		if(inserts.length==1){
 			onLineChange(line);
+			if(line.errors!=null){
+				line.errors = concat(line.errors, 0, pos.x, inserts[0].length(), line.errors, pos.x, text.length());
+			}
 			line.setText(start+inserts[0]+end);
 			onLineChanged(line);
 		}else{
 			lines += inserts.length-1;
 			onLineChange(line);
+			String[] errors = line.errors;
+			if(errors!=null){
+				line.errors = new String[pos.x+inserts[0].length()];
+				System.arraycopy(errors, 0, line.errors, 0, pos.x);
+			}
 			line.setText(start+inserts[0]);
 			onLineChanged(line);
 			PC_GresDocumentLine last = line.next;
@@ -98,6 +146,10 @@ public class PC_GresDocument {
 				actLine = newLine;
 			}
 			PC_GresDocumentLine newLine = new PC_GresDocumentLine(inserts[inserts.length-1]+end);
+			if(errors!=null){
+				newLine.errors = new String[inserts[inserts.length-1].length()+end.length()];
+				System.arraycopy(errors, 0, newLine.errors, inserts[inserts.length-1].length(), end.length());
+			}
 			onLineChanged(newLine);
 			actLine.next = newLine;
 			newLine.prev = actLine;
@@ -221,6 +273,53 @@ public class PC_GresDocument {
 	
 	public PC_GresDocInfoCollector getInfoCollector(){
 		return infoCollector;
+	}
+
+	public void addError(PC_Vec2I start, PC_Vec2I end, String message) {
+		PC_Vec2I sorted[] = sort(start, end);
+		PC_GresDocumentLine line = getLine(sorted[0].y);
+		if(sorted[0].y == sorted[1].y){
+			line.addError(sorted[0].x, sorted[1].x, message);
+			recalcHighlights(line, 1);
+		}else{
+			PC_GresDocumentLine sline = line;
+			line.addError(sorted[0].x, -1, message);
+			line = line.next;
+			for(int i=sorted[0].y+1; i<sorted[1].y; i++){
+				line.addError(0, -1, message);
+				line = line.next;
+			}
+			line.addError(0, sorted[1].x, message);
+			recalcHighlights(sline, sorted[1].y-sorted[0].y+1);
+		}
+	}
+
+	
+	
+	public PC_Vec2I getPosFrom(long pos) {
+		int lineNum = 0;
+		PC_GresDocumentLine line = firstLine;
+		while(line!=null){
+			int l = line.getText().length();
+			if(l>pos){
+				pos -= l;
+			}else{
+				return new PC_Vec2I((int)pos, lineNum);
+			}
+			lineNum++;
+		}
+		return null;
+	}
+
+	public void removeErrors() {
+		PC_GresDocumentLine line = firstLine;
+		while(line!=null){
+			if(line.errors!=null){
+				line.errors = null;
+				recalcHighlights(line, 1);
+			}
+			line = line.next;
+		}
 	}
 	
 }

@@ -34,7 +34,7 @@ public class PC_PacketTileEntityMessageSTC extends PC_PacketServerToClient {
 	protected PC_Packet doAndReply(INetHandler iNetHandler) {
 		PC_TileEntity te = PC_Utils.getTileEntity(PC_ClientUtils.mc().theWorld, x, y, z, PC_TileEntity.class);
 		if(te!=null){
-			te.onMessage(PC_ClientUtils.mc().thePlayer, nbtTagCompound);
+			te.onClientMessage(PC_ClientUtils.mc().thePlayer, nbtTagCompound);
 		}
 		return null;
 	}

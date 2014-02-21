@@ -35,7 +35,7 @@ public class PC_PacketTileEntityMessageCTS extends PC_PacketClientToServer {
 		EntityPlayer player = ((NetHandlerPlayServer)iNetHandler).playerEntity;
 		PC_TileEntity te = PC_Utils.getTileEntity(player.worldObj, x, y, z, PC_TileEntity.class);
 		if(te!=null){
-			te.onClientMessage(player, nbtTagCompound, session);
+			te.onClientMessageCheck(player, nbtTagCompound, session);
 		}
 		return null;
 	}
