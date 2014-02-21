@@ -3,6 +3,7 @@ package powercraft.api.script.miniscript;
 import java.awt.Font;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,6 +15,7 @@ import powercraft.api.gres.autoadd.PC_AutoCompleteDisplay;
 import powercraft.api.gres.autoadd.PC_SortedStringList;
 import powercraft.api.gres.autoadd.PC_StringAdd;
 import powercraft.api.gres.autoadd.PC_StringListPart;
+import powercraft.api.gres.autoadd.PC_StringWithInfo;
 import powercraft.api.gres.doc.PC_GresDocInfoCollector;
 import powercraft.api.gres.doc.PC_GresDocument;
 import powercraft.api.gres.doc.PC_GresDocumentLine;
@@ -49,7 +51,7 @@ public class PC_MiniScriptHighlighting {
 		return highlighting;
 	}
 	
-	public static PC_AutoComplete makeAutoComplete(Set<String> words){
+	public static PC_AutoComplete makeAutoComplete(List<PC_StringWithInfo> words){
 		return new AutoComplete(words);
 	}
 	
@@ -101,12 +103,12 @@ public class PC_MiniScriptHighlighting {
 		private PC_SortedStringList words = new PC_SortedStringList();
 		private PC_SortedStringList registers = new PC_SortedStringList();
 		
-		private AutoComplete(Set<String> words){
+		private AutoComplete(List<PC_StringWithInfo> words){
 			for(String asm:MINISCRIPT_ASM){
-				asmInstructions.add(asm);
+				asmInstructions.add(new PC_StringWithInfo(asm, null));
 			}
 			for(int i=0; i<31; i++){
-				registers.add("r"+i);
+				registers.add(new PC_StringWithInfo("r"+i, "Register Nr "+i));
 			}
 			this.words.addAll(words);
 		}
@@ -226,7 +228,7 @@ public class PC_MiniScriptHighlighting {
 				}else if(c==':'){
 					autoComplete.line2Label.put(line, label);
 					autoComplete.label2Line.put(label, line);
-					autoComplete.labelNames.add(label);
+					autoComplete.labelNames.add(new PC_StringWithInfo(label, "In Line "+line));
 					return;
 				}else{
 					return;

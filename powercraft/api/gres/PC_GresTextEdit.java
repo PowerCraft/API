@@ -1,5 +1,7 @@
 package powercraft.api.gres;
 
+import java.util.Arrays;
+
 import org.lwjgl.input.Keyboard;
 
 import net.minecraft.client.gui.GuiScreen;
@@ -30,7 +32,9 @@ public class PC_GresTextEdit extends PC_GresComponent {
 		/** Disable user input */
 		NONE,
 		/** [a-zA-Z_][a-zA-Z0-9_] */
-		IDENTIFIER;
+		IDENTIFIER,
+		/** accept all characters but writes only **/
+		PASSWORD;
 	}
 
 	private int maxChars;
@@ -74,6 +78,13 @@ public class PC_GresTextEdit extends PC_GresComponent {
 				new PC_RectI(2+offset.x, 6+offset.y, rect.width - 4, rect.height - 12), scale,
 				displayHeight);
 
+		String t = text;
+		if(type==PC_GresInputType.PASSWORD){
+			char c[] = new char[t.length()];
+			Arrays.fill(c, '*');
+			t = new String(c);
+		}
+		
 		if (focus && mouseSelectStart != mouseSelectEnd) {
 			int s = mouseSelectStart;
 			int e = mouseSelectEnd;
@@ -82,16 +93,16 @@ public class PC_GresTextEdit extends PC_GresComponent {
 				s = mouseSelectEnd;
 			}
 			drawTexture(textureName2,
-					fontRenderer.getStringWidth(text.substring(0, s)) - scroll
+					fontRenderer.getStringWidth(t.substring(0, s)) - scroll
 							+ 2, 1,
-					fontRenderer.getStringWidth(text.substring(s, e)),
+					fontRenderer.getStringWidth(t.substring(s, e)),
 					rect.height+1);
 		}
 
-		drawString(text, 2 - scroll, 6, false);
+		drawString(t, 2 - scroll, 6, false);
 
 		if (focus && cursorCounter / 6 % 2 == 0) {
-			PC_GresRenderer.drawVerticalLine(fontRenderer.getStringWidth(text
+			PC_GresRenderer.drawVerticalLine(fontRenderer.getStringWidth(t
 					.substring(0, mouseSelectEnd)) + 2, 6,
 					6 + fontRenderer.FONT_HEIGHT, fontColors[0]|0xff000000);
 		}
@@ -107,7 +118,7 @@ public class PC_GresTextEdit extends PC_GresComponent {
 		int charSize;
 		x -= 2 + scroll;
 		for (int i = 0; i < text.length(); i++) {
-			charSize = fontRenderer.getCharWidth(text.charAt(i));
+			charSize = fontRenderer.getCharWidth(type==PC_GresInputType.PASSWORD?'*':text.charAt(i));
 			if (x - charSize / 2 < 0) {
 				return i;
 			}

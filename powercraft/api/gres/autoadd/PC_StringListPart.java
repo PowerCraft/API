@@ -6,14 +6,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-public class PC_StringListPart implements List<String> {
+public class PC_StringListPart implements List<PC_StringWithInfo> {
 
-	private List<String> sortedList;
+	private List<PC_StringWithInfo> sortedList;
 	private int start;
 	private int end;
 	private String lastSearch;
 	
-	public PC_StringListPart(List<String> sortedList){
+	public PC_StringListPart(List<PC_StringWithInfo> sortedList){
 		this.sortedList = sortedList;
 		end = sortedList.size();
 	}
@@ -29,7 +29,7 @@ public class PC_StringListPart implements List<String> {
 			start = -1;
 			end = -1;
 			for(int i=oldStart; i<oldEnd; i++){
-				String ss = sortedList.get(i);
+				PC_StringWithInfo ss = sortedList.get(i);
 				if(ss.startsWith(s)){
 					if(start==-1)
 						start = i;
@@ -43,14 +43,14 @@ public class PC_StringListPart implements List<String> {
 				end = 0;
 		}else if(lastSearch!=null && lastSearch.startsWith(s)){
 			for(int i=0; i<start; i++){
-				String ss = sortedList.get(i);
+				PC_StringWithInfo ss = sortedList.get(i);
 				if(ss.startsWith(s)){
 					start = i;
 					break;
 				}
 			}
 			for(int i=end; i<sortedList.size(); i++){
-				String ss = sortedList.get(i);
+				PC_StringWithInfo ss = sortedList.get(i);
 				if(ss.startsWith(s)){
 					end = i+1;
 				}else{
@@ -61,7 +61,7 @@ public class PC_StringListPart implements List<String> {
 			start = -1;
 			end = -1;
 			for(int i=0; i<sortedList.size(); i++){
-				String ss = sortedList.get(i);
+				PC_StringWithInfo ss = sortedList.get(i);
 				if(ss.startsWith(s)){
 					if(start==-1)
 						start = i;
@@ -78,22 +78,22 @@ public class PC_StringListPart implements List<String> {
 	}
 	
 	@Override
-	public boolean add(String e) {
+	public boolean add(PC_StringWithInfo e) {
 		throw new UnsupportedOperationException();
 	}
 	
 	@Override
-	public void add(int index, String element) {
+	public void add(int index, PC_StringWithInfo element) {
 		throw new UnsupportedOperationException();
 	}
 	
 	@Override
-	public boolean addAll(Collection<? extends String> c) {
+	public boolean addAll(Collection<? extends PC_StringWithInfo> c) {
 		throw new UnsupportedOperationException();
 	}
 	
 	@Override
-	public boolean addAll(int index, Collection<? extends String> c) {
+	public boolean addAll(int index, Collection<? extends PC_StringWithInfo> c) {
 		throw new UnsupportedOperationException();
 	}
 	
@@ -119,7 +119,7 @@ public class PC_StringListPart implements List<String> {
 	}
 	
 	@Override
-	public String get(int index) {
+	public PC_StringWithInfo get(int index) {
 		return sortedList.get(index+start);
 	}
 	
@@ -138,7 +138,7 @@ public class PC_StringListPart implements List<String> {
 	}
 	
 	@Override
-	public Iterator<String> iterator() {
+	public Iterator<PC_StringWithInfo> iterator() {
 		return listIterator();
 	}
 	
@@ -152,16 +152,16 @@ public class PC_StringListPart implements List<String> {
 	}
 	
 	@Override
-	public ListIterator<String> listIterator() {
+	public ListIterator<PC_StringWithInfo> listIterator() {
 		return listIterator(0);
 	}
 	
 	@Override
-	public ListIterator<String> listIterator(int index) {
+	public ListIterator<PC_StringWithInfo> listIterator(int index) {
 		return new It(index+start);
 	}
 	
-	private class It implements ListIterator<String>{
+	private class It implements ListIterator<PC_StringWithInfo>{
 
 		private int index;
 		
@@ -170,7 +170,7 @@ public class PC_StringListPart implements List<String> {
 		}
 
 		@Override
-		public void add(String e) {
+		public void add(PC_StringWithInfo e) {
 			throw new UnsupportedOperationException();
 		}
 
@@ -185,7 +185,7 @@ public class PC_StringListPart implements List<String> {
 		}
 
 		@Override
-		public String next() {
+		public PC_StringWithInfo next() {
 			return sortedList.get(index++);
 		}
 
@@ -195,7 +195,7 @@ public class PC_StringListPart implements List<String> {
 		}
 
 		@Override
-		public String previous() {
+		public PC_StringWithInfo previous() {
 			return sortedList.get(--index);
 		}
 
@@ -210,7 +210,7 @@ public class PC_StringListPart implements List<String> {
 		}
 
 		@Override
-		public void set(String e) {
+		public void set(PC_StringWithInfo e) {
 			throw new UnsupportedOperationException();
 		}
 		
@@ -222,7 +222,7 @@ public class PC_StringListPart implements List<String> {
 	}
 	
 	@Override
-	public String remove(int index) {
+	public PC_StringWithInfo remove(int index) {
 		throw new UnsupportedOperationException();
 	}
 	
@@ -237,7 +237,7 @@ public class PC_StringListPart implements List<String> {
 	}
 	
 	@Override
-	public String set(int index, String element) {
+	public PC_StringWithInfo set(int index, PC_StringWithInfo element) {
 		throw new UnsupportedOperationException();
 	}
 	
@@ -247,7 +247,7 @@ public class PC_StringListPart implements List<String> {
 	}
 	
 	@Override
-	public List<String> subList(int fromIndex, int toIndex) {
+	public List<PC_StringWithInfo> subList(int fromIndex, int toIndex) {
 		throw new UnsupportedOperationException();
 	}
 	

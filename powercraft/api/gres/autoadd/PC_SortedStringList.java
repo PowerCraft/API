@@ -6,15 +6,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-public class PC_SortedStringList implements List<String> {
+public class PC_SortedStringList implements List<PC_StringWithInfo> {
 
-	private List<String> sortedList = new ArrayList<String>();
+	private List<PC_StringWithInfo> sortedList = new ArrayList<PC_StringWithInfo>();
 	
 	@Override
-	public boolean add(String e) {
-		ListIterator<String> li = sortedList.listIterator();
+	public boolean add(PC_StringWithInfo e) {
+		ListIterator<PC_StringWithInfo> li = sortedList.listIterator();
 		while(li.hasNext()){
-			String s = li.next();
+			PC_StringWithInfo s = li.next();
 			int comp = s.compareTo(e);
 			if(comp==0){
 				return false;
@@ -29,20 +29,20 @@ public class PC_SortedStringList implements List<String> {
 	}
 
 	@Override
-	public void add(int index, String element) {
+	public void add(int index, PC_StringWithInfo element) {
 		add(element);
 	}
 
 	@Override
-	public boolean addAll(Collection<? extends String> c) {
-		for(String s:c){
+	public boolean addAll(Collection<? extends PC_StringWithInfo> c) {
+		for(PC_StringWithInfo s:c){
 			add(s);
 		}
 		return true;
 	}
 
 	@Override
-	public boolean addAll(int index, Collection<? extends String> c) {
+	public boolean addAll(int index, Collection<? extends PC_StringWithInfo> c) {
 		return addAll(c);
 	}
 
@@ -62,7 +62,7 @@ public class PC_SortedStringList implements List<String> {
 	}
 
 	@Override
-	public String get(int index) {
+	public PC_StringWithInfo get(int index) {
 		return sortedList.get(index);
 	}
 
@@ -77,7 +77,7 @@ public class PC_SortedStringList implements List<String> {
 	}
 
 	@Override
-	public Iterator<String> iterator() {
+	public Iterator<PC_StringWithInfo> iterator() {
 		return sortedList.iterator();
 	}
 
@@ -87,25 +87,25 @@ public class PC_SortedStringList implements List<String> {
 	}
 
 	@Override
-	public ListIterator<String> listIterator() {
+	public ListIterator<PC_StringWithInfo> listIterator() {
 		return new LI(sortedList.listIterator());
 	}
 
 	@Override
-	public ListIterator<String> listIterator(int index) {
+	public ListIterator<PC_StringWithInfo> listIterator(int index) {
 		return new LI(sortedList.listIterator(index));
 	}
 
-	private static class LI implements ListIterator<String>{
+	private static class LI implements ListIterator<PC_StringWithInfo>{
 		
-		private ListIterator<String> li;
+		private ListIterator<PC_StringWithInfo> li;
 
-		private LI(ListIterator<String> li){
+		private LI(ListIterator<PC_StringWithInfo> li){
 			this.li = li;
 		}
 		
 		@Override
-		public void add(String e) {
+		public void add(PC_StringWithInfo e) {
 			throw new UnsupportedOperationException();
 		}
 
@@ -120,7 +120,7 @@ public class PC_SortedStringList implements List<String> {
 		}
 
 		@Override
-		public String next() {
+		public PC_StringWithInfo next() {
 			return li.next();
 		}
 
@@ -130,7 +130,7 @@ public class PC_SortedStringList implements List<String> {
 		}
 
 		@Override
-		public String previous() {
+		public PC_StringWithInfo previous() {
 			return li.previous();
 		}
 
@@ -145,7 +145,7 @@ public class PC_SortedStringList implements List<String> {
 		}
 
 		@Override
-		public void set(String e) {
+		public void set(PC_StringWithInfo e) {
 			throw new UnsupportedOperationException();
 		}
 		
@@ -157,7 +157,7 @@ public class PC_SortedStringList implements List<String> {
 	}
 
 	@Override
-	public String remove(int index) {
+	public PC_StringWithInfo remove(int index) {
 		return sortedList.remove(index);
 	}
 
@@ -172,7 +172,7 @@ public class PC_SortedStringList implements List<String> {
 	}
 
 	@Override
-	public String set(int index, String element) {
+	public PC_StringWithInfo set(int index, PC_StringWithInfo element) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -182,7 +182,7 @@ public class PC_SortedStringList implements List<String> {
 	}
 
 	@Override
-	public List<String> subList(int fromIndex, int toIndex) {
+	public List<PC_StringWithInfo> subList(int fromIndex, int toIndex) {
 		throw new UnsupportedOperationException();
 	}
 

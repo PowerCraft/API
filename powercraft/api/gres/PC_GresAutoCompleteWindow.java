@@ -1,11 +1,15 @@
 package powercraft.api.gres;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.lwjgl.input.Keyboard;
 
 import powercraft.api.PC_Vec2I;
 import powercraft.api.gres.PC_GresAlign.Fill;
 import powercraft.api.gres.autoadd.PC_AutoCompleteDisplay;
 import powercraft.api.gres.autoadd.PC_StringListPart;
+import powercraft.api.gres.autoadd.PC_StringWithInfo;
 import powercraft.api.gres.events.PC_GresEvent;
 import powercraft.api.gres.events.PC_GresFocusLostEvent;
 import powercraft.api.gres.events.PC_GresMouseButtonEvent;
@@ -42,8 +46,8 @@ public class PC_GresAutoCompleteWindow extends PC_GresFrame{
 			int spl = display.done.lastIndexOf('.')+1;
 			String last = "";
 			for(PC_StringListPart part:display.parts){
-				for(String s:part){
-					String t = s.substring(spl);
+				for(PC_StringWithInfo s:part){
+					String t = s.getString().substring(spl);
 					int p = t.indexOf('.');
 					if(p!=-1){
 						t = t.substring(0, p+1);
@@ -51,7 +55,7 @@ public class PC_GresAutoCompleteWindow extends PC_GresFrame{
 							continue;
 					}
 					last = t;
-					PC_GresButton b = new PC_GresButton(t);
+					PC_GresButton b = new Button(t, s.getInfo());
 					b.addEventListener(frame.listener);
 					b.setFill(Fill.BOTH);
 					container.add(b);
@@ -160,6 +164,32 @@ public class PC_GresAutoCompleteWindow extends PC_GresFrame{
 				com = com.getParent();
 			}
 			return true;
+		}
+		
+	}
+	
+	private static class Button extends PC_GresButton{
+
+		private String info;
+		
+		public Button(String title, String info) {
+			super(title);
+			this.info = info;
+		}
+
+		@Override
+		protected List<String> getTooltip(PC_Vec2I position) {
+			if(info==null)
+				return null;
+			List<String> list = new ArrayList<String>();
+			String sl[] = info.split("\n");
+			for(String ss:sl){
+				ss = ss.trim();
+				if(!ss.isEmpty()){
+					list.add(ss);
+				}
+			}
+			return list;
 		}
 		
 	}

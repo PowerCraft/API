@@ -9,6 +9,7 @@ import powercraft.api.gres.PC_GresLabel;
 import powercraft.api.gres.PC_GresTextEdit;
 import powercraft.api.gres.PC_GresWindow;
 import powercraft.api.gres.PC_IGresGui;
+import powercraft.api.gres.PC_GresTextEdit.PC_GresInputType;
 import powercraft.api.gres.events.PC_GresEvent;
 import powercraft.api.gres.events.PC_GresKeyEvent;
 import powercraft.api.gres.events.PC_GresMouseButtonEvent;
@@ -34,7 +35,7 @@ final class PC_GuiPasswordInput implements PC_IGresGui, PC_IGresEventListener {
 	public void initGui(PC_GresGuiHandler gui) {
 		PC_GresWindow window = new PC_GresWindow("Password Input");
 		window.setLayout(new PC_GresLayoutVertical());
-		password = new PC_GresTextEdit("", 20);
+		password = new PC_GresTextEdit("", 20, PC_GresInputType.PASSWORD);
 		window.add(password);
 		password.addEventListener(this);
 		status = new PC_GresLabel("Type Password");
