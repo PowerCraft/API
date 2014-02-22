@@ -6,6 +6,8 @@ import net.minecraft.world.IBlockAccess;
 import powercraft.api.block.PC_AbstractBlockBase;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 
+// Use insted the normal PowerCraft renderer
+@Deprecated
 public abstract class PC_ISimpleBlockRenderingHandler implements ISimpleBlockRenderingHandler {
 
 	@Override
