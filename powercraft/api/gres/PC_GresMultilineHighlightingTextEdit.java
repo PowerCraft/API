@@ -266,12 +266,12 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 		moveViewToSelect();
 		if(autoComplete!=null){
 			autoComplete.onStringAdded(this, document, document.getLine(mouseSelectStart.y), addStruct.toAdd, mouseSelectEnd.x, disp);
-			showCompleteWindow();
+			showCompleteWindow(history);
 		}
 	}
 
-	private void showCompleteWindow(){
-		PC_GresAutoCompleteWindow.makeCompleteWindow(getGuiHandler(), this, disp);
+	private void showCompleteWindow(PC_GresHistory history){
+		PC_GresAutoCompleteWindow.makeCompleteWindow(getGuiHandler(), this, disp, history);
 	}
 	
 	private void deleteSelected(PC_GresHistory history) {
@@ -450,7 +450,7 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 		setSelected(with, history, false, true);
 		if(with.endsWith(".") && autoComplete!=null){
 			autoComplete.onStringAdded(this, document, document.getLine(mouseSelectStart.y), with, mouseSelectEnd.x, disp);
-			showCompleteWindow();
+			showCompleteWindow(history);
 		}
 	}
 	
@@ -555,7 +555,7 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 				if(Keyboard.isKeyDown(Keyboard.KEY_RCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)){
 					if(autoComplete!=null){
 						autoComplete.makeComplete(this, document, document.getLine(mouseSelectEnd.y), mouseSelectEnd.x, disp);
-						showCompleteWindow();
+						showCompleteWindow(history);
 					}
 					break;
 				}

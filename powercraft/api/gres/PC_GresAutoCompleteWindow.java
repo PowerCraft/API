@@ -21,9 +21,38 @@ public class PC_GresAutoCompleteWindow extends PC_GresFrame{
 
 	public static PC_GresAutoCompleteWindow frame;
 	
-	public static void makeCompleteWindow(PC_GresGuiHandler guiHandler, PC_GresMultilineHighlightingTextEdit textEdit, PC_AutoCompleteDisplay display){
+	public static void makeCompleteWindow(PC_GresGuiHandler guiHandler, PC_GresMultilineHighlightingTextEdit textEdit, PC_AutoCompleteDisplay display, PC_GresHistory history){
 		if(display.display){
 			if(frame==null){
+				int i = 0;
+				int spl = display.done.lastIndexOf('.')+1;
+				for(PC_StringListPart part:display.parts){
+					int s = part.size();
+					if(s>1){
+						String start = part.get(0).getString().substring(spl);
+						String end = part.get(s-1).getString().substring(spl);
+						int p1 = start.indexOf('.');
+						int p2 = end.indexOf('.');
+						if(p1!=-1 && p2!=-1){
+							if(start.substring(0, p1+1).equals(end.substring(0, p2+1)))
+								s=1;
+						}
+					}
+					i+=s;
+				}
+				if(i==1){
+					for(PC_StringListPart part:display.parts){
+						if(part.size()>0){
+							String s = part.get(0).getString().substring(display.done.length());
+							int p = s.indexOf('.');
+							if(p!=-1){
+								s = s.substring(0, p+1);
+							}
+							textEdit.autoComplete(s, history);
+						}
+					}
+					return;
+				}
 				frame = new PC_GresAutoCompleteWindow(textEdit);
 				frame.setMinSize(new PC_Vec2I(100, 100));
 				frame.setSize(new PC_Vec2I(100, 100));
