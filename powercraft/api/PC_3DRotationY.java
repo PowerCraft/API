@@ -1,5 +1,6 @@
 package powercraft.api;
 
+import powercraft.api.block.PC_Field.Flag;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -12,7 +13,7 @@ public class PC_3DRotationY implements PC_3DRotation {
 		this.rotation = (rotation%4+4)%4;
 	}
 	
-	public PC_3DRotationY(NBTTagCompound nbtTagCompound){
+	public PC_3DRotationY(NBTTagCompound nbtTagCompound, Flag flag){
 		rotation = nbtTagCompound.getByte("rotation");
 	}
 	
@@ -53,7 +54,7 @@ public class PC_3DRotationY implements PC_3DRotation {
 	}
 
 	@Override
-	public void saveToNBT(NBTTagCompound nbtTagCompound) {
+	public void saveToNBT(NBTTagCompound nbtTagCompound, Flag flag) {
 		nbtTagCompound.setByte("rotation", (byte) rotation);
 	}
 

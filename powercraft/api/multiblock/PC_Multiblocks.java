@@ -4,14 +4,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import powercraft.api.PC_Api;
 import powercraft.api.PC_IconRegistry;
 import powercraft.api.PC_IconRegistryImpl;
 import powercraft.api.PC_ImmutableList;
 import powercraft.api.PC_Logger;
+import powercraft.api.network.PC_PacketHandler;
+import powercraft.api.network.packet.PC_PacketMultiblockObjectSync;
 import powercraft.api.reflect.PC_Security;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class PC_Multiblocks {
 
@@ -21,6 +23,10 @@ public class PC_Multiblocks {
 	private static HashMap<PC_MultiblockItem, Class<? extends PC_MultiblockObject>> itemMapper = new HashMap<PC_MultiblockItem, Class<? extends PC_MultiblockObject>>();
 	private static HashMap<Class<? extends PC_MultiblockObject>, PC_MultiblockItem> itemMapperRev = new HashMap<Class<? extends PC_MultiblockObject>, PC_MultiblockItem>();
 	
+	public static void register(){
+		PC_Security.allowedCaller("PC_Multiblocks.register()", PC_Api.class);
+		PC_PacketHandler.registerPacket(PC_PacketMultiblockObjectSync.class);
+	}
 	
 	static void addMultiblock(PC_MultiblockItem multiblockItem, Class<? extends PC_MultiblockObject> multiblockObjectClass) {
 		if(done){

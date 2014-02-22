@@ -3,6 +3,7 @@
  */
 package powercraft.api;
 
+import powercraft.api.block.PC_Field.Flag;
 import net.minecraft.nbt.NBTTagCompound;
 
 /**
@@ -22,7 +23,7 @@ public interface PC_INBT {
 	 * 
 	 * @param tag save the data into this
 	 */
-	public void saveToNBT(NBTTagCompound tag);
+	public void saveToNBT(NBTTagCompound tag, Flag flag);
 
 	
 	

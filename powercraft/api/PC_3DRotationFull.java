@@ -1,5 +1,6 @@
 package powercraft.api;
 
+import powercraft.api.block.PC_Field.Flag;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
@@ -11,7 +12,7 @@ public class PC_3DRotationFull implements PC_3DRotation {
 		// TODO Auto-generated constructor stub
 	}
 
-	public PC_3DRotationFull(NBTTagCompound nbtTagCompound){
+	public PC_3DRotationFull(NBTTagCompound nbtTagCompound, Flag flag){
 		
 	}
 	
@@ -46,7 +47,7 @@ public class PC_3DRotationFull implements PC_3DRotation {
 	}
 
 	@Override
-	public void saveToNBT(NBTTagCompound nbtTagCompound) {
+	public void saveToNBT(NBTTagCompound nbtTagCompound, Flag flag) {
 		// TODO Auto-generated method stub
 		
 	}

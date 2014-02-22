@@ -56,6 +56,7 @@ public final class PC_Api extends PC_Module {
 		PC_ForgeHandler.register();
 		PC_Miniscript.register();
 		PC_Gres.register();
+		PC_Multiblocks.register();
 		
 		PC_Blocks.construct();
 		PC_Items.construct();

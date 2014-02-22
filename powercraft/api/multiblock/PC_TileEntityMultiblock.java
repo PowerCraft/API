@@ -20,7 +20,7 @@ public final class PC_TileEntityMultiblock extends PC_TileEntity {
 
 	@PC_Field(flags={Flag.SAVE, Flag.SYNC})
 	private PC_MultiblockObject tiles[] = new PC_MultiblockObject[27];
-
+	
 	public PC_MultiblockObject getTile(PC_MultiblockIndex index) {
 		return tiles[index.ordinal()];
 	}
@@ -35,11 +35,16 @@ public final class PC_TileEntityMultiblock extends PC_TileEntity {
 		te.onPreRemove();
 		tiles[i] = null;
 		te.onRemoved();
+		markDirty();
 		return drop;
 	}
 
 	public boolean setMultiblockTileEntity(PC_MultiblockIndex index, PC_MultiblockObject multiblockObject) {
 		int i = index.ordinal();
+		for(PC_MultiblockObject tile:tiles){
+			if(tile!=null && tile.isUsing(index, multiblockObject))
+				return false;
+		}
 		if (tiles[i] == null) {
 			tiles[i] = multiblockObject;
 			multiblockObject.setIndexAndMultiblock(PC_MultiblockIndex.values()[i], this);
@@ -54,6 +59,7 @@ public final class PC_TileEntityMultiblock extends PC_TileEntity {
 				return false;
 			}
 		}
+		markDirty();
 		return true;
 	}
 
@@ -213,7 +219,7 @@ public final class PC_TileEntityMultiblock extends PC_TileEntity {
 	}
 
 	@Override
-	public void updateEntity() {
+	public void onTick() {
 		for(PC_MultiblockObject tile:tiles){
 			if(tile!=null)
 				tile.updateObject();

@@ -26,6 +26,8 @@ import net.minecraft.nbt.NBTTagString;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
 
+import powercraft.api.block.PC_Field.Flag;
+
 /**
  * 
  * NBTTag handler for saving and loading objects
@@ -41,8 +43,8 @@ public final class PC_NBTTagHandler {
 	 * @param name the key
 	 * @param value the object
 	 */
-	public static void saveToNBT(NBTTagCompound nbtTagCompound, String name, Object value){
-		NBTBase base = getObjectNBT(value);
+	public static void saveToNBT(NBTTagCompound nbtTagCompound, String name, Object value, Flag flag){
+		NBTBase base = getObjectNBT(value, flag);
 		if(base!=null)
 			nbtTagCompound.setTag(name, base);
 	}
@@ -54,7 +56,7 @@ public final class PC_NBTTagHandler {
 	 * @param value the object
 	 * @return the generated nbt
 	 */
-	public static NBTBase getObjectNBT(Object value){
+	public static NBTBase getObjectNBT(Object value, Flag flag){
 		if(value==null)
 			return null;
 		Class<?> c = value.getClass();
@@ -123,7 +125,7 @@ public final class PC_NBTTagHandler {
 			int size = Array.getLength(value);
 			for(int i=0; i<size; i++){
 				Object obj = Array.get(value, i);
-				NBTBase base = getObjectNBT(obj);
+				NBTBase base = getObjectNBT(obj, flag);
 				if(base==null){
 					base = new NBTTagCompound();
 				}
@@ -133,7 +135,7 @@ public final class PC_NBTTagHandler {
 		}else if(PC_INBT.class.isAssignableFrom(c)){
 			NBTTagCompound tag = new NBTTagCompound();
 			tag.setString("Class", c.getName());
-			((PC_INBT)value).saveToNBT(tag);
+			((PC_INBT)value).saveToNBT(tag, flag);
 			return tag;
 		}else if(Enum.class.isAssignableFrom(c)){
 			NBTTagCompound tag = new NBTTagCompound();
@@ -164,11 +166,11 @@ public final class PC_NBTTagHandler {
 	 * @param c the expected object class
 	 * @return the object
 	 */
-	public static <T> T loadFromNBT(NBTTagCompound nbtTagCompound, String name, Class<T> c){
+	public static <T> T loadFromNBT(NBTTagCompound nbtTagCompound, String name, Class<T> c, Flag flag){
 		NBTBase base = nbtTagCompound.getTag(name);
 		if(base==null)
 			return null;
-		return getObjectFromNBT(base, c);
+		return getObjectFromNBT(base, c, flag);
 	}
 
 	/**
@@ -178,7 +180,7 @@ public final class PC_NBTTagHandler {
 	 * @return the object
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static <T> T getObjectFromNBT(NBTBase base, Class<T> c) {
+	public static <T> T getObjectFromNBT(NBTBase base, Class<T> c, Flag flag) {
 		if(base==null)
 			return null;
 		if(base instanceof NBTTagCompound){
@@ -187,19 +189,19 @@ public final class PC_NBTTagHandler {
 			}
 		}
 		if(c==Boolean.class || c==boolean.class){
-			return c.cast(((NBTPrimitive)base).func_150290_f()!=0);
+			return (T)(Boolean)(((NBTPrimitive)base).func_150290_f()!=0);
 		}else if(c==Byte.class || c==byte.class){
-			return c.cast(((NBTPrimitive)base).func_150290_f());
+			return (T)(Byte)((NBTPrimitive)base).func_150290_f();
 		}else if(c==Short.class || c==short.class){
-			return c.cast(((NBTPrimitive)base).func_150289_e());
+			return (T)(Short)((NBTPrimitive)base).func_150289_e();
 		}else if(c==Integer.class || c==int.class){
-			return c.cast(((NBTPrimitive)base).func_150287_d());
+			return (T)(Integer)((NBTPrimitive)base).func_150287_d();
 		}else if(c==Long.class || c==long.class){
-			return c.cast((Long)((NBTPrimitive)base).func_150291_c());
+			return (T)(Long)((NBTPrimitive)base).func_150291_c();
 		}else if(c==Float.class || c==float.class){
-			return c.cast(((NBTPrimitive)base).func_150288_h());
+			return (T)(Float)((NBTPrimitive)base).func_150288_h();
 		}else if(c==Double.class || c==double.class){
-			return c.cast(((NBTPrimitive)base).func_150286_g());
+			return (T)(Double)((NBTPrimitive)base).func_150286_g();
 		}else if(c==String.class){
 			return c.cast(((NBTTagString)base).func_150285_a_());
 		}else if(c==int[].class){
@@ -257,7 +259,7 @@ public final class PC_NBTTagHandler {
 			for(int i=0; i<size; i++){
 				NBTBase obj = list.removeTag(i);
 				list.func_150304_a(i, obj);
-				Array.set(array, i, getObjectFromNBT(obj, ac));
+				Array.set(array, i, getObjectFromNBT(obj, ac, flag));
 			}
 			return c.cast(array);
 		}else if(PC_INBT.class.isAssignableFrom(c)){
@@ -265,6 +267,10 @@ public final class PC_NBTTagHandler {
 			String cName = tag.getString("Class");
 			try {
 				Class<?> cc = Class.forName(cName);
+				try{
+					Constructor<?> constr = cc.getConstructor(NBTTagCompound.class, Flag.class);
+					return c.cast(constr.newInstance(tag, flag));
+				}catch(NoSuchMethodException e){}
 				Constructor<?> constr = cc.getConstructor(NBTTagCompound.class);
 				return c.cast(constr.newInstance(tag));
 			} catch (ClassNotFoundException e) {

@@ -2,7 +2,6 @@ package powercraft.api.gres.font;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.FontFormatException;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -20,12 +19,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -79,7 +81,7 @@ public class PC_FontTexture extends AbstractTexture {
 	}
 
 	@Override
-	public void loadTexture(IResourceManager resourceManager) throws RuntimeException {
+	public void loadTexture(IResourceManager resourceManager) {
 		deleteGlTexture();
 		if (hasLocation) {
 			InputStream inputstream = null;
@@ -88,8 +90,8 @@ public class PC_FontTexture extends AbstractTexture {
 				inputstream = resource.getInputStream();
 				font = Font.createFont(Font.TRUETYPE_FONT, inputstream);
 				inputstream.close();
-			} catch (FontFormatException | IOException e) {
-				throw new RuntimeException(e);
+			} catch (Exception e) { // Do not use Java 1.7, use Java 1.6
+				throw new RuntimeException(e); // Should we create a runtime Error and crash report?
 			} finally {
 				if (inputstream != null)
 					try {

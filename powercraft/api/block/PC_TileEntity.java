@@ -32,7 +32,9 @@ import powercraft.api.PC_Logger;
 import powercraft.api.PC_NBTTagHandler;
 import powercraft.api.PC_Utils;
 import powercraft.api.block.PC_Field.Flag;
+import powercraft.api.energy.PC_RedstoneWorkType;
 import powercraft.api.gres.PC_Gres;
+import powercraft.api.gres.PC_GresBaseWithInventory;
 import powercraft.api.gres.PC_IGresGui;
 import powercraft.api.gres.PC_IGresGuiOpenHandler;
 import powercraft.api.network.PC_Packet;
@@ -50,21 +52,40 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class PC_TileEntity extends TileEntity {
 
 	private static WeakHashMap<EntityPlayer, Session> sessions = new WeakHashMap<EntityPlayer, Session>();
+	private static WeakHashMap<PC_TileEntity, List<PC_GresBaseWithInventory>> containers = new  WeakHashMap<PC_TileEntity, List<PC_GresBaseWithInventory>>();
 	
 	private static class Session{
-		int dimension;
-		int x;
-		int y;
-		int z;
-		long session;
+		
+		private static Random sessionRand = new Random();
+		
+		private final int dimension;
+		private final int x;
+		private final int y;
+		private final int z;
+		private final long session;
+		
+		private Session(PC_TileEntity tileEntity){
+			session = sessionRand.nextLong();
+			dimension = tileEntity.worldObj.getWorldInfo().getVanillaDimension();
+			x = tileEntity.xCoord;
+			y = tileEntity.yCoord;
+			z = tileEntity.zCoord;
+		}
+		
 	}
-	
-	private static Random sessionRand = new Random();
 	
 	private String owner;
 	private String password;
 	
 	private long session;
+	
+	protected boolean sync = false;
+	
+	@PC_Field(flags={Flag.SAVE, Flag.SYNC})
+	private int redstoneValue;
+	
+	@PC_Field(flags={Flag.SAVE, Flag.SYNC_ON_GUI, Flag.SET_WITH_PERMISSION})
+	protected PC_RedstoneWorkType workWhen;
 	
 	public boolean isClient() {
 
@@ -86,9 +107,113 @@ public class PC_TileEntity extends TileEntity {
 	}
 
 	public void onNeighborBlockChange(Block neighbor) {
+		int newRedstoneValue = PC_Utils.getRedstoneValue(worldObj, xCoord, yCoord, zCoord);
+		updateRedstone(newRedstoneValue);
+	}
+	
+	protected void updateRedstone(int newRedstoneValue){
+		if(newRedstoneValue!=redstoneValue){
+			onRedstoneValueChanging(newRedstoneValue, redstoneValue);
+			redstoneValue = newRedstoneValue;
+		}
+	}
+
+	protected void onRedstoneValueChanging(int newValue, int oldValue){
+		if(workWhen==null)
+			return;
+		switch(workWhen){
+		case ON_FLANK:
+			if((newValue==0 && oldValue!=0) || (newValue!=0 && oldValue==0)){
+				startWorking();
+				doWork();
+				stopWorking();
+			}
+			break;
+		case ON_HI_FLANK:
+			if(newValue!=0 && oldValue==0){
+				startWorking();
+				doWork();
+				stopWorking();
+			}
+			break;
+		case ON_LOW_FLANK:
+			if(newValue==0 && oldValue!=0){
+				startWorking();
+				doWork();
+				stopWorking();
+			}
+			break;
+		case ON_OFF:
+			if(newValue==0 && oldValue!=0){
+				startWorking();
+			}else if(newValue!=0 && oldValue==0){
+				stopWorking();
+			}
+			break;
+		case ON_ON:
+			if(newValue!=0 && oldValue==0){
+				startWorking();
+			}else if(newValue==0 && oldValue!=0){
+				stopWorking();
+			}
+			break;
+		default:
+			break;
+		}
+	}
+	
+	protected void startWorking(){
+		
+	}
+	
+	protected void doWork(){
+		
+	}
+	
+	protected void stopWorking(){
+		
+	}
+	
+	public boolean isWorking(){
+		return workWhen == PC_RedstoneWorkType.EVER || (redstoneValue==0 && workWhen == PC_RedstoneWorkType.ON_OFF) || (redstoneValue!=0 && workWhen == PC_RedstoneWorkType.ON_ON);
+	}
+	
+	@Override
+	public final void updateEntity() {
+		if(isWorking()){
+			doWork();
+		}
+		onTick();
+		if (!isClient() && sync) {
+			PC_PacketHandler.sendToAllAround(getSyncPacket(), worldObj.getWorldInfo().getVanillaDimension(), xCoord, yCoord, zCoord, 32);
+			this.sync = false;
+		}
+	}
+
+	public void onTick(){
 		
 	}
 
+	public void sync(){
+		if (isClient()) return;
+		sync = true;
+		markDirty();
+	}
+	
+	public void notifyNeighbors() {
+		if(worldObj!=null)
+			worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlockType());
+	}
+	
+	public void renderUpdate() {
+		if (this.worldObj != null) this.worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+	}
+
+
+	public void lightUpdate() {
+		if (this.worldObj != null) this.worldObj.func_147451_t(xCoord, yCoord, zCoord);
+	}
+	
 	public float getPlayerRelativeHardness(EntityPlayer player) {
 		return Float.NaN;
 	}
@@ -303,6 +428,35 @@ public class PC_TileEntity extends TileEntity {
 		
 	}
 
+	public void sendProgressBarUpdate(int key, int value) {
+		List<PC_GresBaseWithInventory> list = containers.get(this);
+		if(list==null)
+			return;
+		for (PC_GresBaseWithInventory container : list) {
+			container.sendProgressBarUpdate(key, value);
+		}
+	}
+	
+	public void openContainer(PC_GresBaseWithInventory container) {
+		List<PC_GresBaseWithInventory> list = containers.get(this);
+		if(list==null){
+			containers.put(this, list = new ArrayList<PC_GresBaseWithInventory>());
+		}
+		if (!list.contains(container)) {
+			list.add(container);
+		}
+	}
+
+
+	public void closeContainer(PC_GresBaseWithInventory container) {
+		List<PC_GresBaseWithInventory> list = containers.get(this);
+		if(list==null)
+			return;
+		list.remove(container);
+		if(list.isEmpty())
+			containers.remove(this);
+	}
+	
 	public final String getOwner(){
 		return owner;
 	}
@@ -319,7 +473,7 @@ public class PC_TileEntity extends TileEntity {
 						name = field.getName();
 					}
 					Class<?> type = field.getType();
-					value = PC_NBTTagHandler.loadFromNBT(nbtTagCompound, name, type);
+					value = PC_NBTTagHandler.loadFromNBT(nbtTagCompound, name, type, flag);
 					results.put(Result.SET, value);
 				}
 			}
@@ -340,7 +494,7 @@ public class PC_TileEntity extends TileEntity {
 					if(name.isEmpty()){
 						name = field.getName();
 					}
-					PC_NBTTagHandler.saveToNBT(nbtTagCompound, name, value);
+					PC_NBTTagHandler.saveToNBT(nbtTagCompound, name, value, flag);
 				}
 			}
 			
@@ -411,20 +565,20 @@ public class PC_TileEntity extends TileEntity {
 	}
 	
 	public long getSession(){
-		return session;
+		if(isClient())
+			return session;
+		return 0;
 	}
 	
 	public void setSession(long session){
-		this.session = session;
+		if(isClient())
+			this.session = session;
 	}
 
 	public long getNewSession(EntityPlayer player) {
-		Session session = new Session();
-		session.session = sessionRand.nextLong();
-		session.dimension = worldObj.getWorldInfo().getVanillaDimension();
-		session.x = xCoord;
-		session.y = yCoord;
-		session.z = zCoord;
+		if(isClient())
+			return 0;
+		Session session = new Session(this);
 		sessions.put(player, session);
 		return session.session;
 	}
@@ -458,7 +612,9 @@ public class PC_TileEntity extends TileEntity {
 	}
 	
 	public final void applySync(NBTTagCompound nbtTagCompound) {
-		readFromNBT(nbtTagCompound, Flag.SYNC);
+		if(worldObj.isRemote){
+			readFromNBT(nbtTagCompound, Flag.SYNC);
+		}
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -475,7 +631,7 @@ public class PC_TileEntity extends TileEntity {
 	}
 
 	public void setRedstonePowerValue(PC_Direction side, int faceSide, int value) {
-		
+		updateRedstone(value);
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -503,6 +659,15 @@ public class PC_TileEntity extends TileEntity {
 		}else{
 			PC_PacketHandler.sendToAllAround(new PC_PacketTileEntityMessageSTC(this, nbtTagCompound), worldObj.getWorldInfo().getVanillaDimension(), xCoord, yCoord, zCoord, 32);
 		}
+	}
+
+	public void setRedstoneWorkType(PC_RedstoneWorkType rwt) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public PC_RedstoneWorkType[] getAllowedRedstoneWorkTypes() {
+		return new PC_RedstoneWorkType[]{null};
 	}
 	
 }

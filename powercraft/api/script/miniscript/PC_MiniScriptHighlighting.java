@@ -39,6 +39,7 @@ public class PC_MiniScriptHighlighting {
 		highlighting.addOperatorHighlight(PC_GresHighlighting.msp(true, "+", "-", "*"), "");
 		highlighting.addOperatorHighlight(PC_GresHighlighting.msp(true, "[", "]"), "");
 		highlighting.addOperatorHighlight(PC_GresHighlighting.msp(true, ","), "");
+		highlighting.addOperatorHighlight(PC_GresHighlighting.msp(true, ":"), "");
 		ElementHighlight eh = new ElementHighlight();
 		highlighting.addOperatorHighlight(eh, "");
 		highlighting.addBlockHighlight(PC_GresHighlighting.msp(true, ";"), null, null, false, PC_Formatter.color(122, 122, 122), INNER);

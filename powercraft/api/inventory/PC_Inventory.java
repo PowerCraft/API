@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import powercraft.api.PC_INBT;
 import powercraft.api.PC_Utils;
+import powercraft.api.block.PC_Field.Flag;
 
 public class PC_Inventory implements IInventory, Iterable<ItemStack>, PC_INBT {
 
@@ -23,7 +24,7 @@ public class PC_Inventory implements IInventory, Iterable<ItemStack>, PC_INBT {
 	private final int flags;
 	private IInventory parentInventory;
 	
-	public PC_Inventory(NBTTagCompound tag){
+	public PC_Inventory(NBTTagCompound tag, Flag flag){
 		name = tag.getString("name");
 		stackLimit = tag.getInteger("stackLimit");
 		flags = tag.getInteger("flags");
@@ -235,7 +236,7 @@ public class PC_Inventory implements IInventory, Iterable<ItemStack>, PC_INBT {
 	}
 
 	@Override
-	public void saveToNBT(NBTTagCompound tag) {
+	public void saveToNBT(NBTTagCompound tag, Flag flag) {
 		tag.setString("name", name);
 		tag.setInteger("stackLimit", stackLimit);
 		tag.setInteger("flags", flags);

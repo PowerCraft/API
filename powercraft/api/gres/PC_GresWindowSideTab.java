@@ -8,6 +8,8 @@ import org.lwjgl.opengl.GL11;
 import powercraft.api.PC_RectI;
 import powercraft.api.PC_Vec2I;
 import powercraft.api.PC_Vec3;
+import powercraft.api.block.PC_TileEntity;
+import powercraft.api.energy.PC_RedstoneWorkType;
 import powercraft.api.gres.PC_GresAlign.H;
 import powercraft.api.gres.PC_GresAlign.V;
 import powercraft.api.gres.events.PC_GresEvent;
@@ -155,25 +157,44 @@ public class PC_GresWindowSideTab extends PC_GresContainer {
 		return true;
 	}
 	
-	public static PC_GresComponent[] createRedstoneSideTab(){
-		PC_GresComponent[] components = new PC_GresComponent[3];
+	private static Object getTypeDisp(PC_RedstoneWorkType type){
+		if(type==null)
+			return PC_Gres.getGresTexture("I_OFF");
+		switch(type){
+		case EVER:
+			return PC_Gres.getGresTexture("I_ON");
+		case ON_FLANK:
+			return PC_Gres.getGresTexture("I_FL");
+		case ON_HI_FLANK:
+			return PC_Gres.getGresTexture("I_HFL");
+		case ON_LOW_FLANK:
+			return PC_Gres.getGresTexture("I_LFL");
+		case ON_OFF:
+			return PC_Gres.getGresTexture("Redstone_Torch_Off");
+		case ON_ON:
+			return Blocks.redstone_torch;
+		default:
+			return PC_Gres.getGresTexture("I_OFF");
+		}
+	}
+	
+	public static PC_GresWindowSideTab createRedstoneSideTab(PC_TileEntity tileEntity){
 		PC_GresWindowSideTab sideTab = new PC_GresWindowSideTab("Redstone", new PC_GresDisplayObject(Items.redstone));
 		sideTab.setColor(new PC_Vec3(1.0, 0.2, 0.2));
-		components[0] = sideTab;
 		sideTab.setLayout(new PC_GresLayoutVertical());
-		PC_GresDisplayObject dO = new PC_GresDisplayObject(
-				PC_Gres.getGresTexture("I_ON"), PC_Gres.getGresTexture("I_OFF"), 
-				Blocks.redstone_torch, Blocks.unlit_redstone_torch, 
-				PC_Gres.getGresTexture("I_FL"), PC_Gres.getGresTexture("I_HFL"), PC_Gres.getGresTexture("I_LFL"));
+		PC_RedstoneWorkType[] types = tileEntity.getAllowedRedstoneWorkTypes();
+		Object[] disps = new Object[types.length];
+		for(int i=0; i<types.length; i++){
+			disps[i] = getTypeDisp(types[i]);
+		}
+		PC_GresDisplayObject dO = new PC_GresDisplayObject(disps);
 		PC_GresDisplay d = new PC_GresDisplay(dO);
+		d.addEventListener(new RedstoneConfigEventListener(tileEntity, types));
 		d.setBackground(new PC_GresDisplayObject(PC_Gres.getGresTexture("Slot")));
 		d.setFrame(new PC_RectI(1, 1, 1, 1));
-		components[1] = d;
-		sideTab.add(components[1]);
-		
-		components[2] = new PC_GresLabel("State: ON");
-		sideTab.add(components[2]);
-		return components;
+		sideTab.add(d);
+		sideTab.add(new PC_GresLabel("State: ON"));
+		return sideTab;
 	}
 	
 	public static PC_GresWindowSideTab createIOConfigurationSideTab(PC_ISidedInventory inventory){
@@ -218,6 +239,30 @@ public class PC_GresWindowSideTab extends PC_GresContainer {
 			sides[i].addEventListener(eventListener);
 		}
 		return sideTab;
+	}
+	
+	private static class RedstoneConfigEventListener implements PC_IGresEventListener{
+		
+		private PC_TileEntity tileEntity;
+		PC_RedstoneWorkType types[];
+		
+		public RedstoneConfigEventListener(PC_TileEntity tileEntity, PC_RedstoneWorkType types[]){
+			this.tileEntity = tileEntity;
+			this.types = types;
+		}
+
+		@Override
+		public void onEvent(PC_GresEvent event) {
+			if(event instanceof PC_GresMouseButtonEvent){
+				PC_GresMouseButtonEvent bEvent = (PC_GresMouseButtonEvent) event;
+				if(bEvent.getEvent()==Event.CLICK){
+					PC_GresDisplay disp = (PC_GresDisplay) event.getComponent();
+					PC_RedstoneWorkType rwt = types[disp.getDisplayObject().getActiveDisplayObjectIndex()];
+					tileEntity.setRedstoneWorkType(rwt);
+				}
+			}
+		}
+		
 	}
 	
 	private static class IOConfigEventListener implements PC_IGresEventListener{
