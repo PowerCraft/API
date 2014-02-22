@@ -93,7 +93,7 @@ public abstract class PC_MultiblockObjectConduit extends PC_MultiblockObject {
 	public abstract Icon getCornerConduitIcon();
 	public abstract Icon getConnectionConduitIcon(int connectionInfo);
 	
-	@Override
+	/*@Override
 	@SideOnly(Side.CLIENT)
 	public void renderWorldBlock(RenderBlocks renderer) {
 		Tessellator.instance.draw();
@@ -215,7 +215,7 @@ public abstract class PC_MultiblockObjectConduit extends PC_MultiblockObject {
 		Tessellator.instance.draw();
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		Tessellator.instance.startDrawingQuads();
-	}
+	}*/
 
 	protected boolean notingOnSide(PC_Direction dir){
 		return ((connections>>(dir.ordinal()*5)) & 31) == 0;
