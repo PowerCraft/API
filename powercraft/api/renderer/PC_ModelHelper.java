@@ -1,22 +1,22 @@
 package powercraft.api.renderer;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.IIcon;
 import powercraft.api.PC_Direction;
 import powercraft.api.PC_Vec3;
+import powercraft.api.block.PC_AbstractBlockBase;
 
 public class PC_ModelHelper {
 
-	public static void drawBlockAsUsual(Block block, Tessellator tessellator, int meta) {
+	public static void drawBlockAsUsual(PC_AbstractBlockBase block, Tessellator tessellator,
+			int meta) {
 		for (PC_Direction side : PC_Direction.VALID_DIRECTIONS)
-			renderBlockSide(side, tessellator, block.getIcon(side.ordinal(), meta));
+			renderBlockSide(side, tessellator, block.getIcon(side, meta));
 	}
 
 	public static void renderBlockSides(Tessellator tessellator, IIcon icon, PC_Direction... sides) {
 		for (PC_Direction side : sides)
 			renderBlockSide(side, tessellator, icon);
-		// I am not able to type Tesselator correct...
 	}
 
 	public static void renderBlockSide(PC_Direction side, Tessellator tessellator, IIcon icon) {
