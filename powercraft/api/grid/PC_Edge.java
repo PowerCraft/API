@@ -30,12 +30,15 @@ public class PC_Edge<G extends PC_Grid<G, T, N, E>, T extends PC_IGridTile<G, T,
 		end = node;
 		tiles.remove(index);
 		while(tiles.size()>index){
-			edge.tiles.add(tiles.remove(index));
+			edge.tiles.add(0, tiles.remove(index));
 		}
 		onChanged();
+		node.connectEdge(edge);
+		node.connectEdge((E) this);
 		return node;
 	}
 	
+	@SuppressWarnings("unchecked")
 	protected void integrate(N node, T tile, E edge){
 		if(start==node){
 			tiles.add(0, tile);
@@ -46,10 +49,11 @@ public class PC_Edge<G extends PC_Grid<G, T, N, E>, T extends PC_IGridTile<G, T,
 				}
 			}else if(edge.end==node){
 				start = edge.start;
-				for(int i=edge.tiles.size()-1; i>=0; i++){
+				for(int i=edge.tiles.size()-1; i>=0; i--){
 					tiles.add(0, edge.tiles.get(i));
 				}
 			}
+			start.replaceEdge(edge, (E) this);
 		}else if(end==node){
 			tiles.add(tile);
 			if(edge.start==node){
@@ -59,10 +63,11 @@ public class PC_Edge<G extends PC_Grid<G, T, N, E>, T extends PC_IGridTile<G, T,
 				}
 			}else if(edge.end==node){
 				end = edge.start;
-				for(int i=edge.tiles.size()-1; i>=0; i++){
+				for(int i=edge.tiles.size()-1; i>=0; i--){
 					tiles.add(edge.tiles.get(i));
 				}
 			}
+			end.replaceEdge(edge, (E) this);
 		}
 		onChanged();
 	}
@@ -78,13 +83,11 @@ public class PC_Edge<G extends PC_Grid<G, T, N, E>, T extends PC_IGridTile<G, T,
 			}
 		}else{
 			if(node==start){
-				N nnode = grid.newNode(tiles.remove(0));
-				start = nnode;
-				nnode.connectEdge((E) this);
+				start = grid.newNode(tiles.remove(0));
+				start.connectEdge((E) this);
 			}else if(node==end){
-				N nnode = grid.newNode(tiles.remove(tiles.size()-1));
-				end = nnode;
-				nnode.connectEdge((E) this);
+				end = grid.newNode(tiles.remove(tiles.size()-1));
+				end.connectEdge((E) this);
 			}
 			onChanged();
 		}
@@ -107,6 +110,11 @@ public class PC_Edge<G extends PC_Grid<G, T, N, E>, T extends PC_IGridTile<G, T,
 	
 	protected void onChanged(){
 		
+	}
+	
+	@Override
+	public String toString(){
+		return tiles.toString();
 	}
 	
 }

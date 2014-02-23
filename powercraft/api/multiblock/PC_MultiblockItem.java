@@ -26,6 +26,9 @@ public abstract class PC_MultiblockItem extends PC_Item {
 
 	public abstract PC_MultiblockType getMultiblockType();
 
+	public String getTextureFolderName() {
+		return getClass().getSimpleName().replaceAll("PC.*_(Multiblock)?(Item)?", "");
+	}
 
 	public PC_MultiblockObject getMultiblockObject(ItemStack itemStack) {
 		Class<? extends PC_MultiblockObject> c = getMultiblockObjectClass();

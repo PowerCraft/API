@@ -2,10 +2,15 @@ package powercraft.api.renderer;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer;
+
+import org.lwjgl.opengl.GL11;
+
 import powercraft.api.block.PC_AbstractBlockBase;
 import powercraft.api.item.PC_Item;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
@@ -16,6 +21,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class PC_Renderer implements ISimpleBlockRenderingHandler, IItemRenderer {
 
+	private static PC_FakeBlockForRenderer fakeBlock = new PC_FakeBlockForRenderer();
+	
 	private static PC_Renderer instance;
 	
 	private int renderID;
@@ -88,12 +95,63 @@ public class PC_Renderer implements ISimpleBlockRenderingHandler, IItemRenderer 
 	}
 
 	public static void renderBlockInInventory(Block block, int metadata, int modelId, RenderBlocks renderer){
-		//renderer.renderBlockAsItem(block, metadata, 1);
+		Tessellator tessellator = Tessellator.instance;
+
+		IIcon[] textures = new IIcon[6];
+		for (int a = 0; a < 6; a++) {
+			textures[a] = block.getIcon(a, metadata);
+		}
+
+		block.setBlockBoundsForItemRender();
+		renderer.setRenderBoundsFromBlock(block);
+		GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
+		tessellator.startDrawingQuads();
+		if (textures[0] != null) {
+			tessellator.setNormal(0.0F, -1F, 0.0F);
+			renderer.renderFaceYNeg(block, 0.0D, 0.0D, 0.0D, textures[0]);
+		}
+		if (textures[1] != null) {
+			tessellator.setNormal(0.0F, 1.0F, 0.0F);
+			renderer.renderFaceYPos(block, 0.0D, 0.0D, 0.0D, textures[1]);
+		}
+		if (textures[2] != null) {
+			tessellator.setNormal(0.0F, 0.0F, -1F);
+			renderer.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, textures[2]);
+		}
+		if (textures[3] != null) {
+			tessellator.setNormal(0.0F, 0.0F, 1.0F);
+			renderer.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, textures[3]);
+		}
+		if (textures[4] != null) {
+			tessellator.setNormal(-1F, 0.0F, 0.0F);
+			renderer.renderFaceXNeg(block, 0.0D, 0.0D, 0.0D, textures[4]);
+		}
+		if (textures[5] != null) {
+			tessellator.setNormal(1.0F, 0.0F, 0.0F);
+			renderer.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, textures[5]);
+		}
+		tessellator.draw();
+		GL11.glTranslatef(0.5F, 0.5F, 0.5F);
+		renderer.unlockBlockBounds();
 	}
 	
 	public static boolean renderBlockInWorld(IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer){
 		renderer.renderStandardBlock(block, x, y, z);
 		return true;
+	}
+	
+	public static void renderStandardBlockInWorld(IBlockAccess world, int x, int y, int z, IIcon[] icons, int colorMultipier, int lightValue, RenderBlocks renderer){
+		fakeBlock.icons = icons;
+		fakeBlock.colorMultiplier = colorMultipier;
+		fakeBlock.lightValue = lightValue;
+		renderer.renderStandardBlock(fakeBlock, x, y, z);
+	}
+	
+	public static void renderStandardBlockInInventory(IIcon[] icons, int colorMultipier, int lightValue, RenderBlocks renderer){
+		fakeBlock.icons = icons;
+		fakeBlock.colorMultiplier = colorMultipier;
+		fakeBlock.lightValue = lightValue;
+		renderer.renderBlockAsItem(fakeBlock, 0, 1);
 	}
 	
 }

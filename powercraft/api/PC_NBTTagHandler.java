@@ -257,8 +257,8 @@ public final class PC_NBTTagHandler {
 			Class<?> ac = c.getComponentType();
 			Object array = Array.newInstance(ac, size);
 			for(int i=0; i<size; i++){
-				NBTBase obj = list.removeTag(i);
-				list.func_150304_a(i, obj);
+				NBTBase obj = list.removeTag(0);
+				list.appendTag(obj);
 				Array.set(array, i, getObjectFromNBT(obj, ac, flag));
 			}
 			return c.cast(array);

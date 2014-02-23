@@ -16,7 +16,8 @@ public abstract class PC_Grid<G extends PC_Grid<G, T, N, E>, T extends PC_IGridT
 	public void addTile(T tile, T connection){
 		tile.setGrid((G) this);
 		newNode(tile);
-		makeConnection(tile, connection);
+		if(connection!=null)
+			makeConnection(tile, connection);
 	}
 	
 	protected abstract N createNode(T tile);
@@ -74,11 +75,13 @@ public abstract class PC_Grid<G extends PC_Grid<G, T, N, E>, T extends PC_IGridT
 		this.nodes.addAll(nodes);
 		this.edges.addAll(edges);
 		for(N node:nodes){
+			node.grid = (G) this;
 			for(T tile:node.getTiles()){
 				tile.setGrid((G) this);
 			}
 		}
 		for(E edge:edges){
+			edge.grid = (G) this;
 			for(T tile:edge.getTiles()){
 				tile.setGrid((G) this);
 			}
@@ -101,6 +104,8 @@ public abstract class PC_Grid<G extends PC_Grid<G, T, N, E>, T extends PC_IGridT
 	
 	protected void removeNode(N node){
 		nodes.remove(node);
+		if(nodes.isEmpty())
+			destroy();
 	}
 	
 	protected void removeEdge(E edge){
@@ -116,8 +121,8 @@ public abstract class PC_Grid<G extends PC_Grid<G, T, N, E>, T extends PC_IGridT
 			remainingNodes.removeAll(visibleNodes);
 			if(remainingNodes.isEmpty())
 				break;
-			nodes.remove(visibleNodes);
-			edges.remove(visibleEdges);
+			nodes.removeAll(visibleNodes);
+			edges.removeAll(visibleEdges);
 			G grid = createGrid();
 			grid.addAll(visibleNodes, visibleEdges);
 			visibleNodes.clear();
@@ -126,5 +131,17 @@ public abstract class PC_Grid<G extends PC_Grid<G, T, N, E>, T extends PC_IGridT
 	}
 	
 	protected abstract G createGrid();
+	
+	@Override
+	public String toString(){
+		String s = "";
+		for(N node:nodes){
+			s += node.toString()+"\n";
+		}
+		for(E edge:edges){
+			s += edge.toString()+"\n";
+		}
+		return s;
+	}
 	
 }

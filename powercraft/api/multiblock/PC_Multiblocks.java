@@ -11,6 +11,8 @@ import powercraft.api.PC_ImmutableList;
 import powercraft.api.PC_Logger;
 import powercraft.api.network.PC_PacketHandler;
 import powercraft.api.network.packet.PC_PacketMultiblockObjectSync;
+import powercraft.api.network.packet.PC_PacketSelectMultiblockTile;
+import powercraft.api.network.packet.PC_PacketSelectMultiblockTile2;
 import powercraft.api.reflect.PC_Security;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -26,6 +28,8 @@ public class PC_Multiblocks {
 	public static void register(){
 		PC_Security.allowedCaller("PC_Multiblocks.register()", PC_Api.class);
 		PC_PacketHandler.registerPacket(PC_PacketMultiblockObjectSync.class);
+		PC_PacketHandler.registerPacket(PC_PacketSelectMultiblockTile.class);
+		PC_PacketHandler.registerPacket(PC_PacketSelectMultiblockTile2.class);
 	}
 	
 	static void addMultiblock(PC_MultiblockItem multiblockItem, Class<? extends PC_MultiblockObject> multiblockObjectClass) {

@@ -3,13 +3,12 @@ package powercraft.api.multiblock.conduit;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.Icon;
-
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
 import org.lwjgl.opengl.GL11;
@@ -22,6 +21,7 @@ import powercraft.api.multiblock.PC_BlockMultiblock;
 import powercraft.api.multiblock.PC_MultiblockIndex;
 import powercraft.api.multiblock.PC_MultiblockObject;
 import powercraft.api.multiblock.PC_TileEntityMultiblock;
+import powercraft.api.renderer.PC_Renderer;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -29,7 +29,7 @@ public abstract class PC_MultiblockObjectConduit extends PC_MultiblockObject {
 
 	protected int connectionSize=8;
 	protected int connectionLength=3;
-	@PC_Field
+	@PC_Field(flags={Flag.SAVE, Flag.SYNC})
 	protected int connections;
 	
 	protected PC_MultiblockObjectConduit(NBTTagCompound nbtTagCompound, Flag flag){
@@ -49,7 +49,8 @@ public abstract class PC_MultiblockObjectConduit extends PC_MultiblockObject {
 		for(PC_Direction dir:PC_Direction.VALID_DIRECTIONS){
 			connections |= canConnectTo(dir, (oldConnections>>dir.ordinal()*5)&31)<<(dir.ordinal()*5);
 		}
-		multiblock.sync();
+		if(oldConnections!=connections)
+			sync();
 	}
 
 	@SuppressWarnings("unused")
@@ -73,7 +74,7 @@ public abstract class PC_MultiblockObjectConduit extends PC_MultiblockObject {
 		}
 		int i = canConnectToBlock(getWorld(), x, y, z, dir.getOpposite(), block, oldConnection>>1);
 		if(i>0){
-			return (i&15)<<1;
+			return (i&31);
 		}
 		return 0;
 	}
@@ -89,22 +90,34 @@ public abstract class PC_MultiblockObjectConduit extends PC_MultiblockObject {
 		checkConnections();
 	}
 
-	public abstract Icon getNormalConduitIcon();
-	public abstract Icon getCornerConduitIcon();
-	public abstract Icon getConnectionConduitIcon(int connectionInfo);
+	public abstract IIcon getNormalConduitIcon();
+	public abstract IIcon getCornerConduitIcon();
+	public abstract IIcon getConnectionConduitIcon(int connectionInfo);
 	
-	/*@Override
+	@SideOnly(Side.CLIENT)
+	public boolean isTransparentConduit(){
+		return true;
+	}
+	
+	@Override
 	@SideOnly(Side.CLIENT)
 	public void renderWorldBlock(RenderBlocks renderer) {
-		Tessellator.instance.draw();
-		GL11.glDisable(GL11.GL_CULL_FACE);
-		Tessellator.instance.startDrawingQuads();
+		World world = getWorld();
+		int x = multiblock.xCoord;
+		int y = multiblock.yCoord;
+		int z = multiblock.zCoord;
+		boolean isTransparent = isTransparentConduit();
+		if(isTransparent){
+			Tessellator.instance.draw();
+			GL11.glDisable(GL11.GL_CULL_FACE);
+			Tessellator.instance.startDrawingQuads();
+		}
 		float s = thickness/32.0f;
 		renderer.setRenderBounds(0.5f-s, 0.5f-s, 0.5f-s, 0.5f+s, 0.5f+s, 0.5f+s);
 		PC_Direction first = null;
 		PC_Direction secound = null;
 		for(PC_Direction dir:PC_Direction.VALID_DIRECTIONS){
-			if(pipeOnSide(dir)){
+			if(!notingOnSide(dir)){
 				if(first==null && secound==null){
 					first = dir;
 				}else if(secound==null){
@@ -112,15 +125,12 @@ public abstract class PC_MultiblockObjectConduit extends PC_MultiblockObject {
 				}else{
 					first = null;
 				}
-			}else if(pipeInfoAtSide(dir)!=0){
-				first = null;
-				secound = dir;
 			}
 		}
-		Icon icon = getCornerConduitIcon();
+		IIcon icon = getCornerConduitIcon();
 		if(first!=null && first.getOpposite()==secound){
 			icon = getNormalConduitIcon();
-			Icon icons[] = new Icon[6];
+			IIcon icons[] = new IIcon[6];
 			for(PC_Direction dir:PC_Direction.VALID_DIRECTIONS){
 				icons[dir.ordinal()] = icon;
 			}
@@ -135,12 +145,11 @@ public abstract class PC_MultiblockObjectConduit extends PC_MultiblockObject {
 				renderer.uvRotateSouth = 1;
 				renderer.uvRotateWest = 1;
 			}
-			PC_BlockMultiblock.setIcons(icons);
 			renderer.setRenderBounds(first.offsetX==0?0.5f-s:0, first.offsetY==0?0.5f-s:0, first.offsetZ==0?0.5f-s:0,
 					first.offsetX==0?0.5f+s:1, first.offsetY==0?0.5f+s:1, first.offsetZ==0?0.5f+s:1);
-			renderer.renderStandardBlock(PC_BlockMultiblock.block, multiblock.xCoord, multiblock.yCoord, multiblock.zCoord);
+			PC_Renderer.renderStandardBlockInWorld(world, x, y, z, icons, -1, 0, renderer);
 		}else{
-			Icon icons[] = new Icon[6];
+			IIcon icons[] = new IIcon[6];
 			for(PC_Direction dir:PC_Direction.VALID_DIRECTIONS){
 				if(notingOnSide(dir)){
 					icons[dir.ordinal()] = icon;
@@ -148,14 +157,14 @@ public abstract class PC_MultiblockObjectConduit extends PC_MultiblockObject {
 					icons[dir.ordinal()] = null;
 				}
 			}
-			PC_BlockMultiblock.setIcons(icons);
-			renderer.renderStandardBlock(PC_BlockMultiblock.block, multiblock.xCoord, multiblock.yCoord, multiblock.zCoord);
+			PC_Renderer.renderStandardBlockInWorld(world, x, y, z, icons, -1, 0, renderer);
 			icon = getNormalConduitIcon();
 			for(PC_Direction dir:PC_Direction.VALID_DIRECTIONS){
 				icons[dir.ordinal()] = icon;
 			}
 			for(PC_Direction dir:PC_Direction.VALID_DIRECTIONS){
-				if(!notingOnSide(dir)){
+				int infoOnSide = pipeInfoAtSide(dir);
+				if(infoOnSide!=0){
 					renderer.uvRotateBottom = 0;
 					renderer.uvRotateTop = 0;
 					renderer.uvRotateEast = 0;
@@ -173,16 +182,15 @@ public abstract class PC_MultiblockObjectConduit extends PC_MultiblockObject {
 					}
 					icons[dir.ordinal()] = null;
 					icons[dir.getOpposite().ordinal()] = null;
-					PC_BlockMultiblock.setIcons(icons);
-					float length = pipeInfoAtSide(dir)!=0?connectionLength/16.0f:0;
+					float length = getPipeConnetionLength(infoOnSide);
 					renderer.setRenderBounds(offsetN(s, s, dir.offsetX, length), offsetN(s, s, dir.offsetY, length), offsetN(s, s, dir.offsetZ, length),
 							offsetP(s, s, dir.offsetX, length), offsetP(s, s, dir.offsetY, length), offsetP(s, s, dir.offsetZ, length));
-					renderer.renderStandardBlock(PC_BlockMultiblock.block, multiblock.xCoord, multiblock.yCoord, multiblock.zCoord);
+					PC_Renderer.renderStandardBlockInWorld(world, x, y, z, icons, -1, 0, renderer);
 					icons[dir.ordinal()] = icon;
 					icons[dir.getOpposite().ordinal()] = icon;
 					if(length>0){
-						Icon icons2[] = new Icon[6];
-						Icon icon2 = getConnectionConduitIcon(pipeInfoAtSide(dir));
+						IIcon icons2[] = new IIcon[6];
+						IIcon icon2 = getConnectionConduitIcon(infoOnSide);
 						for(PC_Direction dir2:PC_Direction.VALID_DIRECTIONS){
 							if(dir2!=dir){
 								icons2[dir2.ordinal()] = icon2;
@@ -196,12 +204,11 @@ public abstract class PC_MultiblockObjectConduit extends PC_MultiblockObject {
 						renderer.uvRotateNorth = 0;
 						renderer.uvRotateSouth = dir==PC_Direction.UP || dir==PC_Direction.DOWN?0:1;
 						renderer.uvRotateWest = 0;
-						PC_BlockMultiblock.setIcons(icons2);
 						float ns = connectionSize/32.0f;
 						float l = 0.5f-length;
 						renderer.setRenderBounds(offsetN(ns, l, dir.offsetX, 0), offsetN(ns, l, dir.offsetY, 0), offsetN(ns, l, dir.offsetZ, 0),
 								offsetP(ns, l, dir.offsetX, 0), offsetP(ns, l, dir.offsetY, 0), offsetP(ns, l, dir.offsetZ, 0));
-						renderer.renderStandardBlock(PC_BlockMultiblock.block, multiblock.xCoord, multiblock.yCoord, multiblock.zCoord);
+						PC_Renderer.renderStandardBlockInWorld(world, x, y, z, icons, -1, 0, renderer);
 					}
 				}
 			}
@@ -212,21 +219,25 @@ public abstract class PC_MultiblockObjectConduit extends PC_MultiblockObject {
 		renderer.uvRotateNorth = 0;
 		renderer.uvRotateSouth = 0;
 		renderer.uvRotateWest = 0;
-		Tessellator.instance.draw();
-		GL11.glEnable(GL11.GL_CULL_FACE);
-		Tessellator.instance.startDrawingQuads();
-	}*/
+		if(isTransparent){
+			Tessellator.instance.draw();
+			GL11.glEnable(GL11.GL_CULL_FACE);
+			Tessellator.instance.startDrawingQuads();
+		}
+	}
 
 	protected boolean notingOnSide(PC_Direction dir){
 		return ((connections>>(dir.ordinal()*5)) & 31) == 0;
 	}
 	
-	protected boolean pipeOnSide(PC_Direction dir){
-		return ((connections>>(dir.ordinal()*5)) & 1) == 1;
+	protected int pipeInfoAtSide(PC_Direction dir){
+		return (connections>>(dir.ordinal()*5)) & 31;
 	}
 	
-	protected int pipeInfoAtSide(PC_Direction dir){
-		return ((connections>>(dir.ordinal()*5)) & 31)>>1;
+	protected float getPipeConnetionLength(int pipeInfo){
+		if(pipeInfo==1)
+			return 0;
+		return connectionLength/16.0f;
 	}
 	
 	private static float offsetN(float f, float f1, int off, float length){
@@ -251,8 +262,9 @@ public abstract class PC_MultiblockObjectConduit extends PC_MultiblockObject {
 		List<AxisAlignedBB> list = new ArrayList<AxisAlignedBB>();
 		list.add(AxisAlignedBB.getBoundingBox(0.5-s, 0.5-s, 0.5-s, 0.5+s, 0.5+s, 0.5+s));
 		for(PC_Direction dir:PC_Direction.VALID_DIRECTIONS){
-			if(!notingOnSide(dir)){
-				float length = pipeInfoAtSide(dir)!=0?connectionLength/16.0f:0;
+			int infoOnSide = pipeInfoAtSide(dir);
+			if(infoOnSide!=0){
+				float length = getPipeConnetionLength(infoOnSide);
 				list.add(AxisAlignedBB.getBoundingBox(offsetN(s, s, dir.offsetX, length), offsetN(s, s, dir.offsetY, length), offsetN(s, s, dir.offsetZ, length),
 						offsetP(s, s, dir.offsetX, length), offsetP(s, s, dir.offsetY, length), offsetP(s, s, dir.offsetZ, length)));
 				if(length>0){

@@ -479,6 +479,7 @@ public class PC_TileEntity extends TileEntity {
 			}
 			
 		});
+		onLoadedFromNBT();
 	}
 	
 	private final void writeToNBT(final NBTTagCompound nbtTagCompound, final Flag flag){
@@ -511,7 +512,6 @@ public class PC_TileEntity extends TileEntity {
 			}
 		}
 		super.readFromNBT(nbtTagCompound);
-		onLoadedFromNBT();
 	}
 
 	@Override

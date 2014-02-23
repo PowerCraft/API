@@ -9,12 +9,16 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
 import powercraft.api.PC_Direction;
+import powercraft.api.PC_NBTTagHandler;
 import powercraft.api.block.PC_Field;
 import powercraft.api.block.PC_Field.Flag;
 import powercraft.api.block.PC_TileEntity;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public final class PC_TileEntityMultiblock extends PC_TileEntity {
 
@@ -36,6 +40,8 @@ public final class PC_TileEntityMultiblock extends PC_TileEntity {
 		tiles[i] = null;
 		te.onRemoved();
 		markDirty();
+		notifyNeighbors();
+		sendReloadTile(i);
 		return drop;
 	}
 
@@ -60,6 +66,8 @@ public final class PC_TileEntityMultiblock extends PC_TileEntity {
 			}
 		}
 		markDirty();
+		notifyNeighbors();
+		sendReloadTile(i);
 		return true;
 	}
 
@@ -194,7 +202,6 @@ public final class PC_TileEntityMultiblock extends PC_TileEntity {
 
 	@Override
 	public int getComparatorInput(PC_Direction side) {
-		
 		return super.getComparatorInput(side);
 	}
 
@@ -225,12 +232,45 @@ public final class PC_TileEntityMultiblock extends PC_TileEntity {
 				tile.updateObject();
 		}
 	}
+	
+	@Override
+	public void onLoadedFromNBT() {
+		for(int i=0; i<tiles.length; i++){
+			if(tiles[i]!=null)
+				tiles[i].setIndexAndMultiblock(PC_MultiblockIndex.values()[i], this);
+		}
+	}
 
 	@Override
 	public void onChunkUnload() {
 		for(PC_MultiblockObject tile:tiles){
 			if(tile!=null)
 				tile.onChunkUnload();
+		}
+	}
+
+	private void sendReloadTile(int index){
+		if(!isClient()){
+			NBTTagCompound nbtTagCompound = new NBTTagCompound();
+			nbtTagCompound.setInteger("type", 1);
+			nbtTagCompound.setInteger("index", index);
+			PC_NBTTagHandler.saveToNBT(nbtTagCompound, "tile", tiles[index], Flag.SYNC);
+			sendMessage(nbtTagCompound);
+		}
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void onClientMessage(EntityPlayer player, NBTTagCompound nbtTagCompound) {
+		switch(nbtTagCompound.getInteger("type")){
+		case 1:
+			int index = nbtTagCompound.getInteger("index");
+			tiles[index] = PC_NBTTagHandler.loadFromNBT(nbtTagCompound, "tile", PC_MultiblockObject.class, Flag.SYNC);
+			if(tiles[index]!=null){
+				tiles[index].setIndexAndMultiblock(PC_MultiblockIndex.values()[index], this);
+			}
+			renderUpdate();
+			break;
 		}
 	}
 	

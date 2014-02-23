@@ -167,6 +167,8 @@ public final class PC_BlockMultiblock extends PC_BlockTileEntity implements PC_I
 	
 	@Override
 	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z) {
+		if(world.isRemote)
+			return false;
 		PC_TileEntityMultiblock tem = PC_Utils.getTileEntity(world, x, y, z, PC_TileEntityMultiblock.class);
 		if(tem==null){
 			return super.removedByPlayer(world, player, x, y, z);
@@ -187,6 +189,8 @@ public final class PC_BlockMultiblock extends PC_BlockTileEntity implements PC_I
 	public AxisAlignedBB getSelectedBoundingBox(World world, int x, int y, int z) {
 		EntityPlayer player = PC_ClientUtils.mc().thePlayer;
 		PC_MultiblockIndex selectionIndex = playerSelection.get(player);
+		if(selectionIndex==null)
+			return AxisAlignedBB.getAABBPool().getAABB(0, 0, 0, 0, 0, 0);
 		PC_TileEntityMultiblock tem = PC_Utils.getTileEntity(world, x, y, z, PC_TileEntityMultiblock.class);
 		return tem.getTile(selectionIndex).getSelectedBoundingBox();
 	}
@@ -282,5 +286,15 @@ public final class PC_BlockMultiblock extends PC_BlockTileEntity implements PC_I
 
 	@Override
 	public void onEndTick(float renderTickTime) {}
+	
+	@Override
+	public boolean isOpaqueCube() {
+		return false;
+	}
+
+	@Override
+	public boolean renderAsNormalBlock() {
+		return false;
+	}
 	
 }

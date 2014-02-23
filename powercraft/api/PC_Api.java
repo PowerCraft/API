@@ -3,6 +3,7 @@ package powercraft.api;
 
 import net.minecraft.item.ItemStack;
 import powercraft.api.block.PC_Blocks;
+import powercraft.api.energy.PC_EnergyGrid;
 import powercraft.api.gres.PC_Gres;
 import powercraft.api.item.PC_Items;
 import powercraft.api.multiblock.PC_BlockMultiblock;
@@ -57,6 +58,7 @@ public final class PC_Api extends PC_Module {
 		PC_Miniscript.register();
 		PC_Gres.register();
 		PC_Multiblocks.register();
+		PC_EnergyGrid.register();
 		
 		PC_Blocks.construct();
 		PC_Items.construct();

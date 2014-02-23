@@ -43,9 +43,7 @@ public class PC_Node<G extends PC_Grid<G, T, N, E>, T extends PC_IGridTile<G, T,
 	
 	@SuppressWarnings("unchecked")
 	protected void removeWhenAble(){
-		if(edges.isEmpty()){
-			grid.removeNode((N) this);
-		}else if(edges.size()==2 && canBecomeEdge()){
+		if(edges.size()==2 && canBecomeEdge()){
 			E edge = edges.get(0);
 			E edge2Delete = edges.get(1);
 			edge.integrate((N) this, tile, edge2Delete);
@@ -87,6 +85,11 @@ public class PC_Node<G extends PC_Grid<G, T, N, E>, T extends PC_IGridTile<G, T,
 				edge.markVisibles(visibleNodes, visibleEdges);
 			}
 		}
+	}
+
+	@Override
+	public String toString() {
+		return tile.toString();
 	}
 	
 }
