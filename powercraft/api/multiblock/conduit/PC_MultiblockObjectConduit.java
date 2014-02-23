@@ -72,7 +72,7 @@ public abstract class PC_MultiblockObjectConduit extends PC_MultiblockObject {
 				return 1;
 			}
 		}
-		int i = canConnectToBlock(getWorld(), x, y, z, dir.getOpposite(), block, oldConnection>>1);
+		int i = canConnectToBlock(getWorld(), x, y, z, dir.getOpposite(), block, oldConnection);
 		if(i>0){
 			return (i&31);
 		}
@@ -145,9 +145,57 @@ public abstract class PC_MultiblockObjectConduit extends PC_MultiblockObject {
 				renderer.uvRotateSouth = 1;
 				renderer.uvRotateWest = 1;
 			}
-			renderer.setRenderBounds(first.offsetX==0?0.5f-s:0, first.offsetY==0?0.5f-s:0, first.offsetZ==0?0.5f-s:0,
-					first.offsetX==0?0.5f+s:1, first.offsetY==0?0.5f+s:1, first.offsetZ==0?0.5f+s:1);
+			int infoOnSide1 = pipeInfoAtSide(first);
+			int infoOnSide2 = pipeInfoAtSide(secound);
+			float length1 = getPipeConnetionLength(infoOnSide1);
+			float length2 = getPipeConnetionLength(infoOnSide2);
+			renderer.setRenderBounds(first.offsetX==0?0.5f-s:length1, first.offsetY==0?0.5f-s:length1, first.offsetZ==0?0.5f-s:length1,
+					first.offsetX==0?0.5f+s:1-length2, first.offsetY==0?0.5f+s:1-length2, first.offsetZ==0?0.5f+s:1-length2);
 			PC_Renderer.renderStandardBlockInWorld(world, x, y, z, icons, -1, 0, renderer);
+			if(length1>0){
+				IIcon icons2[] = new IIcon[6];
+				IIcon icon2 = getConnectionConduitIcon(infoOnSide1);
+				for(PC_Direction dir2:PC_Direction.VALID_DIRECTIONS){
+					if(dir2!=first){
+						icons2[dir2.ordinal()] = icon2;
+					}else{
+						icons2[dir2.ordinal()] = null;
+					}
+				}
+				renderer.uvRotateBottom = 0;
+				renderer.uvRotateTop = 0;
+				renderer.uvRotateEast = first==PC_Direction.UP || first==PC_Direction.DOWN?0:1;
+				renderer.uvRotateNorth = 0;
+				renderer.uvRotateSouth = first==PC_Direction.UP || first==PC_Direction.DOWN?0:1;
+				renderer.uvRotateWest = 0;
+				float ns = connectionSize/32.0f;
+				float l = 0.5f-length1;
+				renderer.setRenderBounds(offsetN(ns, l, first.offsetX, 0), offsetN(ns, l, first.offsetY, 0), offsetN(ns, l, first.offsetZ, 0),
+						offsetP(ns, l, first.offsetX, 0), offsetP(ns, l, first.offsetY, 0), offsetP(ns, l, first.offsetZ, 0));
+				PC_Renderer.renderStandardBlockInWorld(world, x, y, z, icons2, -1, 0, renderer);
+			}
+			if(length2>0){
+				IIcon icons2[] = new IIcon[6];
+				IIcon icon2 = getConnectionConduitIcon(infoOnSide2);
+				for(PC_Direction dir2:PC_Direction.VALID_DIRECTIONS){
+					if(dir2!=secound){
+						icons2[dir2.ordinal()] = icon2;
+					}else{
+						icons2[dir2.ordinal()] = null;
+					}
+				}
+				renderer.uvRotateBottom = 0;
+				renderer.uvRotateTop = 0;
+				renderer.uvRotateEast = secound==PC_Direction.UP || secound==PC_Direction.DOWN?0:1;
+				renderer.uvRotateNorth = 0;
+				renderer.uvRotateSouth = secound==PC_Direction.UP || secound==PC_Direction.DOWN?0:1;
+				renderer.uvRotateWest = 0;
+				float ns = connectionSize/32.0f;
+				float l = 0.5f-length2;
+				renderer.setRenderBounds(offsetN(ns, l, secound.offsetX, 0), offsetN(ns, l, secound.offsetY, 0), offsetN(ns, l, secound.offsetZ, 0),
+						offsetP(ns, l, secound.offsetX, 0), offsetP(ns, l, secound.offsetY, 0), offsetP(ns, l, secound.offsetZ, 0));
+				PC_Renderer.renderStandardBlockInWorld(world, x, y, z, icons2, -1, 0, renderer);
+			}
 		}else{
 			IIcon icons[] = new IIcon[6];
 			for(PC_Direction dir:PC_Direction.VALID_DIRECTIONS){
@@ -208,7 +256,7 @@ public abstract class PC_MultiblockObjectConduit extends PC_MultiblockObject {
 						float l = 0.5f-length;
 						renderer.setRenderBounds(offsetN(ns, l, dir.offsetX, 0), offsetN(ns, l, dir.offsetY, 0), offsetN(ns, l, dir.offsetZ, 0),
 								offsetP(ns, l, dir.offsetX, 0), offsetP(ns, l, dir.offsetY, 0), offsetP(ns, l, dir.offsetZ, 0));
-						PC_Renderer.renderStandardBlockInWorld(world, x, y, z, icons, -1, 0, renderer);
+						PC_Renderer.renderStandardBlockInWorld(world, x, y, z, icons2, -1, 0, renderer);
 					}
 				}
 			}

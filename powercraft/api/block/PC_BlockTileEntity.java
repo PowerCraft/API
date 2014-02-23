@@ -604,5 +604,15 @@ public abstract class PC_BlockTileEntity extends PC_AbstractBlockBase implements
 			te.setRedstonePowerValue(side, faceSide, value);
 		}
 	}
+
+	@Override
+	public void onBlockAdded(World world, int x, int y, int z) {
+		PC_TileEntity tileEntity = createNewTileEntity(world, PC_Utils.getMetadata(world, x, y, z));
+		world.setTileEntity(x, y, z, tileEntity);
+		tileEntity.updateContainingBlockInfo();
+		tileEntity.onAdded();
+	}
+	
+	
 	
 }

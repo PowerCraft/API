@@ -33,6 +33,7 @@ public final class PC_ClientUtils extends PC_Utils {
 
 		PC_Renderer.getInstance();
 		isClient.set(true);
+		PC_ResourceReloadListener.register();
 		
 	}
 

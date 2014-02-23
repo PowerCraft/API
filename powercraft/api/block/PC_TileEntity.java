@@ -359,9 +359,11 @@ public class PC_TileEntity extends TileEntity {
 				
 			}
 			
+			return true;
+			
 		}
 		
-		return true;
+		return false;
 	}
 
 	public int getComparatorInput(PC_Direction side) {
@@ -668,6 +670,10 @@ public class PC_TileEntity extends TileEntity {
 
 	public PC_RedstoneWorkType[] getAllowedRedstoneWorkTypes() {
 		return new PC_RedstoneWorkType[]{null};
+	}
+
+	public void onAdded() {
+		
 	}
 	
 }
