@@ -1,4 +1,4 @@
-package powercraft.api.block;
+package powercraft.api;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

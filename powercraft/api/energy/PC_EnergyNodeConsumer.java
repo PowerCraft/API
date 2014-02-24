@@ -1,6 +1,6 @@
 package powercraft.api.energy;
 
-public class PC_EnergyNodeConsumer extends PC_EnergyNode<PC_IEnergyGridConsumer> {
+final class PC_EnergyNodeConsumer extends PC_EnergyNode<PC_IEnergyGridConsumer> {
 
 	protected float requested;
 	
@@ -8,7 +8,7 @@ public class PC_EnergyNodeConsumer extends PC_EnergyNode<PC_IEnergyGridConsumer>
 	
 	protected float maxWorkPercent;
 	
-	protected PC_EnergyNodeConsumer(PC_EnergyGrid grid, PC_IEnergyGridConsumer tile) {
+	PC_EnergyNodeConsumer(PC_EnergyGrid grid, PC_IEnergyGridConsumer tile) {
 		super(grid, tile);
 	}
 

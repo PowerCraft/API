@@ -6,6 +6,7 @@ import javax.script.CompiledScript;
 import javax.script.ScriptException;
 import javax.tools.DiagnosticCollector;
 
+import powercraft.api.PC_Field;
 import powercraft.api.PC_Utils;
 import powercraft.api.script.miniscript.PC_Miniscript;
 

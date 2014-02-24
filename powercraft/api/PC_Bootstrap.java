@@ -3,7 +3,7 @@ package powercraft.api;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 
-class PC_Bootstrap {
+final class PC_Bootstrap {
 
 	private static boolean loaded;
 	
@@ -11,8 +11,10 @@ class PC_Bootstrap {
 		try{
 			if(FMLCommonHandler.instance().getSide()==Side.CLIENT){
 				Class.forName("powercraft.api.PC_ClientUtils").newInstance();
+				Class.forName("powercraft.api.PC_ClientRegistry").newInstance();
 			}else{
-				Class.forName("powercraft.api.PC_Utils").newInstance();
+				new PC_Utils();
+				new PC_Registry();
 			}
 		}catch(Exception e){
 			e.printStackTrace();

@@ -85,6 +85,11 @@ public class PC_EnergyGrid extends PC_Grid<PC_EnergyGrid, PC_IEnergyGridTile, PC
 		grids.add(this);
 	}
 	
+	public PC_EnergyGrid(PC_IEnergyGridTile tile){
+		super(tile);
+		grids.add(this);
+	}
+	
 	@Override
 	protected void destroy(){
 		grids.remove(this);

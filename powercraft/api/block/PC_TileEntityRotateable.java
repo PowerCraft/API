@@ -5,7 +5,8 @@ import net.minecraft.item.ItemStack;
 import powercraft.api.PC_3DRotation;
 import powercraft.api.PC_3DRotationFull;
 import powercraft.api.PC_Direction;
-import powercraft.api.block.PC_Field.Flag;
+import powercraft.api.PC_Field;
+import powercraft.api.PC_Field.Flag;
 
 public abstract class PC_TileEntityRotateable extends PC_TileEntity {
 

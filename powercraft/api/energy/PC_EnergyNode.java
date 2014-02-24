@@ -2,9 +2,9 @@ package powercraft.api.energy;
 
 import powercraft.api.grid.PC_Node;
 
-public abstract class PC_EnergyNode<T extends PC_IEnergyGridTile> extends PC_Node<PC_EnergyGrid, PC_IEnergyGridTile, PC_EnergyNode<?>, PC_EnergyEdge> {
+abstract class PC_EnergyNode<T extends PC_IEnergyGridTile> extends PC_Node<PC_EnergyGrid, PC_IEnergyGridTile, PC_EnergyNode<?>, PC_EnergyEdge> {
 
-	protected PC_EnergyNode(PC_EnergyGrid grid, T tile) {
+	PC_EnergyNode(PC_EnergyGrid grid, T tile) {
 		super(grid, tile);
 	}
 	

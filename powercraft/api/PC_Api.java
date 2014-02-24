@@ -38,7 +38,7 @@ public final class PC_Api extends PC_Module {
 	
 	public static final PC_Api INSTANCE = new PC_Api();
 	
-	public static final PC_BlockMultiblock MULTIBLOCK = new PC_BlockMultiblock();
+	public static final PC_BlockMultiblock MULTIBLOCK = PC_Multiblocks.getMultiblock();
 	
 	@InstanceFactory
 	public static PC_Api factory(){

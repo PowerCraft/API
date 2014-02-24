@@ -9,7 +9,6 @@ import powercraft.api.PC_RectI;
 import powercraft.api.PC_Vec2I;
 import powercraft.api.PC_Vec3;
 import powercraft.api.block.PC_TileEntity;
-import powercraft.api.energy.PC_RedstoneWorkType;
 import powercraft.api.gres.PC_GresAlign.H;
 import powercraft.api.gres.PC_GresAlign.V;
 import powercraft.api.gres.events.PC_GresEvent;
@@ -19,6 +18,7 @@ import powercraft.api.gres.events.PC_IGresEventListener;
 import powercraft.api.gres.history.PC_GresHistory;
 import powercraft.api.gres.layout.PC_GresLayoutVertical;
 import powercraft.api.inventory.PC_ISidedInventory;
+import powercraft.api.redstone.PC_RedstoneWorkType;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

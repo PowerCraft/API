@@ -16,7 +16,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 
 final class PC_ForgeHandler implements IFuelHandler, IWorldGenerator {
 
-	public static final PC_ForgeHandler INSTANCE = new PC_ForgeHandler();
+	private static final PC_ForgeHandler INSTANCE = new PC_ForgeHandler();
 	
 	static void register(){
 		PC_Security.allowedCaller("PC_FuelHandler.register()", PC_Api.class);

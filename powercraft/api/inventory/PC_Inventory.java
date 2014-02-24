@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import powercraft.api.PC_INBT;
 import powercraft.api.PC_Utils;
-import powercraft.api.block.PC_Field.Flag;
+import powercraft.api.PC_Field.Flag;
 
 public class PC_Inventory implements IInventory, Iterable<ItemStack>, PC_INBT {
 

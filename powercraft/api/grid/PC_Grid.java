@@ -7,6 +7,13 @@ public abstract class PC_Grid<G extends PC_Grid<G, T, N, E>, T extends PC_IGridT
 
 	protected final List<N> nodes = new ArrayList<N>();
 	protected final List<E> edges = new ArrayList<E>();
+	protected boolean spitting = true;
+	
+	@SuppressWarnings("unchecked")
+	protected PC_Grid(T tile){
+		tile.setGrid((G) this);
+		newNode(tile);
+	}
 	
 	protected PC_Grid(){
 		
@@ -16,8 +23,7 @@ public abstract class PC_Grid<G extends PC_Grid<G, T, N, E>, T extends PC_IGridT
 	public void addTile(T tile, T connection){
 		tile.setGrid((G) this);
 		newNode(tile);
-		if(connection!=null)
-			makeConnection(tile, connection);
+		makeConnection(tile, connection);
 	}
 	
 	protected abstract N createNode(T tile);
@@ -113,20 +119,22 @@ public abstract class PC_Grid<G extends PC_Grid<G, T, N, E>, T extends PC_IGridT
 	}
 	
 	protected void splitGridsIfAble(){
-		List<N> remainingNodes = new ArrayList<N>(nodes);
-		List<N> visibleNodes = new ArrayList<N>();
-		List<E> visibleEdges = new ArrayList<E>();
-		while(!remainingNodes.isEmpty()){
-			remainingNodes.get(0).markVisibles(visibleNodes, visibleEdges);
-			remainingNodes.removeAll(visibleNodes);
-			if(remainingNodes.isEmpty())
-				break;
-			nodes.removeAll(visibleNodes);
-			edges.removeAll(visibleEdges);
-			G grid = createGrid();
-			grid.addAll(visibleNodes, visibleEdges);
-			visibleNodes.clear();
-			visibleEdges.clear();
+		if(spitting){
+			List<N> remainingNodes = new ArrayList<N>(nodes);
+			List<N> visibleNodes = new ArrayList<N>();
+			List<E> visibleEdges = new ArrayList<E>();
+			while(!remainingNodes.isEmpty()){
+				remainingNodes.get(0).markVisibles(visibleNodes, visibleEdges);
+				remainingNodes.removeAll(visibleNodes);
+				if(remainingNodes.isEmpty())
+					break;
+				nodes.removeAll(visibleNodes);
+				edges.removeAll(visibleEdges);
+				G grid = createGrid();
+				grid.addAll(visibleNodes, visibleEdges);
+				visibleNodes.clear();
+				visibleEdges.clear();
+			}
 		}
 	}
 	
@@ -142,6 +150,15 @@ public abstract class PC_Grid<G extends PC_Grid<G, T, N, E>, T extends PC_IGridT
 			s += edge.toString()+"\n";
 		}
 		return s;
+	}
+	
+	public void disableSplitting() {
+		spitting = false;
+	}
+
+	public void enableSplitting() {
+		spitting = true;
+		splitGridsIfAble();
 	}
 	
 }

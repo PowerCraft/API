@@ -1,6 +1,6 @@
 package powercraft.api.energy;
 
-public class PC_EnergyNodeProvider extends PC_EnergyNode<PC_IEnergyGridProvider> {
+final class PC_EnergyNodeProvider extends PC_EnergyNode<PC_IEnergyGridProvider> {
 
 	protected float useable;
 	
@@ -8,7 +8,7 @@ public class PC_EnergyNodeProvider extends PC_EnergyNode<PC_IEnergyGridProvider>
 	
 	protected boolean dynamic;
 	
-	protected PC_EnergyNodeProvider(PC_EnergyGrid grid, PC_IEnergyGridProvider tile) {
+	PC_EnergyNodeProvider(PC_EnergyGrid grid, PC_IEnergyGridProvider tile) {
 		super(grid, tile);
 	}
 	

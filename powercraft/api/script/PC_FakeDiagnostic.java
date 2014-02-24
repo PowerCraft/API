@@ -1,4 +1,4 @@
-package powercraft.api;
+package powercraft.api.script;
 
 import java.util.Locale;
 

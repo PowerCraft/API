@@ -26,7 +26,7 @@ import net.minecraft.nbt.NBTTagString;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
 
-import powercraft.api.block.PC_Field.Flag;
+import powercraft.api.PC_Field.Flag;
 
 /**
  * 

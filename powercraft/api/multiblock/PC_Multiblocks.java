@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import powercraft.api.PC_Api;
+import powercraft.api.PC_ClientRegistry;
 import powercraft.api.PC_IconRegistry;
-import powercraft.api.PC_IconRegistryImpl;
 import powercraft.api.PC_ImmutableList;
 import powercraft.api.PC_Logger;
 import powercraft.api.network.PC_PacketHandler;
@@ -17,7 +17,7 @@ import powercraft.api.reflect.PC_Security;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class PC_Multiblocks {
+public final class PC_Multiblocks {
 
 	private static boolean done;
 	private static List<PC_MultiblockItem> multiblockItems = new ArrayList<PC_MultiblockItem>();
@@ -30,6 +30,14 @@ public class PC_Multiblocks {
 		PC_PacketHandler.registerPacket(PC_PacketMultiblockObjectSync.class);
 		PC_PacketHandler.registerPacket(PC_PacketSelectMultiblockTile.class);
 		PC_PacketHandler.registerPacket(PC_PacketSelectMultiblockTile2.class);
+	}
+	
+	public static PC_BlockMultiblock getMultiblock(){
+		if(PC_Api.MULTIBLOCK==null){
+			PC_Security.allowedCaller("PC_Multiblocks.getMultiblock()", PC_Api.class);
+			return new PC_BlockMultiblock();
+		}
+		return PC_Api.MULTIBLOCK;
 	}
 	
 	static void addMultiblock(PC_MultiblockItem multiblockItem, Class<? extends PC_MultiblockObject> multiblockObjectClass) {
@@ -65,7 +73,7 @@ public class PC_Multiblocks {
 	@SideOnly(Side.CLIENT)
 	static void loadMultiblockIcons(PC_IconRegistry iconRegistry) {
 		for(PC_MultiblockItem multiblockItem:multiblockItems){
-			multiblockItem.loadMultiblockIcons(new PC_IconRegistryImpl(iconRegistry, multiblockItem));
+			multiblockItem.loadMultiblockIcons(PC_ClientRegistry.getIconRegistry(iconRegistry, multiblockItem));
 		}
 	}
 	

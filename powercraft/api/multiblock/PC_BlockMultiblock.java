@@ -19,7 +19,6 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import powercraft.api.PC_Api;
 import powercraft.api.PC_ClientUtils;
 import powercraft.api.PC_IconRegistry;
 import powercraft.api.PC_TickHandler;
@@ -30,7 +29,6 @@ import powercraft.api.block.PC_TileEntity;
 import powercraft.api.network.PC_PacketHandler;
 import powercraft.api.network.packet.PC_PacketSelectMultiblockTile;
 import powercraft.api.reflect.PC_Reflection;
-import powercraft.api.reflect.PC_Security;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -40,9 +38,8 @@ public final class PC_BlockMultiblock extends PC_BlockTileEntity implements PC_I
 	private static ISelector selector;
 	static WeakHashMap<EntityPlayer, PC_MultiblockIndex> playerSelection = new WeakHashMap<EntityPlayer, PC_MultiblockIndex>();
 	
-	public PC_BlockMultiblock() {
+	PC_BlockMultiblock() {
 		super(Material.ground);
-		PC_Security.allowedCaller("PC_BlockMultiblock()", PC_Api.class);
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 	

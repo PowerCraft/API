@@ -3,7 +3,7 @@
  */
 package powercraft.api;
 
-import powercraft.api.block.PC_Field.Flag;
+import powercraft.api.PC_Field.Flag;
 import net.minecraft.nbt.NBTTagCompound;
 
 /**

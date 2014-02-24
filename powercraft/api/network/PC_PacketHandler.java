@@ -14,7 +14,6 @@ import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.INetHandler;
-import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.Packet;
 import powercraft.api.PC_Api;
 import powercraft.api.PC_Logger;
@@ -29,12 +28,11 @@ import powercraft.api.network.packet.PC_PacketWrongPassword;
 import powercraft.api.reflect.PC_Security;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import cpw.mods.fml.common.network.FMLEmbeddedChannel;
-import cpw.mods.fml.common.network.FMLNetworkEvent.ServerConnectionFromClientEvent;
 import cpw.mods.fml.common.network.FMLOutboundHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
-import cpw.mods.fml.common.network.handshake.NetworkDispatcher;
 import cpw.mods.fml.common.network.internal.FMLProxyPacket;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -77,11 +75,8 @@ public final class PC_PacketHandler extends SimpleChannelInboundHandler<PC_Packe
 		}
 		
 		@SubscribeEvent
-		public void clientConnected(ServerConnectionFromClientEvent event){
-			NetworkDispatcher old = channels.get(Side.SERVER).attr(NetworkDispatcher.FML_DISPATCHER).get();
-			channels.get(Side.SERVER).attr(NetworkDispatcher.FML_DISPATCHER).set(new NetworkDispatcher(event.manager, PC_Utils.mcs().getConfigurationManager()));
-			sendPacketResolveTo(((NetHandlerPlayServer)event.handler).playerEntity);
-			channels.get(Side.SERVER).attr(NetworkDispatcher.FML_DISPATCHER).set(old);
+		public void clientConnected(PlayerLoggedInEvent event){
+			sendPacketResolveTo((EntityPlayerMP) event.player);
 		}
 		
 	}
@@ -95,9 +90,10 @@ public final class PC_PacketHandler extends SimpleChannelInboundHandler<PC_Packe
 		
 		@Override
 		protected void encode(ChannelHandlerContext ctx, PC_Packet msg, List<Object> out) throws Exception {
-			 ByteBuf buffer = Unpooled.buffer();
-			 writePacketToByteBuf(msg, buffer);
-			 out.add(new FMLProxyPacket(buffer, "PowerCraft"));
+			ByteBuf buffer = Unpooled.buffer();
+			writePacketToByteBuf(msg, buffer);
+			FMLProxyPacket packet = new FMLProxyPacket(buffer.copy(), "PowerCraft");
+			out.add(packet);
 		}
 
 		@Override
@@ -210,9 +206,9 @@ public final class PC_PacketHandler extends SimpleChannelInboundHandler<PC_Packe
 
 	public static void sendToDimension(PC_Packet packet, int dimension){
 		checkServer(packet);
-		 channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.DIMENSION);
-	        channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(dimension);
-	        channels.get(Side.SERVER).writeAndFlush(packet).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
+		channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.DIMENSION);
+	    channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(dimension);
+	    channels.get(Side.SERVER).writeAndFlush(packet).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
 	}
 	
 	public static void sendToServer(PC_Packet packet){
@@ -247,8 +243,7 @@ public final class PC_PacketHandler extends SimpleChannelInboundHandler<PC_Packe
 	protected void channelRead0(ChannelHandlerContext ctx, PC_Packet msg) throws Exception {
 		INetHandler iNetHandler = channels.get(side.side).attr(NetworkRegistry.NET_HANDLER).get();
 		PC_Packet result = msg.doAndReply(side, iNetHandler);
-        if (result != null)
-        {
+        if (result != null){
             ctx.writeAndFlush(result).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
         }
 	}

@@ -28,21 +28,23 @@ import net.minecraftforge.common.IPlantable;
 import powercraft.api.PC_3DRotation;
 import powercraft.api.PC_ClientUtils;
 import powercraft.api.PC_Direction;
+import powercraft.api.PC_Field;
 import powercraft.api.PC_Logger;
 import powercraft.api.PC_NBTTagHandler;
 import powercraft.api.PC_Utils;
-import powercraft.api.block.PC_Field.Flag;
-import powercraft.api.energy.PC_RedstoneWorkType;
+import powercraft.api.PC_Field.Flag;
 import powercraft.api.gres.PC_Gres;
 import powercraft.api.gres.PC_GresBaseWithInventory;
 import powercraft.api.gres.PC_IGresGui;
 import powercraft.api.gres.PC_IGresGuiOpenHandler;
+import powercraft.api.grid.PC_IGridHolder;
 import powercraft.api.network.PC_Packet;
 import powercraft.api.network.PC_PacketHandler;
 import powercraft.api.network.packet.PC_PacketPasswordRequest;
 import powercraft.api.network.packet.PC_PacketTileEntityMessageCTS;
 import powercraft.api.network.packet.PC_PacketTileEntityMessageSTC;
 import powercraft.api.network.packet.PC_PacketTileEntitySync;
+import powercraft.api.redstone.PC_RedstoneWorkType;
 import powercraft.api.reflect.PC_Processor;
 import powercraft.api.reflect.PC_Reflection;
 import powercraft.api.renderer.PC_Renderer;
@@ -94,7 +96,9 @@ public class PC_TileEntity extends TileEntity {
 	}
 	
 	public void onBreak() {
-		
+		if(this instanceof PC_IGridHolder){
+			((PC_IGridHolder)this).removeFormGrid();
+		}
 	}
 
 	public float getHardness() {
@@ -180,8 +184,13 @@ public class PC_TileEntity extends TileEntity {
 	
 	@Override
 	public final void updateEntity() {
+		if(isInvalid())
+			return;
 		if(isWorking()){
 			doWork();
+		}
+		if(this instanceof PC_IGridHolder){
+			((PC_IGridHolder)this).getGridIfNull();
 		}
 		onTick();
 		if (!isClient() && sync) {
@@ -673,7 +682,16 @@ public class PC_TileEntity extends TileEntity {
 	}
 
 	public void onAdded() {
-		
+		if(this instanceof PC_IGridHolder){
+			((PC_IGridHolder)this).getGridIfNull();
+		}
+	}
+
+	@Override
+	public void onChunkUnload() {
+		if(this instanceof PC_IGridHolder){
+			((PC_IGridHolder)this).removeFormGrid();
+		}
 	}
 	
 }

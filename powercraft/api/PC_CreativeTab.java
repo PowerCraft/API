@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class PC_CreativeTab extends CreativeTabs {
+final class PC_CreativeTab extends CreativeTabs {
 
 	private PC_Module module;
 	

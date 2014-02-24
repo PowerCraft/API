@@ -21,9 +21,9 @@ import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.util.ForgeDirection;
 import powercraft.api.PC_3DRotation;
 import powercraft.api.PC_Api;
+import powercraft.api.PC_ClientRegistry;
 import powercraft.api.PC_Direction;
 import powercraft.api.PC_IconRegistry;
-import powercraft.api.PC_IconRegistryImpl;
 import powercraft.api.PC_Module;
 import powercraft.api.PC_Utils;
 import powercraft.api.redstone.PC_RedstoneConnectable;
@@ -233,7 +233,7 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 	@Override
 	@SideOnly(Side.CLIENT)
 	public final void registerBlockIcons(IIconRegister iconRegister) {
-		registerIcons(new PC_IconRegistryImpl(iconRegister, this));
+		registerIcons(PC_ClientRegistry.getIconRegistry(iconRegister, this));
 	}
 
 	public void registerIcons(PC_IconRegistry iconRegistry){

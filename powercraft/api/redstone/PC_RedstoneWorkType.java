@@ -1,4 +1,4 @@
-package powercraft.api.energy;
+package powercraft.api.redstone;
 
 public enum PC_RedstoneWorkType {
 

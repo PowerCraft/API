@@ -3,9 +3,9 @@ package powercraft.api;
 import java.util.ArrayList;
 import java.util.List;
 
-import powercraft.api.reflect.PC_Security;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
+import powercraft.api.reflect.PC_Security;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
@@ -15,7 +15,7 @@ import cpw.mods.fml.common.gameevent.TickEvent.WorldTickEvent;
 
 public class PC_TickHandler {
 
-	public static final PC_TickHandler INSTANCE = new PC_TickHandler();
+	private static final PC_TickHandler INSTANCE = new PC_TickHandler();
 	
 	private static final List<PC_ITickHandler> tickHandlers = new ArrayList<PC_ITickHandler>();
 	private static final List<PC_IWorldTickHandler> worldTickHandlers = new ArrayList<PC_IWorldTickHandler>();

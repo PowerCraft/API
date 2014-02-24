@@ -99,7 +99,7 @@ public class PC_Renderer implements ISimpleBlockRenderingHandler, IItemRenderer 
 
 		IIcon[] textures = new IIcon[6];
 		for (int a = 0; a < 6; a++) {
-			textures[a] = block.getIcon(a, metadata);
+			textures[a] = renderer.getBlockIconFromSideAndMetadata(block, a, metadata);
 		}
 
 		block.setBlockBoundsForItemRender();

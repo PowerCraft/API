@@ -2,11 +2,11 @@ package powercraft.api.energy;
 
 import powercraft.api.grid.PC_Edge;
 
-public class PC_EnergyEdge extends PC_Edge<PC_EnergyGrid, PC_IEnergyGridTile, PC_EnergyNode<?>, PC_EnergyEdge> {
+final class PC_EnergyEdge extends PC_Edge<PC_EnergyGrid, PC_IEnergyGridTile, PC_EnergyNode<?>, PC_EnergyEdge> {
 
 	private float maxEnergy;
 	
-	protected PC_EnergyEdge(PC_EnergyGrid grid, PC_EnergyNode<?> start, PC_EnergyNode<?> end) {
+	PC_EnergyEdge(PC_EnergyGrid grid, PC_EnergyNode<?> start, PC_EnergyNode<?> end) {
 		super(grid, start, end);
 	}
 

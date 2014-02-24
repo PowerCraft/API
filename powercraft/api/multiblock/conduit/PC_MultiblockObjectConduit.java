@@ -14,9 +14,10 @@ import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
 import powercraft.api.PC_Direction;
+import powercraft.api.PC_Field;
 import powercraft.api.PC_Utils;
-import powercraft.api.block.PC_Field;
-import powercraft.api.block.PC_Field.Flag;
+import powercraft.api.PC_Field.Flag;
+import powercraft.api.grid.PC_IGridHolder;
 import powercraft.api.multiblock.PC_BlockMultiblock;
 import powercraft.api.multiblock.PC_MultiblockIndex;
 import powercraft.api.multiblock.PC_MultiblockObject;
@@ -25,7 +26,7 @@ import powercraft.api.renderer.PC_Renderer;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public abstract class PC_MultiblockObjectConduit extends PC_MultiblockObject {
+public abstract class PC_MultiblockObjectConduit extends PC_MultiblockObject implements PC_IGridHolder {
 
 	protected int connectionSize=8;
 	protected int connectionLength=3;
@@ -49,13 +50,25 @@ public abstract class PC_MultiblockObjectConduit extends PC_MultiblockObject {
 		for(PC_Direction dir:PC_Direction.VALID_DIRECTIONS){
 			connections |= canConnectTo(dir, (oldConnections>>dir.ordinal()*5)&31)<<(dir.ordinal()*5);
 		}
-		if(oldConnections!=connections)
+		if(oldConnections!=connections){
+			if (!isClient()) {
+				reconnect();
+			}
 			sync();
+		}
+	}
+	
+	public void reconnect(){
+		
 	}
 
 	@SuppressWarnings("unused")
 	public int canConnectToBlock(World world, int x, int y, int z, PC_Direction side, Block block, int oldConnectionInfo){
 		return 0;
+	}
+	
+	public int canConnectToMultiblock(World world, int x, int y, int z, PC_Direction side, PC_MultiblockObject multiblockObject, int oldConnectionInfo){
+		return multiblockObject.getClass() == getClass()?1:0;
 	}
 	
 	public int canConnectTo(PC_Direction dir, int oldConnection){
@@ -68,13 +81,15 @@ public abstract class PC_MultiblockObjectConduit extends PC_MultiblockObject {
 		if(block instanceof PC_BlockMultiblock){
 			PC_TileEntityMultiblock tileEntity = PC_Utils.getTileEntity(getWorld(), x, y, z, PC_TileEntityMultiblock.class);
 			PC_MultiblockObject multiblockObject = tileEntity.getTile(PC_MultiblockIndex.CENTER);
-			if(multiblockObject!=null && multiblockObject.getClass() == getClass()){
-				return 1;
+			if(multiblockObject!=null){
+				int connection = canConnectToMultiblock(getWorld(), x, y, z, dir.getOpposite(), multiblockObject, oldConnection);
+				if(connection>0)
+					return connection&31;
 			}
 		}
 		int i = canConnectToBlock(getWorld(), x, y, z, dir.getOpposite(), block, oldConnection);
 		if(i>0){
-			return (i&31);
+			return i&31;
 		}
 		return 0;
 	}
@@ -82,6 +97,7 @@ public abstract class PC_MultiblockObjectConduit extends PC_MultiblockObject {
 	@Override
 	public boolean onAdded() {
 		checkConnections();
+		getGridIfNull();
 		return true;
 	}
 	
@@ -324,6 +340,24 @@ public abstract class PC_MultiblockObjectConduit extends PC_MultiblockObject {
 			}
 		}
 		return list;
+	}
+	
+	@Override
+	public void onRemoved() {
+		removeFormGrid();
+	}
+
+	@Override
+	public void onChunkUnload() {
+		removeFormGrid();
+	}
+	
+	@Override
+	public void updateObject() {
+		super.updateObject();
+		if(!isClient()){
+			getGridIfNull();
+		}
 	}
 	
 }

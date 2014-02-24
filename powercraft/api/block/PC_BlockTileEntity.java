@@ -25,8 +25,8 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.IPlantable;
 import powercraft.api.PC_3DRotation;
 import powercraft.api.PC_Direction;
+import powercraft.api.PC_Registry;
 import powercraft.api.PC_Utils;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -53,7 +53,7 @@ public abstract class PC_BlockTileEntity extends PC_AbstractBlockBase implements
 	void construct() {
 		super.construct();
 		Class<? extends PC_TileEntity> tileEntity = getTileEntityClass();
-		GameRegistry.registerTileEntity(tileEntity, tileEntity.getName());
+		PC_Registry.registerTileEntity(tileEntity);
 	}
 	
 	public boolean canRotate(){
@@ -85,8 +85,8 @@ public abstract class PC_BlockTileEntity extends PC_AbstractBlockBase implements
 		PC_TileEntity te = PC_Utils.getTileEntity(world, x, y, z, PC_TileEntity.class);
 		if(te!=null){
 			te.onBreak();
+			world.removeTileEntity(x, y, z);
 		}
-		super.breakBlock(world, x, y, z, block, metadata);
 	}
 
 	@Override
@@ -608,11 +608,10 @@ public abstract class PC_BlockTileEntity extends PC_AbstractBlockBase implements
 	@Override
 	public void onBlockAdded(World world, int x, int y, int z) {
 		PC_TileEntity tileEntity = createNewTileEntity(world, PC_Utils.getMetadata(world, x, y, z));
+		tileEntity.validate();
 		world.setTileEntity(x, y, z, tileEntity);
 		tileEntity.updateContainingBlockInfo();
 		tileEntity.onAdded();
 	}
-	
-	
 	
 }

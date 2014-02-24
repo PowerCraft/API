@@ -13,8 +13,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.client.IItemRenderer.ItemRendererHelper;
 import powercraft.api.PC_Api;
+import powercraft.api.PC_ClientRegistry;
 import powercraft.api.PC_IconRegistry;
-import powercraft.api.PC_IconRegistryImpl;
 import powercraft.api.PC_Module;
 import powercraft.api.PC_Utils;
 import cpw.mods.fml.common.ModContainer;
@@ -84,7 +84,7 @@ public abstract class PC_Item extends Item implements PC_IItem{
 	@Override
 	@SideOnly(Side.CLIENT)
 	public final void registerIcons(IIconRegister iconRegister) {
-		registerIcons(new PC_IconRegistryImpl(iconRegister, this));
+		registerIcons(PC_ClientRegistry.getIconRegistry(iconRegister, this));
 	}
 
 	public void registerIcons(PC_IconRegistry iconRegistry){
