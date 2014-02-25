@@ -93,6 +93,7 @@ public class PC_GresRenderer {
         itemRenderer.renderItemOverlayIntoGUI(font, mc.getTextureManager(), itemStack, x, y, text);
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glDisable(GL11.GL_DEPTH_TEST);
+        GL11.glEnable(GL11.GL_BLEND);
     }
     
 	public static void drawItemStack(int x, int y, ItemStack itemStack, String text) {

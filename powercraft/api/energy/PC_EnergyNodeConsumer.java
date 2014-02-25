@@ -19,6 +19,7 @@ final class PC_EnergyNodeConsumer extends PC_EnergyNode<PC_IEnergyGridConsumer> 
 	
 	@Override
 	public void onTickStart(){
+		useable = 0;
 		requested = getTile().getEnergyRequested();
 		maxWorkPercent = getTile().getMaxPercentToWork();
 	}

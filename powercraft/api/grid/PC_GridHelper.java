@@ -37,23 +37,23 @@ public class PC_GridHelper {
 	
 	public static <G extends PC_Grid<G, T, N, E>, T extends PC_IGridTile<G, T, N, E>, N extends PC_Node<G, T, N, E>, E extends PC_Edge<G, T, N, E>> void getGridIfNull(World world, int x, int y, int z, int sides, T thisTile, PC_IGridFactory<G, T, N, E> factory, Class<T> tileClass){
 		if(world!=null && !world.isRemote && thisTile.getGrid()==null){
-			G grid = null;
+			boolean hasGrid = false;
 			for(PC_Direction dir:PC_Direction.VALID_DIRECTIONS){
 				if((sides&1)!=0){
 					T tile = getGridTile(world, x+dir.offsetX, y+dir.offsetY, z+dir.offsetZ, dir.getOpposite(), tileClass);
 					if(tile!=null && tile.getGrid()!=null){
-						if(grid==null){
-							tile.getGrid().addTile(thisTile, tile);
-						}else{
+						if(hasGrid){
 							connect(tile, thisTile);
+						}else{
+							tile.getGrid().addTile(thisTile, tile);
+							hasGrid = true;
 						}
-						grid = thisTile.getGrid();
 					}
 				}
 				sides>>>=1;
 			}
-			if(grid==null){
-				grid = factory.make(thisTile);
+			if(!hasGrid){
+				factory.make(thisTile);
 			}
 		}
 	}

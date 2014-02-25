@@ -16,6 +16,8 @@ public class PC_GresLayoutHorizontal implements PC_IGresLayout {
 
 		PC_Vec2I preferredSize = new PC_Vec2I(0, 0);
 		for (PC_GresComponent component : container.getLayoutChildOrder()) {
+			component.updateMinSize();
+			component.updatePrefSize();
 			PC_RectI padding = component.getPadding();
 			PC_Vec2I minSize = component.getMinSize();
 			PC_Vec2I prefSize = component.getPrefSize();
@@ -43,6 +45,7 @@ public class PC_GresLayoutHorizontal implements PC_IGresLayout {
 
 		PC_Vec2I minimumSize = new PC_Vec2I(0, 0);
 		for (PC_GresComponent component : container.getLayoutChildOrder()) {
+			component.updateMinSize();
 			PC_RectI padding = component.getPadding();
 			PC_Vec2I minSize = component.getMinSize();
 			minimumSize.x += minSize.x + padding.x + padding.width;

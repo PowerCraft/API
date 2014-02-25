@@ -1,21 +1,23 @@
 package powercraft.api.gres;
 
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import powercraft.api.PC_RectI;
 import powercraft.api.PC_Vec2I;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class PC_GresProgressImage extends PC_GresComponent {
 
-	private final String textureName;
+	private final String textureNameShadow;
+	private final String textureNameOn;
 	private float progress;
 
 
-	public PC_GresProgressImage(String textureName) {
+	public PC_GresProgressImage(String textureNameShadow, String textureNameOn) {
 
-		this.textureName = textureName;
+		this.textureNameShadow = textureNameShadow;
+		this.textureNameOn = textureNameOn;
 	}
 
 
@@ -48,15 +50,15 @@ public class PC_GresProgressImage extends PC_GresComponent {
 	@Override
 	protected PC_Vec2I calculatePrefSize() {
 
-		return getTextureDefaultSize(textureName + "Shadow");
+		return getTextureDefaultSize(textureNameShadow);
 	}
 
 
 	@Override
 	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp) {
 
-		drawTexture(textureName + "Shadow", 0, 0, rect.width, rect.height);
-		PC_GresTexture texture = PC_Gres.getGresTexture(textureName + "On");
+		drawTexture(textureNameShadow, 0, 0, rect.width, rect.height);
+		PC_GresTexture texture = PC_Gres.getGresTexture(textureNameOn);
 		int state = enabled && parentEnabled ? mouseDown ? 2 : mouseOver ? 1 : 0 : 3;
 		if (texture != null) {
 			PC_RectI frame = texture.getFrame();

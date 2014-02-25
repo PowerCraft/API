@@ -19,6 +19,7 @@ final class PC_EnergyNodeProvider extends PC_EnergyNode<PC_IEnergyGridProvider> 
 
 	@Override
 	public void onTickStart() {
+		used = 0;
 		useable = getTile().getEnergyUseable();
 		dynamic = getTile().dynamic();
 	}

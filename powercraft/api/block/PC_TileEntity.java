@@ -86,7 +86,7 @@ public class PC_TileEntity extends TileEntity {
 	@PC_Field(flags={Flag.SAVE, Flag.SYNC})
 	private int redstoneValue;
 	
-	@PC_Field(flags={Flag.SAVE, Flag.SYNC_ON_GUI, Flag.SET_WITH_PERMISSION})
+	@PC_Field(flags={Flag.SAVE})
 	protected PC_RedstoneWorkType workWhen;
 	
 	public boolean isClient() {
@@ -466,6 +466,15 @@ public class PC_TileEntity extends TileEntity {
 		list.remove(container);
 		if(list.isEmpty())
 			containers.remove(this);
+	}
+	
+	public void detectAndSendChanges() {
+		List<PC_GresBaseWithInventory> list = containers.get(this);
+		if(list==null)
+			return;
+		for (PC_GresBaseWithInventory container : list) {
+			container.detectAndSendChanges();
+		}
 	}
 	
 	public final String getOwner(){

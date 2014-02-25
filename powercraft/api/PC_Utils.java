@@ -23,6 +23,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
@@ -379,11 +380,6 @@ public class PC_Utils {
 	}
 
 
-	public static ItemStack getSmeltingResult(ItemStack item) {
-		return FurnaceRecipes.smelting().getSmeltingResult(item);
-	}
-
-
 	public static int getRedstoneValue(World world, int x, int y, int z) {
 		return world.getStrongestIndirectPower(x, y, z);
 	}
@@ -524,6 +520,19 @@ public class PC_Utils {
 	public static int getSideRotation(IBlockAccess world, int x, int y, int z, PC_Direction side, int faceSide) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	public static int getBurnTime(ItemStack itemStack) {
+		return TileEntityFurnace.getItemBurnTime(itemStack);
+	}
+	
+	public static ItemStack getSmeltingResult(ItemStack itemStack) {
+		if(itemStack==null)
+			return null;
+		itemStack = FurnaceRecipes.smelting().getSmeltingResult(itemStack);
+		if(itemStack==null)
+			return null;
+		return itemStack.copy();
 	}
 	
 }

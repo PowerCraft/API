@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -104,6 +105,7 @@ public class PC_GresInventory extends PC_GresComponent {
 			textures1[i] = PC_Gres.getGresTexture(colorTextureNamesH[i]);
 			textures2[i] = PC_Gres.getGresTexture(colorTextureNamesV[i]);
 		}
+		GL11.glEnable(GL11.GL_BLEND);
 		for (int x = 0; x < slots.length; x++) {
 			for (int y = 0; y < slots[x].length; y++) {
 				drawTexture(textureName, x * slotWidth+1, y * slotHeight+1, slotWidth, slotHeight);
@@ -197,9 +199,14 @@ public class PC_GresInventory extends PC_GresComponent {
 			if (itemstack != null) {
 				@SuppressWarnings("unchecked")
 				List<String> l = itemstack.getTooltip(PC_ClientUtils.mc().thePlayer, PC_ClientUtils.mc().gameSettings.advancedItemTooltips);
-				l.set(0,
-						(new StringBuilder()).append("\247").append(itemstack.getRarity().rarityColor).append(l.get(0))
-								.append("\2477").toString());
+				
+				for (int k = 0; k < l.size(); ++k){
+		            if (k == 0){
+		                l.set(k, itemstack.getRarity().rarityColor + l.get(k));
+		            }else{
+		                l.set(k, EnumChatFormatting.GRAY + l.get(k));
+		            }
+		        }
 				return l;
 			}
 		}

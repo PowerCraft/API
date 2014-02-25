@@ -21,6 +21,7 @@ final class PC_EnergyNodeBuffer extends PC_EnergyNode<PC_IEnergyGridBuffer> impl
 		level = getTile().getEnergyLevel();
 		maxIn = getTile().getEnergyMaxIn();
 		maxOut = getTile().getEnergyMaxOut();
+		used = 0;
 	}
 
 	@Override
