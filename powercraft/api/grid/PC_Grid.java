@@ -42,19 +42,11 @@ public abstract class PC_Grid<G extends PC_Grid<G, T, N, E>, T extends PC_IGridT
 		return edge;
 	}
 	
-	public static <G extends PC_Grid<G, T, N, E>, T extends PC_IGridTile<G, T, N, E>, N extends PC_Node<G, T, N, E>, E extends PC_Edge<G, T, N, E>> void remove(T tile){
-		tile.getGrid().removeTile(tile);
-	}
-	
 	protected void removeTile(T tile){
 		PC_TileHolder<G, T, N, E> tileHolder = getTileHolderFor(tile);
 		tileHolder.getAsNode(tile).remove();
 		tile.setGrid(null);
 		splitGridsIfAble();
-	}
-	
-	public static <G extends PC_Grid<G, T, N, E>, T extends PC_IGridTile<G, T, N, E>, N extends PC_Node<G, T, N, E>, E extends PC_Edge<G, T, N, E>> void connect(T connection1, T connection2){
-		connection1.getGrid().makeConnection(connection1, connection2);
 	}
 	
 	protected void makeConnection(T connection1, T connection2){

@@ -5,18 +5,13 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import powercraft.api.PC_Api;
-import powercraft.api.PC_Direction;
 import powercraft.api.PC_Side;
 import powercraft.api.PC_TickHandler;
 import powercraft.api.PC_TickHandler.PC_IWorldTickHandler;
-import powercraft.api.PC_Utils;
 import powercraft.api.grid.PC_Grid;
-import powercraft.api.multiblock.PC_MultiblockIndex;
-import powercraft.api.multiblock.PC_MultiblockObject;
-import powercraft.api.multiblock.PC_TileEntityMultiblock;
+import powercraft.api.grid.PC_IGridFactory;
 import powercraft.api.reflect.PC_Security;
 
 public class PC_EnergyGrid extends PC_Grid<PC_EnergyGrid, PC_IEnergyGridTile, PC_EnergyNode<?>, PC_EnergyEdge> {
@@ -24,6 +19,8 @@ public class PC_EnergyGrid extends PC_Grid<PC_EnergyGrid, PC_IEnergyGridTile, PC
 	private static boolean isEnergyModulePresent;
 	private static List<PC_EnergyGrid> grids = new ArrayList<PC_EnergyGrid>();
 	private static Ticker ticker;
+	
+	public static final PC_IGridFactory<PC_EnergyGrid, PC_IEnergyGridTile, PC_EnergyNode<?>, PC_EnergyEdge> factory = new Factory();
 	
 	public static void register(){
 		PC_Security.allowedCaller("PC_EnergyGrid.register", PC_Api.class);
@@ -49,36 +46,18 @@ public class PC_EnergyGrid extends PC_Grid<PC_EnergyGrid, PC_IEnergyGridTile, PC
 		
 	}
 	
+	private static class Factory implements PC_IGridFactory<PC_EnergyGrid, PC_IEnergyGridTile, PC_EnergyNode<?>, PC_EnergyEdge>{
+
+		@Override
+		public PC_EnergyGrid make(PC_IEnergyGridTile tile) {
+			return new PC_EnergyGrid(tile);
+		}
+		
+	}
+	
 	public static void setEnergyModulePresent(){
 		PC_Security.allowedCaller("PC_EnergyGrid.setEnergyModulePresent", "powercraft.energy.PCeg_Energy");
 		isEnergyModulePresent = true;
-	}
-	
-	public static PC_IEnergyGridTile getGridTile(World world, int x, int y, int z, PC_Direction side){
-		TileEntity tileEntity = PC_Utils.getTileEntity(world, x, y, z);
-		if(tileEntity instanceof PC_IEnergyGridHolder){
-			return ((PC_IEnergyGridHolder)tileEntity).getTile(side);
-		}else if(tileEntity instanceof PC_IEnergyGridTile){
-			return (PC_IEnergyGridTile)tileEntity;
-		}else if(tileEntity instanceof PC_TileEntityMultiblock){
-			PC_MultiblockObject obj = ((PC_TileEntityMultiblock)tileEntity).getTile(PC_MultiblockIndex.CENTER);
-			if(obj instanceof PC_IEnergyGridHolder){
-				return ((PC_IEnergyGridHolder)obj).getTile(side);
-			}else if(obj instanceof PC_IEnergyGridTile){
-				return (PC_IEnergyGridTile)obj;
-			}
-		}
-		return null;
-	}
-	
-	public static boolean hasGrid(World world, int x, int y, int z, PC_Direction side){
-		TileEntity tileEntity = PC_Utils.getTileEntity(world, x, y, z);
-		if(tileEntity instanceof PC_IEnergyGridHolder){
-			return ((PC_IEnergyGridHolder)tileEntity).getTile(side)!=null;
-		}else if(tileEntity instanceof PC_IEnergyGridTile){
-			return true;
-		}
-		return false;
 	}
 	
 	public PC_EnergyGrid(){

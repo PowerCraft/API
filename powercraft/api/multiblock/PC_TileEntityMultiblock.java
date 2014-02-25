@@ -17,10 +17,12 @@ import powercraft.api.PC_Field;
 import powercraft.api.PC_Field.Flag;
 import powercraft.api.PC_NBTTagHandler;
 import powercraft.api.block.PC_TileEntity;
+import powercraft.api.grid.PC_IGridSided;
+import powercraft.api.grid.PC_IGridTile;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public final class PC_TileEntityMultiblock extends PC_TileEntity {
+public final class PC_TileEntityMultiblock extends PC_TileEntity implements PC_IGridSided {
 
 	@PC_Field(flags={Flag.SAVE, Flag.SYNC})
 	private PC_MultiblockObject tiles[] = new PC_MultiblockObject[27];
@@ -272,6 +274,15 @@ public final class PC_TileEntityMultiblock extends PC_TileEntity {
 			renderUpdate();
 			break;
 		}
+	}
+
+	@Override
+	public <T extends PC_IGridTile<?, T, ?, ?>> T getTile(PC_Direction side, Class<T> tileClass) {
+		PC_MultiblockObject tile = tiles[0];
+		if(tile!=null && tileClass.isAssignableFrom(tile.getClass())){
+			return tileClass.cast(tile);
+		}
+		return null;
 	}
 	
 }
