@@ -113,34 +113,40 @@ public class PC_GresInventory extends PC_GresComponent {
 				if(slot instanceof PC_Slot){
 					int[] s = ((PC_Slot) slot).getAppliedSides();
 					if(s!=null && s.length>0){
-						float h = (slotHeight-2.0f)/s.length;
+						float h = slotHeight/(float)s.length;
+						float h2 = (slotHeight-2)/(float)s.length;
 						int yp = 0;
-						int xx = x * slotWidth + 2;
+						int xx = x * slotWidth + 1;
 						int yy = (int) (y * slotHeight+2 + yp/(float)slotHeight);
+						int w = slotWidth;
 						if(y==0){
-							int w = slotWidth + (x==0?1:0) + (x==slots[x].length-1?1:0)-2;
-							int xxx = x==0?1:xx;
-							textures1[s[0]].drawProzentual(xxx, 0, w, 1, xxx/(float)rect.width, 0, w/(float)rect.width, 1, 0);
+							textures1[s[0]].drawProzentual(xx, 0, w, 1, xx/(float)rect.width, 0, (w-2)/(float)rect.width, 1, 0);
 						}
 						if(y==slots[x].length-1){
-							int w = slotWidth + (x==0?1:0) + (x==slots[x].length-1?1:0)-2;
-							int xxx = x==0?1:xx;
-							textures1[s[s.length-1]].drawProzentual(xxx, slots[x].length*slotHeight+1, w, 1, xxx/(float)rect.width, 0, w/(float)rect.width, 1, 0);
+							textures1[s[s.length-1]].drawProzentual(xx, slots[x].length*slotHeight+1, w, 1, xx/(float)rect.width, 0, (w-2)/(float)rect.width, 1, 0);
 						}
 						for(int i=0; i<s.length; i++){
 							yp = (int) (h*i+0.5);
 							int hh = (int) (h*(i+1)+0.5)-yp;
-							float tp = yp/(slotHeight-2.0f);
-							textures[s[i]].drawProzentual(xx, yy + yp, slotWidth-2, hh, 0, tp, 1, hh/(slotHeight-2.0f), 0);
+							int yp2 = (int) (h2*i+0.5);
+							int hh2 = (int) (h2*(i+1)+0.5)-yp2;
+							int yyy = yy + yp-1;
+							int hhh = hh;
+							if(i==0){
+								hhh--;
+								yyy++;
+							}
+							if(i==s.length-1){
+								hhh--;
+							}
+							textures[s[i]].drawProzentual(xx+1, yyy, slotWidth-2, hhh, 0, yp2/(float)(slotHeight-2), 1, hh2/(float)(slotHeight-2), 0);
+							hhh = hh + (y==0 && i==0?1:0) + (y==slots[x].length-1 && i==s.length-1?1:0);
+							yyy = y==0 && i==0?0:yy + yp-1;
 							if(x==0){
-								int hhh = hh + (y==0 && i==0?2:0) + (y==slots[x].length-1 && i==s.length-1?2:0);
-								int yyy = y==0 && i==0?0:yy + yp;
-								textures2[s[i]].drawProzentual(0, yyy, 1, hhh, 0, yyy/(float)rect.height, 1, hhh/(float)rect.height, 0);
+								textures2[s[i]].drawProzentual(0, yyy, 1, hhh, 0, yyy/(float)rect.height, 1, (hh-2)/(float)rect.height, 0);
 							}
 							if(x==slots.length-1){
-								int hhh = hh + (y==0 && i==0?2:0) + (y==slots[x].length-1 && i==s.length-1?2:0);
-								int yyy = y==0 && i==0?0:yy + yp;
-								textures2[s[i]].drawProzentual(slots.length*slotWidth+1, yyy, 1, hhh, 0, yyy/(float)rect.height, 1, hhh/(float)rect.height, 0);
+								textures2[s[i]].drawProzentual(slots.length*slotWidth+1, yyy, 1, hhh, 0, yyy/(float)rect.height, 1, (hh-2)/(float)rect.height, 0);
 							}
 							
 						}

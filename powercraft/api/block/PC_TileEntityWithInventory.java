@@ -282,6 +282,7 @@ public class PC_TileEntityWithInventory extends PC_TileEntity implements PC_ISid
 		if(nbtTagCompound.getInteger("type")==1){
 			side2IdMaper[nbtTagCompound.getInteger("i")] = nbtTagCompound.getInteger("j");
 			sync();
+			markDirty();
 		}else{
 			super.onInternMessage(player, nbtTagCompound);
 		}

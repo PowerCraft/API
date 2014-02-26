@@ -6,6 +6,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import powercraft.api.inventory.PC_IInventory;
+import powercraft.api.inventory.PC_IInventoryBackground;
 
 
 public class PC_Slot extends Slot {
@@ -58,7 +59,9 @@ public class PC_Slot extends Slot {
 
 
 	public ItemStack getBackgroundStack() {
-
+		if(inventory instanceof PC_IInventoryBackground){
+			return ((PC_IInventoryBackground)inventory).getBackgroundStack(getSlotIndex());
+		}
 		return backgroundStack;
 	}
 
@@ -70,7 +73,9 @@ public class PC_Slot extends Slot {
 
 
 	public boolean renderGrayWhenEmpty() {
-
+		if(inventory instanceof PC_IInventoryBackground){
+			return ((PC_IInventoryBackground)inventory).renderGrayWhenEmpty(getSlotIndex());
+		}
 		return renderGrayWhenEmpty;
 	}
 
@@ -79,6 +84,12 @@ public class PC_Slot extends Slot {
 			return ((PC_IInventory)inventory).getAppliedGroups(getSlotIndex());
 		}
 		return null;
+	}
+	
+	@Override
+	public ItemStack decrStackSize(int v) {
+		ItemStack itemStack = super.decrStackSize(v);
+		return itemStack.stackSize==0?null:itemStack;
 	}
 	
 }

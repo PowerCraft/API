@@ -1,5 +1,6 @@
 package powercraft.api.energy;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -17,7 +18,7 @@ import powercraft.api.reflect.PC_Security;
 public class PC_EnergyGrid extends PC_Grid<PC_EnergyGrid, PC_IEnergyGridTile, PC_EnergyNode<?>, PC_EnergyEdge> {
 
 	private static boolean isEnergyModulePresent;
-	private static List<PC_EnergyGrid> grids = new ArrayList<PC_EnergyGrid>();
+	private static List<WeakReference<PC_EnergyGrid>> grids = new ArrayList<WeakReference<PC_EnergyGrid>>();
 	private static Ticker ticker;
 	
 	public static final PC_IGridFactory<PC_EnergyGrid, PC_IEnergyGridTile, PC_EnergyNode<?>, PC_EnergyEdge> factory = new Factory();
@@ -34,8 +35,14 @@ public class PC_EnergyGrid extends PC_Grid<PC_EnergyGrid, PC_IEnergyGridTile, PC
 
 		@Override
 		public void onStartTick(PC_Side side, World world) {
-			for(PC_EnergyGrid grid:grids){
-				grid.doEnergyTick();
+			Iterator<WeakReference<PC_EnergyGrid>> iterator = grids.iterator();
+			while(iterator.hasNext()){
+				PC_EnergyGrid grid = iterator.next().get();
+				if(grid==null){
+					iterator.remove();
+				}else{
+					grid.doEnergyTick();
+				}
 			}
 		}
 
@@ -61,12 +68,12 @@ public class PC_EnergyGrid extends PC_Grid<PC_EnergyGrid, PC_IEnergyGridTile, PC
 	}
 	
 	public PC_EnergyGrid(){
-		grids.add(this);
+		grids.add(new WeakReference<PC_EnergyGrid>(this));
 	}
 	
 	public PC_EnergyGrid(PC_IEnergyGridTile tile){
 		super(tile);
-		grids.add(this);
+		grids.add(new WeakReference<PC_EnergyGrid>(this));
 	}
 	
 	@Override

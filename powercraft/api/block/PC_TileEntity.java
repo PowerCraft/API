@@ -709,6 +709,7 @@ public class PC_TileEntity extends TileEntity {
 			if(allowed[i]== rwt){
 				workWhen = rwt;
 				sync();
+				markDirty();
 				NBTTagCompound tagCompound = new NBTTagCompound();
 				tagCompound.setInteger("type", 0);
 				if(rwt!=null)

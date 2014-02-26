@@ -29,6 +29,7 @@ import powercraft.api.gres.events.PC_GresTickEvent;
 import powercraft.api.gres.history.PC_GresHistory;
 import powercraft.api.gres.layout.PC_IGresLayout;
 import powercraft.api.gres.slot.PC_Slot;
+import powercraft.api.gres.slot.PC_SlotPhantom;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -434,7 +435,7 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 		if(itemStack==null){
 			return false;
 		}
-		if(slotItemStack==null)
+		if(slotItemStack==null || slot instanceof PC_SlotPhantom)
 			return true;
 		return itemStack.isItemEqual(slotItemStack) && ItemStack.areItemStackTagsEqual(itemStack, slotItemStack);
 	}
@@ -478,6 +479,8 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 	@SuppressWarnings("unused")
 	private void inventoryMouseUp(PC_Vec2I mouse, int buttons, int eventButton){
 		if(slotClickButton==eventButton && getMouseItemStack()==null){
+			if(slotOver==null)
+				return;
 			onSlotClicked();
 		}else if(getMouseItemStack()!=null){
 			onSlotFill();
@@ -552,18 +555,21 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 			renderGray = true;
 		}
 		renderGray &= slot.func_111238_b();
+		boolean renderGrayAfter = false;
 		if(slot instanceof PC_Slot){
 			PC_Slot sSlot = (PC_Slot)slot;
 			if(itemStack==null){
 				itemStack = sSlot.getBackgroundStack();
-				renderGray |= sSlot.renderGrayWhenEmpty();
+				renderGrayAfter = sSlot.renderGrayWhenEmpty();
 			}
 		}
-		
 		if(renderGray){
              PC_GresRenderer.drawGradientRect(x, y, 16, 16, -2130706433, -2130706433);
 		}
 		PC_GresRenderer.drawEasyItemStack(x, y, itemStack, text);
+		if(renderGrayAfter){
+            PC_GresRenderer.drawGradientRect(x, y, 16, 16, -2130706433, -2130706433);
+		}
 	}
 
 	public void eventGuiClosed() {

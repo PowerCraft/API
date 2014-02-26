@@ -54,7 +54,7 @@ public class PC_InventoryUtils {
 
 	public static int getSlotStackLimit(IInventory inventory, int i){
 		if(inventory instanceof PC_IInventory){
-			((PC_IInventory)inventory).getSlotStackLimit(i);
+			return ((PC_IInventory)inventory).getSlotStackLimit(i);
 		}
 		return inventory.getInventoryStackLimit();
 	}
@@ -178,17 +178,15 @@ public class PC_InventoryUtils {
 		if(indexes==null){
 			int size = inv.getSizeInventory();
 			for (int i = 0; i < size; i++) {
-				if (inv.getStackInSlot(i) == null) {
-					if(inv.isItemValidForSlot(i, itemstack))
-						return i;
+				if (inv.getStackInSlot(i) == null && inv.isItemValidForSlot(i, itemstack) && getSlotStackLimit(inv, i)>0) {
+					return i;
 				}
 			}
 		}else{
 			for (int j = 0; j < indexes.length; j++) {
 				int i=indexes[j];
-				if (inv.getStackInSlot(i) == null) {
-					if(inv.isItemValidForSlot(i, itemstack))
-						return i;
+				if (inv.getStackInSlot(i) == null && inv.isItemValidForSlot(i, itemstack) && getSlotStackLimit(inv, i)>0) {
+					return i;
 				}
 			}
 		}
