@@ -148,7 +148,11 @@ public class PC_GresScrollArea extends PC_GresComponent {
 	protected void onTick() {
 		container.onTick();
 	}
-
+	
+	@Override
+	protected void onDrawTick(float timeStamp) {
+		container.onDrawTick(timeStamp);
+	}
 
 	@Override
 	protected Slot getSlotAtPosition(PC_Vec2I position) {

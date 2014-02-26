@@ -219,6 +219,7 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 	protected void eventDrawScreen(PC_Vec2I mouse, float timeStamp) {
 		ScaledResolution scaledresolution = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
 		fireEvent(new PC_GresPaintEvent(this, EventType.PRE, timeStamp));
+		onDrawTick(timeStamp);
 		GL11.glEnable(GL11.GL_SCISSOR_TEST);
 		GL11.glEnable(GL11.GL_BLEND);
 		doPaint(new PC_Vec2I(0, 0), null, scaledresolution.getScaleFactor(), mc.displayHeight, timeStamp);

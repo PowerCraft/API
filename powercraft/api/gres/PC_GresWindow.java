@@ -182,6 +182,14 @@ public class PC_GresWindow extends PC_GresContainer {
 	}
 	
 	@Override
+	protected void onDrawTick(float timeStamp) {
+		super.onDrawTick(timeStamp);
+		for(PC_GresWindowSideTab sideTab:sideTabs){
+			sideTab.onDrawTick(timeStamp);
+		}
+	}
+	
+	@Override
 	protected Slot getSlotAtPosition(PC_Vec2I position) {
 		Slot slot = super.getSlotAtPosition(position);
 		if (slot != null) return slot;

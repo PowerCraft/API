@@ -101,19 +101,6 @@ public class PC_GresWindowSideTab extends PC_GresContainer {
 
 	@Override
 	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp) {
-		time += timeStamp;
-		if(time>0.01){
-			time = 0;
-			if(openSideTab==this){
-				size.setTo(size.add(1).min(getPrefSize().max(new PC_Vec2I(fontRenderer.getStringWidth(text)+24, 20))));
-			}else{
-				size.setTo(size.sub(1).max(20));
-			}
-			update=false;
-			setSize(size);
-			update=true;
-		}
-
 		GL11.glColor3d(color.x, color.y, color.z);
 		drawTexture("Frame", -2, 0, rect.width+2, rect.height);
 		GL11.glColor3f(1, 1, 1);
@@ -183,6 +170,23 @@ public class PC_GresWindowSideTab extends PC_GresContainer {
 		}
 	}
 	
+	@Override
+	protected void onDrawTick(float timeStamp) {
+		time += timeStamp;
+		if(time>0.01){
+			time = 0;
+			if(openSideTab==this){
+				size.setTo(size.add(1).min(getPrefSize().max(new PC_Vec2I(fontRenderer.getStringWidth(text)+24, 20))));
+			}else{
+				size.setTo(size.sub(1).max(20));
+			}
+			update=false;
+			setSize(size);
+			update=true;
+		}
+		super.onDrawTick(timeStamp);
+	}
+
 	public static PC_GresWindowSideTab createRedstoneSideTab(PC_TileEntity tileEntity){
 		PC_GresWindowSideTab sideTab = new PC_GresWindowSideTab("Redstone", new PC_GresDisplayObject(Items.redstone));
 		sideTab.setColor(new PC_Vec3(1.0, 0.2, 0.2));

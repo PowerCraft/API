@@ -667,6 +667,10 @@ public abstract class PC_GresComponent {
 	protected void onTick() {
 
 	}
+	
+	protected void onDrawTick(float timeStamp) {
+
+	}
 
 
 	protected Slot getSlotAtPosition(PC_Vec2I position) {

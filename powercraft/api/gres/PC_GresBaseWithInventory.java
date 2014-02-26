@@ -11,9 +11,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import powercraft.api.block.PC_TileEntity;
 import powercraft.api.gres.slot.PC_Slot;
+import powercraft.api.inventory.PC_InventoryUtils;
 
 
-public abstract class PC_GresBaseWithInventory extends Container {
+public abstract class PC_GresBaseWithInventory extends Container implements IInventory {
 
 	protected final EntityPlayer player;
 
@@ -146,6 +147,89 @@ public abstract class PC_GresBaseWithInventory extends Container {
         }
 
         return itemstack;
+	}
+	
+	@Override
+	protected boolean mergeItemStack(ItemStack itemStack, int start, int end, boolean par4){
+		return PC_InventoryUtils.storeItemStackToInventoryFrom(this, itemStack, PC_InventoryUtils.makeIndexList(start, end));
+    }
+
+
+	@Override
+	public int getSizeInventory() {
+		return inventorySlots.size();
+	}
+
+
+	@Override
+	public ItemStack getStackInSlot(int i) {
+		return getSlot(i).getStack();
+	}
+
+
+	@Override
+	public ItemStack decrStackSize(int i, int j) {
+		return getSlot(i).decrStackSize(j);
+	}
+
+
+	@Override
+	public ItemStack getStackInSlotOnClosing(int i) {
+		return getSlot(i).getStack();
+	}
+
+
+	@Override
+	public void setInventorySlotContents(int i, ItemStack itemstack) {
+		getSlot(i).putStack(itemstack);
+	}
+
+
+	@Override
+	public String getInventoryName() {
+		return inventory.getInventoryName();
+	}
+
+
+	@Override
+	public boolean hasCustomInventoryName() {
+		return inventory.hasCustomInventoryName();
+	}
+
+
+	@Override
+	public int getInventoryStackLimit() {
+		return inventory.getInventoryStackLimit();
+	}
+
+
+	@Override
+	public void markDirty() {
+		inventory.markDirty();
+	}
+
+
+	@Override
+	public boolean isUseableByPlayer(EntityPlayer player) {
+		return inventory.isUseableByPlayer(player);
+	}
+
+
+	@Override
+	public void openInventory() {
+		inventory.openInventory();
+	}
+
+
+	@Override
+	public void closeInventory() {
+		inventory.closeInventory();
+	}
+
+
+	@Override
+	public boolean isItemValidForSlot(int i, ItemStack itemstack) {
+		return getSlot(i).isItemValid(itemstack);
 	}
 	
 	

@@ -315,6 +315,14 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 			child.onTick();
 		}
 	}
+	
+	@Override
+	protected void onDrawTick(float timeStamp) {
+
+		for (PC_GresComponent child : children) {
+			child.onDrawTick(timeStamp);
+		}
+	}
 
 
 	@Override
