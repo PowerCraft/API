@@ -271,7 +271,7 @@ public class PC_TileEntityWithInventory extends PC_TileEntity implements PC_ISid
 	public void setSideGroup(int i, int j) {
 		side2IdMaper[i] = j;
 		NBTTagCompound tagCompound = new NBTTagCompound();
-		tagCompound.setInteger("type", 0);
+		tagCompound.setInteger("type", 1);
 		tagCompound.setInteger("i", i);
 		tagCompound.setInteger("j", j);
 		sendInternMessage(tagCompound);
@@ -279,7 +279,7 @@ public class PC_TileEntityWithInventory extends PC_TileEntity implements PC_ISid
 	
 	@Override
 	public void onInternMessage(EntityPlayer player, NBTTagCompound nbtTagCompound) {
-		if(nbtTagCompound.getInteger("type")==0){
+		if(nbtTagCompound.getInteger("type")==1){
 			side2IdMaper[nbtTagCompound.getInteger("i")] = nbtTagCompound.getInteger("j");
 			sync();
 		}else{

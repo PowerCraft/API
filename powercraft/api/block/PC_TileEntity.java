@@ -676,7 +676,13 @@ public class PC_TileEntity extends TileEntity {
 	}
 	
 	public void onInternMessage(EntityPlayer player, NBTTagCompound nbtTagCompound) {
-		
+		if(nbtTagCompound.getInteger("type")==0){
+			if(nbtTagCompound.hasKey("workWhen")){
+				setRedstoneWorkType(PC_RedstoneWorkType.values()[nbtTagCompound.getInteger("workWhen")]);
+			}else{
+				setRedstoneWorkType(null);
+			}
+		}
 	}
 	
 	public void onMessage(EntityPlayer player, NBTTagCompound nbtTagCompound) {
@@ -698,8 +704,18 @@ public class PC_TileEntity extends TileEntity {
 	}
 
 	public void setRedstoneWorkType(PC_RedstoneWorkType rwt) {
-		// TODO Auto-generated method stub
-		
+		PC_RedstoneWorkType allowed[] = getAllowedRedstoneWorkTypes();
+		for(int i=0; i<allowed.length; i++){
+			if(allowed[i]== rwt){
+				workWhen = rwt;
+				sync();
+				NBTTagCompound tagCompound = new NBTTagCompound();
+				tagCompound.setInteger("type", 0);
+				if(rwt!=null)
+					tagCompound.setInteger("workWhen", rwt.ordinal());
+				sendInternMessage(tagCompound);
+			}
+		}
 	}
 
 	public PC_RedstoneWorkType[] getAllowedRedstoneWorkTypes() {
