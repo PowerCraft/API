@@ -16,6 +16,8 @@ public interface PC_IInventory extends ISidedInventory {
 
 	public void onTick(World world);
 
+	public int[] getAppliedGroups(int i);
+	
 	public int[] getAppliedSides(int i);
 	
 }

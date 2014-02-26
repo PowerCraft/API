@@ -29,7 +29,7 @@ public class PC_Inventory implements IInventory, Iterable<ItemStack>, PC_INBT {
 		stackLimit = tag.getInteger("stackLimit");
 		flags = tag.getInteger("flags");
 		inventoryContents = new ItemStack[tag.getInteger("size")];
-		PC_Utils.loadInventoryFromNBT(this, tag, "inv");
+		PC_InventoryUtils.loadInventoryFromNBT(this, tag, "inv");
 	}
 	
 	public PC_Inventory(String name, int size, int stackLimit, int flags){
@@ -241,7 +241,7 @@ public class PC_Inventory implements IInventory, Iterable<ItemStack>, PC_INBT {
 		tag.setInteger("stackLimit", stackLimit);
 		tag.setInteger("flags", flags);
 		tag.setInteger("size", inventoryContents.length);
-		PC_Utils.saveInventoryToNBT(this, tag, "inv");
+		PC_InventoryUtils.saveInventoryToNBT(this, tag, "inv");
 	}
 	
 }

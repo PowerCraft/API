@@ -10,7 +10,7 @@ import powercraft.api.block.PC_TileEntity;
 import powercraft.api.network.PC_Packet;
 import powercraft.api.network.PC_PacketClientToServer;
 
-public class PC_PacketTileEntityMessageCTS extends PC_PacketClientToServer {
+public class PC_PacketTileEntityMessageIntCTS extends PC_PacketClientToServer {
 
 	private int x;
 	private int y;
@@ -18,11 +18,11 @@ public class PC_PacketTileEntityMessageCTS extends PC_PacketClientToServer {
 	private NBTTagCompound nbtTagCompound;
 	private long session;
 	
-	public PC_PacketTileEntityMessageCTS(){
+	public PC_PacketTileEntityMessageIntCTS(){
 		
 	}
 	
-	public PC_PacketTileEntityMessageCTS(PC_TileEntity te, NBTTagCompound nbtTagCompound, long session){
+	public PC_PacketTileEntityMessageIntCTS(PC_TileEntity te, NBTTagCompound nbtTagCompound, long session){
 		x = te.xCoord;
 		y = te.yCoord;
 		z = te.zCoord;
@@ -35,7 +35,7 @@ public class PC_PacketTileEntityMessageCTS extends PC_PacketClientToServer {
 		EntityPlayer player = ((NetHandlerPlayServer)iNetHandler).playerEntity;
 		PC_TileEntity te = PC_Utils.getTileEntity(player.worldObj, x, y, z, PC_TileEntity.class);
 		if(te!=null){
-			te.onClientMessageCheck(player, nbtTagCompound, session, false);
+			te.onClientMessageCheck(player, nbtTagCompound, session, true);
 		}
 		return null;
 	}

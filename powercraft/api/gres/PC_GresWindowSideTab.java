@@ -1,10 +1,13 @@
 package powercraft.api.gres;
 
+import java.text.DecimalFormat;
+
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 
 import org.lwjgl.opengl.GL11;
 
+import powercraft.api.PC_Direction;
 import powercraft.api.PC_RectI;
 import powercraft.api.PC_Vec2I;
 import powercraft.api.PC_Vec3;
@@ -204,6 +207,8 @@ public class PC_GresWindowSideTab extends PC_GresContainer {
 		return sideTab;
 	}
 	
+	private static PC_Vec2I[] SIDE_POS = {new PC_Vec2I(18, 35), new PC_Vec2I(18, 1), new PC_Vec2I(18, 18), new PC_Vec2I(35, 35), new PC_Vec2I(35, 18), new PC_Vec2I(1, 18)};
+	
 	public static PC_GresWindowSideTab createIOConfigurationSideTab(PC_ISidedInventory inventory){
 		PC_GresWindowSideTab sideTab = new PC_GresWindowSideTab("Configuration", new PC_GresDisplayObject(PC_Gres.getGresTexture("IO_CONF")));
 		sideTab.setColor(new PC_Vec3(0.2, 1.0, 0.2));
@@ -218,32 +223,17 @@ public class PC_GresWindowSideTab extends PC_GresContainer {
 		}
 		PC_GresDisplay[] sides = new PC_GresDisplay[6];
 		PC_GresDisplayObject dO;
-		frame.add(sides[0] = new PC_GresDisplay(dO = new PC_GresDisplayObject(obj)));
-		dO.setActiveDisplayObjectIndex(inventory.getSideGroup(0)+1);
-		sides[0].setLocation(new PC_Vec2I(18, 1));
-		sides[0].setSize(new PC_Vec2I(16, 16));
-		frame.add(sides[1] = new PC_GresDisplay(dO = new PC_GresDisplayObject(obj)));
-		dO.setActiveDisplayObjectIndex(inventory.getSideGroup(1)+1);
-		sides[1].setLocation(new PC_Vec2I(1, 18));
-		sides[1].setSize(new PC_Vec2I(16, 16));
-		frame.add(sides[2] = new PC_GresDisplay(new PC_GresDisplayObject(inventory.getFrontIcon())));
-		sides[2].setLocation(new PC_Vec2I(18, 18));
-		sides[2].setSize(new PC_Vec2I(16, 16));
-		frame.add(sides[3] = new PC_GresDisplay(dO = new PC_GresDisplayObject(obj)));
-		dO.setActiveDisplayObjectIndex(inventory.getSideGroup(3)+1);
-		sides[3].setLocation(new PC_Vec2I(35, 18));
-		sides[3].setSize(new PC_Vec2I(16, 16));
-		frame.add(sides[4] = new PC_GresDisplay(dO = new PC_GresDisplayObject(obj)));
-		dO.setActiveDisplayObjectIndex(inventory.getSideGroup(4)+1);
-		sides[4].setLocation(new PC_Vec2I(18, 35));
-		sides[4].setSize(new PC_Vec2I(16, 16));
-		frame.add(sides[5] = new PC_GresDisplay(dO = new PC_GresDisplayObject(obj)));
-		dO.setActiveDisplayObjectIndex(inventory.getSideGroup(5)+1);
-		sides[5].setLocation(new PC_Vec2I(35, 35));
-		sides[5].setSize(new PC_Vec2I(16, 16));
 		IOConfigEventListener eventListener = new IOConfigEventListener(inventory, sides);
-		for(int i=0; i<sides.length; i++){
-			sides[i].addEventListener(eventListener);
+		for(int i=0; i<6; i++){
+			if(i==PC_Direction.NORTH.ordinal()){
+				frame.add(sides[i] = new PC_GresDisplay(new PC_GresDisplayObject(inventory.getFrontIcon())));
+			}else{
+				frame.add(sides[i] = new PC_GresDisplay(dO = new PC_GresDisplayObject(obj)));
+				dO.setActiveDisplayObjectIndex(inventory.getSideGroup(i)+1);
+				sides[i].addEventListener(eventListener);
+			}
+			sides[i].setLocation(SIDE_POS[i]);
+			sides[i].setSize(new PC_Vec2I(16, 16));
 		}
 		return sideTab;
 	}
@@ -260,9 +250,9 @@ public class PC_GresWindowSideTab extends PC_GresContainer {
 		
 		private PC_GresLabel label;
 		
-		public void setToValue(int value){
+		public void setToValue(float value){
 			if(label!=null){
-				label.setText("Energy: "+value+"E/T");
+				label.setText("Energy: "+new DecimalFormat("#.##").format(value)+"E/T");
 			}
 		}
 		

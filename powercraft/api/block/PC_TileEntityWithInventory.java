@@ -6,12 +6,15 @@ import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import powercraft.api.PC_Direction;
 import powercraft.api.PC_Field;
 import powercraft.api.PC_Utils;
+import powercraft.api.PC_Field.Flag;
 import powercraft.api.inventory.PC_ISidedInventory;
+import powercraft.api.inventory.PC_InventoryUtils;
 
 
 public class PC_TileEntityWithInventory extends PC_TileEntity implements PC_ISidedInventory {
@@ -19,7 +22,7 @@ public class PC_TileEntityWithInventory extends PC_TileEntity implements PC_ISid
 	private final String name;
 	@PC_Field
 	protected ItemStack[] inventoryContents;
-	@PC_Field
+	@PC_Field(flags={Flag.SAVE, Flag.SYNC})
 	private int side2IdMaper[] = {-1, -1, -1, -1, -1, -1};
 	private final Group groups[];
 	
@@ -91,6 +94,23 @@ public class PC_TileEntityWithInventory extends PC_TileEntity implements PC_ISid
 		markDirty();
 	}
 
+	public void moveOrStore(int i, ItemStack itemstack){
+		int[] sides = getAppliedSides(i);
+			if(sides!=null){
+			List<PC_Direction> sideList = new ArrayList<PC_Direction>(sides.length);
+			for(int j=0; j<sides.length; j++){
+				sideList.add(PC_Direction.fromSide(sides[j]));
+			}
+			while(!sideList.isEmpty() && itemstack!=null){
+				PC_Direction side = sideList.remove((int)(Math.random()*sideList.size()));
+				itemstack = PC_InventoryUtils.tryToStore(worldObj, xCoord+side.offsetX, yCoord+side.offsetY, zCoord+side.offsetZ, side.getOpposite(), itemstack);
+			}
+		}
+		if(itemstack!=null){
+			setInventorySlotContents(i, itemstack);
+		}
+	}
+	
 	@Override
 	public String getInventoryName() {
 		return name;
@@ -137,12 +157,12 @@ public class PC_TileEntityWithInventory extends PC_TileEntity implements PC_ISid
 
 	@Override
 	public boolean canInsertItem(int i, ItemStack itemstack, int side) {
-		return isSlotCompatibleWithSide(i, side);
+		return isSlotCompatibleWithSide(i, side, true);
 	}
 
 	@Override
 	public boolean canExtractItem(int i, ItemStack itemstack, int side) {
-		return isSlotCompatibleWithSide(i, side);
+		return isSlotCompatibleWithSide(i, side, false);
 	}
 
 	@Override
@@ -162,11 +182,11 @@ public class PC_TileEntityWithInventory extends PC_TileEntity implements PC_ISid
 	
 	@Override
 	public void onTick(World world) {
-		PC_Utils.onTick(this, worldObj);
+		PC_InventoryUtils.onTick(this, worldObj);
 	}
 	
 	@Override
-	public int[] getAppliedSides(int i) {
+	public int[] getAppliedGroups(int i) {
 		List<Integer> sides = new ArrayList<Integer>();
 		for(int j=0; j<side2IdMaper.length; j++){
 			int groupID = side2IdMaper[j];
@@ -190,17 +210,45 @@ public class PC_TileEntityWithInventory extends PC_TileEntity implements PC_ISid
 		return a;
 	}
 	
+	@Override
+	public int[] getAppliedSides(int i) {
+		List<Integer> sides = new ArrayList<Integer>();
+		for(int j=0; j<side2IdMaper.length; j++){
+			int groupID = side2IdMaper[j];
+			if(groupID!=-1 && !groups[groupID].input){
+				int[] slotIds = groups[groupID].slotIds;
+				for(int k=0; k<slotIds.length; k++){
+					if(slotIds[k] == i){
+						sides.add(j);
+						break;
+					}
+				}
+			}
+		}
+		if(sides.isEmpty())
+			return null;
+		int[] a = new int[sides.size()];
+		for(int j=0; j<a.length; j++){
+			a[j] = PC_Utils.getSidePosition(worldObj, xCoord, yCoord, zCoord, sides.get(j)).ordinal();
+		}
+		Arrays.sort(a);
+		return a;
+	}
+	
 	public int getIDForSide(int side){
 		return getIDForSide(PC_Direction.fromSide(side));
 	}
 	
 	public int getIDForSide(PC_Direction side){
+		side = PC_Utils.getSidePositionInv(worldObj, xCoord, yCoord, zCoord, side);
 		return side2IdMaper[side.ordinal()];
 	}
 	
-	public boolean isSlotCompatibleWithSide(int i, int side){
+	public boolean isSlotCompatibleWithSide(int i, int side, boolean insert){
 		int groupID = getIDForSide(side);
 		if(groupID==-1)
+			return false;
+		if(groups[groupID].input!=insert)
 			return false;
 		int[] slotsForSide = groups[groupID].slotIds;
 		for(int j=0; j<slotsForSide.length; j++){
@@ -213,7 +261,7 @@ public class PC_TileEntityWithInventory extends PC_TileEntity implements PC_ISid
 	@Override
 	public void onBreak() {
 		super.onBreak();
-		PC_Utils.dropInventoryContent(this, worldObj, xCoord, yCoord, zCoord);
+		PC_InventoryUtils.dropInventoryContent(this, worldObj, xCoord, yCoord, zCoord);
 	}
 
 	public int getGroupCount() {
@@ -222,8 +270,23 @@ public class PC_TileEntityWithInventory extends PC_TileEntity implements PC_ISid
 
 	public void setSideGroup(int i, int j) {
 		side2IdMaper[i] = j;
+		NBTTagCompound tagCompound = new NBTTagCompound();
+		tagCompound.setInteger("type", 0);
+		tagCompound.setInteger("i", i);
+		tagCompound.setInteger("j", j);
+		sendInternMessage(tagCompound);
 	}
 	
+	@Override
+	public void onInternMessage(EntityPlayer player, NBTTagCompound nbtTagCompound) {
+		if(nbtTagCompound.getInteger("type")==0){
+			side2IdMaper[nbtTagCompound.getInteger("i")] = nbtTagCompound.getInteger("j");
+			sync();
+		}else{
+			super.onInternMessage(player, nbtTagCompound);
+		}
+	}
+
 	public int getSideGroup(int i) {
 		return side2IdMaper[i];
 	}

@@ -42,6 +42,7 @@ import powercraft.api.network.PC_Packet;
 import powercraft.api.network.PC_PacketHandler;
 import powercraft.api.network.packet.PC_PacketPasswordRequest;
 import powercraft.api.network.packet.PC_PacketTileEntityMessageCTS;
+import powercraft.api.network.packet.PC_PacketTileEntityMessageIntCTS;
 import powercraft.api.network.packet.PC_PacketTileEntityMessageSTC;
 import powercraft.api.network.packet.PC_PacketTileEntitySync;
 import powercraft.api.redstone.PC_RedstoneWorkType;
@@ -656,10 +657,14 @@ public class PC_TileEntity extends TileEntity {
 	}
 
 	@SideOnly(Side.CLIENT)
-	public final void onClientMessageCheck(EntityPlayer player, NBTTagCompound nbtTagCompound, long session) {
+	public final void onClientMessageCheck(EntityPlayer player, NBTTagCompound nbtTagCompound, long session, boolean intern) {
 		Session pSession = sessions.get(player);
 		if(pSession!=null && pSession.dimension == worldObj.getWorldInfo().getVanillaDimension() && pSession.x == xCoord && pSession.y == yCoord && pSession.z == zCoord && pSession.session == session){
-			onMessage(player, nbtTagCompound);
+			if(intern){
+				onInternMessage(player, nbtTagCompound);
+			}else{
+				onMessage(player, nbtTagCompound);
+			}
 		}else{
 			PC_Logger.warning("Player %s tries to send not signated messaged", session);
 		}
@@ -668,6 +673,10 @@ public class PC_TileEntity extends TileEntity {
 	@SideOnly(Side.CLIENT)
 	public void onClientMessage(EntityPlayer player, NBTTagCompound nbtTagCompound) {
 		onMessage(player, nbtTagCompound);
+	}
+	
+	public void onInternMessage(EntityPlayer player, NBTTagCompound nbtTagCompound) {
+		
 	}
 	
 	public void onMessage(EntityPlayer player, NBTTagCompound nbtTagCompound) {
@@ -679,6 +688,12 @@ public class PC_TileEntity extends TileEntity {
 			PC_PacketHandler.sendToServer(new PC_PacketTileEntityMessageCTS(this, nbtTagCompound, session));
 		}else{
 			PC_PacketHandler.sendToAllAround(new PC_PacketTileEntityMessageSTC(this, nbtTagCompound), worldObj.getWorldInfo().getVanillaDimension(), xCoord, yCoord, zCoord, 32);
+		}
+	}
+	
+	public void sendInternMessage(NBTTagCompound nbtTagCompound){
+		if(isClient()){
+			PC_PacketHandler.sendToServer(new PC_PacketTileEntityMessageIntCTS(this, nbtTagCompound, session));
 		}
 	}
 

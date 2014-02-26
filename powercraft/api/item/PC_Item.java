@@ -17,6 +17,7 @@ import powercraft.api.PC_ClientRegistry;
 import powercraft.api.PC_IconRegistry;
 import powercraft.api.PC_Module;
 import powercraft.api.PC_Utils;
+import powercraft.api.inventory.PC_InventoryUtils;
 import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -98,7 +99,7 @@ public abstract class PC_Item extends Item implements PC_IItem{
 	
 	@Override
 	public void onUpdate(ItemStack itemStack, World world, Entity entity, int i, boolean currentItem) {
-		onTick(itemStack, world, PC_Utils.getInventoryFromEntity(entity), i);
+		onTick(itemStack, world, PC_InventoryUtils.getInventoryFrom(entity), i);
 	}
 
 	@Override

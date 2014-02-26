@@ -76,7 +76,7 @@ public class PC_Slot extends Slot {
 
 	public int[] getAppliedSides() {
 		if(inventory instanceof PC_IInventory){
-			return ((PC_IInventory)inventory).getAppliedSides(getSlotIndex());
+			return ((PC_IInventory)inventory).getAppliedGroups(getSlotIndex());
 		}
 		return null;
 	}

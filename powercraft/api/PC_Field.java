@@ -14,7 +14,7 @@ public @interface PC_Field {
 	public Flag[] flags() default {Flag.SAVE};
 	
 	public static enum Flag{
-		SAVE, SYNC, SYNC_ON_GUI, SET_WITH_PERMISSION;
+		SAVE, SYNC;
 
 		public boolean isIn(PC_Field info) {
 			Flag[] flags = info.flags();
