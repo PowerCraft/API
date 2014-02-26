@@ -1,9 +1,10 @@
 package powercraft.api;
 
-import powercraft.api.PC_Field.Flag;
+import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
+import powercraft.api.PC_Field.Flag;
 
 public class PC_3DRotationY implements PC_3DRotation {
 
@@ -13,6 +14,10 @@ public class PC_3DRotationY implements PC_3DRotation {
 		this.rotation = (rotation%4+4)%4;
 	}
 	
+	public PC_3DRotationY(Entity entity){
+		this.rotation = PC_Utils.getRotationMetadata(0, entity)>>2;
+	}
+	
 	public PC_3DRotationY(NBTTagCompound nbtTagCompound, Flag flag){
 		rotation = nbtTagCompound.getByte("rotation");
 	}
@@ -20,6 +25,11 @@ public class PC_3DRotationY implements PC_3DRotation {
 	@Override
 	public PC_Direction getSidePosition(PC_Direction side) {
 		return side.getRotation(PC_Direction.UP, rotation);
+	}
+	
+	@Override
+	public PC_Direction getSidePositionInv(PC_Direction side) {
+		return side.getRotation(PC_Direction.DOWN, rotation);
 	}
 
 	@Override
@@ -50,7 +60,7 @@ public class PC_3DRotationY implements PC_3DRotation {
 	@Override
 	public AxisAlignedBB rotateBox(AxisAlignedBB box) {
 		// TODO Auto-generated method stub
-		return null;
+		return box;
 	}
 
 	@Override
@@ -58,4 +68,9 @@ public class PC_3DRotationY implements PC_3DRotation {
 		nbtTagCompound.setByte("rotation", (byte) rotation);
 	}
 
+	@Override
+	public String toString() {
+		return "PC_3DRotationY [rotation=" + rotation + "]";
+	}
+	
 }

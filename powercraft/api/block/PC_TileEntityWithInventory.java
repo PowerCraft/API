@@ -10,7 +10,6 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import powercraft.api.PC_Direction;
 import powercraft.api.PC_Field;
-import powercraft.api.PC_Field.Flag;
 import powercraft.api.PC_Utils;
 import powercraft.api.inventory.PC_ISidedInventory;
 
@@ -231,7 +230,7 @@ public class PC_TileEntityWithInventory extends PC_TileEntity implements PC_ISid
 
 	@Override
 	public IIcon getFrontIcon() {
-		return getBlockType().getIcon(PC_Direction.NORTH.ordinal(), blockMetadata);
+		return ((PC_AbstractBlockBase)getBlockType()).getIcon(worldObj, xCoord, yCoord, zCoord, PC_Direction.NORTH);
 	}
 	
 }

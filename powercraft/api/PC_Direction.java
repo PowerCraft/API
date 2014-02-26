@@ -75,11 +75,11 @@ public enum PC_Direction {
 	public PC_Direction getRotation(PC_Direction axis, int times) {
 		times = ((times %4) +4) %4;
 		if(times==0)
-			return axis;
+			return this;
 		else if(times==1)
 			return getRotation(axis);
 		else if(times==2)
-			return getOpposite();
+			return this==axis||getOpposite()==axis?this:getOpposite();
 		else if(times==3)
 			return getRotation(axis.getOpposite());
 		return UNKNOWN;

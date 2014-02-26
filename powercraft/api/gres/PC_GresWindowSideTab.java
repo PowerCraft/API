@@ -33,6 +33,8 @@ public class PC_GresWindowSideTab extends PC_GresContainer {
 	
 	private PC_GresDisplayObject displayObject;
 	
+	private float time;
+	
 	public PC_GresWindowSideTab(String text){
 		super(text);
 		frame.x = 2;
@@ -96,6 +98,19 @@ public class PC_GresWindowSideTab extends PC_GresContainer {
 
 	@Override
 	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp) {
+		time += timeStamp;
+		if(time>0.01){
+			time = 0;
+			if(openSideTab==this){
+				size.setTo(size.add(1).min(getPrefSize().max(new PC_Vec2I(fontRenderer.getStringWidth(text)+24, 20))));
+			}else{
+				size.setTo(size.sub(1).max(20));
+			}
+			update=false;
+			setSize(size);
+			update=true;
+		}
+
 		GL11.glColor3d(color.x, color.y, color.z);
 		drawTexture("Frame", -2, 0, rect.width+2, rect.height);
 		GL11.glColor3f(1, 1, 1);
@@ -132,19 +147,6 @@ public class PC_GresWindowSideTab extends PC_GresContainer {
 		PC_RectI r = super.getChildRect();
 		rect.setSize(size);
 		return r;
-	}
-	
-	@Override
-	protected void onTick() {
-		super.onTick();
-		if(openSideTab==this){
-			size.setTo(size.add(2).min(getPrefSize().max(new PC_Vec2I(fontRenderer.getStringWidth(text)+24, 20))));
-		}else{
-			size.setTo(size.sub(2).max(20));
-		}
-		update=false;
-		setSize(size);
-		update=true;
 	}
 
 	@Override
@@ -184,11 +186,16 @@ public class PC_GresWindowSideTab extends PC_GresContainer {
 		sideTab.setLayout(new PC_GresLayoutVertical());
 		PC_RedstoneWorkType[] types = tileEntity.getAllowedRedstoneWorkTypes();
 		Object[] disps = new Object[types.length];
+		int act = 0;
 		for(int i=0; i<types.length; i++){
 			disps[i] = getTypeDisp(types[i]);
+			if(types[i]==tileEntity.getRedstoneWorkType()){
+				act = i;
+			}
 		}
 		PC_GresDisplayObject dO = new PC_GresDisplayObject(disps);
 		PC_GresDisplay d = new PC_GresDisplay(dO);
+		dO.setActiveDisplayObjectIndex(act);
 		d.addEventListener(new RedstoneConfigEventListener(tileEntity, types));
 		d.setBackground(new PC_GresDisplayObject(PC_Gres.getGresTexture("Slot")));
 		d.setFrame(new PC_RectI(1, 1, 1, 1));
@@ -239,6 +246,26 @@ public class PC_GresWindowSideTab extends PC_GresContainer {
 			sides[i].addEventListener(eventListener);
 		}
 		return sideTab;
+	}
+	
+	public static PC_GresWindowSideTab createEnergySideTab(EnergyPerTick energy){
+		PC_GresWindowSideTab sideTab = new PC_GresWindowSideTab("Energy", new PC_GresDisplayObject(PC_Gres.getGresTexture("Energy")));
+		sideTab.setColor(new PC_Vec3(0.2, 0.2, 1.0));
+		sideTab.setLayout(new PC_GresLayoutVertical());
+		sideTab.add(energy.label = new PC_GresLabel("Energy: 0E/T"));
+		return sideTab;
+	}
+	
+	public static class EnergyPerTick{
+		
+		private PC_GresLabel label;
+		
+		public void setToValue(int value){
+			if(label!=null){
+				label.setText("Energy: "+value+"E/T");
+			}
+		}
+		
 	}
 	
 	private static class RedstoneConfigEventListener implements PC_IGresEventListener{

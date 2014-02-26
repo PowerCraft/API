@@ -72,10 +72,8 @@ public abstract class PC_BlockTileEntity extends PC_AbstractBlockBase implements
 	@Override
 	public PC_3DRotation getRotation(IBlockAccess world, int x, int y, int z) {
 		PC_TileEntity te = PC_Utils.getTileEntity(world, x, y, z, PC_TileEntity.class);
-		if(te!=null){
-			if(te.canRotate()){
-				return te.get3DRotation();
-			}
+		if(te!=null && te.canRotate()){
+			return te.get3DRotation();
 		}
 		return null;
 	}
@@ -611,7 +609,8 @@ public abstract class PC_BlockTileEntity extends PC_AbstractBlockBase implements
 		tileEntity.validate();
 		world.setTileEntity(x, y, z, tileEntity);
 		tileEntity.updateContainingBlockInfo();
-		tileEntity.onAdded();
+		EntityPlayer player = PC_ItemBlock.playerStetting.get();
+		tileEntity.onAdded(player);
 	}
 	
 }

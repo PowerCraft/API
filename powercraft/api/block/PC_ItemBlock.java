@@ -20,6 +20,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class PC_ItemBlock extends ItemBlock implements PC_IItem {
 
+	final static ThreadLocal<EntityPlayer> playerStetting = new ThreadLocal<EntityPlayer>();
+	
 	public PC_ItemBlock(Block block) {
 		super(block);
 	}
@@ -56,12 +58,16 @@ public class PC_ItemBlock extends ItemBlock implements PC_IItem {
         	if (field_150939_a instanceof PC_AbstractBlockBase) {
      			metadata = ((PC_AbstractBlockBase) field_150939_a).modifiyMetadataPreSet(world, x, y, z, side, itemStack, player, hitX, hitY, hitZ, metadata);
      		}
+        	playerStetting.set(player);
         	if (placeBlockAt(itemStack, player, world, x, y, z, iside, hitX, hitY, hitZ, metadata)) {
+        		playerStetting.set(null);
         		if (field_150939_a instanceof PC_AbstractBlockBase) {
         			((PC_AbstractBlockBase) field_150939_a).onBlockPostSet(world, x, y, z, side, itemStack, player, hitX, hitY, hitZ, metadata);
         		}
         		world.playSoundEffect(x+0.5, y+0.5, z+0.5, field_150939_a.stepSound.func_150496_b(), field_150939_a.stepSound.getVolume() + 1 / 2, (float) (field_150939_a.stepSound.getPitch() * 0.8));
         		itemStack.stackSize--;
+        	}else{
+        		playerStetting.set(null);
         	}
         	return true;
         }

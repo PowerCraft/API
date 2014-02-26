@@ -622,6 +622,7 @@ public class PC_TileEntity extends TileEntity {
 	}
 	
 	public final PC_Packet getSyncPacket(){
+		sync = false;
 		NBTTagCompound nbtTagCompound = new NBTTagCompound();
 		makeSync(nbtTagCompound);
 		return new PC_PacketTileEntitySync(this, nbtTagCompound);
@@ -689,8 +690,12 @@ public class PC_TileEntity extends TileEntity {
 	public PC_RedstoneWorkType[] getAllowedRedstoneWorkTypes() {
 		return new PC_RedstoneWorkType[]{null};
 	}
+	
+	public PC_RedstoneWorkType getRedstoneWorkType() {
+		return workWhen;
+	}
 
-	public void onAdded() {
+	public void onAdded(EntityPlayer player) {
 		if(this instanceof PC_IGridHolder){
 			((PC_IGridHolder)this).getGridIfNull();
 		}

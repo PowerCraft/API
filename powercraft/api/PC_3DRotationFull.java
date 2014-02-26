@@ -52,4 +52,10 @@ public class PC_3DRotationFull implements PC_3DRotation {
 		
 	}
 
+	@Override
+	public PC_Direction getSidePositionInv(PC_Direction side) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

@@ -156,6 +156,24 @@ public class PC_Utils {
 		return side;
 	}
 	
+	public static PC_Direction getSidePositionInv(IBlockAccess world, int x, int y, int z, int side) {
+		return getSidePositionInv(world, x, y, z, PC_Direction.fromSide(side));
+	}
+	
+	public static PC_Direction getSidePositionInv(IBlockAccess world, int x, int y, int z, PC_Direction side){
+		Block block = getBlock(world, x, y, z);
+		if(block instanceof PC_AbstractBlockBase){
+			if(((PC_AbstractBlockBase)block).canRotate(world, x, y, z)){
+				PC_3DRotation rotation = ((PC_AbstractBlockBase)block).getRotation(world, x, y, z);
+				if(rotation!=null){
+					return rotation.getSidePositionInv(side);
+				}
+				return PC_Direction.UNKNOWN;
+			}
+		}
+		return side;
+	}
+	
 	public static int getRotationMetadata(int metadata, Entity entity) {
 		int rot = MathHelper.floor_double((double)(entity.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 		return (rot<<2) | (metadata & 3);
@@ -165,11 +183,9 @@ public class PC_Utils {
 		Block block = getBlock(world, x, y, z);
 		if(block instanceof PC_AbstractBlockBase){
 			if(((PC_AbstractBlockBase)block).canRotate(world, x, y, z)){
-				if(((PC_AbstractBlockBase)block).canRotate(world, x, y, z)){
-					PC_3DRotation rotation = ((PC_AbstractBlockBase)block).getRotation(world, x, y, z);
-					if(rotation!=null){
-						return rotation.rotateBox(box);
-					}
+				PC_3DRotation rotation = ((PC_AbstractBlockBase)block).getRotation(world, x, y, z);
+				if(rotation!=null){
+					return rotation.rotateBox(box);
 				}
 			}
 		}

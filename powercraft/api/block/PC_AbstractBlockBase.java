@@ -101,7 +101,7 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 	
 	@Override
 	public final boolean isBlockSolid(IBlockAccess world, int x, int y, int z, int side) {
-		return isSideSolid(world, x, y, z, PC_Utils.getSidePosition(world, x, y, z, side));
+		return isSideSolid(world, x, y, z, PC_Utils.getSidePositionInv(world, x, y, z, side));
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -112,7 +112,7 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 	@Override
 	@SideOnly(Side.CLIENT)
 	public final IIcon getIcon(IBlockAccess world, int x, int y, int z, int side) {
-		return getIcon(world, x, y, z, PC_Utils.getSidePosition(world, x, y, z, side));
+		return getIcon(world, x, y, z, PC_Utils.getSidePositionInv(world, x, y, z, side));
 	}
 
 	@SideOnly(Side.CLIENT)
