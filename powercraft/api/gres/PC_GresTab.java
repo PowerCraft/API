@@ -124,7 +124,7 @@ public class PC_GresTab extends PC_GresContainer {
 		setDrawRect(scissor, new PC_RectI(1+rl.x, 1+rl.y, rect.width-2, 12), scale, displayHeight);
 		int x = -tabsScroll+1;
 		for(Tab tab:tabs){
-			int width = fontRenderer.getStringWidth(tab.tab)+4;
+			int width = fontRenderer.getStringSize(tab.tab).x+4;
 			int state = tab.child == children.get(0)?2:tab==mouseOverTab&&mouseOver?1:0;
 			drawTexture(textureNameTab, x, 1, width, 12, state);
 			drawString(tab.tab, x+2, 3, false);
@@ -140,7 +140,7 @@ public class PC_GresTab extends PC_GresContainer {
 	private float getTabScrollProz(){
 		int width = 0;
 		for(Tab tab:tabs){
-			width += fontRenderer.getStringWidth(tab.tab)+4;
+			width += fontRenderer.getStringSize(tab.tab).x+4;
 		}
 		int over = width-(rect.width-2);
 		if(over<=0){
@@ -194,7 +194,7 @@ public class PC_GresTab extends PC_GresContainer {
 		}else{
 			int width = 0;
 			for(Tab tab:tabs){
-				width += fontRenderer.getStringWidth(tab.tab)+4;
+				width += fontRenderer.getStringSize(tab.tab).x+4;
 			}
 			int over = width-(rect.width-2);
 			if(over<0){
@@ -227,7 +227,7 @@ public class PC_GresTab extends PC_GresContainer {
 			if(mouse.y>=1 && mouse.y<=13){
 				int x = -tabsScroll+1;
 				for(Tab tab:tabs){
-					int width = fontRenderer.getStringWidth(tab.tab)+4;
+					int width = fontRenderer.getStringSize(tab.tab).x+4;
 					if(mouse.x>=x && mouse.x <= x + width){
 						mouseOverTab = tab;
 						break;

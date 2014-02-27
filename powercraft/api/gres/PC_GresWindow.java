@@ -23,7 +23,7 @@ public class PC_GresWindow extends PC_GresContainer {
 	private List<PC_GresWindowSideTab> sideTabs = new ArrayList<PC_GresWindowSideTab>();
 	
 	public PC_GresWindow(String title) {
-		frame.setTo(new PC_RectI(4, 4 + fontRenderer.FONT_HEIGHT + 2, 4, 4));
+		frame.setTo(new PC_RectI(4, 4 + fontRenderer.getStringSize(title).y + 2, 4, 4));
 		setText(title);
 	}
 
@@ -56,7 +56,7 @@ public class PC_GresWindow extends PC_GresContainer {
 	
 	@Override
 	protected PC_Vec2I calculateMinSize() {
-		return getTextureMinSize(textureName).max(fontRenderer.getStringWidth(text) + 8, 0);
+		return getTextureMinSize(textureName).max(fontRenderer.getStringSize(text).x + 8, 0);
 	}
 
 

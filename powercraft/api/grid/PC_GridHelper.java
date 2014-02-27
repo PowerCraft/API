@@ -58,7 +58,7 @@ public class PC_GridHelper {
 		}
 	}
 	
-	public static <G extends PC_Grid<G, T, N, E>, T extends PC_IGridTile<G, T, N, E>, N extends PC_Node<G, T, N, E>, E extends PC_Edge<G, T, N, E>> void removeFormGrid(World world, T thisTile) {
+	public static <G extends PC_Grid<G, T, N, E>, T extends PC_IGridTile<G, T, N, E>, N extends PC_Node<G, T, N, E>, E extends PC_Edge<G, T, N, E>> void removeFromGrid(World world, T thisTile) {
 		if(world!=null && !world.isRemote && thisTile.getGrid()!=null){
 			remove(thisTile);
 		}

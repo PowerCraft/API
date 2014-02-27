@@ -18,7 +18,7 @@ public class PC_GresLabel extends PC_GresComponent {
 	@Override
 	protected PC_Vec2I calculateMinSize() {
 
-		return new PC_Vec2I(fontRenderer.getStringWidth(text), fontRenderer.FONT_HEIGHT);
+		return fontRenderer.getStringSize(text);
 	}
 
 

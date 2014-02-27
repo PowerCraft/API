@@ -89,6 +89,7 @@ public class PC_FontTexture extends AbstractTexture {
 				IResource resource = resourceManager.getResource(location);
 				inputstream = resource.getInputStream();
 				font = Font.createFont(Font.TRUETYPE_FONT, inputstream);
+				font = font.deriveFont(8.0f);
 				inputstream.close();
 			} catch (Exception e) { // Do not use Java 1.7, use Java 1.6
 				throw new RuntimeException(e); // Should we create a runtime Error and crash report?
@@ -101,6 +102,7 @@ public class PC_FontTexture extends AbstractTexture {
 					}
 			}
 		}
+		System.out.println("LOAD Font:"+resourceManager+"=>"+font);
 		textureSize = 256;
 		int lastTextureSize = 0;
 		BufferedImage imgTemp = new BufferedImage(textureSize, textureSize,
@@ -197,8 +199,8 @@ public class PC_FontTexture extends AbstractTexture {
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_CLAMP);
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_CLAMP);
 
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);//GL11.GL_LINEAR);
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);//GL11.GL_LINEAR);
 
 		GL11.glTexEnvf(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
 

@@ -43,13 +43,15 @@ public class PC_GresRadioButton extends PC_GresComponent {
 	@Override
 	protected PC_Vec2I calculateMinSize() {
 		PC_Vec2I tm = getTextureMinSize(textureName[state?1:0]);
-		return new PC_Vec2I(tm.x+fontRenderer.getStringWidth(text)+(text!=null&&!text.isEmpty()?1:0), tm.y);
+		PC_Vec2I size = fontRenderer.getStringSize(text);
+		return new PC_Vec2I(tm.x+size.x+(text!=null&&!text.isEmpty()?1:0), tm.y>size.y?tm.y:size.y);
 	}
 
 	@Override
 	protected PC_Vec2I calculateMaxSize() {
 		PC_Vec2I tm = getTextureMinSize(textureName[state?1:0]);
-		return new PC_Vec2I(tm.x+fontRenderer.getStringWidth(text)+(text!=null&&!text.isEmpty()?1:0), fontRenderer.FONT_HEIGHT);
+		PC_Vec2I size = fontRenderer.getStringSize(text);
+		return new PC_Vec2I(tm.x+size.x+(text!=null&&!text.isEmpty()?1:0), tm.y>size.y?tm.y:size.y);
 	}
 
 	@Override

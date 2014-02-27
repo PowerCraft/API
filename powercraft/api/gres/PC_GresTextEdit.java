@@ -56,17 +56,17 @@ public class PC_GresTextEdit extends PC_GresComponent {
 
 	@Override
 	protected PC_Vec2I calculateMinSize() {
-		return new PC_Vec2I(maxChars * 8 + 4, fontRenderer.FONT_HEIGHT + 12);
+		return new PC_Vec2I(maxChars * 8 + 4, fontRenderer.getStringSize(" ").y + 12);
 	}
 
 	@Override
 	protected PC_Vec2I calculateMaxSize() {
-		return new PC_Vec2I(-1, fontRenderer.FONT_HEIGHT + 12);
+		return new PC_Vec2I(-1, fontRenderer.getStringSize(" ").y + 12);
 	}
 
 	@Override
 	protected PC_Vec2I calculatePrefSize() {
-		return new PC_Vec2I(maxChars * 8 + 4, fontRenderer.FONT_HEIGHT + 12);
+		return new PC_Vec2I(maxChars * 8 + 4, fontRenderer.getStringSize(" ").y + 12);
 	}
 
 	@Override
@@ -93,18 +93,19 @@ public class PC_GresTextEdit extends PC_GresComponent {
 				s = mouseSelectEnd;
 			}
 			drawTexture(textureName2,
-					fontRenderer.getStringWidth(t.substring(0, s)) - scroll
+					fontRenderer.getStringSize(t.substring(0, s)).x - scroll
 							+ 2, 1,
-					fontRenderer.getStringWidth(t.substring(s, e)),
+					fontRenderer.getStringSize(t.substring(s, e)).x,
 					rect.height+1);
 		}
 
 		drawString(t, 2 - scroll, 6, false);
 
 		if (focus && cursorCounter / 6 % 2 == 0) {
-			PC_GresRenderer.drawVerticalLine(fontRenderer.getStringWidth(t
-					.substring(0, mouseSelectEnd)) + 2, 6,
-					6 + fontRenderer.FONT_HEIGHT, fontColors[0]|0xff000000);
+			PC_Vec2I max = fontRenderer.getStringSize(t);
+			PC_Vec2I size = fontRenderer.getStringSize(t.substring(0, mouseSelectEnd));
+			PC_GresRenderer.drawVerticalLine(size.x + 2, 6,
+					6 + max.y, fontColors[0]|0xff000000);
 		}
 
 		if(scissor==null){
@@ -118,7 +119,7 @@ public class PC_GresTextEdit extends PC_GresComponent {
 		int charSize;
 		x -= 2 + scroll;
 		for (int i = 0; i < text.length(); i++) {
-			charSize = fontRenderer.getCharWidth(type==PC_GresInputType.PASSWORD?'*':text.charAt(i));
+			charSize = fontRenderer.getCharSize(type==PC_GresInputType.PASSWORD?'*':text.charAt(i)).x;
 			if (x - charSize / 2 < 0) {
 				return i;
 			}

@@ -107,11 +107,11 @@ public class PC_EnergyGrid extends PC_Grid<PC_EnergyGrid, PC_IEnergyGridTile, PC
 				Arrays.sort(array);
 				List<PC_EnergyNodeBuffer> bufferNodes = new ArrayList<PC_EnergyNodeBuffer>();
 				float lastLevel = 0;
-				for(int i=1; i<array.length; i++){
+				for(int i=0; i<array.length; i++){
 					float nextLevel = array[i].level;
 					if(!bufferNodes.isEmpty()){
 						float fill = nextLevel-lastLevel;
-						if(fill<energy/bufferNodes.size())
+						if(fill>energy/bufferNodes.size())
 							fill=energy/bufferNodes.size();
 						Iterator<PC_EnergyNodeBuffer> it = bufferNodes.iterator();
 						while(it.hasNext()){
@@ -125,13 +125,13 @@ public class PC_EnergyGrid extends PC_Grid<PC_EnergyGrid, PC_IEnergyGridTile, PC
 					lastLevel = nextLevel;
 					bufferNodes.add(array[i]);
 				}
-				while(!bufferNodes.isEmpty() && energy>0){
+				while(!bufferNodes.isEmpty() && energy>0.00001){
 					float fill=energy/bufferNodes.size();
 					Iterator<PC_EnergyNodeBuffer> it = bufferNodes.iterator();
 					while(it.hasNext()){
 						PC_EnergyNodeBuffer b = it.next();
 						energy = b.addEnergy(energy, fill);
-						if(b.used==b.maxIn){
+						if(b.used>=b.maxIn){
 							it.remove();
 						}
 					}
@@ -145,9 +145,6 @@ public class PC_EnergyGrid extends PC_Grid<PC_EnergyGrid, PC_IEnergyGridTile, PC
 					energy = node.notUsing(energy, p);
 				}
 			}
-			for(PC_EnergyNode<?> node:nodes){
-				node.onTickEnd();
-			}
 		}else{
 			for(PC_EnergyNode<?> node:nodes){
 				node.onTickStart();
@@ -158,9 +155,9 @@ public class PC_EnergyGrid extends PC_Grid<PC_EnergyGrid, PC_IEnergyGridTile, PC
 					consumer.useable = consumer.requested;
 				}
 			}
-			for(PC_EnergyNode<?> node:nodes){
-				node.onTickEnd();
-			}
+		}
+		for(PC_EnergyNode<?> node:nodes){
+			node.onTickEnd();
 		}
 	}
 	

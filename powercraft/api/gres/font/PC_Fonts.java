@@ -9,7 +9,9 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.util.ResourceLocation;
+import powercraft.api.PC_Api;
 import powercraft.api.PC_ClientUtils;
+import powercraft.api.PC_Utils;
 
 @SideOnly(Side.CLIENT)
 public class PC_Fonts {
@@ -49,6 +51,19 @@ public class PC_Fonts {
 			return (PC_FontTexture)texture;
 		}
 		return null;
+	}
+	
+	public static ResourceLocation getFont(String name){
+		return PC_Utils.getResourceLocation(PC_Api.INSTANCE, "fonts/"+name);
+	}
+	
+	public static PC_FontTexture getStandardFont(){
+		ResourceLocation rl = PC_Utils.getResourceLocation(PC_Api.INSTANCE, "fonts/Minecraftia.ttf");
+		ITextureObject texture = PC_ClientUtils.mc().renderEngine.getTexture(rl);
+		if(texture==null){
+			texture = create(rl, null);
+		}
+		return (PC_FontTexture)texture;
 	}
 	
 }

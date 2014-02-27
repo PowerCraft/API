@@ -52,6 +52,8 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 	private boolean takeAll;
 	private int scale;
 	
+	private long last = System.currentTimeMillis();
+	
 	private PC_GresHistory history = new PC_GresHistory(100);
 	
 	protected PC_GresGuiHandler(PC_IGresGui gui) {
@@ -218,16 +220,20 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 
 
 	protected void eventDrawScreen(PC_Vec2I mouse, float timeStamp) {
+		long t = System.currentTimeMillis();
+		float ts = (t-last)/1000.0f;
+		last = t;
+		
 		ScaledResolution scaledresolution = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
-		fireEvent(new PC_GresPaintEvent(this, EventType.PRE, timeStamp));
-		onDrawTick(timeStamp);
+		fireEvent(new PC_GresPaintEvent(this, EventType.PRE, ts));
+		onDrawTick(ts);
 		GL11.glEnable(GL11.GL_SCISSOR_TEST);
 		GL11.glEnable(GL11.GL_BLEND);
-		doPaint(new PC_Vec2I(0, 0), null, scaledresolution.getScaleFactor(), mc.displayHeight, timeStamp);
+		doPaint(new PC_Vec2I(0, 0), null, scaledresolution.getScaleFactor(), mc.displayHeight, ts);
 		GL11.glDisable(GL11.GL_SCISSOR_TEST);
 		GL11.glDisable(GL11.GL_BLEND);
 		drawMouseItemStack(mouse);
-		fireEvent(new PC_GresPaintEvent(this, EventType.POST, timeStamp));
+		fireEvent(new PC_GresPaintEvent(this, EventType.POST, ts));
 	}
 	
 

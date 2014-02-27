@@ -98,7 +98,7 @@ public class PC_TileEntity extends TileEntity {
 	
 	public void onBreak() {
 		if(this instanceof PC_IGridHolder){
-			((PC_IGridHolder)this).removeFormGrid();
+			((PC_IGridHolder)this).removeFromGrid();
 		}
 	}
 
@@ -736,7 +736,7 @@ public class PC_TileEntity extends TileEntity {
 	@Override
 	public void onChunkUnload() {
 		if(this instanceof PC_IGridHolder){
-			((PC_IGridHolder)this).removeFormGrid();
+			((PC_IGridHolder)this).removeFromGrid();
 		}
 	}
 	

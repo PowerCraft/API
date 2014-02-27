@@ -344,12 +344,12 @@ public abstract class PC_MultiblockObjectConduit extends PC_MultiblockObject imp
 	
 	@Override
 	public void onRemoved() {
-		removeFormGrid();
+		removeFromGrid();
 	}
 
 	@Override
 	public void onChunkUnload() {
-		removeFormGrid();
+		removeFromGrid();
 	}
 	
 	@Override

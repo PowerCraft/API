@@ -3,11 +3,12 @@ package powercraft.api.gres.font;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.util.ResourceLocation;
+
+import org.lwjgl.opengl.GL11;
+
 import powercraft.api.PC_ClientUtils;
 import powercraft.api.PC_Vec2I;
 import cpw.mods.fml.relauncher.Side;
@@ -34,6 +35,14 @@ public class PC_FontRenderer {
 		drawString(text, x, y, texture, scale);
 	}
 	
+	public void drawString(String text, int x, int y, int color){
+		drawString(text, x, y, texture, color, scale);
+	}
+	
+	public void drawString(String text, int x, int y, int color, boolean shadow){
+		drawString(text, x, y, texture, color, shadow, scale);
+	}
+	
 	public PC_Vec2I getStringSize(String text){
 		return getStringSize(text, texture, scale);
 	}
@@ -42,22 +51,59 @@ public class PC_FontRenderer {
 		return getCharSize(c, texture, scale);
 	}
 	
-	public static void drawString(String text, int x, int y, ResourceLocation location, float scale){
-		ITextureObject textureObject = PC_ClientUtils.mc().renderEngine.getTexture(location);
-		if(textureObject instanceof PC_FontTexture){
-			drawString(text, x, y, (PC_FontTexture)textureObject, scale);
-		}
+	public String trimStringToWidth(String text, int width){
+		return trimStringToWidth(text, texture, width, scale);
+	}
+	
+	public static void drawString(String text, float x, float y, ResourceLocation location, float scale){
+		drawString(text, x, y, location, -1, false, scale);
+	}
+	
+	public static void drawString(String text, float x, float y, ResourceLocation location, int color, float scale){
+		drawString(text, x, y, location, color, false, scale);
 	}
 	
 	public static void drawString(String text, float x, float y, PC_FontTexture texture, float scale){
+		drawString(text, x, y, texture, -1, false, scale);
+	}
+	
+	public static void drawString(String text, float x, float y, PC_FontTexture texture, int color, float scale){
+		drawString(text, x, y, texture, color, false, scale);
+	}
+	
+	public static void drawString(String text, float x, float y, ResourceLocation location, int color, boolean shadow, float scale){
+		ITextureObject textureObject = PC_ClientUtils.mc().renderEngine.getTexture(location);
+		if(textureObject instanceof PC_FontTexture){
+			drawString(text, x, y, (PC_FontTexture)textureObject, color, shadow, scale);
+		}
+	}
+	
+	public static void drawString(String text, float x, float y, PC_FontTexture texture, int color, boolean shadow, float scale){
+		if(shadow){
+			drawStringInt(text, x+1, y+1, texture, color, true, scale);
+		}
+		drawStringInt(text, x, y, texture, color, false, scale);
+	}
+	
+	private static void drawStringInt(String text, float x, float y, PC_FontTexture texture, int color, boolean shadow, float scale){
 		PC_FontTexture activeTexture = texture;
 		PC_ClientUtils.mc().renderEngine.bindTexture(activeTexture.getResourceLocation());
 		Tessellator tessellator = Tessellator.instance;
 		tessellator.startDrawingQuads();
 		float size = texture.getTextureSize();
-		int red = 255;
-		int green = 255;
-		int blue = 255;
+		
+		if ((color & -67108864) == 0){
+			color |= -16777216;
+        }
+
+        if (shadow){
+        	color = (color & 16579836) >> 2 | color & -16777216;
+        }
+
+        int red = color >> 16 & 255;
+        int blue = color >> 8 & 255;
+        int green = color & 255;
+        int alpha = color >> 24 & 255;
 		boolean error = false;
 		for(int i=0; i<text.length(); i++){
 			char c = text.charAt(i);
@@ -78,9 +124,9 @@ public class PC_FontRenderer {
 				}else if(c==PC_Formatter.ERRORSTOP_SEQ){
 					error = false;
 				}else{
-					red = 255;
-					green = 255;
-					blue = 255;
+					red = color >> 16 & 255;
+			    	blue = color >> 8 & 255;
+			        green = color & 255;
 					activeTexture = texture;
 					tessellator.draw();
 					PC_ClientUtils.mc().renderEngine.bindTexture(activeTexture.getResourceLocation());
@@ -93,7 +139,7 @@ public class PC_FontRenderer {
 					float ty = data.storedY/size;
 					float tw = data.width/size;
 					float th = data.height/size;
-					tessellator.setColorOpaque(red, green, blue);
+					tessellator.setColorRGBA(red, green, blue, alpha);
 					tessellator.addVertexWithUV(x, y+data.height*scale, 0, tx, ty+th);
 					tessellator.addVertexWithUV(x+data.width*scale, y+data.height*scale, 0, tx+tw, ty+th);
 					tessellator.addVertexWithUV(x+data.width*scale, y, 0, tx+tw, ty);
@@ -102,7 +148,7 @@ public class PC_FontRenderer {
 						tessellator.draw();
 						GL11.glDisable(GL11.GL_TEXTURE_2D);
 						tessellator.startDrawingQuads();
-						tessellator.setColorOpaque(255, 0, 0);
+						tessellator.setColorRGBA(255, 0, 0, alpha);
 						tessellator.addVertex(x, y+data.height*scale, 0);
 						tessellator.addVertex(x+data.width*scale, y+data.height*scale, 0);
 						tessellator.addVertex(x+data.width*scale, y+data.height*scale-1, 0);
@@ -171,6 +217,17 @@ public class PC_FontRenderer {
 			return new PC_Vec2I();
 		}
 		return new PC_Vec2I((int)(data.width*scale), (int)(data.height*scale));
+	}
+
+	public static String trimStringToWidth(String text, PC_FontTexture texture, int width, float scale){
+		int length = PC_Formatter.removeFormatting(text).length();
+		for(int i=1; i<=length; i++){
+			int l = PC_FontRenderer.getStringSize(PC_Formatter.substring(text, 0, i), texture, scale).x;
+			if(l>width){
+				return PC_Formatter.substring(text, 0, i-1);
+			}
+		}
+		return text;
 	}
 	
 	public static boolean isSupported(String fontname) {

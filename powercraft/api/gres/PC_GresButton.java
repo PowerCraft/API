@@ -24,8 +24,8 @@ public class PC_GresButton extends PC_GresComponent {
 
 	@Override
 	protected PC_Vec2I calculateMinSize() {
-
-		return getTextureMinSize(textureName).max(fontRenderer.getStringWidth(text) + 6, fontRenderer.FONT_HEIGHT + 6);
+		PC_Vec2I size = fontRenderer.getStringSize(text);
+		return getTextureMinSize(textureName).max(size.x + 6, size.y + 6);
 	}
 
 
@@ -38,8 +38,8 @@ public class PC_GresButton extends PC_GresComponent {
 
 	@Override
 	protected PC_Vec2I calculatePrefSize() {
-
-		return calculateMinSize().max(new PC_Vec2I(fontRenderer.getStringWidth(text) + 3, fontRenderer.FONT_HEIGHT + 3));
+		PC_Vec2I size = fontRenderer.getStringSize(text);
+		return calculateMinSize().max(new PC_Vec2I(size.x + 3, size.y + 3));
 	}
 
 

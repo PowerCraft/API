@@ -123,7 +123,7 @@ public class PC_GresWindowSideTab extends PC_GresContainer {
 		}
 		notifyParentOfChange();
 		if(update){
-			rect.setSize(getPrefSize().max(new PC_Vec2I(fontRenderer.getStringWidth(text)+24, 20)));
+			rect.setSize(getPrefSize().max(new PC_Vec2I(fontRenderer.getStringSize(text).x+24, 20)));
 			updateLayout();
 		}
 		rect.setSize(size);
@@ -132,7 +132,7 @@ public class PC_GresWindowSideTab extends PC_GresContainer {
 	@Override
 	public PC_RectI getChildRect() {
 		if(update){
-			rect.setSize(getPrefSize().max(new PC_Vec2I(fontRenderer.getStringWidth(text)+24, 20)));
+			rect.setSize(getPrefSize().max(new PC_Vec2I(fontRenderer.getStringSize(text).x+24, 20)));
 		}
 		PC_RectI r = super.getChildRect();
 		rect.setSize(size);
@@ -173,12 +173,13 @@ public class PC_GresWindowSideTab extends PC_GresContainer {
 	@Override
 	protected void onDrawTick(float timeStamp) {
 		time += timeStamp;
-		if(time>0.01){
-			time = 0;
+		int num = (int)(time/0.01);
+		if(num>0){
+			time -= num*0.01;
 			if(openSideTab==this){
-				size.setTo(size.add(1).min(getPrefSize().max(new PC_Vec2I(fontRenderer.getStringWidth(text)+24, 20))));
+				size.setTo(size.add(num).min(getPrefSize().max(new PC_Vec2I(fontRenderer.getStringSize(text).x+24, 20))));
 			}else{
-				size.setTo(size.sub(1).max(20));
+				size.setTo(size.sub(num).max(20));
 			}
 			update=false;
 			setSize(size);
@@ -246,7 +247,7 @@ public class PC_GresWindowSideTab extends PC_GresContainer {
 		PC_GresWindowSideTab sideTab = new PC_GresWindowSideTab("Energy", new PC_GresDisplayObject(PC_Gres.getGresTexture("Energy")));
 		sideTab.setColor(new PC_Vec3(0.2, 0.2, 1.0));
 		sideTab.setLayout(new PC_GresLayoutVertical());
-		sideTab.add(energy.label = new PC_GresLabel("Energy: 0E/T"));
+		sideTab.add(energy.label = new PC_GresLabel("Energy: 0 E/T"));
 		return sideTab;
 	}
 	
@@ -256,7 +257,7 @@ public class PC_GresWindowSideTab extends PC_GresContainer {
 		
 		public void setToValue(float value){
 			if(label!=null){
-				label.setText("Energy: "+new DecimalFormat("#.##").format(value)+"E/T");
+				label.setText("Energy: "+new DecimalFormat("#.##").format(value)+" E/T");
 			}
 		}
 		

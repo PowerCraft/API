@@ -4,6 +4,6 @@ public interface PC_IGridHolder {
 
 	public void getGridIfNull();
 	
-	public void removeFormGrid();
+	public void removeFromGrid();
 	
 }

@@ -24,6 +24,8 @@ import powercraft.api.gres.events.PC_GresMouseMoveEvent;
 import powercraft.api.gres.events.PC_GresMouseWheelEvent;
 import powercraft.api.gres.events.PC_IGresEventListener;
 import powercraft.api.gres.events.PC_IGresEventListenerEx;
+import powercraft.api.gres.font.PC_FontRenderer;
+import powercraft.api.gres.font.PC_Fonts;
 import powercraft.api.gres.history.PC_GresHistory;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -71,7 +73,7 @@ public abstract class PC_GresComponent {
 
 	protected boolean mouseDown;
 
-	protected FontRenderer fontRenderer = PC_ClientUtils.mc().fontRenderer;
+	protected static PC_FontRenderer fontRenderer = new PC_FontRenderer(PC_Fonts.getStandardFont());
 
 	protected final int fontColors[] = { 4210752, 4210752, 4210752, 4210752 };
 
@@ -777,43 +779,46 @@ public abstract class PC_GresComponent {
 
 
 	protected void drawString(String text, int x, int y, boolean shadow) {
-
-		drawString(text, x, y, fontRenderer.getStringWidth(text), fontRenderer.FONT_HEIGHT, PC_GresAlign.H.LEFT, PC_GresAlign.V.TOP, shadow);
+		PC_Vec2I size = fontRenderer.getStringSize(text);
+		drawString(text, x, y, size.x, size.y, PC_GresAlign.H.LEFT, PC_GresAlign.V.TOP, shadow);
 	}
 
 
 	protected void drawString(String text, int x, int y, int width, PC_GresAlign.H alignH, boolean shadow) {
-
-		drawString(text, x, y, width, fontRenderer.FONT_HEIGHT, alignH, PC_GresAlign.V.TOP, shadow);
+		PC_Vec2I size = fontRenderer.getStringSize(text);
+		drawString(text, x, y, width, size.y, alignH, PC_GresAlign.V.TOP, shadow);
 	}
 
 
 	protected void drawString(String text, int x, int y, int width, int height, PC_GresAlign.H alignH, PC_GresAlign.V alignV, boolean shadow) {
-
+		PC_Vec2I size = fontRenderer.getStringSize(text);
 		switch (alignV) {
 			case BOTTOM:
-				y += height - fontRenderer.FONT_HEIGHT;
+				y += height - size.y;
 				break;
 			case CENTER:
-				y += height / 2 - fontRenderer.FONT_HEIGHT / 2;
+				y += height / 2 - size.y / 2;
 				break;
 			default:
 				break;
 		}
 		String writeText = text;
-		if (fontRenderer.getStringWidth(writeText) > width) {
-			writeText = fontRenderer.trimStringToWidth(text, width - fontRenderer.getStringWidth("...")) + "...";
+		if (size.x > width) {
+			PC_Vec2I sizeD = fontRenderer.getStringSize("...");
+			writeText = fontRenderer.trimStringToWidth(text, width - sizeD.x) + "...";
 		}
+		size = fontRenderer.getStringSize(writeText);
 		switch (alignH) {
 			case CENTER:
-				x += width / 2 - fontRenderer.getStringWidth(writeText) / 2;
+				x += width / 2 - size.x / 2;
 				break;
 			case RIGHT:
-				x += width - fontRenderer.getStringWidth(writeText);
+				x += width - size.x;
 				break;
 			default:
 				break;
 		}
+		fontRenderer.drawString(writeText, x, y);
 		fontRenderer.drawString(writeText, x, y, fontColors[enabled && parentEnabled ? mouseDown ? 2 : mouseOver ? 1 : 0 : 3], shadow);
 		GL11.glEnable(GL11.GL_BLEND);
 	}

@@ -36,13 +36,12 @@ public class PC_GresComboBox extends PC_GresComponent {
 	@Override
 	protected PC_Vec2I calculateMinSize() {
 		PC_Vec2I s = getTextureMinSize(textureName);
-		int width = 0;
+		PC_Vec2I size = new PC_Vec2I();
 		for(String item:items){
-			int w2 = fontRenderer.getStringWidth(item);
-			if(w2>width)
-				width = w2;
+			PC_Vec2I fsize = fontRenderer.getStringSize(item);
+			size = fsize.max(size);
 		}
-		return new PC_Vec2I(s.x+width+20, s.y+fontRenderer.FONT_HEIGHT);
+		return new PC_Vec2I(s.x+size.x+20, s.y+size.y);
 	}
 
 	@Override
@@ -53,13 +52,12 @@ public class PC_GresComboBox extends PC_GresComponent {
 	@Override
 	protected PC_Vec2I calculatePrefSize() {
 		PC_Vec2I s = getTextureMinSize(textureName);
-		int width = 0;
+		PC_Vec2I size = new PC_Vec2I();
 		for(String item:items){
-			int w2 = fontRenderer.getStringWidth(item);
-			if(w2>width)
-				width = w2;
+			PC_Vec2I fsize = fontRenderer.getStringSize(item);
+			size = fsize.max(size);
 		}
-		return new PC_Vec2I(s.x+width+20, s.y+fontRenderer.FONT_HEIGHT);
+		return new PC_Vec2I(s.x+size.x+20, s.y+size.y);
 	}
 
 	@Override
