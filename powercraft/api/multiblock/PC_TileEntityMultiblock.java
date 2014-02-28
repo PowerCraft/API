@@ -236,7 +236,7 @@ public final class PC_TileEntityMultiblock extends PC_TileEntity implements PC_I
 	}
 	
 	@Override
-	public void onLoadedFromNBT() {
+	public void onLoadedFromNBT(Flag flag) {
 		for(int i=0; i<tiles.length; i++){
 			if(tiles[i]!=null)
 				tiles[i].setIndexAndMultiblock(PC_MultiblockIndex.values()[i], this);

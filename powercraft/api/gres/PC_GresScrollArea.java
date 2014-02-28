@@ -168,9 +168,9 @@ public class PC_GresScrollArea extends PC_GresComponent {
 
 
 	@Override
-	protected void tryActionOnKeyTyped(char key, int keyCode, PC_GresHistory history) {
+	protected void tryActionOnKeyTyped(char key, int keyCode, boolean repeat, PC_GresHistory history) {
 		if (visible) {
-			container.tryActionOnKeyTyped(key, keyCode, null);
+			container.tryActionOnKeyTyped(key, keyCode, repeat, null);
 		}
 	}
 
@@ -258,8 +258,8 @@ public class PC_GresScrollArea extends PC_GresComponent {
 	}
 	
 	@Override
-	protected boolean handleMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton, PC_GresHistory history) {
-		super.handleMouseButtonDown(mouse, buttons, eventButton, history);
+	protected boolean handleMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton, boolean doubleClick, PC_GresHistory history) {
+		super.handleMouseButtonDown(mouse, buttons, eventButton, doubleClick, history);
 		if(mouseDown){
 			lastMousePosition.setTo(mouse);
 			selectBar = mouseOverBar(mouse);

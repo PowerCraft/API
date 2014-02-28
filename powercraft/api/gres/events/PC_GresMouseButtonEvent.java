@@ -7,11 +7,13 @@ import powercraft.api.gres.history.PC_GresHistory;
 public class PC_GresMouseButtonEvent extends PC_GresMouseEvent {
 
 	private final int eventButton;
+	private final boolean doubleClick;
 	private final Event event;
 	
-	public PC_GresMouseButtonEvent(PC_GresComponent component, PC_Vec2I mouse, int buttons, int eventButton, Event event, PC_GresHistory history) {
+	public PC_GresMouseButtonEvent(PC_GresComponent component, PC_Vec2I mouse, int buttons, int eventButton, boolean doubleClick, Event event, PC_GresHistory history) {
 		super(component, mouse, buttons, history);
 		this.eventButton = eventButton;
+		this.doubleClick = doubleClick;
 		this.event = event;
 	}
 
@@ -21,6 +23,10 @@ public class PC_GresMouseButtonEvent extends PC_GresMouseEvent {
 	
 	public Event getEvent(){
 		return event;
+	}
+	
+	public boolean isDoubleClick(){
+		return doubleClick;
 	}
 	
 	public static enum Event{

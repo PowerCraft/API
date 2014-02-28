@@ -129,8 +129,8 @@ public class PC_GresTextEdit extends PC_GresComponent {
 	}
 
 	@Override
-	protected boolean handleKeyTyped(char key, int keyCode, PC_GresHistory history) {
-		super.handleKeyTyped(key, keyCode, history);
+	protected boolean handleKeyTyped(char key, int keyCode, boolean repeat, PC_GresHistory history) {
+		super.handleKeyTyped(key, keyCode, repeat, history);
 		cursorCounter = 0;
 		if (type == PC_GresInputType.NONE)
 			return true;
@@ -486,8 +486,8 @@ public class PC_GresTextEdit extends PC_GresComponent {
 
 	@Override
 	protected boolean handleMouseButtonDown(PC_Vec2I mouse, int buttons,
-			int eventButton, PC_GresHistory history) {
-		super.handleMouseButtonDown(mouse, buttons, eventButton, history);
+			int eventButton, boolean doubleClick, PC_GresHistory history) {
+		super.handleMouseButtonDown(mouse, buttons, eventButton, doubleClick, history);
 		mouseSelectStart = getMousePositionInString(mouse.x);
 		mouseSelectEnd = mouseSelectStart;
 		cursorCounter = 0;

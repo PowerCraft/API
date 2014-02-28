@@ -15,6 +15,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.client.resources.IResourceManager;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -34,7 +35,9 @@ import powercraft.api.PC_RectI;
 import powercraft.api.PC_Utils;
 import powercraft.api.PC_Vec2I;
 import powercraft.api.block.PC_TileEntity;
+import powercraft.api.entity.PC_Entity;
 import powercraft.api.network.PC_PacketHandler;
+import powercraft.api.network.packet.PC_PacketOpenGresEntity;
 import powercraft.api.network.packet.PC_PacketOpenGresHandler;
 import powercraft.api.network.packet.PC_PacketOpenGresItem;
 import powercraft.api.network.packet.PC_PacketOpenGresTileEntity;
@@ -56,6 +59,7 @@ public class PC_Gres {
 		PC_PacketHandler.registerPacket(PC_PacketOpenGresHandler.class);
 		PC_PacketHandler.registerPacket(PC_PacketOpenGresItem.class);
 		PC_PacketHandler.registerPacket(PC_PacketOpenGresTileEntity.class);
+		PC_PacketHandler.registerPacket(PC_PacketOpenGresEntity.class);
 	}
 	
 	@SideOnly(Side.CLIENT)
@@ -63,6 +67,15 @@ public class PC_Gres {
 
 		if (tileEntity instanceof PC_IGresGuiOpenHandler) {
 			PC_IGresGui gui = ((PC_IGresGuiOpenHandler) tileEntity).openClientGui(player, nbtTagCompound);
+			openClientGui(player, gui, windowId);
+		}
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public static void openClientGui(EntityPlayer player, Entity entity, int windowId, NBTTagCompound nbtTagCompound) {
+
+		if (entity instanceof PC_IGresGuiOpenHandler) {
+			PC_IGresGui gui = ((PC_IGresGuiOpenHandler) entity).openClientGui(player, nbtTagCompound);
 			openClientGui(player, gui, windowId);
 		}
 	}
@@ -127,7 +140,30 @@ public class PC_Gres {
 		}
 	}
 
+	public static void openGui(EntityPlayer player, PC_Entity entity) {
 
+		if (player instanceof EntityPlayerMP && entity instanceof PC_IGresGuiOpenHandler) {
+			EntityPlayerMP playerMP = (EntityPlayerMP) player;
+			PC_GresBaseWithInventory container = ((PC_IGresGuiOpenHandler) entity).openServerGui(player);
+			NBTTagCompound sendToClient = ((PC_IGresGuiOpenHandler) entity).sendOnGuiOpenToClient(player);
+			if(sendToClient==null){
+				sendToClient = new NBTTagCompound();
+			}
+			long session = entity.getNewSession(player);
+			if (container != null) {
+				playerMP.getNextWindowId();
+				playerMP.closeContainer();
+				int windowId = playerMP.currentWindowId;
+				PC_PacketHandler.sendTo(new PC_PacketOpenGresEntity(entity, windowId, session, sendToClient), (EntityPlayerMP)player);
+				player.openContainer = container;
+				player.openContainer.windowId = windowId;
+				player.openContainer.addCraftingToCrafters(playerMP);
+			} else {
+				PC_PacketHandler.sendTo(new PC_PacketOpenGresEntity(entity, -1, session, sendToClient), (EntityPlayerMP)player);
+			}
+		}
+	}
+	
 	public static void openGui(EntityPlayer player, String guiOpenHandlerName) {
 
 		if (player instanceof EntityPlayerMP) {

@@ -10,6 +10,7 @@ import powercraft.api.multiblock.PC_BlockMultiblock;
 import powercraft.api.multiblock.PC_Multiblocks;
 import powercraft.api.network.PC_PacketHandler;
 import powercraft.api.script.miniscript.PC_Miniscript;
+import powercraft.api.script.weasel.PC_Weasel;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.InstanceFactory;
@@ -56,6 +57,7 @@ public final class PC_Api extends PC_Module {
 		PC_TickHandler.register();
 		PC_ForgeHandler.register();
 		PC_Miniscript.register();
+		PC_Weasel.register();
 		PC_Gres.register();
 		PC_Multiblocks.register();
 		PC_EnergyGrid.register();

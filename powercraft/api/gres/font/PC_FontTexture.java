@@ -127,7 +127,7 @@ public class PC_FontTexture extends AbstractTexture {
 
 			newIntObject.width = fontImage.getWidth();
 			newIntObject.height = fontImage.getHeight();
-
+			
 			if (positionX + newIntObject.width >= textureSize) {
 				positionY += rowHeight;
 				rowHeight = 0;
@@ -216,7 +216,7 @@ public class PC_FontTexture extends AbstractTexture {
 					RenderingHints.VALUE_ANTIALIAS_ON);
 		g.setFont(font);
 		FontMetrics fontMetrics = g.getFontMetrics();
-		Rectangle2D r = fontMetrics.getStringBounds("" + ch, g);
+		Rectangle2D r = fontMetrics.getStringBounds(ch=='\t'?"    ":"" + ch, g);
 
 		int charwidth = (int) r.getWidth();
 		if (charwidth <= 0)

@@ -343,11 +343,11 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 
 
 	@Override
-	protected void tryActionOnKeyTyped(char key, int keyCode, PC_GresHistory history) {
+	protected void tryActionOnKeyTyped(char key, int keyCode, boolean repeat, PC_GresHistory history) {
 
 		if (visible) {
 			for (PC_GresComponent child : children) {
-				child.tryActionOnKeyTyped(key, keyCode, history);
+				child.tryActionOnKeyTyped(key, keyCode, repeat, history);
 			}
 		}
 	}

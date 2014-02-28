@@ -1,31 +1,28 @@
 package powercraft.api.network.packet;
 
 import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetHandler;
 import powercraft.api.PC_ClientUtils;
 import powercraft.api.PC_Utils;
-import powercraft.api.block.PC_TileEntity;
+import powercraft.api.entity.PC_Entity;
 import powercraft.api.network.PC_Packet;
 import powercraft.api.network.PC_PacketServerToClient;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class PC_PacketTileEntityMessageSTC extends PC_PacketServerToClient {
+public class PC_PacketEntityMessageSTC extends PC_PacketServerToClient {
 
-	private int x;
-	private int y;
-	private int z;
+	private int entityID;
 	private NBTTagCompound nbtTagCompound;
 	
-	public PC_PacketTileEntityMessageSTC(){
+	public PC_PacketEntityMessageSTC(){
 		
 	}
 	
-	public PC_PacketTileEntityMessageSTC(PC_TileEntity te, NBTTagCompound nbtTagCompound){
-		x = te.xCoord;
-		y = te.yCoord;
-		z = te.zCoord;
+	public PC_PacketEntityMessageSTC(Entity entity, NBTTagCompound nbtTagCompound){
+		entityID = entity.getEntityId();
 		this.nbtTagCompound = nbtTagCompound;
 	}
 	
@@ -34,26 +31,22 @@ public class PC_PacketTileEntityMessageSTC extends PC_PacketServerToClient {
 	protected PC_Packet doAndReply(INetHandler iNetHandler) {
 		if(PC_ClientUtils.mc().theWorld==null)
 			return null;
-		PC_TileEntity te = PC_Utils.getTileEntity(PC_ClientUtils.mc().theWorld, x, y, z, PC_TileEntity.class);
-		if(te!=null){
-			te.onClientMessage(PC_ClientUtils.mc().thePlayer, nbtTagCompound);
+		PC_Entity entity = PC_Utils.getEntity(PC_ClientUtils.mc().theWorld, entityID, PC_Entity.class);
+		if(entity!=null){
+			entity.onClientMessage(PC_ClientUtils.mc().thePlayer, nbtTagCompound);
 		}
 		return null;
 	}
 
 	@Override
 	protected void fromByteBuffer(ByteBuf buf) {
-		x = buf.readInt();
-		y = buf.readInt();
-		z = buf.readInt();
+		entityID = buf.readInt();
 		nbtTagCompound = readNBTFromBuf(buf);
 	}
 
 	@Override
 	protected void toByteBuffer(ByteBuf buf) {
-		buf.writeInt(x);
-		buf.writeInt(y);
-		buf.writeInt(z);
+		buf.writeInt(entityID);
 		writeNBTToBuf(buf, nbtTagCompound);
 	}
 

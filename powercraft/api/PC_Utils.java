@@ -467,5 +467,13 @@ public class PC_Utils {
 			return null;
 		return itemStack.copy();
 	}
+
+	public static Entity getEntity(World world, int entityID) {
+		return world.getEntityByID(entityID);
+	}
+	
+	public static <T> T getEntity(World world, int entityID, Class<T> c) {
+		return as(getEntity(world, entityID), c);
+	}
 	
 }

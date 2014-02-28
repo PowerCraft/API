@@ -1,21 +1,27 @@
 package powercraft.api.gres;
 
-import org.lwjgl.input.Mouse;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import powercraft.api.PC_Vec2I;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+
+import powercraft.api.PC_Vec2I;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 class PC_GresGuiScreen extends GuiScreen {
 
+	private static final long DOUBLE_CLICK_DIFF = 250000000L;
+	
 	private PC_GresGuiHandler guiHandler;
 	private int buttons;
+	private long lastLeftClick;
 	
 	protected PC_GresGuiScreen(PC_IGresGui client) {
 		guiHandler = new PC_GresGuiHandler(client);
+		Keyboard.enableRepeatEvents(true);
 	}
 	
 	@Override
@@ -35,8 +41,14 @@ class PC_GresGuiScreen extends GuiScreen {
 		}
 		if (eventButton != -1) {
 			if (Mouse.getEventButtonState()) {
+				boolean doubleClick = false;
+				if(eventButton==0){
+					long clickTime = Mouse.getEventNanoseconds();
+					doubleClick = clickTime - lastLeftClick<DOUBLE_CLICK_DIFF;
+					lastLeftClick = clickTime;
+				}
 				buttons |= 1 << eventButton;
-				eventMouseButtonDown(mouse, buttons, eventButton);
+				eventMouseButtonDown(mouse, buttons, eventButton, doubleClick);
 			} else {
 				buttons &= ~(1 << eventButton);
 				eventMouseButtonUp(mouse, buttons, eventButton);
@@ -47,8 +59,8 @@ class PC_GresGuiScreen extends GuiScreen {
 		}
 	}
 	
-	private void eventMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton) {
-		guiHandler.eventMouseButtonDown(mouse, buttons, eventButton);
+	private void eventMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton, boolean doubleClick) {
+		guiHandler.eventMouseButtonDown(mouse, buttons, eventButton, doubleClick);
 	}
 
 
@@ -68,7 +80,7 @@ class PC_GresGuiScreen extends GuiScreen {
 	
 	@Override
 	protected void keyTyped(char key, int keyCode){
-		guiHandler.eventKeyTyped(key, keyCode);
+		guiHandler.eventKeyTyped(key, keyCode, Keyboard.isRepeatEvent());
 	}
 	
 	@Override
@@ -78,6 +90,7 @@ class PC_GresGuiScreen extends GuiScreen {
 
 	@Override
 	public void onGuiClosed() {
+		Keyboard.enableRepeatEvents(false);
 		guiHandler.eventGuiClosed();
 	}
 

@@ -204,10 +204,10 @@ public class PC_GresWindow extends PC_GresContainer {
 	}
 	
 	@Override
-	protected void tryActionOnKeyTyped(char key, int keyCode, PC_GresHistory history) {
-		super.tryActionOnKeyTyped(key, keyCode, history);
+	protected void tryActionOnKeyTyped(char key, int keyCode, boolean repeat, PC_GresHistory history) {
+		super.tryActionOnKeyTyped(key, keyCode, repeat, history);
 		for(PC_GresWindowSideTab sideTab:sideTabs){
-			sideTab.tryActionOnKeyTyped(key, keyCode, null);
+			sideTab.tryActionOnKeyTyped(key, keyCode, repeat, null);
 		}
 	}
 	

@@ -22,6 +22,7 @@ import powercraft.api.gres.events.PC_GresMouseButtonEvent;
 import powercraft.api.gres.events.PC_GresMouseEvent;
 import powercraft.api.gres.events.PC_GresMouseMoveEvent;
 import powercraft.api.gres.events.PC_GresMouseWheelEvent;
+import powercraft.api.gres.events.PC_GresTooltipGetEvent;
 import powercraft.api.gres.events.PC_IGresEventListener;
 import powercraft.api.gres.events.PC_IGresEventListenerEx;
 import powercraft.api.gres.font.PC_FontRenderer;
@@ -498,24 +499,24 @@ public abstract class PC_GresComponent {
 	protected abstract void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp);
 
 
-	protected boolean onKeyTyped(char key, int keyCode, PC_GresHistory history) {
+	protected boolean onKeyTyped(char key, int keyCode, boolean repeat, PC_GresHistory history) {
 
-		PC_GresKeyEvent event = new PC_GresKeyEvent(this, key, keyCode, history);
+		PC_GresKeyEvent event = new PC_GresKeyEvent(this, key, keyCode, repeat, history);
 		fireEvent(event);
 		if (!event.isConsumed()) {
-			return handleKeyTyped(event.getKey(), event.getKeyCode(), history);
+			return handleKeyTyped(event.getKey(), event.getKeyCode(), repeat, history);
 		}
 		return true;
 	}
 
 
-	protected boolean handleKeyTyped(char key, int keyCode, PC_GresHistory history) {
+	protected boolean handleKeyTyped(char key, int keyCode, boolean repeat, PC_GresHistory history) {
 
 		return false;
 	}
 
 
-	protected void tryActionOnKeyTyped(char key, int keyCode, PC_GresHistory history) {
+	protected void tryActionOnKeyTyped(char key, int keyCode, boolean repeat, PC_GresHistory history) {
 
 	}
 
@@ -569,18 +570,18 @@ public abstract class PC_GresComponent {
 	}
 
 
-	protected boolean onMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton, PC_GresHistory history) {
+	protected boolean onMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton, boolean doubleClick, PC_GresHistory history) {
 
-		PC_GresMouseEvent event = new PC_GresMouseButtonEvent(this, mouse, buttons, eventButton, PC_GresMouseButtonEvent.Event.DOWN, history);
+		PC_GresMouseEvent event = new PC_GresMouseButtonEvent(this, mouse, buttons, eventButton, doubleClick, PC_GresMouseButtonEvent.Event.DOWN, history);
 		fireEvent(event);
 		if (!event.isConsumed()) {
-			return handleMouseButtonDown(mouse, buttons, eventButton, history);
+			return handleMouseButtonDown(mouse, buttons, eventButton, doubleClick, history);
 		}
 		return true;
 	}
 
 
-	protected boolean handleMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton, PC_GresHistory history) {
+	protected boolean handleMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton, boolean doubleClick, PC_GresHistory history) {
 
 		mouseDown = enabled && parentEnabled;
 		return false;
@@ -589,7 +590,7 @@ public abstract class PC_GresComponent {
 
 	protected boolean onMouseButtonUp(PC_Vec2I mouse, int buttons, int eventButton, PC_GresHistory history) {
 
-		PC_GresMouseEvent event = new PC_GresMouseButtonEvent(this, mouse, buttons, eventButton, PC_GresMouseButtonEvent.Event.UP, history);
+		PC_GresMouseEvent event = new PC_GresMouseButtonEvent(this, mouse, buttons, eventButton, false, PC_GresMouseButtonEvent.Event.UP, history);
 		fireEvent(event);
 		if (!event.isConsumed()) {
 			return handleMouseButtonUp(mouse, buttons, eventButton, history);
@@ -602,7 +603,7 @@ public abstract class PC_GresComponent {
 
 		boolean consumed = false;
 		if (mouseDown) {
-			PC_GresMouseEvent event = new PC_GresMouseButtonEvent(this, mouse, buttons, eventButton, PC_GresMouseButtonEvent.Event.CLICK, history);
+			PC_GresMouseEvent event = new PC_GresMouseButtonEvent(this, mouse, buttons, eventButton, false, PC_GresMouseButtonEvent.Event.CLICK, history);
 			fireEvent(event);
 			if (!event.isConsumed()) {
 				consumed = handleMouseButtonClick(mouse, buttons, eventButton, history);
@@ -680,6 +681,15 @@ public abstract class PC_GresComponent {
 		return null;
 	}
 
+	protected List<String> onGetTooltip(PC_Vec2I position) {
+		List<String> tooltip = getTooltip(position);
+		PC_GresTooltipGetEvent event = new PC_GresTooltipGetEvent(this, tooltip);
+		fireEvent(event);
+		if (event.isConsumed()) {
+			return event.getTooltip();
+		}
+		return tooltip;
+	}
 
 	protected List<String> getTooltip(PC_Vec2I position) {
 
@@ -789,8 +799,11 @@ public abstract class PC_GresComponent {
 		drawString(text, x, y, width, size.y, alignH, PC_GresAlign.V.TOP, shadow);
 	}
 
-
 	protected void drawString(String text, int x, int y, int width, int height, PC_GresAlign.H alignH, PC_GresAlign.V alignV, boolean shadow) {
+		drawString(text, x, y, width, height, alignH, alignV, shadow, enabled && parentEnabled ? mouseDown ? 2 : mouseOver ? 1 : 0 : 3);
+	}
+
+	protected void drawString(String text, int x, int y, int width, int height, PC_GresAlign.H alignH, PC_GresAlign.V alignV, boolean shadow, int state) {
 		PC_Vec2I size = fontRenderer.getStringSize(text);
 		switch (alignV) {
 			case BOTTOM:
@@ -818,8 +831,7 @@ public abstract class PC_GresComponent {
 			default:
 				break;
 		}
-		fontRenderer.drawString(writeText, x, y);
-		fontRenderer.drawString(writeText, x, y, fontColors[enabled && parentEnabled ? mouseDown ? 2 : mouseOver ? 1 : 0 : 3], shadow);
+		fontRenderer.drawString(writeText, x, y, fontColors[state], shadow);
 		GL11.glEnable(GL11.GL_BLEND);
 	}
 
@@ -837,6 +849,10 @@ public abstract class PC_GresComponent {
 	
 	protected void onScaleChanged(int newScale){
 		
+	}
+	
+	public boolean enableRepeatEvents(){
+		return false;
 	}
 	
 }

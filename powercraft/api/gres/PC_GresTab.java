@@ -181,10 +181,10 @@ public class PC_GresTab extends PC_GresContainer {
 	}
 
 	@Override
-	protected void tryActionOnKeyTyped(char key, int keyCode, PC_GresHistory history) {
+	protected void tryActionOnKeyTyped(char key, int keyCode, boolean repeat, PC_GresHistory history) {
 
 		if (visible && children.size()>0) {
-			children.get(0).tryActionOnKeyTyped(key, keyCode, null);
+			children.get(0).tryActionOnKeyTyped(key, keyCode, repeat, null);
 		}
 	}
 	
@@ -240,10 +240,10 @@ public class PC_GresTab extends PC_GresContainer {
 	}
 	
 	@Override
-	protected boolean handleMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton, PC_GresHistory history) {
+	protected boolean handleMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton, boolean doubleClick, PC_GresHistory history) {
 		move = false;
 		xPosDown = mouse.x;
-		return super.handleMouseButtonDown(mouse, buttons, eventButton, history);
+		return super.handleMouseButtonDown(mouse, buttons, eventButton, doubleClick, history);
 	}
 
 	@Override

@@ -500,7 +500,7 @@ public class PC_TileEntity extends TileEntity {
 			}
 			
 		});
-		onLoadedFromNBT();
+		onLoadedFromNBT(flag);
 	}
 	
 	private final void writeToNBT(final NBTTagCompound nbtTagCompound, final Flag flag){
@@ -547,7 +547,7 @@ public class PC_TileEntity extends TileEntity {
 		super.writeToNBT(nbtTagCompound);
 	}
 	
-	public void onLoadedFromNBT(){
+	public void onLoadedFromNBT(Flag flag){
 		
 	}
 	

@@ -274,6 +274,13 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 		PC_GresAutoCompleteWindow.makeCompleteWindow(getGuiHandler(), this, disp, history);
 	}
 	
+	private void updateComplete(PC_GresHistory history){
+		if(autoComplete!=null && disp.display){
+			autoComplete.makeComplete(this, document, document.getLine(mouseSelectEnd.y), mouseSelectEnd.x, disp);
+			showCompleteWindow(history);
+		}
+	}
+	
 	private void deleteSelected(PC_GresHistory history) {
 		String removed = document.getText(mouseSelectStart, mouseSelectEnd);
 		document.remove(mouseSelectStart, mouseSelectEnd);
@@ -455,8 +462,8 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 	}
 	
 	@Override
-	protected boolean handleKeyTyped(char key, int keyCode, PC_GresHistory history) {
-		super.handleKeyTyped(key, keyCode, history);
+	protected boolean handleKeyTyped(char key, int keyCode, boolean repeat, PC_GresHistory history) {
+		super.handleKeyTyped(key, keyCode, repeat, history);
 		cursorCounter = 0;
 		switch (key) {
 		case 3:
@@ -478,17 +485,38 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 				key_backspace(history);
 				return true;
 			case Keyboard.KEY_HOME:
-				mouseSelectEnd = mouseSelectStart = new PC_Vec2I();
+				if (Keyboard.isKeyDown(Keyboard.KEY_RCONTROL) || Keyboard
+						.isKeyDown(Keyboard.KEY_LCONTROL)) {
+					mouseSelectEnd = new PC_Vec2I();
+				}else{
+					mouseSelectEnd.x = 0;
+				}
+				if (!(Keyboard.isKeyDown(Keyboard.KEY_RSHIFT) || Keyboard
+						.isKeyDown(Keyboard.KEY_LSHIFT))) {
+					mouseSelectStart = mouseSelectEnd;
+				}
 				newStart = true;
 				moveViewToSelect();
+				updateComplete(history);
 				return true;
 			case Keyboard.KEY_END:
-				mouseSelectEnd = mouseSelectStart = document.getLastPos();
+				if (Keyboard.isKeyDown(Keyboard.KEY_RCONTROL) || Keyboard
+						.isKeyDown(Keyboard.KEY_LCONTROL)) {
+					mouseSelectEnd = document.getLastPos();
+				}else{
+					mouseSelectEnd.x = document.getLine(mouseSelectEnd.y).getText().length();
+				}
+				if (!(Keyboard.isKeyDown(Keyboard.KEY_RSHIFT) || Keyboard
+						.isKeyDown(Keyboard.KEY_LSHIFT))) {
+					mouseSelectStart = mouseSelectEnd;
+				}
 				newStart = true;
 				moveViewToSelect();
+				updateComplete(history);
 				return true;
 			case Keyboard.KEY_DELETE:
 				key_delete(history);
+				updateComplete(history);
 				return true;
 			case Keyboard.KEY_LEFT:
 				if (mouseSelectEnd.y > 0 || (mouseSelectEnd.y == 0 && mouseSelectEnd.x > 0)) {
@@ -505,6 +533,7 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 				}
 				newStart = true;
 				moveViewToSelect();
+				updateComplete(history);
 				return true;
 			case Keyboard.KEY_RIGHT:
 				PC_Vec2I prev = mouseSelectEnd;
@@ -524,6 +553,7 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 				}
 				newStart = true;
 				moveViewToSelect();
+				updateComplete(history);
 				return true;
 			case Keyboard.KEY_UP:
 				if(mouseSelectEnd.y>0){
@@ -559,6 +589,106 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 					}
 					break;
 				}
+				addKey(key, history);
+				break;
+			case Keyboard.KEY_A:
+				if(Keyboard.isKeyDown(Keyboard.KEY_RCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)){
+					mouseSelectStart = new PC_Vec2I();
+					mouseSelectEnd = document.getLastPos();
+					newStart = true;
+					break;
+				}
+				addKey(key, history);
+				break;
+			case Keyboard.KEY_TAB:
+			{
+				int last = document.getLine(mouseSelectEnd.y).getText().length();
+				if(Keyboard.isKeyDown(Keyboard.KEY_RSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || mouseSelectEnd.y!=mouseSelectStart.y || (mouseSelectEnd.x==0 && mouseSelectStart.x==last) || (mouseSelectEnd.x==last && mouseSelectStart.x==0)){
+					int sy = mouseSelectEnd.y;
+					int ey = mouseSelectStart.y;
+					boolean swap = sy>ey;
+					if(swap){
+						sy = ey;
+						ey = mouseSelectEnd.y;
+					}
+					newStart = true;
+					String old = "";
+					PC_GresDocumentLine line = document.getLine(sy);
+					PC_GresDocumentLine sline = line;
+					PC_GresDocumentLine l = line;
+					for(int i=sy; i<ey; i++){
+						old += l.getText()+"\n";
+						l = l.next;
+					}
+					old += l.getText();
+					if (Keyboard.isKeyDown(Keyboard.KEY_RSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+						int sj=0;
+						int ej=0;
+						for(int i=sy; i<=ey; i++){
+							String text = line.getText();
+							boolean done = false;
+							for(int j=0; j<text.length(); j++){
+								char c = text.charAt(j);
+								if(c=='\t'){
+									text = text.substring(0, j)+text.substring(j+1);
+									done = true;
+									if(i==sy)
+										sj = 1;
+									if(i==ey)
+										ej = 1;
+									break;
+								}else if(c!=' '){
+									break;
+								}
+							}
+							if(!done){
+								int j=0;
+								while(j<text.length() && j<4 && text.charAt(j)==' '){
+									j++;
+								}
+								text = text.substring(j);
+								if(i==sy)
+									sj = j;
+								if(i==ey)
+									ej = j;
+							}
+							document.onLineChange(line);
+							line.setText(text);
+							document.onLineChanged(line);
+							line = line.next;
+						}
+						if(swap){
+							mouseSelectStart.x -= sj;
+							if(mouseSelectStart!=mouseSelectEnd)
+								mouseSelectEnd.x -= ej;
+						}else{
+							mouseSelectStart.x -= ej;
+							if(mouseSelectStart!=mouseSelectEnd)
+								mouseSelectEnd.x -= sj;
+						}
+						if(mouseSelectStart.x<0)
+							mouseSelectStart.x=0;
+						if(mouseSelectStart.x<0)
+							mouseSelectStart.x=0;
+					}else{
+						for(int i=sy; i<=ey; i++){
+							document.onLineChange(line);
+							line.setText("\t"+line.getText());
+							document.onLineChanged(line);
+							line = line.next;
+						}
+						if(mouseSelectStart.x!=0)
+							mouseSelectStart.x++;
+						if(mouseSelectEnd.x!=0)
+							mouseSelectEnd.x++;
+					}
+					document.recalcHighlights(sline, ey-sy+1);
+					history.addHistoryEntry(new HistoryEntry(this, new PC_Vec2I(0, sy), new PC_Vec2I(l.getText().length(), ey), old, true, true, false));
+					break;
+				}
+				addKey(key, history);
+				break;
+			}
 			default:
 				if (ChatAllowedCharacters.isAllowedCharacter(key)) {
 					addKey(key, history);
@@ -646,8 +776,8 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 	}
 
 	@Override
-	protected boolean handleMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton, PC_GresHistory history) {
-		super.handleMouseButtonDown(mouse, buttons, eventButton, history);
+	protected boolean handleMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton, boolean doubleClick, PC_GresHistory history) {
+		super.handleMouseButtonDown(mouse, buttons, eventButton, doubleClick, history);
 		if(mouseDown){
 			lastMousePosition.setTo(mouse);
 			selectBar = mouseOverBar(mouse);

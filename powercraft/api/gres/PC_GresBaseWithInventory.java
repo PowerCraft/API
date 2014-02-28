@@ -17,6 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import powercraft.api.block.PC_TileEntity;
+import powercraft.api.entity.PC_Entity;
 import powercraft.api.gres.slot.PC_Slot;
 import powercraft.api.gres.slot.PC_SlotPhantom;
 import powercraft.api.inventory.PC_IInventory;
@@ -47,6 +48,10 @@ public abstract class PC_GresBaseWithInventory extends Container implements PC_I
 
 		if (inventory instanceof PC_TileEntity) {
 			((PC_TileEntity) inventory).openContainer(this);
+		}
+		
+		if (inventory instanceof PC_Entity) {
+			((PC_Entity) inventory).openContainer(this);
 		}
 
 		if (player != null) {
@@ -108,6 +113,9 @@ public abstract class PC_GresBaseWithInventory extends Container implements PC_I
 		if (inventory instanceof PC_TileEntity) {
 			((PC_TileEntity) inventory).closeContainer(this);
 		}
+		if (inventory instanceof PC_Entity) {
+			((PC_Entity) inventory).closeContainer(this);
+		}
 	}
 
 
@@ -117,6 +125,9 @@ public abstract class PC_GresBaseWithInventory extends Container implements PC_I
 		super.addCraftingToCrafters(crafting);
 		if (inventory instanceof PC_TileEntity) {
 			((PC_TileEntity) inventory).sendProgressBarUpdates();
+		}
+		if (inventory instanceof PC_Entity) {
+			((PC_Entity) inventory).sendProgressBarUpdates();
 		}
 	}
 

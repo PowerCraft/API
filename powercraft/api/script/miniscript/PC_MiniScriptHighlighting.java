@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import powercraft.api.PC_Lang;
 import powercraft.api.gres.PC_GresComponent;
 import powercraft.api.gres.autoadd.PC_AutoAdd;
 import powercraft.api.gres.autoadd.PC_AutoComplete;
@@ -29,7 +30,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class PC_MiniScriptHighlighting {
+public class PC_MiniscriptHighlighting {
 
 	public static PC_GresHighlighting makeHighlighting(Set<String> words){
 		PC_GresHighlighting highlighting = new PC_GresHighlighting();
@@ -43,7 +44,7 @@ public class PC_MiniScriptHighlighting {
 		ElementHighlight eh = new ElementHighlight();
 		highlighting.addOperatorHighlight(eh, "");
 		highlighting.addBlockHighlight(PC_GresHighlighting.msp(true, ";"), null, null, false, PC_Formatter.color(122, 122, 122), INNER);
-		highlighting.addSpecialHighlight(new MultipleRegexPossibilities(LABEL_REGEX), PC_Formatter.color(100, 240, 135));
+		highlighting.addSpecialHighlight(new LabelHighlight(), PC_Formatter.color(100, 240, 135));
 		highlighting.addWordHighlight(new JumperHightlights(), PC_Formatter.color(100, 135, 240));
 		highlighting.addWordHighlight(PC_GresHighlighting.msp(false, MINISCRIPT_ASM), PC_Formatter.color(149, 0, 85)+PC_Formatter.font(PC_Fonts.create(PC_FontRenderer.getFont("Consolas", Font.BOLD, 24), null)));
 		highlighting.addWordHighlight(new MultipleRegexPossibilities(REGISTER_REGEX), PC_Formatter.color(255, 113, 113));
@@ -61,8 +62,6 @@ public class PC_MiniScriptHighlighting {
 	}
 	
 	public static final String REGISTER_REGEX = "[Rr](?:(?:[12]\\d?)|(?:3[01]?)|[0456789])";
-	
-	public static final String LABEL_REGEX = "\\w+:";
 	
 	public static final String[] MINISCRIPT_ASM = 
 		{"NOT", "NEG", "INC", "DEC", "ADD", "SUB", "MUL", "DIV", "MOD", "SHL", "SHR", "USHR", "AND", "OR", 
@@ -106,7 +105,7 @@ public class PC_MiniScriptHighlighting {
 		
 		private AutoComplete(List<PC_StringWithInfo> words){
 			for(String asm:MINISCRIPT_ASM){
-				asmInstructions.add(new PC_StringWithInfo(asm, null));
+				asmInstructions.add(new PC_StringWithInfo(asm, PC_Lang.translate("miniscript.tooltip."+asm.toLowerCase()), PC_Lang.translate("miniscript.desk."+asm.toLowerCase())));
 			}
 			for(int i=0; i<31; i++){
 				registers.add(new PC_StringWithInfo("r"+i, "Register Nr "+i));
@@ -118,9 +117,14 @@ public class PC_MiniScriptHighlighting {
 		public void onStringAdded(PC_GresComponent component, PC_GresDocument document, PC_GresDocumentLine line, String toAdd, int x, PC_AutoCompleteDisplay info) {
 			if(info.display){
 				if(toAdd.matches("[\\w\\.]+")){
-					for(PC_StringListPart part:info.parts)
+					int num = 0;
+					for(PC_StringListPart part:info.parts){
 						part.searchForAdd(toAdd);
+						num += part.size();
+					}
 					info.done += toAdd;
+					if(num==0)
+						info.display = false;
 				}else{
 					info.display = false;
 				}
@@ -170,8 +174,13 @@ public class PC_MiniScriptHighlighting {
 				}
 			}
 			info.done = start;
-			for(PC_StringListPart part:info.parts)
+			int num = 0;
+			for(PC_StringListPart part:info.parts){
 				part.searchFor(start);
+				num += part.size();
+			}
+			if(num==0)
+				info.display = false;
 		}
 
 		@Override
@@ -181,8 +190,8 @@ public class PC_MiniScriptHighlighting {
 		
 		enum Type{
 			INSTRUCTION("\\s*(?<part>[\\w\\.]*)"),
-			LABEL("\\s*(?:(?:jmp|jmpl|jeq|jne|jl|jle|jb|jbe)\\s+|switch.*(:?,\\s*[\\w\\.]*\\s)*,\\s*)(?<part>[\\w\\.]*)"),
-			WORD("\\s*(?:ext|cmp|[^\\[,]*)(?:[\\W&&[^;]]+(?<part>[\\w\\.]*))+"),
+			LABEL("\\s*(?:(?:jmp|jmpl|jeq|jne|jl|jle|jb|jbe)\\s+|switch.*(:?,\\s*.*:[\\w\\.]*\\s)*,\\s*.*:)(?<part>[\\w\\.]*)"),
+			WORD("\\s*(?:ext|cmp|[^\\[,]*+)(?:[\\W&&[^;]]+(?<part>[\\w\\.]*))+"),
 			REGISTERS("\\s*\\w*(?:[\\W&&[^;]]+(?<part>[\\w\\.]*))+");
 			
 			public final String regex;
@@ -227,15 +236,52 @@ public class PC_MiniScriptHighlighting {
 				if((c>='A' && c<='Z') || (c>='a' && c<='z') || c=='_' || ((c>='0' && c<='9')&&i>0)){
 					label += c;
 				}else if(c==':'){
+					int lineNum = 1;
+					PC_GresDocumentLine l = line;
+					while(l.prev!=null){
+						l = l.prev;
+						lineNum++;
+					}
 					autoComplete.line2Label.put(line, label);
 					autoComplete.label2Line.put(label, line);
-					autoComplete.labelNames.add(new PC_StringWithInfo(label, "In Line "+line));
+					autoComplete.labelNames.add(new PC_StringWithInfo(label, "In Line "+lineNum));
 					return;
 				}else{
 					return;
 				}
 				i++;
 			}
+		}
+		
+	}
+	
+	private static final class LabelHighlight implements IMultiplePossibilities{
+
+		@Override
+		public int comesNowIn(String line, int i, Object lastInfo) {
+			if(line.substring(0, i).trim().isEmpty()){
+				int size = 0;
+				boolean isEnd = false;
+				while(i<line.length()){
+					char c = line.charAt(i);
+					if(c==':')
+						return size;
+					if(!isEnd && !Character.isLetterOrDigit(c)){
+						isEnd = true;
+					}
+					if(isEnd && !Character.isWhitespace(c)){
+						return 0;
+					}
+					size++;
+					i++;
+				}
+			}
+			return 0;
+		}
+
+		@Override
+		public Object getInfo() {
+			return null;
 		}
 		
 	}
@@ -270,7 +316,8 @@ public class PC_MiniScriptHighlighting {
 			}
 			Iterator<String> it = words.iterator();
 			while(it.hasNext()){
-				if(it.next().startsWith(elementHighlight.wordInfo.start)){
+				String s = it.next().split("\\.", 2)[0];
+				if(s.equals(elementHighlight.wordInfo.start)){
 					return length;
 				}
 			}
@@ -314,7 +361,8 @@ public class PC_MiniScriptHighlighting {
 			}
 			Iterator<String> it = words.iterator();
 			while(it.hasNext()){
-				if(it.next().startsWith(elementHighlight.wordInfo.start)){
+				String s = it.next();
+				if(s.startsWith(elementHighlight.wordInfo.start+".") || s.equals(elementHighlight.wordInfo.start)){
 					return length;
 				}
 			}
@@ -373,7 +421,9 @@ public class PC_MiniScriptHighlighting {
 					return size;
 				}
 			}
-			if(l.indexOf(',')!=-1 && line.toLowerCase().startsWith("switch")){
+			int last1 = l.lastIndexOf(',');
+			int last2 = l.lastIndexOf(':');
+			if(last1!=-1 && last2!=-1 && last1<last2 && line.trim().toLowerCase().startsWith("switch")){
 				int size = 0;
 				char c;
 				do{

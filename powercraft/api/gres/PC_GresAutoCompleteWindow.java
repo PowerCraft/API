@@ -6,13 +6,13 @@ import java.util.List;
 import org.lwjgl.input.Keyboard;
 
 import powercraft.api.PC_Vec2I;
-import powercraft.api.gres.PC_GresAlign.Fill;
 import powercraft.api.gres.autoadd.PC_AutoCompleteDisplay;
 import powercraft.api.gres.autoadd.PC_StringListPart;
 import powercraft.api.gres.autoadd.PC_StringWithInfo;
 import powercraft.api.gres.events.PC_GresEvent;
 import powercraft.api.gres.events.PC_GresFocusLostEvent;
 import powercraft.api.gres.events.PC_GresMouseButtonEvent;
+import powercraft.api.gres.events.PC_GresTooltipGetEvent;
 import powercraft.api.gres.events.PC_IGresEventListener;
 import powercraft.api.gres.history.PC_GresHistory;
 import powercraft.api.gres.layout.PC_GresLayoutVertical;
@@ -22,6 +22,13 @@ public class PC_GresAutoCompleteWindow extends PC_GresFrame{
 	public static PC_GresAutoCompleteWindow frame;
 	
 	public static void makeCompleteWindow(PC_GresGuiHandler guiHandler, PC_GresMultilineHighlightingTextEdit textEdit, PC_AutoCompleteDisplay display, PC_GresHistory history){
+		if(display.display){
+			int num = 0;
+			for(PC_StringListPart part:display.parts){
+				num += part.size();
+			}
+			display.display = num!=0;
+		}
 		if(display.display){
 			if(frame==null){
 				int i = 0;
@@ -57,23 +64,15 @@ public class PC_GresAutoCompleteWindow extends PC_GresFrame{
 				frame.setMinSize(new PC_Vec2I(100, 100));
 				frame.setSize(new PC_Vec2I(100, 100));
 				frame.setLayout(new PC_GresLayoutVertical());
-				frame.scrollArea  = new PC_GresScrollArea();
-				frame.scrollArea.setFill(Fill.BOTH);
-				frame.scrollArea.setMinSize(new PC_Vec2I(98, 98));
-				frame.scrollArea.setSize(new PC_Vec2I(98, 98));
-				frame.scrollArea.getContainer().setLayout(new PC_GresLayoutVertical());
-				frame.add(frame.scrollArea);
 				frame.addEventListener(frame.listener = new Listener());
 				guiHandler.add(frame);
 			}
 			if(frame.textEdit != textEdit){
 				frame.textEdit = textEdit;
 			}
-			PC_GresContainer container = frame.scrollArea.getContainer();
-			container.removeAll();
-			container.setSize(new PC_Vec2I(0, 0));
 			int spl = display.done.lastIndexOf('.')+1;
 			String last = "";
+			List<PC_StringWithInfo> withInfos = new ArrayList<PC_StringWithInfo>();
 			for(PC_StringListPart part:display.parts){
 				for(PC_StringWithInfo s:part){
 					String t = s.getString().substring(spl);
@@ -84,12 +83,10 @@ public class PC_GresAutoCompleteWindow extends PC_GresFrame{
 							continue;
 					}
 					last = t;
-					PC_GresButton b = new Button(t, s.getInfo());
-					b.addEventListener(frame.listener);
-					b.setFill(Fill.BOTH);
-					container.add(b);
+					withInfos.add(new PC_StringWithInfo(last, s.getTooltip(), s.getInfo()));
 				}
 			}
+			frame.setStringWithInfo(withInfos);
 			frame.done = display.done.length()-spl;
 			frame.takeFocus();
 			textEdit.focus = true;
@@ -102,12 +99,25 @@ public class PC_GresAutoCompleteWindow extends PC_GresFrame{
 	}
 		
 	private PC_GresMultilineHighlightingTextEdit textEdit;
-	private PC_GresScrollArea scrollArea;
+	private PC_GresListBox listBox;
+	private List<PC_StringWithInfo> withInfos;
 	private int done;
 	private Listener listener;
 	
 	private PC_GresAutoCompleteWindow(PC_GresMultilineHighlightingTextEdit textEdit){
 		this.textEdit = textEdit;
+	}
+	
+	public void setStringWithInfo(List<PC_StringWithInfo> withInfos){
+		this.withInfos = withInfos;
+		removeAll();
+		List<String> elements = new ArrayList<String>();
+		for(PC_StringWithInfo withInfo:withInfos){
+			elements.add(withInfo.getString());
+		}
+		add(listBox = new PC_GresListBox(elements));
+		listBox.addEventListener(listener);
+		listBox.setSelected(0);
 	}
 	
 	@Override
@@ -123,10 +133,13 @@ public class PC_GresAutoCompleteWindow extends PC_GresFrame{
 	}
 	
 	private void makeAdd(PC_GresHistory history){
-		if(scrollArea.getContainer().children.isEmpty())
-			return;
-		String text = scrollArea.getContainer().children.get(0).getText();
-		makeAdd(text, history);
+		String text = listBox.getSelected();
+		if(text==null){
+			text = listBox.getElement(0);
+		}
+		if(text!=null){
+			makeAdd(text, history);
+		}
 	}
 	
 	private void makeAdd(String text, PC_GresHistory history){
@@ -136,7 +149,7 @@ public class PC_GresAutoCompleteWindow extends PC_GresFrame{
 	}
 	
 	@Override
-	protected boolean handleKeyTyped(char key, int keyCode, PC_GresHistory history) {
+	protected boolean handleKeyTyped(char key, int keyCode, boolean repeat, PC_GresHistory history) {
 		switch (keyCode) {
 		case Keyboard.KEY_ESCAPE:
 			close();
@@ -146,9 +159,12 @@ public class PC_GresAutoCompleteWindow extends PC_GresFrame{
 			break;
 		case Keyboard.KEY_SPACE:
 			makeAdd(history);
-			return textEdit.onKeyTyped(key, keyCode, history);
+			return textEdit.onKeyTyped(key, keyCode, repeat, history);
+		case Keyboard.KEY_DOWN:
+		case Keyboard.KEY_UP:
+			return listBox.handleKeyTyped(key, keyCode, repeat, history);
 		default:
-			return textEdit.onKeyTyped(key, keyCode, history);
+			return textEdit.onKeyTyped(key, keyCode, repeat, history);
 		}
 		return true;
 	}
@@ -178,9 +194,27 @@ public class PC_GresAutoCompleteWindow extends PC_GresFrame{
 				}
 			}else if(event instanceof PC_GresMouseButtonEvent){
 				PC_GresMouseButtonEvent ev = (PC_GresMouseButtonEvent) event;
-				if(ev.getEvent()==PC_GresMouseButtonEvent.Event.CLICK){
-					if(ev.getComponent() instanceof PC_GresButton){
-						frame.makeAdd(ev.getComponent().getText(), ev.getHistory());
+				if(ev.getEvent()==PC_GresMouseButtonEvent.Event.DOWN && ev.isDoubleClick() && ev.getComponent()==frame.listBox){
+					frame.makeAdd(ev.getHistory());
+				}
+			}else if(event instanceof PC_GresTooltipGetEvent){
+				PC_GresTooltipGetEvent tge = (PC_GresTooltipGetEvent) event;
+				if(tge.getComponent()==frame.listBox){
+					int selection = frame.listBox.getMouseOver();
+					if(selection!=-1){
+						String info = frame.withInfos.get(selection).getTooltip();
+						if(info!=null){
+							List<String> tooltip = new ArrayList<String>();
+							String sl[] = info.split("\n");
+							for(String ss:sl){
+								ss = ss.trim();
+								if(!ss.isEmpty()){
+									tooltip.add(ss);
+								}
+							}
+							tge.setTooltip(tooltip);
+							tge.consume();
+						}
 					}
 				}
 			}
@@ -193,32 +227,6 @@ public class PC_GresAutoCompleteWindow extends PC_GresFrame{
 				com = com.getParent();
 			}
 			return true;
-		}
-		
-	}
-	
-	private static class Button extends PC_GresButton{
-
-		private String info;
-		
-		public Button(String title, String info) {
-			super(title);
-			this.info = info;
-		}
-
-		@Override
-		protected List<String> getTooltip(PC_Vec2I position) {
-			if(info==null)
-				return null;
-			List<String> list = new ArrayList<String>();
-			String sl[] = info.split("\n");
-			for(String ss:sl){
-				ss = ss.trim();
-				if(!ss.isEmpty()){
-					list.add(ss);
-				}
-			}
-			return list;
 		}
 		
 	}

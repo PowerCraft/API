@@ -7,6 +7,7 @@ import javax.script.ScriptException;
 import javax.tools.DiagnosticCollector;
 
 import powercraft.api.PC_Field;
+import powercraft.api.PC_Field.Flag;
 import powercraft.api.PC_Utils;
 import powercraft.api.script.miniscript.PC_Miniscript;
 
@@ -72,7 +73,7 @@ public abstract class PC_TileEntityScriptable extends PC_TileEntity {
 		}
 	}
 
-	public void onLoadedFromNBT(){
+	public void onLoadedFromNBT(Flag flag){
 		setSource(source);
 	}
 	

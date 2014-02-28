@@ -22,7 +22,7 @@ public class PC_GresDocument {
 		add(new PC_Vec2I(), text);
 	}
 
-	private void onLineChange(PC_GresDocumentLine line){
+	public void onLineChange(PC_GresDocumentLine line){
 		if(handler!=null){
 			handler.onLineChange(line);
 		}
@@ -31,7 +31,7 @@ public class PC_GresDocument {
 		}
 	}
 	
-	private void onLineChanged(PC_GresDocumentLine line){
+	public void onLineChanged(PC_GresDocumentLine line){
 		if(handler!=null){
 			handler.onLineChanged(line);
 		}
@@ -213,7 +213,7 @@ public class PC_GresDocument {
 		return new PC_Vec2I[]{end, start};
 	}
 	
-	private void recalcHighlights(PC_GresDocumentLine line, int num){
+	public void recalcHighlights(PC_GresDocumentLine line, int num){
 		if(highlighting!=null){
 			boolean again = false;
 			while((num>0 || again) && line!=null){

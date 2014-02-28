@@ -46,7 +46,6 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 	private Slot slotOver;
 	private int stackSize;
 	private int slotClickButton = -1;
-	private long lastClickTime;
 	private Slot lastSlotOver;
 	private int lastClickButton;
 	private boolean takeAll;
@@ -239,14 +238,14 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 
 	private void drawTooltip(PC_Vec2I mouse) {
 
-		List<String> list = mouseOverComponent.getTooltip(mouse.sub(mouseOverComponent.getRealLocation()));
+		List<String> list = mouseOverComponent.onGetTooltip(mouse.sub(mouseOverComponent.getRealLocation()));
 		if (list != null && !list.isEmpty()) {
 			PC_GresRenderer.drawTooltip(mouse.x, mouse.y, rect.width, rect.height, list);
 		}
 	}
 
 
-	protected void eventKeyTyped(char key, int keyCode) {
+	protected void eventKeyTyped(char key, int keyCode, boolean repeat) {
 		
 		switch(keyCode){
 		case Keyboard.KEY_Z:
@@ -264,15 +263,15 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 		}
 		
 		PC_GresComponent c = focusedComponent;
-		while(c!=null && !c.onKeyTyped(key, keyCode, history)){
+		while(c!=null && !c.onKeyTyped(key, keyCode, repeat, history)){
 			c = c.getParent();
 		}
 		if(c==null){
-			PC_GresKeyEvent event = new PC_GresKeyEvent(this, key, keyCode, history);
+			PC_GresKeyEvent event = new PC_GresKeyEvent(this, key, keyCode, repeat, history);
 			fireEvent(event);
 			if (!event.isConsumed()) {
 				if(!checkHotbarKeys(keyCode)){
-					tryActionOnKeyTyped(key, keyCode, history);
+					tryActionOnKeyTyped(key, keyCode, repeat, history);
 				}
 			}
 		}
@@ -306,11 +305,11 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 	}
 
 
-	protected void eventMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton) {
+	protected void eventMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton, boolean doubleClick) {
 
 		setFocus(mouseOverComponent);
-		inventoryMouseDown(mouse, buttons, eventButton);
-		focusedComponent.onMouseButtonDown(mouse.sub(focusedComponent.getRealLocation()), buttons, eventButton, history);
+		inventoryMouseDown(mouse, buttons, eventButton, doubleClick);
+		focusedComponent.onMouseButtonDown(mouse.sub(focusedComponent.getRealLocation()), buttons, eventButton, doubleClick, history);
 	}
 
 
@@ -446,11 +445,9 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 		return itemStack.isItemEqual(slotItemStack) && ItemStack.areItemStackTagsEqual(itemStack, slotItemStack);
 	}
 	
-	private void inventoryMouseDown(PC_Vec2I mouse, int buttons, int eventButton) {
+	private void inventoryMouseDown(PC_Vec2I mouse, int buttons, int eventButton, boolean doubleClick) {
 		if(slotClickButton==-1){
-			long clickTime = System.currentTimeMillis();
-			boolean flag = lastSlotOver == slotOver && lastSlotOver!=null && clickTime - lastClickTime<250L && lastClickButton == eventButton;
-			lastClickTime = clickTime;
+			boolean flag = lastSlotOver == slotOver && lastSlotOver!=null && doubleClick && lastClickButton == eventButton;
 			lastSlotOver = slotOver;
 			if (slotOver!=null && slotOver.getHasStack() && eventButton == mc.gameSettings.keyBindPickBlock.getKeyCode() + 100){
 				sentMouseClickToServer(slotOver.slotNumber, eventButton, 3);

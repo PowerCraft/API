@@ -67,7 +67,7 @@ public class PC_GresComboBox extends PC_GresComponent {
 	}
 	
 	@Override
-	protected boolean handleMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton, PC_GresHistory history) {
+	protected boolean handleMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton, boolean doubleClick, PC_GresHistory history) {
 		if(frame==null){
 			mouseDown = true;
 			frame = new PC_GresComboBoxFrame(this);

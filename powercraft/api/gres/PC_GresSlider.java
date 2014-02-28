@@ -60,7 +60,7 @@ public class PC_GresSlider extends PC_GresComponent {
 	}
 	
 	@Override
-	protected boolean handleMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton, PC_GresHistory history) {
+	protected boolean handleMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton, boolean doubleClick, PC_GresHistory history) {
 		int x = (int) (progress*(rect.width-SLIDER_SIZE)/steps+0.5);
 		if(mouse.x>=x && mouse.x<=x+SLIDER_SIZE && enabled && parentEnabled){
 			mouseDown = true;
