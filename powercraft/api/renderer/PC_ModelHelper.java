@@ -8,10 +8,21 @@ import powercraft.api.block.PC_AbstractBlockBase;
 
 public class PC_ModelHelper {
 
-	public static void drawBlockAsUsual(PC_AbstractBlockBase block, Tessellator tessellator,
-			int meta) {
+	public static void drawBlockAsUsual(PC_AbstractBlockBase block, Tessellator tessellator, int meta) {
 		for (PC_Direction side : PC_Direction.VALID_DIRECTIONS)
 			renderBlockSide(side, tessellator, block.getIcon(side, meta));
+	}
+
+	public static void drawBlockAsUsual(Tessellator tessellator, IIcon[] icons) {
+		int i = 0;
+		if (icons.length != 6) {
+			throw new IllegalArgumentException(
+					"You need exactly 6 IIcons to draw the box! This is a serious programming error, blame the programmer!");
+		}
+		for (PC_Direction side : PC_Direction.VALID_DIRECTIONS) {
+			renderBlockSide(side, tessellator, icons[i]);
+			i++;
+		}
 	}
 
 	public static void renderBlockSides(Tessellator tessellator, IIcon icon, PC_Direction... sides) {
@@ -72,8 +83,7 @@ public class PC_ModelHelper {
 		}
 	}
 
-	public static void drawBox(PC_Vec3 bottomLeftFront, PC_Vec3 topRightBack,
-			Tessellator tessellator, IIcon icon) {
+	public static void drawBox(PC_Vec3 bottomLeftFront, PC_Vec3 topRightBack, Tessellator tessellator, IIcon icon) {
 		float x1 = (float) bottomLeftFront.x;
 		float y1 = (float) bottomLeftFront.y;
 		float z1 = (float) bottomLeftFront.z;
