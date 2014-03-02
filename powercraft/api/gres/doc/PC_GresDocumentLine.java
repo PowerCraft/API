@@ -120,9 +120,9 @@ public class PC_GresDocumentLine {
 					}else{
 						this.line += reset;
 					}
+					lastInfo = bestMP.getInfo();
 					wordLength = 0;
 					i += maxLength;
-					lastInfo = bestMP.getInfo();
 					continue;
 				}
 				char c = oldLine.charAt(i);

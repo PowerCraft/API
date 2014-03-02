@@ -96,7 +96,7 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 		if(itemBlockConstructorData==null)
 			itemBlockConstructorData = new Object[0];
 		setBlockName(getRegisterName());
-		GameRegistry.registerBlock(this, getItemBlock(), module.getName()+":"+getRegisterName(), module.getModId(), itemBlockConstructorData);
+		GameRegistry.registerBlock(this, getItemBlock(), getRegisterName(), module.getModId(), itemBlockConstructorData);
 		this.constructed = true;
 		if(this.creativeTabs.length>0)
 			setCreativeTab(this.creativeTabs[0]);

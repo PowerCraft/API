@@ -78,10 +78,10 @@ public final class PC_Api extends PC_Module {
 	}
 
 
-	@SuppressWarnings("unused")
+	@SuppressWarnings({ "unused", "static-method" })
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
-		//
+		PC_Miniscript.loadDefaultReplacements();
 	}
 	
 	@SuppressWarnings({ "unused", "static-method" })

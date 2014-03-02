@@ -72,7 +72,7 @@ public abstract class PC_Item extends Item implements PC_IItem{
 	final void construct() {
 		PC_Module module = getModule();
 		setUnlocalizedName(getRegisterName());
-		GameRegistry.registerItem(this, module.getName()+":"+getRegisterName(), module.getModId());
+		GameRegistry.registerItem(this, getRegisterName(), module.getModId());
 		this.constructed = true;
 		if(this.creativeTabs.length>0)
 			setCreativeTab(this.creativeTabs[0]);

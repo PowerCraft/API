@@ -1,6 +1,7 @@
 package powercraft.api.script.miniscript;
 
 import java.awt.Font;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -33,6 +34,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class PC_MiniscriptHighlighting {
 
 	public static PC_GresHighlighting makeHighlighting(Set<String> words){
+		List<String> wordList = new ArrayList<String>(words);
+		wordList.addAll(PC_Miniscript.getDefaultReplacementWords());
 		PC_GresHighlighting highlighting = new PC_GresHighlighting();
 		PC_GresHighlighting INNER = new PC_GresHighlighting();
 		INNER.addWordHighlight(PC_GresHighlighting.msp(false, "miniscript"), PC_Formatter.color(84, 217, 255)+PC_Formatter.font(PC_Fonts.create(PC_FontRenderer.getFont("Consolas", Font.ITALIC, 24), null)));
@@ -48,8 +51,8 @@ public class PC_MiniscriptHighlighting {
 		highlighting.addWordHighlight(new JumperHightlights(), PC_Formatter.color(100, 135, 240));
 		highlighting.addWordHighlight(PC_GresHighlighting.msp(false, MINISCRIPT_ASM), PC_Formatter.color(149, 0, 85)+PC_Formatter.font(PC_Fonts.create(PC_FontRenderer.getFont("Consolas", Font.BOLD, 24), null)));
 		highlighting.addWordHighlight(new MultipleRegexPossibilities(REGISTER_REGEX), PC_Formatter.color(255, 113, 113));
-		highlighting.addWordHighlight(new WordHighlight1(eh, words), PC_Formatter.color(255, 144, 48));
-		highlighting.addWordHighlight(new WordHighlight2(eh, words), PC_Formatter.color(50, 71, 255)+PC_Formatter.font(PC_Fonts.create(PC_FontRenderer.getFont("Consolas", Font.ITALIC, 24), null)));
+		highlighting.addWordHighlight(new WordHighlight1(eh, wordList), PC_Formatter.color(255, 144, 48));
+		highlighting.addWordHighlight(new WordHighlight2(eh, wordList), PC_Formatter.color(50, 71, 255)+PC_Formatter.font(PC_Fonts.create(PC_FontRenderer.getFont("Consolas", Font.ITALIC, 24), null)));
 		return highlighting;
 	}
 	
@@ -115,6 +118,7 @@ public class PC_MiniscriptHighlighting {
 				this.registers.add(new PC_StringWithInfo("r"+i, "Register Nr "+i));
 			}
 			this.words.addAll(words);
+			this.words.addAll(PC_Miniscript.getDefaultReplacements());
 		}
 
 		@Override
@@ -298,9 +302,9 @@ public class PC_MiniscriptHighlighting {
 	private static final class WordHighlight1 implements IMultiplePossibilities{
 
 		private ElementHighlight elementHighlight;
-		private Set<String> words;
+		private List<String> words;
 		
-		public WordHighlight1(ElementHighlight elementHighlight, Set<String> words){
+		public WordHighlight1(ElementHighlight elementHighlight, List<String> words){
 			this.elementHighlight = elementHighlight;
 			this.words = words;
 		}
@@ -314,7 +318,7 @@ public class PC_MiniscriptHighlighting {
 			this.elementHighlight.wordInfo = new WordInfo("");
 			char c = line.charAt(i);
 			int length = 0;
-			while(Character.isAlphabetic(c) || Character.isDigit(c)){
+			while(Character.isAlphabetic(c) || Character.isDigit(c) || c=='_'){
 				this.elementHighlight.wordInfo.start += c;
 				length++;
 				i++;
@@ -342,9 +346,9 @@ public class PC_MiniscriptHighlighting {
 	private static final class WordHighlight2 implements IMultiplePossibilities{
 
 		private ElementHighlight elementHighlight;
-		private Set<String> words;
+		private List<String> words;
 		
-		public WordHighlight2(ElementHighlight elementHighlight, Set<String> words){
+		public WordHighlight2(ElementHighlight elementHighlight, List<String> words){
 			this.elementHighlight = elementHighlight;
 			this.words = words;
 		}
@@ -360,7 +364,7 @@ public class PC_MiniscriptHighlighting {
 			}
 			char c = line.charAt(i);
 			int length = 0;
-			while(Character.isAlphabetic(c) || Character.isDigit(c)){
+			while(Character.isAlphabetic(c) || Character.isDigit(c) || c=='_'){
 				this.elementHighlight.wordInfo.start += c;
 				length++;
 				i++;
@@ -403,7 +407,9 @@ public class PC_MiniscriptHighlighting {
 
 		@Override
 		public Object getInfo() {
-			return this.wordInfo;
+			Object o = this.wordInfo;
+			this.wordInfo = null;
+			return o;
 		}
 		
 	}
