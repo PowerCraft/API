@@ -184,7 +184,7 @@ public class PC_GresAutoCompleteWindow extends PC_GresFrame{
 	private static class Listener implements PC_IGresEventListener{
 
 		Listener() {
-			//
+			
 		}
 
 		@Override

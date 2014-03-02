@@ -125,7 +125,7 @@ public class PC_GresRenderer {
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
 		int maxWidth = 0;
 		for (String s : list) {
-			int width = fontRenderer.getStringWidth(s);
+			int width = PC_GresRenderer.fontRenderer.getStringWidth(s);
 			if (width > maxWidth) {
 				maxWidth = width;
 			}
@@ -162,7 +162,7 @@ public class PC_GresRenderer {
 
 		boolean isMainLine = true;
 		for (String s : list) {
-			fontRenderer.drawStringWithShadow(s, nx, ny, -1);
+			PC_GresRenderer.fontRenderer.drawStringWithShadow(s, nx, ny, -1);
 			if (isMainLine) {
 				ny += 2;
 				isMainLine = false;
