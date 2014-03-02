@@ -19,24 +19,24 @@ final class PC_EnergyNodeConsumer extends PC_EnergyNode<PC_IEnergyGridConsumer> 
 	
 	@Override
 	public void onTickStart(){
-		useable = 0;
-		requested = getTile().getEnergyRequested();
-		maxWorkPercent = getTile().getMaxPercentToWork();
+		this.useable = 0;
+		this.requested = getTile().getEnergyRequested();
+		this.maxWorkPercent = getTile().getMaxPercentToWork();
 	}
 	
 	@Override
 	public void onTickEnd() {
-		getTile().useEnergy(useable);
+		getTile().useEnergy(this.useable);
 	}
 
 	@Override
 	public float getFlow() {
-		return useable;
+		return this.useable;
 	}
 
 	@Override
 	public void addToInfo(PC_EnergyInfo info) {
-		info.energyRequested += requested;
+		info.energyRequested += this.requested;
 	}
 
 	@Override
@@ -46,9 +46,9 @@ final class PC_EnergyNodeConsumer extends PC_EnergyNode<PC_IEnergyGridConsumer> 
 
 	@Override
 	public float useEnergy(float energy, float p) {
-		if(maxWorkPercent<=p){
-			useable = requested*p;
-			energy -= useable;
+		if(this.maxWorkPercent<=p){
+			this.useable = this.requested*p;
+			return energy - this.useable;
 		}
 		return energy;
 	}

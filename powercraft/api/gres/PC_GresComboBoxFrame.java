@@ -20,7 +20,7 @@ class PC_GresComboBoxFrame extends PC_GresFrame {
 
 	@Override
 	public void putInRect(int x, int y, int width, int height) {
-		setLocation(comboBox.getRealLocation().add(0, comboBox.rect.height));
+		setLocation(this.comboBox.getRealLocation().add(0, this.comboBox.rect.height));
 	}
 	
 }

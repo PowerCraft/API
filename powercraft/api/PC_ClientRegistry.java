@@ -23,12 +23,13 @@ public final class PC_ClientRegistry extends PC_Registry {
 	private PC_TileEntitySpecialRenderer specialRenderer;
 	
 	PC_ClientRegistry()  throws InstanceAlreadyExistsException{
-		specialRenderer = new PC_TileEntitySpecialRenderer();
+		this.specialRenderer = new PC_TileEntitySpecialRenderer();
 	}
 	
+	@Override
 	void iRegisterTileEntity(Class<? extends PC_TileEntity> tileEntityClass){
 		if(PC_ITileEntityRenderer.class.isAssignableFrom(tileEntityClass)){
-			ClientRegistry.registerTileEntity(tileEntityClass, tileEntityClass.getName(), specialRenderer);
+			ClientRegistry.registerTileEntity(tileEntityClass, tileEntityClass.getName(), this.specialRenderer);
 		}else{
 			GameRegistry.registerTileEntity(tileEntityClass, tileEntityClass.getName());
 		}

@@ -26,7 +26,7 @@ public class PC_Vec3I {
 
 		if (obj instanceof PC_Vec3I) {
 			PC_Vec3I vec = (PC_Vec3I) obj;
-			return vec.x == x && vec.y == y && vec.z == z;
+			return vec.x == this.x && vec.y == this.y && vec.z == this.z;
 		}
 		return false;
 	}
@@ -35,14 +35,20 @@ public class PC_Vec3I {
 	@Override
 	public int hashCode() {
 
-		return x ^ 34 + y ^ 12 + z;
+		return this.x ^ 34 + this.y ^ 12 + this.z;
 	}
 
 
 	@Override
 	public String toString() {
 
-		return "Vec3I[" + x + ", " + y + ", " + z + "]";
+		return "Vec3I[" + this.x + ", " + this.y + ", " + this.z + "]";
+	}
+
+
+	@SuppressWarnings("hiding")
+	public PC_Vec3I offset(int x, int y, int z) {
+		return new PC_Vec3I(this.x+x, this.y+y, this.z+z);
 	}
 
 

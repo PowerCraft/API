@@ -19,23 +19,23 @@ public class PC_StringWithInfo implements Comparable<PC_StringWithInfo>{
 
 	@Override
 	public int compareTo(PC_StringWithInfo o) {
-		return string.compareTo(o.string);
+		return this.string.compareTo(o.string);
 	}
 
 	public boolean startsWith(String prefix) {
-		return string.startsWith(prefix);
+		return this.string.startsWith(prefix);
 	}
 
 	public String getString() {
-		return string;
+		return this.string;
 	}
 
 	public String getTooltip() {
-		return tooltip;
+		return this.tooltip;
 	}
 	
 	public String getInfo() {
-		return info;
+		return this.info;
 	}
 	
 }

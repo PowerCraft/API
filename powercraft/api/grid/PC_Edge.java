@@ -17,20 +17,20 @@ public class PC_Edge<G extends PC_Grid<G, T, N, E>, T extends PC_IGridTile<G, T,
 
 	@Override
 	protected boolean hasTile(T tile) {
-		return tiles.contains(tile);
+		return this.tiles.contains(tile);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	protected N getAsNode(T tile) {
-		int index = tiles.indexOf(tile);
-		N node = grid.newNode(tile);
-		E edge = grid.newEdge(node, end);
-		end.replaceEdge((E) this, edge);
-		end = node;
-		tiles.remove(index);
-		while(tiles.size()>index){
-			edge.tiles.add(0, tiles.remove(index));
+		int index = this.tiles.indexOf(tile);
+		N node = this.grid.newNode(tile);
+		E edge = this.grid.newEdge(node, this.end);
+		this.end.replaceEdge((E) this, edge);
+		this.end = node;
+		this.tiles.remove(index);
+		while(this.tiles.size()>index){
+			edge.tiles.add(0, this.tiles.remove(index));
 		}
 		onChanged();
 		node.connectEdge(edge);
@@ -40,54 +40,54 @@ public class PC_Edge<G extends PC_Grid<G, T, N, E>, T extends PC_IGridTile<G, T,
 	
 	@SuppressWarnings("unchecked")
 	protected void integrate(N node, T tile, E edge){
-		if(start==node){
-			tiles.add(0, tile);
+		if(this.start==node){
+			this.tiles.add(0, tile);
 			if(edge.start==node){
-				start = edge.end;
+				this.start = edge.end;
 				for(int i=0; i<edge.tiles.size(); i++){
-					tiles.add(0, edge.tiles.get(i));
+					this.tiles.add(0, edge.tiles.get(i));
 				}
 			}else if(edge.end==node){
-				start = edge.start;
+				this.start = edge.start;
 				for(int i=edge.tiles.size()-1; i>=0; i--){
-					tiles.add(0, edge.tiles.get(i));
+					this.tiles.add(0, edge.tiles.get(i));
 				}
 			}
-			start.replaceEdge(edge, (E) this);
-		}else if(end==node){
-			tiles.add(tile);
+			this.start.replaceEdge(edge, (E) this);
+		}else if(this.end==node){
+			this.tiles.add(tile);
 			if(edge.start==node){
-				end = edge.end;
+				this.end = edge.end;
 				for(int i=0; i<edge.tiles.size(); i++){
-					tiles.add(edge.tiles.get(i));
+					this.tiles.add(edge.tiles.get(i));
 				}
 			}else if(edge.end==node){
-				end = edge.start;
+				this.end = edge.start;
 				for(int i=edge.tiles.size()-1; i>=0; i--){
-					tiles.add(edge.tiles.get(i));
+					this.tiles.add(edge.tiles.get(i));
 				}
 			}
-			end.replaceEdge(edge, (E) this);
+			this.end.replaceEdge(edge, (E) this);
 		}
 		onChanged();
 	}
 	
 	@SuppressWarnings("unchecked")
 	protected void remove(N node) {
-		if(tiles.isEmpty()){
-			grid.removeEdge((E) this);
-			if(node==start){
-				end.remove((E) this);
-			}else if(node==end){
-				start.remove((E) this);
+		if(this.tiles.isEmpty()){
+			this.grid.removeEdge((E) this);
+			if(node==this.start){
+				this.end.remove((E) this);
+			}else if(node==this.end){
+				this.start.remove((E) this);
 			}
 		}else{
-			if(node==start){
-				start = grid.newNode(tiles.remove(0));
-				start.connectEdge((E) this);
-			}else if(node==end){
-				end = grid.newNode(tiles.remove(tiles.size()-1));
-				end.connectEdge((E) this);
+			if(node==this.start){
+				this.start = this.grid.newNode(this.tiles.remove(0));
+				this.start.connectEdge((E) this);
+			}else if(node==this.end){
+				this.end = this.grid.newNode(this.tiles.remove(this.tiles.size()-1));
+				this.end.connectEdge((E) this);
 			}
 			onChanged();
 		}
@@ -95,7 +95,7 @@ public class PC_Edge<G extends PC_Grid<G, T, N, E>, T extends PC_IGridTile<G, T,
 
 	@Override
 	protected List<T> getTiles() {
-		return tiles;
+		return this.tiles;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -103,18 +103,18 @@ public class PC_Edge<G extends PC_Grid<G, T, N, E>, T extends PC_IGridTile<G, T,
 	protected void markVisibles(List<N> visibleNodes, List<E> visibleEdges) {
 		if(!visibleEdges.contains(this)){
 			visibleEdges.add((E) this);
-			start.markVisibles(visibleNodes, visibleEdges);
-			end.markVisibles(visibleNodes, visibleEdges);
+			this.start.markVisibles(visibleNodes, visibleEdges);
+			this.end.markVisibles(visibleNodes, visibleEdges);
 		}
 	}
 	
 	protected void onChanged(){
-		
+		//
 	}
 	
 	@Override
 	public String toString(){
-		return tiles.toString();
+		return this.tiles.toString();
 	}
 	
 }

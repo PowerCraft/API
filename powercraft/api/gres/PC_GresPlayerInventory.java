@@ -19,12 +19,12 @@ public class PC_GresPlayerInventory extends PC_GresInventory {
 	public PC_GresPlayerInventory(PC_GresBaseWithInventory base) {
 
 		super(9, 4);
-		for (int x = 0; x < slots.length; x++) {
+		for (int x = 0; x < this.slots.length; x++) {
 			for (int y = 0; y < 3; y++) {
 				setSlot(x, y, base.inventoryPlayerUpper[x][y]);
 			}
 		}
-		for (int x = 0; x < slots.length; x++) {
+		for (int x = 0; x < this.slots.length; x++) {
 			setSlot(x, 3, base.inventoryPlayerLower[x]);
 		}
 	}
@@ -33,21 +33,21 @@ public class PC_GresPlayerInventory extends PC_GresInventory {
 	@Override
 	protected PC_Vec2I calculatePrefSize() {
 
-		return new PC_Vec2I(slots.length * slotWidth, slots[0].length * slotHeight + 4);
+		return new PC_Vec2I(this.slots.length * this.slotWidth, this.slots[0].length * this.slotHeight + 4);
 	}
 
 
 	@Override
 	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp) {
 
-		for (int x = 0; x < slots.length; x++) {
+		for (int x = 0; x < this.slots.length; x++) {
 			for (int y = 0; y < 3; y++) {
-				drawTexture(textureName, x * slotWidth, y * slotHeight, slotWidth, slotHeight);
+				drawTexture(textureName, x * this.slotWidth, y * this.slotHeight, this.slotWidth, this.slotHeight);
 			}
 		}
 
-		for (int x = 0; x < slots.length; x++) {
-			drawTexture(textureName, x * slotWidth, 3 * slotHeight + 4, slotWidth, slotHeight);
+		for (int x = 0; x < this.slots.length; x++) {
+			drawTexture(textureName, x * this.slotWidth, 3 * this.slotHeight + 4, this.slotWidth, this.slotHeight);
 		}
 
 		RenderHelper.enableGUIStandardItemLighting();
@@ -60,19 +60,19 @@ public class PC_GresPlayerInventory extends PC_GresInventory {
 
 		PC_GresGuiHandler guiHandler = getGuiHandler();
 		
-		for (int x = 0, xp = 1+(slotWidth-18)/2; x < slots.length; x++, xp += slotWidth) {
-			for (int y = 0, yp = 1+(slotHeight-18)/2; y < 3; y++, yp += slotHeight) {
-				if (slots[x][y] != null) {
-					Slot slot = slots[x][y];
+		for (int x = 0, xp = 1+(this.slotWidth-18)/2; x < this.slots.length; x++, xp += this.slotWidth) {
+			for (int y = 0, yp = 1+(this.slotHeight-18)/2; y < 3; y++, yp += this.slotHeight) {
+				if (this.slots[x][y] != null) {
+					Slot slot = this.slots[x][y];
 					guiHandler.renderSlot(xp, yp, slot);
 				}
 			}
 		}
 
-		for (int x = 0, xp = 1+(slotWidth-18)/2; x < slots.length; x++, xp += slotWidth) {
-			if (slots[x][3] != null) {
-				Slot slot = slots[x][3];
-				guiHandler.renderSlot(xp, 5 + slotHeight * 3 + (slotHeight-18)/2, slot);
+		for (int x = 0, xp = 1+(this.slotWidth-18)/2; x < this.slots.length; x++, xp += this.slotWidth) {
+			if (this.slots[x][3] != null) {
+				Slot slot = this.slots[x][3];
+				guiHandler.renderSlot(xp, 5 + this.slotHeight * 3 + (this.slotHeight-18)/2, slot);
 			}
 		}
 
@@ -84,9 +84,9 @@ public class PC_GresPlayerInventory extends PC_GresInventory {
 	@Override
 	protected Slot getSlotAtPosition(PC_Vec2I position) {
 
-		if (position.y < slotHeight * 3) {
+		if (position.y < this.slotHeight * 3) {
 			return super.getSlotAtPosition(position);
-		} else if (position.y >= slotHeight * 3 + 4) {
+		} else if (position.y >= this.slotHeight * 3 + 4) {
 			return super.getSlotAtPosition(position.sub(0, 4));
 		}
 		return null;

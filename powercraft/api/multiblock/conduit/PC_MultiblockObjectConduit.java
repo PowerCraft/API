@@ -45,12 +45,12 @@ public abstract class PC_MultiblockObjectConduit extends PC_MultiblockObject imp
 		if(isClient()){
 			return;
 		}
-		int oldConnections = connections;
-		connections = 0;
+		int oldConnections = this.connections;
+		this.connections = 0;
 		for(PC_Direction dir:PC_Direction.VALID_DIRECTIONS){
-			connections |= canConnectTo(dir, (oldConnections>>dir.ordinal()*5)&31)<<(dir.ordinal()*5);
+			this.connections |= canConnectTo(dir, (oldConnections>>dir.ordinal()*5)&31)<<(dir.ordinal()*5);
 		}
-		if(oldConnections!=connections){
+		if(oldConnections!=this.connections){
 			if (!isClient()) {
 				reconnect();
 			}
@@ -59,22 +59,23 @@ public abstract class PC_MultiblockObjectConduit extends PC_MultiblockObject imp
 	}
 	
 	public void reconnect(){
-		
+		//
 	}
 
-	@SuppressWarnings("unused")
+	@SuppressWarnings({ "unused", "static-method" })
 	public int canConnectToBlock(World world, int x, int y, int z, PC_Direction side, Block block, int oldConnectionInfo){
 		return 0;
 	}
 	
+	@SuppressWarnings("unused")
 	public int canConnectToMultiblock(World world, int x, int y, int z, PC_Direction side, PC_MultiblockObject multiblockObject, int oldConnectionInfo){
 		return multiblockObject.getClass() == getClass()?1:0;
 	}
 	
 	public int canConnectTo(PC_Direction dir, int oldConnection){
-		int x = multiblock.xCoord + dir.offsetX;
-		int y = multiblock.yCoord + dir.offsetY;
-		int z = multiblock.zCoord + dir.offsetZ;
+		int x = this.multiblock.xCoord + dir.offsetX;
+		int y = this.multiblock.yCoord + dir.offsetY;
+		int z = this.multiblock.zCoord + dir.offsetZ;
 		Block block = PC_Utils.getBlock(getWorld(), x, y, z);
 		if(block==null)
 			return 0;
@@ -110,6 +111,7 @@ public abstract class PC_MultiblockObjectConduit extends PC_MultiblockObject imp
 	public abstract IIcon getCornerConduitIcon();
 	public abstract IIcon getConnectionConduitIcon(int connectionInfo);
 	
+	@SuppressWarnings("static-method")
 	@SideOnly(Side.CLIENT)
 	public boolean isTransparentConduit(){
 		return true;
@@ -119,16 +121,16 @@ public abstract class PC_MultiblockObjectConduit extends PC_MultiblockObject imp
 	@SideOnly(Side.CLIENT)
 	public void renderWorldBlock(RenderBlocks renderer) {
 		World world = getWorld();
-		int x = multiblock.xCoord;
-		int y = multiblock.yCoord;
-		int z = multiblock.zCoord;
+		int x = this.multiblock.xCoord;
+		int y = this.multiblock.yCoord;
+		int z = this.multiblock.zCoord;
 		boolean isTransparent = isTransparentConduit();
 		if(isTransparent){
 			Tessellator.instance.draw();
 			GL11.glDisable(GL11.GL_CULL_FACE);
 			Tessellator.instance.startDrawingQuads();
 		}
-		float s = thickness/32.0f;
+		float s = this.thickness/32.0f;
 		renderer.setRenderBounds(0.5f-s, 0.5f-s, 0.5f-s, 0.5f+s, 0.5f+s, 0.5f+s);
 		PC_Direction first = null;
 		PC_Direction secound = null;
@@ -144,7 +146,7 @@ public abstract class PC_MultiblockObjectConduit extends PC_MultiblockObject imp
 			}
 		}
 		IIcon icon = getCornerConduitIcon();
-		if(first!=null && first.getOpposite()==secound){
+		if(first!=null && first.getOpposite()==secound && secound!=null){
 			icon = getNormalConduitIcon();
 			IIcon icons[] = new IIcon[6];
 			for(PC_Direction dir:PC_Direction.VALID_DIRECTIONS){
@@ -184,7 +186,7 @@ public abstract class PC_MultiblockObjectConduit extends PC_MultiblockObject imp
 				renderer.uvRotateNorth = 0;
 				renderer.uvRotateSouth = first==PC_Direction.UP || first==PC_Direction.DOWN?0:1;
 				renderer.uvRotateWest = 0;
-				float ns = connectionSize/32.0f;
+				float ns = this.connectionSize/32.0f;
 				float l = 0.5f-length1;
 				renderer.setRenderBounds(offsetN(ns, l, first.offsetX, 0), offsetN(ns, l, first.offsetY, 0), offsetN(ns, l, first.offsetZ, 0),
 						offsetP(ns, l, first.offsetX, 0), offsetP(ns, l, first.offsetY, 0), offsetP(ns, l, first.offsetZ, 0));
@@ -206,7 +208,7 @@ public abstract class PC_MultiblockObjectConduit extends PC_MultiblockObject imp
 				renderer.uvRotateNorth = 0;
 				renderer.uvRotateSouth = secound==PC_Direction.UP || secound==PC_Direction.DOWN?0:1;
 				renderer.uvRotateWest = 0;
-				float ns = connectionSize/32.0f;
+				float ns = this.connectionSize/32.0f;
 				float l = 0.5f-length2;
 				renderer.setRenderBounds(offsetN(ns, l, secound.offsetX, 0), offsetN(ns, l, secound.offsetY, 0), offsetN(ns, l, secound.offsetZ, 0),
 						offsetP(ns, l, secound.offsetX, 0), offsetP(ns, l, secound.offsetY, 0), offsetP(ns, l, secound.offsetZ, 0));
@@ -268,7 +270,7 @@ public abstract class PC_MultiblockObjectConduit extends PC_MultiblockObject imp
 						renderer.uvRotateNorth = 0;
 						renderer.uvRotateSouth = dir==PC_Direction.UP || dir==PC_Direction.DOWN?0:1;
 						renderer.uvRotateWest = 0;
-						float ns = connectionSize/32.0f;
+						float ns = this.connectionSize/32.0f;
 						float l = 0.5f-length;
 						renderer.setRenderBounds(offsetN(ns, l, dir.offsetX, 0), offsetN(ns, l, dir.offsetY, 0), offsetN(ns, l, dir.offsetZ, 0),
 								offsetP(ns, l, dir.offsetX, 0), offsetP(ns, l, dir.offsetY, 0), offsetP(ns, l, dir.offsetZ, 0));
@@ -291,17 +293,17 @@ public abstract class PC_MultiblockObjectConduit extends PC_MultiblockObject imp
 	}
 
 	protected boolean notingOnSide(PC_Direction dir){
-		return ((connections>>(dir.ordinal()*5)) & 31) == 0;
+		return ((this.connections>>(dir.ordinal()*5)) & 31) == 0;
 	}
 	
 	protected int pipeInfoAtSide(PC_Direction dir){
-		return (connections>>(dir.ordinal()*5)) & 31;
+		return (this.connections>>(dir.ordinal()*5)) & 31;
 	}
 	
 	protected float getPipeConnetionLength(int pipeInfo){
 		if(pipeInfo==1)
 			return 0;
-		return connectionLength/16.0f;
+		return this.connectionLength/16.0f;
 	}
 	
 	private static float offsetN(float f, float f1, int off, float length){
@@ -322,7 +324,7 @@ public abstract class PC_MultiblockObjectConduit extends PC_MultiblockObject imp
 
 	@Override
 	public List<AxisAlignedBB> getCollisionBoundingBoxes() {
-		float s = thickness/32.0f;
+		float s = this.thickness/32.0f;
 		List<AxisAlignedBB> list = new ArrayList<AxisAlignedBB>();
 		list.add(AxisAlignedBB.getBoundingBox(0.5-s, 0.5-s, 0.5-s, 0.5+s, 0.5+s, 0.5+s));
 		for(PC_Direction dir:PC_Direction.VALID_DIRECTIONS){
@@ -332,7 +334,7 @@ public abstract class PC_MultiblockObjectConduit extends PC_MultiblockObject imp
 				list.add(AxisAlignedBB.getBoundingBox(offsetN(s, s, dir.offsetX, length), offsetN(s, s, dir.offsetY, length), offsetN(s, s, dir.offsetZ, length),
 						offsetP(s, s, dir.offsetX, length), offsetP(s, s, dir.offsetY, length), offsetP(s, s, dir.offsetZ, length)));
 				if(length>0){
-					float ns = connectionSize/32.0f;
+					float ns = this.connectionSize/32.0f;
 					float l = 0.5f-length;
 					list.add(AxisAlignedBB.getBoundingBox(offsetN(ns, l, dir.offsetX, 0), offsetN(ns, l, dir.offsetY, 0), offsetN(ns, l, dir.offsetZ, 0),
 							offsetP(ns, l, dir.offsetX, 0), offsetP(ns, l, dir.offsetY, 0), offsetP(ns, l, dir.offsetZ, 0)));

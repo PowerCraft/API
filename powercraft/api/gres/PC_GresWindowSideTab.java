@@ -40,10 +40,10 @@ public class PC_GresWindowSideTab extends PC_GresContainer {
 	
 	public PC_GresWindowSideTab(String text){
 		super(text);
-		frame.x = 2;
-		frame.y = 20;
-		frame.width = 2;
-		frame.height = 2;
+		this.frame.x = 2;
+		this.frame.y = 20;
+		this.frame.width = 2;
+		this.frame.height = 2;
 	}
 	
 	public PC_GresWindowSideTab(String text, PC_GresDisplayObject displayObject) {
@@ -60,19 +60,19 @@ public class PC_GresWindowSideTab extends PC_GresContainer {
 	}
 	
 	public PC_GresDisplayObject getDisplayObject(){
-		return displayObject;
+		return this.displayObject;
 	}
 	
 	@Override
 	protected void setParent(PC_GresContainer parent) {
 		if(parent instanceof PC_GresWindow){
 			this.parent = parent;
-			parentVisible = parent.isRecursiveVisible();
-			parentEnabled = parent.isRecursiveEnabled();
+			this.parentVisible = parent.isRecursiveVisible();
+			this.parentEnabled = parent.isRecursiveEnabled();
 		}else if (parent == null) {
 			this.parent = null;
-			parentVisible = true;
-			parentEnabled = true;
+			this.parentVisible = true;
+			this.parentEnabled = true;
 		}
 	}
 	
@@ -93,49 +93,49 @@ public class PC_GresWindowSideTab extends PC_GresContainer {
 	
 	@Override
 	protected PC_Vec2I getRealLocation() {
-		if (parent == null) {
-			return rect.getLocation();
+		if (this.parent == null) {
+			return this.rect.getLocation();
 		} 
-		return rect.getLocation().add(parent.getRealLocation());
+		return this.rect.getLocation().add(this.parent.getRealLocation());
 	}
 
 	@Override
 	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp) {
-		GL11.glColor3d(color.x, color.y, color.z);
-		drawTexture("Frame", -2, 0, rect.width+2, rect.height);
+		GL11.glColor3d(this.color.x, this.color.y, this.color.z);
+		drawTexture("Frame", -2, 0, this.rect.width+2, this.rect.height);
 		GL11.glColor3f(1, 1, 1);
-		if(displayObject!=null)
-			displayObject.draw(2, 1, 16, 16);
+		if(this.displayObject!=null)
+			this.displayObject.draw(2, 1, 16, 16);
 		PC_Vec2I loc = getRealLocation();
-		PC_RectI s = setDrawRect(scissor, new PC_RectI(loc.x+20, loc.y+2, rect.width-22, 16), scale, displayHeight);
+		PC_RectI s = setDrawRect(scissor, new PC_RectI(loc.x+20, loc.y+2, this.rect.width-22, 16), scale, displayHeight);
 		if(s!=null)
-			drawString(text, 20, 2, 100, 16, H.LEFT, V.CENTER, false);
+			drawString(this.text, 20, 2, 100, 16, H.LEFT, V.CENTER, false);
 	}
 	
 	private boolean update=true;
 	
 	@Override
 	protected void notifyChange() {
-		if(update){
+		if(this.update){
 			updateMinSize();
 			updatePrefSize();
 			updateMaxSize();
 		}
 		notifyParentOfChange();
-		if(update){
-			rect.setSize(getPrefSize().max(new PC_Vec2I(fontRenderer.getStringSize(text).x+24, 20)));
+		if(this.update){
+			this.rect.setSize(getPrefSize().max(new PC_Vec2I(fontRenderer.getStringSize(this.text).x+24, 20)));
 			updateLayout();
 		}
-		rect.setSize(size);
+		this.rect.setSize(this.size);
 	}
 
 	@Override
 	public PC_RectI getChildRect() {
-		if(update){
-			rect.setSize(getPrefSize().max(new PC_Vec2I(fontRenderer.getStringSize(text).x+24, 20)));
+		if(this.update){
+			this.rect.setSize(getPrefSize().max(new PC_Vec2I(fontRenderer.getStringSize(this.text).x+24, 20)));
 		}
 		PC_RectI r = super.getChildRect();
-		rect.setSize(size);
+		this.rect.setSize(this.size);
 		return r;
 	}
 
@@ -172,18 +172,18 @@ public class PC_GresWindowSideTab extends PC_GresContainer {
 	
 	@Override
 	protected void onDrawTick(float timeStamp) {
-		time += timeStamp;
-		int num = (int)(time/0.01);
+		this.time += timeStamp;
+		int num = (int)(this.time/0.01);
 		if(num>0){
-			time -= num*0.01;
+			this.time -= num*0.01;
 			if(openSideTab==this){
-				size.setTo(size.add(num).min(getPrefSize().max(new PC_Vec2I(fontRenderer.getStringSize(text).x+24, 20))));
+				this.size.setTo(this.size.add(num).min(getPrefSize().max(new PC_Vec2I(fontRenderer.getStringSize(this.text).x+24, 20))));
 			}else{
-				size.setTo(size.sub(num).max(20));
+				this.size.setTo(this.size.sub(num).max(20));
 			}
-			update=false;
-			setSize(size);
-			update=true;
+			this.update=false;
+			setSize(this.size);
+			this.update=true;
 		}
 		super.onDrawTick(timeStamp);
 	}
@@ -253,11 +253,11 @@ public class PC_GresWindowSideTab extends PC_GresContainer {
 	
 	public static class EnergyPerTick{
 		
-		private PC_GresLabel label;
+		PC_GresLabel label;
 		
 		public void setToValue(float value){
-			if(label!=null){
-				label.setText("Energy: "+new DecimalFormat("#.##").format(value)+" E/T");
+			if(this.label!=null){
+				this.label.setText("Energy: "+new DecimalFormat("#.##").format(value)+" E/T");
 			}
 		}
 		
@@ -279,8 +279,8 @@ public class PC_GresWindowSideTab extends PC_GresContainer {
 				PC_GresMouseButtonEvent bEvent = (PC_GresMouseButtonEvent) event;
 				if(bEvent.getEvent()==Event.CLICK){
 					PC_GresDisplay disp = (PC_GresDisplay) event.getComponent();
-					PC_RedstoneWorkType rwt = types[disp.getDisplayObject().getActiveDisplayObjectIndex()];
-					tileEntity.setRedstoneWorkType(rwt);
+					PC_RedstoneWorkType rwt = this.types[disp.getDisplayObject().getActiveDisplayObjectIndex()];
+					this.tileEntity.setRedstoneWorkType(rwt);
 				}
 			}
 		}
@@ -302,9 +302,9 @@ public class PC_GresWindowSideTab extends PC_GresContainer {
 			if(event instanceof PC_GresMouseButtonEvent){
 				PC_GresMouseButtonEvent bEvent = (PC_GresMouseButtonEvent) event;
 				if(bEvent.getEvent()==Event.CLICK){
-					for(int i=0; i<sides.length; i++){
-						if(sides[i] == bEvent.getComponent()){
-							inventory.setSideGroup(i, sides[i].getDisplayObject().getActiveDisplayObjectIndex()-1);
+					for(int i=0; i<this.sides.length; i++){
+						if(this.sides[i] == bEvent.getComponent()){
+							this.inventory.setSideGroup(i, this.sides[i].getDisplayObject().getActiveDisplayObjectIndex()-1);
 							break;
 						}
 					}

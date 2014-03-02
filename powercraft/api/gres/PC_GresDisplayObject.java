@@ -19,17 +19,18 @@ public class PC_GresDisplayObject implements PC_IGresEventListener {
 	private final Object display;
 	
 	public PC_GresDisplayObject(Object display){
-		if(display.getClass().isArray()){
-			display = new ObjectChange(display);
+		Object d = display;
+		if(d.getClass().isArray()){
+			d = new ObjectChange(d);
 		}
-		if(display instanceof Item){
-			display = new ItemStack((Item)display);
-		}else if(display instanceof Block){
-			display = new ItemStack((Block)display);
+		if(d instanceof Item){
+			d = new ItemStack((Item)d);
+		}else if(d instanceof Block){
+			d = new ItemStack((Block)d);
 		}
-		if(!(display instanceof IIcon || display instanceof ItemStack || display instanceof PC_GresTexture || display instanceof ObjectChange))
-			throw new IllegalArgumentException("Unknow display object:"+display);
-		this.display = display;
+		if(!(d instanceof IIcon || d instanceof ItemStack || d instanceof PC_GresTexture || d instanceof ObjectChange))
+			throw new IllegalArgumentException("Unknow display object:"+d);
+		this.display = d;
 	}
 	
 	public PC_GresDisplayObject(Object...display){
@@ -37,36 +38,36 @@ public class PC_GresDisplayObject implements PC_IGresEventListener {
 	}
 	
 	public Object getDisplayObject(){
-		if(display instanceof ObjectChange){
-			return ((ObjectChange)display).display;
+		if(this.display instanceof ObjectChange){
+			return ((ObjectChange)this.display).display;
 		}
-		return display;
+		return this.display;
 	}
 	
 	public Object getActiveDisplayObject(){
-		if(display instanceof ObjectChange){
-			return ((ObjectChange)display).getObject();
+		if(this.display instanceof ObjectChange){
+			return ((ObjectChange)this.display).getObject();
 		}
-		return display;
+		return this.display;
 	}
 	
 	public int getActiveDisplayObjectIndex(){
-		if(display instanceof ObjectChange){
-			return ((ObjectChange)display).pos;
+		if(this.display instanceof ObjectChange){
+			return ((ObjectChange)this.display).pos;
 		}
 		return 0;
 	}
 	
 	public void setActiveDisplayObjectIndex(int index){
-		if(display instanceof ObjectChange){
-			((ObjectChange)display).pos = index;
+		if(this.display instanceof ObjectChange){
+			((ObjectChange)this.display).pos = index;
 		}
 	}
 	
 	public PC_Vec2I getMinSize() {
-		Object d = display;
-		if(display instanceof ObjectChange){
-			d = ((ObjectChange)display).getObject();
+		Object d = this.display;
+		if(this.display instanceof ObjectChange){
+			d = ((ObjectChange)this.display).getObject();
 		}
 		if(d instanceof IIcon){
 			return new PC_Vec2I(16, 16);
@@ -79,9 +80,9 @@ public class PC_GresDisplayObject implements PC_IGresEventListener {
 	}
 
 	public PC_Vec2I getPrefSize() {
-		Object d = display;
-		if(display instanceof ObjectChange){
-			d = ((ObjectChange)display).getObject();
+		Object d = this.display;
+		if(this.display instanceof ObjectChange){
+			d = ((ObjectChange)this.display).getObject();
 		}
 		if(d instanceof IIcon){
 			return new PC_Vec2I(16, 16);
@@ -94,16 +95,16 @@ public class PC_GresDisplayObject implements PC_IGresEventListener {
 	}
 
 	public void draw(int x, int y, int width, int height) {
-		Object d = display;
-		if(display instanceof ObjectChange){
-			d = ((ObjectChange)display).getObject();
+		Object d = this.display;
+		if(this.display instanceof ObjectChange){
+			d = ((ObjectChange)this.display).getObject();
 		}
 		if(d instanceof IIcon){
 			PC_GresRenderer.drawTerrainIcon(x, y, width, height, (IIcon)d);
 		}else if(d instanceof ItemStack){
-			x += width/2-8;
-			y -= height/2-8;
-			PC_GresRenderer.drawItemStack(x, y, (ItemStack)d, null);
+			int nx = x + width/2-8;
+			int ny = y - height/2-8;
+			PC_GresRenderer.drawItemStack(nx, ny, (ItemStack)d, null);
 		}else if(d instanceof PC_GresTexture){
 			((PC_GresTexture)d).draw(x, y, width, height, 0);
 		}
@@ -111,17 +112,17 @@ public class PC_GresDisplayObject implements PC_IGresEventListener {
 	
 	@Override
 	public void onEvent(PC_GresEvent event) {
-		if(display instanceof ObjectChange){
-			((ObjectChange) display).onEvent(event);
+		if(this.display instanceof ObjectChange){
+			((ObjectChange) this.display).onEvent(event);
 		}
 	}
 	
 	private static class ObjectChange implements PC_IGresEventListener{
 
-		private Object[] display;
-		private int pos;
+		Object[] display;
+		int pos;
 		
-		private ObjectChange(Object[] display){
+		ObjectChange(Object[] display){
 			this.display = new Object[display.length];
 			for(int i=0; i<display.length; i++){
 				Object o = display[i];
@@ -136,7 +137,7 @@ public class PC_GresDisplayObject implements PC_IGresEventListener {
 			}
 		}
 		
-		private ObjectChange(Object display){
+		ObjectChange(Object display){
 			this.display = new Object[Array.getLength(display)];
 			for(int i=0; i<this.display.length; i++){
 				Object o = Array.get(display, i);
@@ -155,14 +156,14 @@ public class PC_GresDisplayObject implements PC_IGresEventListener {
 		public void onEvent(PC_GresEvent event) {
 			if(event instanceof PC_GresMouseButtonEvent){
 				if(((PC_GresMouseButtonEvent)event).getEvent()==PC_GresMouseButtonEvent.Event.UP && event.getComponent().mouseDown){
-					pos++;
-					pos %= display.length;
+					this.pos++;
+					this.pos %= this.display.length;
 				}
 			}
 		}
 
-		private Object getObject(){
-			return display[pos];
+		Object getObject(){
+			return this.display[this.pos];
 		}
 		
 	}

@@ -14,8 +14,8 @@ public final class PC_ImmutableArrayList<E> implements List<E> {
 	
 	public PC_ImmutableArrayList(E...array){
 		this.array = array;
-		start = 0;
-		end = array.length;
+		this.start = 0;
+		this.end = array.length;
 	}
 	
 	private PC_ImmutableArrayList(E[] array, int start, int end){
@@ -65,13 +65,13 @@ public final class PC_ImmutableArrayList<E> implements List<E> {
 
 	@Override
 	public E get(int index) {
-		return array[start+index];
+		return this.array[this.start+index];
 	}
 
 	@Override
 	public int indexOf(Object obj) {
-		for(int i=start; i<end; i++){
-			if(array[i].equals(obj)){
+		for(int i=this.start; i<this.end; i++){
+			if(this.array[i].equals(obj)){
 				return i;
 			}
 		}
@@ -90,8 +90,8 @@ public final class PC_ImmutableArrayList<E> implements List<E> {
 
 	@Override
 	public int lastIndexOf(Object obj) {
-		for(int i=end-1; i>=start; i--){
-			if(array[i].equals(obj)){
+		for(int i=this.end-1; i>=this.start; i--){
+			if(this.array[i].equals(obj)){
 				return i;
 			}
 		}
@@ -103,6 +103,7 @@ public final class PC_ImmutableArrayList<E> implements List<E> {
 		return listIterator(0);
 	}
 
+	@SuppressWarnings("hiding")
 	@Override
 	public ListIterator<E> listIterator(int start) {
 		return new ImmutableListIterator(start);
@@ -112,8 +113,8 @@ public final class PC_ImmutableArrayList<E> implements List<E> {
 
 		private int pos;
 		
-		private ImmutableListIterator(int start){
-			pos = start;
+		ImmutableListIterator(int start){
+			this.pos = start;
 		}
 		
 		@Override
@@ -123,32 +124,32 @@ public final class PC_ImmutableArrayList<E> implements List<E> {
 
 		@Override
 		public boolean hasNext() {
-			return pos<size();
+			return this.pos<size();
 		}
 
 		@Override
 		public boolean hasPrevious() {
-			return pos>0;
+			return this.pos>0;
 		}
 
 		@Override
 		public E next() {
-			return get(pos++);
+			return get(this.pos++);
 		}
 
 		@Override
 		public int nextIndex() {
-			return pos;
+			return this.pos;
 		}
 
 		@Override
 		public E previous() {
-			return get(--pos);
+			return get(--this.pos);
 		}
 
 		@Override
 		public int previousIndex() {
-			return pos-1;
+			return this.pos-1;
 		}
 
 		@Override
@@ -190,31 +191,33 @@ public final class PC_ImmutableArrayList<E> implements List<E> {
 
 	@Override
 	public int size() {
-		return end-start;
+		return this.end-this.start;
 	}
 
+	@SuppressWarnings("hiding")
 	@Override
 	public List<E> subList(int start, int end) {
 		if(end>size())
 			throw new IndexOutOfBoundsException();
-		return new PC_ImmutableArrayList<E>(array, this.start+start, this.start+end);
+		return new PC_ImmutableArrayList<E>(this.array, this.start+start, this.start+end);
 	}
 	
 	@Override
 	public Object[] toArray() {
 		Object[] a = new Object[size()];
-		System.arraycopy(array, start, a, 0, a.length);
+		System.arraycopy(this.array, this.start, a, 0, a.length);
 		return a;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T[] toArray(T[] a) {
-		if(a.length<size()){
-			a = (T[]) Array.newInstance(a.getClass().getComponentType(), size());
+		T[] na = a;
+		if(na.length<size()){
+			na = (T[]) Array.newInstance(na.getClass().getComponentType(), size());
 		}
-		System.arraycopy(array, start, a, 0, a.length);
-		return a;
+		System.arraycopy(this.array, this.start, na, 0, na.length);
+		return na;
 	}
 
 }

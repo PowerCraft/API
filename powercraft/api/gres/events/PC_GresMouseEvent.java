@@ -18,15 +18,15 @@ public abstract class PC_GresMouseEvent extends PC_GresConsumeableEvent {
 	}
 	
 	public PC_Vec2I getMouse(){
-		return mouse;
+		return this.mouse;
 	}
 	
 	public int getButtonState(){
-		return buttons;
+		return this.buttons;
 	}
 	
 	public PC_GresHistory getHistory(){
-		return history;
+		return this.history;
 	}
 	
 }

@@ -35,17 +35,17 @@ final class PC_GuiPasswordInput implements PC_IGresGui, PC_IGresEventListener {
 	public void initGui(PC_GresGuiHandler gui) {
 		PC_GresWindow window = new PC_GresWindow("Password Input");
 		window.setLayout(new PC_GresLayoutVertical());
-		password = new PC_GresTextEdit("", 20, PC_GresInputType.PASSWORD);
-		window.add(password);
-		password.addEventListener(this);
-		status = new PC_GresLabel("Type Password");
-		window.add(status);
-		ok = new PC_GresButton("OK");
-		window.add(ok);
-		ok.addEventListener(this);
-		cancel = new PC_GresButton("Cancel");
-		window.add(cancel);
-		cancel.addEventListener(this);
+		this.password = new PC_GresTextEdit("", 20, PC_GresInputType.PASSWORD);
+		window.add(this.password);
+		this.password.addEventListener(this);
+		this.status = new PC_GresLabel("Type Password");
+		window.add(this.status);
+		this.ok = new PC_GresButton("OK");
+		window.add(this.ok);
+		this.ok.addEventListener(this);
+		this.cancel = new PC_GresButton("Cancel");
+		window.add(this.cancel);
+		this.cancel.addEventListener(this);
 		gui.add(window);
 		gui.addEventListener(this);
 	}
@@ -56,9 +56,9 @@ final class PC_GuiPasswordInput implements PC_IGresGui, PC_IGresEventListener {
 		if(event instanceof PC_GresMouseButtonEvent){
 			PC_GresMouseButtonEvent bEvent = (PC_GresMouseButtonEvent)event;
 			if(bEvent.getEvent()==Event.CLICK){
-				if(component==ok){
+				if(component==this.ok){
 					send();
-				}else if(component==cancel){
+				}else if(component==this.cancel){
 					component.getGuiHandler().close();
 				}
 			}
@@ -73,15 +73,15 @@ final class PC_GuiPasswordInput implements PC_IGresGui, PC_IGresEventListener {
 	}
 
 	private void send(){
-		status.setText("Sending ...");
-		ok.setEnabled(false);
-		PC_PacketHandler.sendToServer(new PC_PacketPasswordReply(tileEntity, password.getText()));
+		this.status.setText("Sending ...");
+		this.ok.setEnabled(false);
+		PC_PacketHandler.sendToServer(new PC_PacketPasswordReply(this.tileEntity, this.password.getText()));
 	}
 
 	void wrongPassword(PC_TileEntity te) {
-		if(tileEntity==te){
-			status.setText("Failed, wrong password");
-			ok.setEnabled(true);
+		if(this.tileEntity==te){
+			this.status.setText("Failed, wrong password");
+			this.ok.setEnabled(true);
 		}
 	}
 	

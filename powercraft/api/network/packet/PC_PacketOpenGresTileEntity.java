@@ -1,9 +1,10 @@
 package powercraft.api.network.packet;
 
 import io.netty.buffer.ByteBuf;
+import net.minecraft.client.network.NetHandlerPlayClient;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.INetHandler;
-import powercraft.api.PC_ClientUtils;
+import net.minecraft.world.World;
 import powercraft.api.PC_Utils;
 import powercraft.api.block.PC_TileEntity;
 import powercraft.api.gres.PC_Gres;
@@ -24,9 +25,9 @@ public class PC_PacketOpenGresTileEntity extends PC_PacketServerToClient {
 	}
 	
 	public PC_PacketOpenGresTileEntity(PC_TileEntity tileEntity, int windowId, long session, NBTTagCompound nbtTagCompound){
-		x = tileEntity.xCoord;
-		y = tileEntity.yCoord;
-		z = tileEntity.zCoord;
+		this.x = tileEntity.xCoord;
+		this.y = tileEntity.yCoord;
+		this.z = tileEntity.zCoord;
 		this.windowId = windowId;
 		this.session = session;
 		this.nbtTagCompound = nbtTagCompound;
@@ -34,33 +35,33 @@ public class PC_PacketOpenGresTileEntity extends PC_PacketServerToClient {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	protected PC_Packet doAndReply(INetHandler iNetHandler) {
-		PC_TileEntity te = PC_Utils.getTileEntity(PC_ClientUtils.mc().theWorld, x, y, z, PC_TileEntity.class);
+	protected PC_Packet doAndReply(NetHandlerPlayClient iNetHandler, World world, EntityPlayer player) {
+		PC_TileEntity te = PC_Utils.getTileEntity(world, this.x, this.y, this.z, PC_TileEntity.class);
 		if(te!=null){
-			te.setSession(session);
-			PC_Gres.openClientGui(PC_ClientUtils.mc().thePlayer, te, windowId, nbtTagCompound);
+			te.setSession(this.session);
+			PC_Gres.openClientGui(player, te, this.windowId, this.nbtTagCompound);
 		}
 		return null;
 	}
 
 	@Override
 	protected void fromByteBuffer(ByteBuf buf) {
-		windowId = buf.readInt();
-		x = buf.readInt();
-		y = buf.readInt();
-		z = buf.readInt();
-		session = buf.readLong();
-		nbtTagCompound = readNBTFromBuf(buf);
+		this.windowId = buf.readInt();
+		this.x = buf.readInt();
+		this.y = buf.readInt();
+		this.z = buf.readInt();
+		this.session = buf.readLong();
+		this.nbtTagCompound = readNBTFromBuf(buf);
 	}
 
 	@Override
 	protected void toByteBuffer(ByteBuf buf) {
-		buf.writeInt(windowId);
-		buf.writeInt(x);
-		buf.writeInt(y);
-		buf.writeInt(z);
-		buf.writeLong(session);
-		writeNBTToBuf(buf, nbtTagCompound);
+		buf.writeInt(this.windowId);
+		buf.writeInt(this.x);
+		buf.writeInt(this.y);
+		buf.writeInt(this.z);
+		buf.writeLong(this.session);
+		writeNBTToBuf(buf, this.nbtTagCompound);
 	}
 
 }

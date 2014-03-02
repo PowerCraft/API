@@ -37,7 +37,7 @@ public class PC_Renderer implements ISimpleBlockRenderingHandler, IItemRenderer 
 	private PC_Renderer(){
 		if(instance!=null)
 			throw new InstantiationError();
-		renderID = RenderingRegistry.getNextAvailableRenderId();
+		this.renderID = RenderingRegistry.getNextAvailableRenderId();
 		RenderingRegistry.registerBlockHandler(this);
 	}
 	
@@ -91,9 +91,10 @@ public class PC_Renderer implements ISimpleBlockRenderingHandler, IItemRenderer 
 
 	@Override
 	public int getRenderId() {
-		return renderID;
+		return this.renderID;
 	}
 
+	@SuppressWarnings("unused")
 	public static void renderBlockInInventory(Block block, int metadata, int modelId, RenderBlocks renderer){
 		Tessellator tessellator = Tessellator.instance;
 
@@ -135,22 +136,24 @@ public class PC_Renderer implements ISimpleBlockRenderingHandler, IItemRenderer 
 		renderer.unlockBlockBounds();
 	}
 	
+	@SuppressWarnings("unused")
 	public static boolean renderBlockInWorld(IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer){
 		renderer.renderStandardBlock(block, x, y, z);
 		return true;
 	}
 	
+	@SuppressWarnings("unused")
 	public static void renderStandardBlockInWorld(IBlockAccess world, int x, int y, int z, IIcon[] icons, int colorMultipier, int lightValue, RenderBlocks renderer){
 		fakeBlock.icons = icons;
 		fakeBlock.colorMultiplier = colorMultipier;
-		fakeBlock.lightValue = lightValue;
+		fakeBlock.setLightLevel(lightValue/15.0f);
 		renderer.renderStandardBlock(fakeBlock, x, y, z);
 	}
 	
 	public static void renderStandardBlockInInventory(IIcon[] icons, int colorMultipier, int lightValue, RenderBlocks renderer){
 		fakeBlock.icons = icons;
 		fakeBlock.colorMultiplier = colorMultipier;
-		fakeBlock.lightValue = lightValue;
+		fakeBlock.setLightLevel(lightValue/15.0f);
 		renderer.renderBlockAsItem(fakeBlock, 0, 1);
 	}
 	

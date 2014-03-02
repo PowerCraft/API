@@ -18,22 +18,22 @@ public class PC_Slot extends Slot {
 	public PC_Slot(IInventory inventory, int slotIndex) {
 
 		super(inventory, slotIndex, 0, 0);
-		slotNumber = -1;
+		this.slotNumber = -1;
 	}
 
 
 	@Override
 	public boolean isItemValid(ItemStack itemStack) {
 
-		return inventory.isItemValidForSlot(getSlotIndex(), itemStack);
+		return this.inventory.isItemValidForSlot(getSlotIndex(), itemStack);
 	}
 
 
 	@Override
 	public int getSlotStackLimit() {
 
-		if (inventory instanceof PC_IInventory) {
-			return ((PC_IInventory) inventory).getSlotStackLimit(getSlotIndex());
+		if (this.inventory instanceof PC_IInventory) {
+			return ((PC_IInventory) this.inventory).getSlotStackLimit(getSlotIndex());
 		}
 		return super.getSlotStackLimit();
 	}
@@ -42,12 +42,13 @@ public class PC_Slot extends Slot {
 	@Override
 	public boolean canTakeStack(EntityPlayer entityPlayer) {
 
-		if (inventory instanceof PC_IInventory) {
-			return ((PC_IInventory) inventory).canTakeStack(getSlotIndex(), entityPlayer);
+		if (this.inventory instanceof PC_IInventory) {
+			return ((PC_IInventory) this.inventory).canTakeStack(getSlotIndex(), entityPlayer);
 		}
 		return super.canTakeStack(entityPlayer);
 	}
 
+	@SuppressWarnings("static-method")
 	public boolean canDragIntoSlot() {
 		return true;
 	}
@@ -59,10 +60,10 @@ public class PC_Slot extends Slot {
 
 
 	public ItemStack getBackgroundStack() {
-		if(inventory instanceof PC_IInventoryBackground){
-			return ((PC_IInventoryBackground)inventory).getBackgroundStack(getSlotIndex());
+		if(this.inventory instanceof PC_IInventoryBackground){
+			return ((PC_IInventoryBackground)this.inventory).getBackgroundStack(getSlotIndex());
 		}
-		return backgroundStack;
+		return this.backgroundStack;
 	}
 
 
@@ -73,15 +74,15 @@ public class PC_Slot extends Slot {
 
 
 	public boolean renderGrayWhenEmpty() {
-		if(inventory instanceof PC_IInventoryBackground){
-			return ((PC_IInventoryBackground)inventory).renderGrayWhenEmpty(getSlotIndex());
+		if(this.inventory instanceof PC_IInventoryBackground){
+			return ((PC_IInventoryBackground)this.inventory).renderGrayWhenEmpty(getSlotIndex());
 		}
-		return renderGrayWhenEmpty;
+		return this.renderGrayWhenEmpty;
 	}
 
 	public int[] getAppliedSides() {
-		if(inventory instanceof PC_IInventory){
-			return ((PC_IInventory)inventory).getAppliedGroups(getSlotIndex());
+		if(this.inventory instanceof PC_IInventory){
+			return ((PC_IInventory)this.inventory).getAppliedGroups(getSlotIndex());
 		}
 		return null;
 	}

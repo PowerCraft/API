@@ -15,16 +15,16 @@ public class PC_GresButton extends PC_GresComponent {
 	public PC_GresButton(String title) {
 
 		setText(title);
-		fontColors[0] = 0xe0e0e0;
-		fontColors[1] = 0xffffa0;
-		fontColors[2] = 0xffffa0;
-		fontColors[3] = 0x7a7a7a;
+		this.fontColors[0] = 0xe0e0e0;
+		this.fontColors[1] = 0xffffa0;
+		this.fontColors[2] = 0xffffa0;
+		this.fontColors[3] = 0x7a7a7a;
 	}
 
 
 	@Override
 	protected PC_Vec2I calculateMinSize() {
-		PC_Vec2I size = fontRenderer.getStringSize(text);
+		PC_Vec2I size = fontRenderer.getStringSize(this.text);
 		return getTextureMinSize(textureName).max(size.x + 6, size.y + 6);
 	}
 
@@ -38,7 +38,7 @@ public class PC_GresButton extends PC_GresComponent {
 
 	@Override
 	protected PC_Vec2I calculatePrefSize() {
-		PC_Vec2I size = fontRenderer.getStringSize(text);
+		PC_Vec2I size = fontRenderer.getStringSize(this.text);
 		return calculateMinSize().max(new PC_Vec2I(size.x + 3, size.y + 3));
 	}
 
@@ -46,8 +46,8 @@ public class PC_GresButton extends PC_GresComponent {
 	@Override
 	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp) {
 
-		drawTexture(textureName, 0, 0, rect.width, rect.height);
-		drawString(text, 3, mouseDown ? 4 : 3, rect.width - 6, rect.height - 6, PC_GresAlign.H.CENTER, PC_GresAlign.V.CENTER, true);
+		drawTexture(textureName, 0, 0, this.rect.width, this.rect.height);
+		drawString(this.text, 3, this.mouseDown ? 4 : 3, this.rect.width - 6, this.rect.height - 6, PC_GresAlign.H.CENTER, PC_GresAlign.V.CENTER, true);
 	}
 
 }

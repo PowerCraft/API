@@ -17,7 +17,9 @@ class PC_GresScrollAreaContainer extends PC_GresContainer {
 	}
 	
 	@Override
-	protected void setParent(PC_GresContainer parent) {}
+	protected void setParent(PC_GresContainer parent) {
+		//
+	}
 
 	@Override
 	protected PC_Vec2I calculateMinSize() {
@@ -35,53 +37,55 @@ class PC_GresScrollAreaContainer extends PC_GresContainer {
 	}
 
 	@Override
-	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp) {}
+	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp) {
+		//
+	}
 
 	@Override
 	public boolean isRecursiveVisible() {
-		return visible && scrollArea.isRecursiveVisible();
+		return this.visible && this.scrollArea.isRecursiveVisible();
 	}
 	
 	@Override
 	public boolean isRecursiveEnabled() {
-		return enabled && scrollArea.isRecursiveEnabled();
+		return this.enabled && this.scrollArea.isRecursiveEnabled();
 	}
 	
 	@Override
 	protected void notifyParentOfChange() {
-		scrollArea.notifyChange();
+		this.scrollArea.notifyChange();
 	}
 
 	@Override
 	protected void handleMouseWheel(PC_GresMouseWheelEvent event, PC_GresHistory history) {
-		if(scrollArea.onMouseWheel(event.getMouse(), event.getButtonState(), event.getWheel(), null)){
+		if(this.scrollArea.onMouseWheel(event.getMouse(), event.getButtonState(), event.getWheel(), null)){
 			event.consume();
 		}
 	}
 	
 	@Override
 	protected PC_Vec2I getRealLocation() {
-		return rect.getLocation().add(scrollArea.getRealLocation());
+		return this.rect.getLocation().add(this.scrollArea.getRealLocation());
 	}
 	
 	@Override
 	public PC_GresGuiHandler getGuiHandler() {
-		return scrollArea.getGuiHandler();
+		return this.scrollArea.getGuiHandler();
 	}
 	
 	@Override
 	protected void moveToTop(){
-		scrollArea.moveToTop();
+		this.scrollArea.moveToTop();
 	}
 	
 	@Override
 	protected void moveToBottom(){
-		scrollArea.moveToBottom();
+		this.scrollArea.moveToBottom();
 	}
 
 	@Override
 	public PC_GresContainer getParent() {
-		return scrollArea.getParent();
+		return this.scrollArea.getParent();
 	}
 	
 }

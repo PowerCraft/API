@@ -11,11 +11,11 @@ public abstract class PC_GresConsumeableEvent extends PC_GresEvent {
 	}
 
 	public void consume(){
-		consumed = true;
+		this.consumed = true;
 	}
 	
 	public boolean isConsumed(){
-		return consumed;
+		return this.consumed;
 	}
 	
 }

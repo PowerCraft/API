@@ -39,10 +39,10 @@ public class PC_GresInventory extends PC_GresComponent {
 
 	public PC_GresInventory(int width, int height) {
 
-		slotWidth = 18;
-		slotHeight = 18;
+		this.slotWidth = 18;
+		this.slotHeight = 18;
 
-		slots = new Slot[width][height];
+		this.slots = new Slot[width][height];
 	}
 
 
@@ -51,7 +51,7 @@ public class PC_GresInventory extends PC_GresComponent {
 		this.slotWidth = slotWidth;
 		this.slotHeight = slotHeight;
 
-		slots = new Slot[width][height];
+		this.slots = new Slot[width][height];
 	}
 
 
@@ -90,7 +90,7 @@ public class PC_GresInventory extends PC_GresComponent {
 	@Override
 	protected PC_Vec2I calculatePrefSize() {
 
-		return new PC_Vec2I(slots.length * slotWidth+2, slots[0].length * slotHeight+2);
+		return new PC_Vec2I(this.slots.length * this.slotWidth+2, this.slots[0].length * this.slotHeight+2);
 	}
 
 
@@ -106,24 +106,24 @@ public class PC_GresInventory extends PC_GresComponent {
 			textures2[i] = PC_Gres.getGresTexture(colorTextureNamesV[i]);
 		}
 		GL11.glEnable(GL11.GL_BLEND);
-		for (int x = 0; x < slots.length; x++) {
-			for (int y = 0; y < slots[x].length; y++) {
-				drawTexture(textureName, x * slotWidth+1, y * slotHeight+1, slotWidth, slotHeight);
-				Slot slot = slots[x][y];
+		for (int x = 0; x < this.slots.length; x++) {
+			for (int y = 0; y < this.slots[x].length; y++) {
+				drawTexture(textureName, x * this.slotWidth+1, y * this.slotHeight+1, this.slotWidth, this.slotHeight);
+				Slot slot = this.slots[x][y];
 				if(slot instanceof PC_Slot){
 					int[] s = ((PC_Slot) slot).getAppliedSides();
 					if(s!=null && s.length>0){
-						float h = slotHeight/(float)s.length;
-						float h2 = (slotHeight-2)/(float)s.length;
+						float h = this.slotHeight/(float)s.length;
+						float h2 = (this.slotHeight-2)/(float)s.length;
 						int yp = 0;
-						int xx = x * slotWidth + 1;
-						int yy = (int) (y * slotHeight+2 + yp/(float)slotHeight);
-						int w = slotWidth;
+						int xx = x * this.slotWidth + 1;
+						int yy = (int) (y * this.slotHeight+2 + yp/(float)this.slotHeight);
+						int w = this.slotWidth;
 						if(y==0){
-							textures1[s[0]].drawProzentual(xx, 0, w, 1, xx/(float)rect.width, 0, (w-2)/(float)rect.width, 1, 0);
+							textures1[s[0]].drawProzentual(xx, 0, w, 1, xx/(float)this.rect.width, 0, (w-2)/(float)this.rect.width, 1, 0);
 						}
-						if(y==slots[x].length-1){
-							textures1[s[s.length-1]].drawProzentual(xx, slots[x].length*slotHeight+1, w, 1, xx/(float)rect.width, 0, (w-2)/(float)rect.width, 1, 0);
+						if(y==this.slots[x].length-1){
+							textures1[s[s.length-1]].drawProzentual(xx, this.slots[x].length*this.slotHeight+1, w, 1, xx/(float)this.rect.width, 0, (w-2)/(float)this.rect.width, 1, 0);
 						}
 						for(int i=0; i<s.length; i++){
 							yp = (int) (h*i+0.5);
@@ -139,14 +139,14 @@ public class PC_GresInventory extends PC_GresComponent {
 							if(i==s.length-1){
 								hhh--;
 							}
-							textures[s[i]].drawProzentual(xx+1, yyy, slotWidth-2, hhh, 0, yp2/(float)(slotHeight-2), 1, hh2/(float)(slotHeight-2), 0);
-							hhh = hh + (y==0 && i==0?1:0) + (y==slots[x].length-1 && i==s.length-1?1:0);
+							textures[s[i]].drawProzentual(xx+1, yyy, this.slotWidth-2, hhh, 0, yp2/(float)(this.slotHeight-2), 1, hh2/(float)(this.slotHeight-2), 0);
+							hhh = hh + (y==0 && i==0?1:0) + (y==this.slots[x].length-1 && i==s.length-1?1:0);
 							yyy = y==0 && i==0?0:yy + yp-1;
 							if(x==0){
-								textures2[s[i]].drawProzentual(0, yyy, 1, hhh, 0, yyy/(float)rect.height, 1, (hh-2)/(float)rect.height, 0);
+								textures2[s[i]].drawProzentual(0, yyy, 1, hhh, 0, yyy/(float)this.rect.height, 1, (hh-2)/(float)this.rect.height, 0);
 							}
-							if(x==slots.length-1){
-								textures2[s[i]].drawProzentual(slots.length*slotWidth+1, yyy, 1, hhh, 0, yyy/(float)rect.height, 1, (hh-2)/(float)rect.height, 0);
+							if(x==this.slots.length-1){
+								textures2[s[i]].drawProzentual(this.slots.length*this.slotWidth+1, yyy, 1, hhh, 0, yyy/(float)this.rect.height, 1, (hh-2)/(float)this.rect.height, 0);
 							}
 							
 						}
@@ -165,10 +165,10 @@ public class PC_GresInventory extends PC_GresComponent {
 
 		PC_GresGuiHandler guiHandler = getGuiHandler();
 
-		for (int x = 0, xp = 2+(slotWidth-18)/2; x < slots.length; x++, xp += slotWidth) {
-			for (int y = 0, yp = 2+(slotHeight-18)/2; y < slots[x].length; y++, yp += slotHeight) {
-				if (slots[x][y] != null) {
-					Slot slot = slots[x][y];
+		for (int x = 0, xp = 2+(this.slotWidth-18)/2; x < this.slots.length; x++, xp += this.slotWidth) {
+			for (int y = 0, yp = 2+(this.slotHeight-18)/2; y < this.slots[x].length; y++, yp += this.slotHeight) {
+				if (this.slots[x][y] != null) {
+					Slot slot = this.slots[x][y];
 					guiHandler.renderSlot(xp, yp, slot);
 				}
 			}
@@ -181,10 +181,10 @@ public class PC_GresInventory extends PC_GresComponent {
 	@Override
 	protected Slot getSlotAtPosition(PC_Vec2I position) {
 
-		int x = position.x / slotWidth;
-		int y = position.y / slotHeight;
-		if (x >= 0 && y >= 0 && x < slots.length && y < slots[x].length) {
-			return slots[x][y];
+		int x = position.x / this.slotWidth;
+		int y = position.y / this.slotHeight;
+		if (x >= 0 && y >= 0 && x < this.slots.length && y < this.slots[x].length) {
+			return this.slots[x][y];
 		}
 		return null;
 	}

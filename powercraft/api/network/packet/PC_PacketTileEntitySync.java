@@ -1,15 +1,16 @@
 package powercraft.api.network.packet;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.client.network.NetHandlerPlayClient;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.INetHandler;
-import powercraft.api.PC_ClientUtils;
+import net.minecraft.world.World;
 import powercraft.api.PC_Utils;
 import powercraft.api.block.PC_TileEntity;
 import powercraft.api.network.PC_Packet;
 import powercraft.api.network.PC_PacketServerToClient;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class PC_PacketTileEntitySync extends PC_PacketServerToClient {
 
@@ -23,36 +24,36 @@ public class PC_PacketTileEntitySync extends PC_PacketServerToClient {
 	}
 	
 	public PC_PacketTileEntitySync(PC_TileEntity te, NBTTagCompound nbtTagCompound){
-		x = te.xCoord;
-		y = te.yCoord;
-		z = te.zCoord;
+		this.x = te.xCoord;
+		this.y = te.yCoord;
+		this.z = te.zCoord;
 		this.nbtTagCompound = nbtTagCompound;
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	protected PC_Packet doAndReply(INetHandler iNetHandler) {
-		PC_TileEntity te = PC_Utils.getTileEntity(PC_ClientUtils.mc().theWorld, x, y, z, PC_TileEntity.class);
+	protected PC_Packet doAndReply(NetHandlerPlayClient iNetHandler, World world, EntityPlayer player) {
+		PC_TileEntity te = PC_Utils.getTileEntity(world, this.x, this.y, this.z, PC_TileEntity.class);
 		if(te!=null){
-			te.applySync(nbtTagCompound);
+			te.applySync(this.nbtTagCompound);
 		}
 		return null;
 	}
 
 	@Override
 	protected void fromByteBuffer(ByteBuf buf) {
-		x = buf.readInt();
-		y = buf.readInt();
-		z = buf.readInt();
-		nbtTagCompound = readNBTFromBuf(buf);
+		this.x = buf.readInt();
+		this.y = buf.readInt();
+		this.z = buf.readInt();
+		this.nbtTagCompound = readNBTFromBuf(buf);
 	}
 
 	@Override
 	protected void toByteBuffer(ByteBuf buf) {
-		buf.writeInt(x);
-		buf.writeInt(y);
-		buf.writeInt(z);
-		writeNBTToBuf(buf, nbtTagCompound);
+		buf.writeInt(this.x);
+		buf.writeInt(this.y);
+		buf.writeInt(this.z);
+		writeNBTToBuf(buf, this.nbtTagCompound);
 	}
 
 }

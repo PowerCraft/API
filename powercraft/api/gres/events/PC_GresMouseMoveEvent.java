@@ -14,7 +14,7 @@ public class PC_GresMouseMoveEvent extends PC_GresMouseEvent {
 	}
 
 	public Event getEvent(){
-		return event;
+		return this.event;
 	}
 	
 	public static enum Event{

@@ -14,7 +14,7 @@ public class PC_GresMouseWheelEvent extends PC_GresMouseEvent {
 	}
 
 	public int getWheel(){
-		return wheel;
+		return this.wheel;
 	}
 
 }

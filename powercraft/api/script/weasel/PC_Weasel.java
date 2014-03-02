@@ -1,30 +1,36 @@
 package powercraft.api.script.weasel;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-
-import powercraft.api.PC_Api;
-import powercraft.api.reflect.PC_Security;
-import xscript.runtime.XScriptLang;
 
 public final class PC_Weasel {
+	
+	private static PC_WeaselModule weaselModule;
+	
+	@SuppressWarnings("hiding")
+	public static void register(PC_WeaselModule weaselModule){
+		PC_Weasel.weaselModule = weaselModule;
+	}
 
-	private static ScriptEngine scriptEngine;
-	
-	public static void register(){
-		PC_Security.allowedCaller("PC_Weasel.register()", PC_Api.class);
-		scriptEngine = new ScriptEngineManager().getEngineByName(XScriptLang.NAME);
-	}
-	
 	public static boolean isWeaselPresent(){
-		return scriptEngine!=null;
+		return weaselModule!=null;
 	}
 	
-	public static PC_WeaselEngine createVirtualMachine(int memSize){
-		return new PC_WeaselEngine(null);//TODO
+	public static PC_WeaselClassSave createClassSave(){
+		if(weaselModule==null)
+			return null;
+		return weaselModule.createClassSave();
 	}
 	
+	public static PC_WeaselEngine createEngine(PC_WeaselClassSave classSave, int memSize){
+		if(weaselModule==null)
+			return null;
+		return weaselModule.createEngine(classSave, memSize);
+	}
 	
+	public static PC_WeaselEngine loadEngine(PC_WeaselClassSave classSave, byte[] data){
+		if(weaselModule==null)
+			return null;
+		return weaselModule.loadEngine(classSave, data);
+	}
 	
 	private PC_Weasel(){
 		throw new InstantiationError();

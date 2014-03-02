@@ -11,7 +11,7 @@ public class PC_GresFrame extends PC_GresContainer {
 	private static final String textureName = "Frame";
 	
 	public PC_GresFrame(){
-		frame.setTo(getTextureFrame(textureName));
+		this.frame.setTo(getTextureFrame(textureName));
 	}
 	
 	@Override
@@ -31,7 +31,7 @@ public class PC_GresFrame extends PC_GresContainer {
 
 	@Override
 	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp) {
-		drawTexture(textureName, 0, 0, rect.width, rect.height);
+		drawTexture(textureName, 0, 0, this.rect.width, this.rect.height);
 	}
 
 }

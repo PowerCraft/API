@@ -27,32 +27,32 @@ public class PC_FontRenderer {
 	public PC_FontRenderer(ResourceLocation location){
 		ITextureObject textureObject = PC_ClientUtils.mc().renderEngine.getTexture(location);
 		if(textureObject instanceof PC_FontTexture){
-			texture = (PC_FontTexture)textureObject;
+			this.texture = (PC_FontTexture)textureObject;
 		}
 	}
 	
 	public void drawString(String text, int x, int y){
-		drawString(text, x, y, texture, scale);
+		drawString(text, x, y, this.texture, this.scale);
 	}
 	
 	public void drawString(String text, int x, int y, int color){
-		drawString(text, x, y, texture, color, scale);
+		drawString(text, x, y, this.texture, color, this.scale);
 	}
 	
 	public void drawString(String text, int x, int y, int color, boolean shadow){
-		drawString(text, x, y, texture, color, shadow, scale);
+		drawString(text, x, y, this.texture, color, shadow, this.scale);
 	}
 	
 	public PC_Vec2I getStringSize(String text){
-		return getStringSize(text, texture, scale);
+		return getStringSize(text, this.texture, this.scale);
 	}
 	
 	public PC_Vec2I getCharSize(char c){
-		return getCharSize(c, texture, scale);
+		return getCharSize(c, this.texture, this.scale);
 	}
 	
 	public String trimStringToWidth(String text, int width){
-		return trimStringToWidth(text, texture, width, scale);
+		return trimStringToWidth(text, this.texture, width, this.scale);
 	}
 	
 	public static void drawString(String text, float x, float y, ResourceLocation location, float scale){
@@ -91,20 +91,21 @@ public class PC_FontRenderer {
 		Tessellator tessellator = Tessellator.instance;
 		tessellator.startDrawingQuads();
 		float size = texture.getTextureSize();
-		
-		if ((color & -67108864) == 0){
-			color |= -16777216;
+		int ccolor = color;
+		if ((ccolor & -67108864) == 0){
+			ccolor |= -16777216;
         }
 
         if (shadow){
-        	color = (color & 16579836) >> 2 | color & -16777216;
+        	ccolor = (ccolor & 16579836) >> 2 | ccolor & -16777216;
         }
 
-        int red = color >> 16 & 255;
-        int blue = color >> 8 & 255;
-        int green = color & 255;
-        int alpha = color >> 24 & 255;
+        int red = ccolor >> 16 & 255;
+        int blue = ccolor >> 8 & 255;
+        int green = ccolor & 255;
+        int alpha = ccolor >> 24 & 255;
 		boolean error = false;
+		float nx = x;
 		for(int i=0; i<text.length(); i++){
 			char c = text.charAt(i);
 			if(c==PC_Formatter.START_SEQ && i + 1 < text.length()){
@@ -124,9 +125,9 @@ public class PC_FontRenderer {
 				}else if(c==PC_Formatter.ERRORSTOP_SEQ){
 					error = false;
 				}else{
-					red = color >> 16 & 255;
-			    	blue = color >> 8 & 255;
-			        green = color & 255;
+					red = ccolor >> 16 & 255;
+			    	blue = ccolor >> 8 & 255;
+			        green = ccolor & 255;
 					activeTexture = texture;
 					tessellator.draw();
 					PC_ClientUtils.mc().renderEngine.bindTexture(activeTexture.getResourceLocation());
@@ -140,24 +141,24 @@ public class PC_FontRenderer {
 					float tw = data.width/size;
 					float th = data.height/size;
 					tessellator.setColorRGBA(red, green, blue, alpha);
-					tessellator.addVertexWithUV(x, y+data.height*scale, 0, tx, ty+th);
-					tessellator.addVertexWithUV(x+data.width*scale, y+data.height*scale, 0, tx+tw, ty+th);
-					tessellator.addVertexWithUV(x+data.width*scale, y, 0, tx+tw, ty);
-					tessellator.addVertexWithUV(x, y, 0, tx, ty);
+					tessellator.addVertexWithUV(nx, y+data.height*scale, 0, tx, ty+th);
+					tessellator.addVertexWithUV(nx+data.width*scale, y+data.height*scale, 0, tx+tw, ty+th);
+					tessellator.addVertexWithUV(nx+data.width*scale, y, 0, tx+tw, ty);
+					tessellator.addVertexWithUV(nx, y, 0, tx, ty);
 					if(error){
 						tessellator.draw();
 						GL11.glDisable(GL11.GL_TEXTURE_2D);
 						tessellator.startDrawingQuads();
 						tessellator.setColorRGBA(255, 0, 0, alpha);
-						tessellator.addVertex(x, y+data.height*scale, 0);
-						tessellator.addVertex(x+data.width*scale, y+data.height*scale, 0);
-						tessellator.addVertex(x+data.width*scale, y+data.height*scale-1, 0);
-						tessellator.addVertex(x, y+data.height*scale-1, 0);
+						tessellator.addVertex(nx, y+data.height*scale, 0);
+						tessellator.addVertex(nx+data.width*scale, y+data.height*scale, 0);
+						tessellator.addVertex(nx+data.width*scale, y+data.height*scale-1, 0);
+						tessellator.addVertex(nx, y+data.height*scale-1, 0);
 						tessellator.draw();
 						GL11.glEnable(GL11.GL_TEXTURE_2D);
 						tessellator.startDrawingQuads();
 					}
-					x += data.width*scale;
+					nx += data.width*scale;
 				}
 			}
 		}
@@ -185,7 +186,9 @@ public class PC_FontRenderer {
 					int font = text.charAt(++i);
 					activeTexture = PC_Fonts.get(font);
 				}else if(c==PC_Formatter.ERROR_SEQ){
+					//
 				}else if(c==PC_Formatter.ERRORSTOP_SEQ){
+					//
 				}else{
 					activeTexture = texture;
 				}

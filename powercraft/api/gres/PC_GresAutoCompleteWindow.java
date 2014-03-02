@@ -19,7 +19,7 @@ import powercraft.api.gres.layout.PC_GresLayoutVertical;
 
 public class PC_GresAutoCompleteWindow extends PC_GresFrame{
 
-	public static PC_GresAutoCompleteWindow frame;
+	public static PC_GresAutoCompleteWindow completeWindow;
 	
 	public static void makeCompleteWindow(PC_GresGuiHandler guiHandler, PC_GresMultilineHighlightingTextEdit textEdit, PC_AutoCompleteDisplay display, PC_GresHistory history){
 		if(display.display){
@@ -30,7 +30,7 @@ public class PC_GresAutoCompleteWindow extends PC_GresFrame{
 			display.display = num!=0;
 		}
 		if(display.display){
-			if(frame==null){
+			if(completeWindow==null){
 				int i = 0;
 				int spl = display.done.lastIndexOf('.')+1;
 				for(PC_StringListPart part:display.parts){
@@ -60,15 +60,15 @@ public class PC_GresAutoCompleteWindow extends PC_GresFrame{
 					}
 					return;
 				}
-				frame = new PC_GresAutoCompleteWindow(textEdit);
-				frame.setMinSize(new PC_Vec2I(100, 100));
-				frame.setSize(new PC_Vec2I(100, 100));
-				frame.setLayout(new PC_GresLayoutVertical());
-				frame.addEventListener(frame.listener = new Listener());
-				guiHandler.add(frame);
+				completeWindow = new PC_GresAutoCompleteWindow(textEdit);
+				completeWindow.setMinSize(new PC_Vec2I(100, 100));
+				completeWindow.setSize(new PC_Vec2I(100, 100));
+				completeWindow.setLayout(new PC_GresLayoutVertical());
+				completeWindow.addEventListener(completeWindow.listener = new Listener());
+				guiHandler.add(completeWindow);
 			}
-			if(frame.textEdit != textEdit){
-				frame.textEdit = textEdit;
+			if(completeWindow.textEdit != textEdit){
+				completeWindow.textEdit = textEdit;
 			}
 			int spl = display.done.lastIndexOf('.')+1;
 			String last = "";
@@ -86,21 +86,21 @@ public class PC_GresAutoCompleteWindow extends PC_GresFrame{
 					withInfos.add(new PC_StringWithInfo(last, s.getTooltip(), s.getInfo()));
 				}
 			}
-			frame.setStringWithInfo(withInfos);
-			frame.done = display.done.length()-spl;
-			frame.takeFocus();
+			completeWindow.setStringWithInfo(withInfos);
+			completeWindow.done = display.done.length()-spl;
+			completeWindow.takeFocus();
 			textEdit.focus = true;
-			frame.notifyChange();
-		}else if(frame!=null){
-			frame.getGuiHandler().remove(frame);
+			completeWindow.notifyChange();
+		}else if(completeWindow!=null){
+			completeWindow.getGuiHandler().remove(completeWindow);
 			textEdit.takeFocus();
-			frame = null;
+			completeWindow = null;
 		}
 	}
 		
-	private PC_GresMultilineHighlightingTextEdit textEdit;
-	private PC_GresListBox listBox;
-	private List<PC_StringWithInfo> withInfos;
+	PC_GresMultilineHighlightingTextEdit textEdit;
+	PC_GresListBox listBox;
+	List<PC_StringWithInfo> withInfos;
 	private int done;
 	private Listener listener;
 	
@@ -115,35 +115,37 @@ public class PC_GresAutoCompleteWindow extends PC_GresFrame{
 		for(PC_StringWithInfo withInfo:withInfos){
 			elements.add(withInfo.getString());
 		}
-		add(listBox = new PC_GresListBox(elements));
-		listBox.addEventListener(listener);
-		listBox.setSelected(0);
+		add(this.listBox = new PC_GresListBox(elements));
+		this.listBox.addEventListener(this.listener);
+		this.listBox.setSelected(0);
 	}
 	
 	@Override
 	public void putInRect(int x, int y, int width, int height) {
-		setLocation(textEdit.getRealLocation().add(textEdit.getCursorLowerPosition()));
+		setLocation(this.textEdit.getRealLocation().add(this.textEdit.getCursorLowerPosition()));
 	}
 	
 	@Override
 	protected void onScaleChanged(int newScale) {
-		textEdit.onScaleChanged(newScale);
-		setLocation(textEdit.getRealLocation().add(textEdit.getCursorLowerPosition()));
+		this.textEdit.onScaleChanged(newScale);
+		setLocation(this.textEdit.getRealLocation().add(this.textEdit.getCursorLowerPosition()));
 		super.onScaleChanged(newScale);
 	}
 	
-	private void makeAdd(PC_GresHistory history){
-		String text = listBox.getSelected();
+	@SuppressWarnings("hiding") 
+	void makeAdd(PC_GresHistory history){
+		String text = this.listBox.getSelected();
 		if(text==null){
-			text = listBox.getElement(0);
+			text = this.listBox.getElement(0);
 		}
 		if(text!=null){
 			makeAdd(text, history);
 		}
 	}
 	
+	@SuppressWarnings("hiding")
 	private void makeAdd(String text, PC_GresHistory history){
-		textEdit.autoComplete(text.substring(done), history);
+		this.textEdit.autoComplete(text.substring(this.done), history);
 		if(!text.endsWith("."))
 			close();
 	}
@@ -159,50 +161,54 @@ public class PC_GresAutoCompleteWindow extends PC_GresFrame{
 			break;
 		case Keyboard.KEY_SPACE:
 			makeAdd(history);
-			return textEdit.onKeyTyped(key, keyCode, repeat, history);
+			return this.textEdit.onKeyTyped(key, keyCode, repeat, history);
 		case Keyboard.KEY_DOWN:
 		case Keyboard.KEY_UP:
-			return listBox.handleKeyTyped(key, keyCode, repeat, history);
+			return this.listBox.handleKeyTyped(key, keyCode, repeat, history);
 		default:
-			return textEdit.onKeyTyped(key, keyCode, repeat, history);
+			return this.textEdit.onKeyTyped(key, keyCode, repeat, history);
 		}
 		return true;
 	}
 
 	private void close(){
 		closeNF();
-		textEdit.takeFocus();
+		this.textEdit.takeFocus();
 	}
 	
-	private void closeNF(){
-		frame = null;
+	void closeNF(){
+		completeWindow = null;
 		getGuiHandler().remove(this);
 	}
 	
 	private static class Listener implements PC_IGresEventListener{
 
+		Listener() {
+			//
+		}
+
 		@Override
 		public void onEvent(PC_GresEvent event) {
-			if(frame==null)
+			if(completeWindow==null)
 				return;
 			if(event instanceof PC_GresFocusLostEvent){
 				PC_GresFocusLostEvent le = (PC_GresFocusLostEvent)event;
-				if(!isParentOf(frame, le.getNewFocusedComponent())){
-					if(le.getNewFocusedComponent()!=frame.textEdit)
-						frame.textEdit.focus = false;
-					frame.closeNF();
+				if(!isParentOf(completeWindow, le.getNewFocusedComponent())){
+					if(le.getNewFocusedComponent()!=completeWindow.textEdit)
+						completeWindow.textEdit.focus = false;
+					completeWindow.closeNF();
 				}
 			}else if(event instanceof PC_GresMouseButtonEvent){
 				PC_GresMouseButtonEvent ev = (PC_GresMouseButtonEvent) event;
-				if(ev.getEvent()==PC_GresMouseButtonEvent.Event.DOWN && ev.isDoubleClick() && ev.getComponent()==frame.listBox){
-					frame.makeAdd(ev.getHistory());
+				if(ev.getEvent()==PC_GresMouseButtonEvent.Event.DOWN && ev.isDoubleClick() && ev.getComponent()==completeWindow.listBox){
+					completeWindow.makeAdd(ev.getHistory());
 				}
 			}else if(event instanceof PC_GresTooltipGetEvent){
 				PC_GresTooltipGetEvent tge = (PC_GresTooltipGetEvent) event;
-				if(tge.getComponent()==frame.listBox){
-					int selection = frame.listBox.getMouseOver();
+				if(tge.getComponent()==completeWindow.listBox){
+					int selection = completeWindow.listBox.getMouseOver();
 					if(selection!=-1){
-						String info = frame.withInfos.get(selection).getTooltip();
+						String info = completeWindow.withInfos.get(selection).getTooltip();
 						if(info!=null){
 							List<String> tooltip = new ArrayList<String>();
 							String sl[] = info.split("\n");
@@ -220,11 +226,12 @@ public class PC_GresAutoCompleteWindow extends PC_GresFrame{
 			}
 		}
 		
-		private boolean isParentOf(PC_GresContainer c, PC_GresComponent com){
-			while(c!=com){
-				if(com==null)
+		private static boolean isParentOf(PC_GresContainer c, PC_GresComponent com){
+			PC_GresComponent comp = com;
+			while(c!=comp){
+				if(comp==null)
 					return false;
-				com = com.getParent();
+				comp = comp.getParent();
 			}
 			return true;
 		}

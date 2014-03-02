@@ -18,25 +18,25 @@ public class PC_GresDocument {
 		this.highlighting = highlighting;
 		this.handler = handler;
 		this.infoCollector = infoCollector;
-		onLineChanged(firstLine);
+		onLineChanged(this.firstLine);
 		add(new PC_Vec2I(), text);
 	}
 
 	public void onLineChange(PC_GresDocumentLine line){
-		if(handler!=null){
-			handler.onLineChange(line);
+		if(this.handler!=null){
+			this.handler.onLineChange(line);
 		}
-		if(infoCollector!=null){
-			infoCollector.onLineChange(line);
+		if(this.infoCollector!=null){
+			this.infoCollector.onLineChange(line);
 		}
 	}
 	
 	public void onLineChanged(PC_GresDocumentLine line){
-		if(handler!=null){
-			handler.onLineChanged(line);
+		if(this.handler!=null){
+			this.handler.onLineChanged(line);
 		}
-		if(infoCollector!=null){
-			infoCollector.onLineChanged(line);
+		if(this.infoCollector!=null){
+			this.infoCollector.onLineChanged(line);
 		}
 	}
 	
@@ -71,7 +71,7 @@ public class PC_GresDocument {
 			String text = line.getText();
 			String text2 = line2.getText();
 			text = text.substring(0, selects[0].x) + text2.substring(selects[1].x);
-			if(handler!=null || infoCollector!=null){
+			if(this.handler!=null || this.infoCollector!=null){
 				PC_GresDocumentLine l = line.next;
 				while(l!=line2){
 					onLineChange(l);
@@ -96,7 +96,7 @@ public class PC_GresDocument {
 			line.next = line2;
 			if(line2!=null)
 				line2.prev = line;
-			lines -= selects[1].y - selects[0].y;
+			this.lines -= selects[1].y - selects[0].y;
 		}
 		recalcHighlights(line, 1);
 	}
@@ -128,7 +128,7 @@ public class PC_GresDocument {
 			line.setText(start+inserts[0]+end);
 			onLineChanged(line);
 		}else{
-			lines += inserts.length-1;
+			this.lines += inserts.length-1;
 			onLineChange(line);
 			String[] errors = line.errors;
 			if(errors!=null){
@@ -167,33 +167,33 @@ public class PC_GresDocument {
 		if(selects[0].y == selects[1].y){
 			String text = line.getText();
 			return text.substring(selects[0].x, selects[1].x);
-		}else{
-			PC_GresDocumentLine line2 = getLine(selects[1].y);
-			String text = line.getText().substring(selects[0].x) + "\n";
-			line = line.next;
-			while(line!=line2){
-				text += line.getText() + "\n";
-				line = line.next;
-			}
-			return text + line2.getText().substring(0, selects[1].x);
 		}
+		PC_GresDocumentLine line2 = getLine(selects[1].y);
+		String text = line.getText().substring(selects[0].x) + "\n";
+		line = line.next;
+		while(line!=line2){
+			text += line.getText() + "\n";
+			line = line.next;
+		}
+		return text + line2.getText().substring(0, selects[1].x);
 	}
 	
 	public PC_GresDocumentLine getLine(int i){
-		if(i>=lines)
+		if(i>=this.lines)
 			return null;
-		PC_GresDocumentLine line = firstLine;
-		while(i-->0 && line!=null)
+		PC_GresDocumentLine line = this.firstLine;
+		int ii = i;
+		while(ii-->0 && line!=null)
 			line = line.next;
 		return line;
 	}
 	
 	public int getLines(){
-		return lines;
+		return this.lines;
 	}
 	
 	public String getWholeText(){
-		PC_GresDocumentLine line = firstLine;
+		PC_GresDocumentLine line = this.firstLine;
 		if(line==null)
 			return "";
 		String text = line.getText();
@@ -204,22 +204,24 @@ public class PC_GresDocument {
 	}
 	
 	public PC_Vec2I getLastPos() {
-		return new PC_Vec2I(getLine(lines-1).getText().length(), lines-1);
+		return new PC_Vec2I(getLine(this.lines-1).getText().length(), this.lines-1);
 	}
 	
-	private PC_Vec2I[] sort(PC_Vec2I start, PC_Vec2I end){
+	private static PC_Vec2I[] sort(PC_Vec2I start, PC_Vec2I end){
 		if(start.y<end.y || (start.y==end.y && start.x<end.x))
 			return new PC_Vec2I[]{start, end};
 		return new PC_Vec2I[]{end, start};
 	}
 	
 	public void recalcHighlights(PC_GresDocumentLine line, int num){
-		if(highlighting!=null){
+		if(this.highlighting!=null){
+			PC_GresDocumentLine l = line;
+			int n = num;
 			boolean again = false;
-			while((num>0 || again) && line!=null){
-				again = line.recalcHighlighting(highlighting);
-				line = line.next;
-				num--;
+			while((n>0 || again) && l!=null){
+				again = l.recalcHighlighting(this.highlighting);
+				l = l.next;
+				n--;
 			}
 		}
 	}
@@ -228,7 +230,7 @@ public class PC_GresDocument {
 		if(this.highlighting == highlighting)
 			return;
 		this.highlighting = highlighting;
-		PC_GresDocumentLine line = firstLine;
+		PC_GresDocumentLine line = this.firstLine;
 		if(highlighting==null){
 			while(line!=null){
 				line.resetHighlighting();
@@ -243,13 +245,13 @@ public class PC_GresDocument {
 	}
 	
 	public PC_GresHighlighting getHighlighting(){
-		return highlighting;
+		return this.highlighting;
 	}
 	
 	public void setRenderHandler(PC_GresDocRenderHandler handler){
 		this.handler = handler;
 		if(handler!=null){
-			PC_GresDocumentLine line = firstLine;
+			PC_GresDocumentLine line = this.firstLine;
 			while(line!=null){
 				handler.onLineChanged(line);
 				line = line.next;
@@ -258,13 +260,13 @@ public class PC_GresDocument {
 	}
 	
 	public PC_GresDocRenderHandler getRenderHandler(){
-		return handler;
+		return this.handler;
 	}
 	
 	public void setInfoCollector(PC_GresDocInfoCollector infoCollector){
 		this.infoCollector = infoCollector;
-		if(handler!=null){
-			PC_GresDocumentLine line = firstLine;
+		if(this.handler!=null){
+			PC_GresDocumentLine line = this.firstLine;
 			while(line!=null){
 				infoCollector.onLineChanged(line);
 				line = line.next;
@@ -273,7 +275,7 @@ public class PC_GresDocument {
 	}
 	
 	public PC_GresDocInfoCollector getInfoCollector(){
-		return infoCollector;
+		return this.infoCollector;
 	}
 
 	public void addError(PC_Vec2I start, PC_Vec2I end, String message) {
@@ -299,13 +301,14 @@ public class PC_GresDocument {
 	
 	public PC_Vec2I getPosFrom(long pos) {
 		int lineNum = 0;
-		PC_GresDocumentLine line = firstLine;
+		PC_GresDocumentLine line = this.firstLine;
+		long p = pos;
 		while(line!=null){
 			int l = line.getText().length();
-			if(l>pos){
-				pos -= l;
+			if(l>p){
+				p -= l;
 			}else{
-				return new PC_Vec2I((int)pos, lineNum);
+				return new PC_Vec2I((int)p, lineNum);
 			}
 			lineNum++;
 		}
@@ -313,7 +316,7 @@ public class PC_GresDocument {
 	}
 
 	public void removeErrors() {
-		PC_GresDocumentLine line = firstLine;
+		PC_GresDocumentLine line = this.firstLine;
 		while(line!=null){
 			if(line.errors!=null){
 				line.errors = null;

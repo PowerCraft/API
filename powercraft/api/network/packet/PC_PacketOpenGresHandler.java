@@ -1,9 +1,10 @@
 package powercraft.api.network.packet;
 
 import io.netty.buffer.ByteBuf;
+import net.minecraft.client.network.NetHandlerPlayClient;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.INetHandler;
-import powercraft.api.PC_ClientUtils;
+import net.minecraft.world.World;
 import powercraft.api.gres.PC_Gres;
 import powercraft.api.network.PC_Packet;
 import powercraft.api.network.PC_PacketServerToClient;
@@ -28,23 +29,23 @@ public class PC_PacketOpenGresHandler extends PC_PacketServerToClient {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	protected PC_Packet doAndReply(INetHandler iNetHandler) {
-		PC_Gres.openClientGui(PC_ClientUtils.mc().thePlayer, guiOpenHandlerName, windowId, nbtTagCompound);
+	protected PC_Packet doAndReply(NetHandlerPlayClient iNetHandler, World world, EntityPlayer player) {
+		PC_Gres.openClientGui(player, this.guiOpenHandlerName, this.windowId, this.nbtTagCompound);
 		return null;
 	}
 
 	@Override
 	protected void fromByteBuffer(ByteBuf buf) {
-		windowId = buf.readInt();
-		guiOpenHandlerName = readStringFromBuf(buf);
-		nbtTagCompound = readNBTFromBuf(buf);
+		this.windowId = buf.readInt();
+		this.guiOpenHandlerName = readStringFromBuf(buf);
+		this.nbtTagCompound = readNBTFromBuf(buf);
 	}
 
 	@Override
 	protected void toByteBuffer(ByteBuf buf) {
-		buf.writeInt(windowId);
-		writeStringToBuf(buf, guiOpenHandlerName);
-		writeNBTToBuf(buf, nbtTagCompound);
+		buf.writeInt(this.windowId);
+		writeStringToBuf(buf, this.guiOpenHandlerName);
+		writeNBTToBuf(buf, this.nbtTagCompound);
 	}
 
 }

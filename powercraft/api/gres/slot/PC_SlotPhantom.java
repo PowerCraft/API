@@ -22,11 +22,12 @@ public class PC_SlotPhantom extends PC_Slot {
 
 	@Override
 	public void putStack(ItemStack itemStack) {
-		if(itemStack!=null){
-			itemStack = itemStack.copy();
-			itemStack.stackSize=0;
+		ItemStack is = itemStack;
+		if(is!=null){
+			is = is.copy();
+			is.stackSize=0;
 		}
-		super.putStack(itemStack);
+		super.putStack(is);
 	}
 	
 }

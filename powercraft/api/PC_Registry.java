@@ -24,6 +24,7 @@ public class PC_Registry {
 		INSTANCE.iRegisterTileEntity(tileEntityClass);
 	}
 	
+	@SuppressWarnings("static-method")
 	void iRegisterTileEntity(Class<? extends PC_TileEntity> tileEntityClass){
 		GameRegistry.registerTileEntity(tileEntityClass, tileEntityClass.getName());
 	}

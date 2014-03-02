@@ -10,15 +10,15 @@ abstract class PC_EnergyNode<T extends PC_IEnergyGridTile> extends PC_Node<PC_En
 	
 	@SuppressWarnings("unchecked")
 	public T getTile(){
-		return (T)tile;
+		return (T)this.tile;
 	}
 	
 	public void onTickStart(){
-		
+		//
 	}
 	
 	public void onTickEnd(){
-		
+		//
 	}
 	
 	public abstract float getFlow();
@@ -27,10 +27,12 @@ abstract class PC_EnergyNode<T extends PC_IEnergyGridTile> extends PC_Node<PC_En
 
 	public abstract float takeEnergy();
 
+	@SuppressWarnings({ "static-method", "unused" })
 	public float useEnergy(float energy, float p) {
 		return energy;
 	}
 
+	@SuppressWarnings({ "static-method", "unused" })
 	public float notUsing(float energy, float p) {
 		return energy;
 	}

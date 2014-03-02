@@ -58,7 +58,7 @@ public class PC_Formatter {
 			if(ca[i]==START_SEQ && i + 1<s.length()){
 				char c = ca[++i];
 				if(c==ERROR_SEQ || c== ERRORSTOP_SEQ){
-					
+					//
 				}else{
 					unFormatted += ca[i-1];
 					unFormatted += c;

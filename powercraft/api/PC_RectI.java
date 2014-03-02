@@ -33,27 +33,27 @@ public class PC_RectI {
 
 		String[] attributes = attribute.split(",");
 		if (attributes.length != 4) throw new NumberFormatException();
-		x = Integer.parseInt(attributes[0].trim());
-		y = Integer.parseInt(attributes[1].trim());
-		width = Integer.parseInt(attributes[2].trim());
-		height = Integer.parseInt(attributes[3].trim());
+		this.x = Integer.parseInt(attributes[0].trim());
+		this.y = Integer.parseInt(attributes[1].trim());
+		this.width = Integer.parseInt(attributes[2].trim());
+		this.height = Integer.parseInt(attributes[3].trim());
 	}
 
 
 	public void setTo(PC_RectI rect) {
 
-		x = rect.x;
-		y = rect.y;
-		width = rect.width;
-		height = rect.height;
+		this.x = rect.x;
+		this.y = rect.y;
+		this.width = rect.width;
+		this.height = rect.height;
 	}
 
 
 	public boolean setLocation(PC_Vec2I location) {
 
-		if (x != location.x || y != location.y) {
-			x = location.x;
-			y = location.y;
+		if (this.x != location.x || this.y != location.y) {
+			this.x = location.x;
+			this.y = location.y;
 			return true;
 		}
 		return false;
@@ -62,15 +62,15 @@ public class PC_RectI {
 
 	public PC_Vec2I getLocation() {
 
-		return new PC_Vec2I(x, y);
+		return new PC_Vec2I(this.x, this.y);
 	}
 
 
 	public boolean setSize(PC_Vec2I size) {
 
-		if (width != size.x || height != size.y) {
-			width = size.x;
-			height = size.y;
+		if (this.width != size.x || this.height != size.y) {
+			this.width = size.x;
+			this.height = size.y;
 			return true;
 		}
 		return false;
@@ -79,7 +79,7 @@ public class PC_RectI {
 
 	public PC_Vec2I getSize() {
 
-		return new PC_Vec2I(width, height);
+		return new PC_Vec2I(this.width, this.height);
 	}
 
 
@@ -88,19 +88,19 @@ public class PC_RectI {
 		PC_RectI fin = new PC_RectI();
 		int v1, v2;
 
-		if (x > rect.x) {
-			fin.x = x;
+		if (this.x > rect.x) {
+			fin.x = this.x;
 		} else {
 			fin.x = rect.x;
 		}
 
-		if (y > rect.y) {
-			fin.y = y;
+		if (this.y > rect.y) {
+			fin.y = this.y;
 		} else {
 			fin.y = rect.y;
 		}
 
-		v1 = x + width;
+		v1 = this.x + this.width;
 		v2 = rect.x + rect.width;
 
 		if (v1 > v2) {
@@ -109,7 +109,7 @@ public class PC_RectI {
 			fin.width = v1 - fin.x;
 		}
 
-		v1 = y + height;
+		v1 = this.y + this.height;
 		v2 = rect.y + rect.height;
 
 		if (v1 > v2) {
@@ -124,14 +124,14 @@ public class PC_RectI {
 
 	public boolean contains(PC_Vec2I vec) {
 
-		return x <= vec.x && x + width > vec.x && y <= vec.y && y + height > vec.y;
+		return this.x <= vec.x && this.x + this.width > vec.x && this.y <= vec.y && this.y + this.height > vec.y;
 	}
 
 
 	@Override
 	public String toString() {
 
-		return "PC_RectI [x=" + x + ", y=" + y + ", width=" + width + ", height=" + height + "]";
+		return "PC_RectI [x=" + this.x + ", y=" + this.y + ", width=" + this.width + ", height=" + this.height + "]";
 	}
 
 
@@ -140,10 +140,10 @@ public class PC_RectI {
 
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + height;
-		result = prime * result + width;
-		result = prime * result + x;
-		result = prime * result + y;
+		result = prime * result + this.height;
+		result = prime * result + this.width;
+		result = prime * result + this.x;
+		result = prime * result + this.y;
 		return result;
 	}
 
@@ -155,10 +155,10 @@ public class PC_RectI {
 		if (obj == null) return false;
 		if (getClass() != obj.getClass()) return false;
 		PC_RectI other = (PC_RectI) obj;
-		if (height != other.height) return false;
-		if (width != other.width) return false;
-		if (x != other.x) return false;
-		if (y != other.y) return false;
+		if (this.height != other.height) return false;
+		if (this.width != other.width) return false;
+		if (this.x != other.x) return false;
+		if (this.y != other.y) return false;
 		return true;
 	}
 

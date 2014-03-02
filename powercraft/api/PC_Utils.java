@@ -22,7 +22,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -70,6 +69,14 @@ public class PC_Utils {
 	public static <T> T getBlock(IBlockAccess world, int x, int y, int z, Class<T> c) {
 		return as(world.getBlock(x, y, z), c);
 	}
+	
+	public static Block getBlock(IBlockAccess world, PC_Vec3I pos){
+		return getBlock(world, pos.x, pos.y, pos.z);
+	}
+	
+	public static <T> T getBlock(IBlockAccess world, PC_Vec3I pos, Class<T> c) {
+		return getBlock(world, pos.x, pos.y, pos.z, c);
+	}
 
 	public static Block getBlock(String name){
 		return getBlock(name, Block.class);
@@ -97,6 +104,10 @@ public class PC_Utils {
 	
 	public static int getMetadata(IBlockAccess world, int x, int y, int z) {
 		return world.getBlockMetadata(x, y, z);
+	}
+	
+	public static int getMetadata(IBlockAccess world, PC_Vec3I pos) {
+		return getMetadata(world, pos.x, pos.y, pos.z);
 	}
 	
 	public static boolean setMetadata(World world, int x, int y, int z, int metadata) {
@@ -168,7 +179,7 @@ public class PC_Utils {
 	}
 	
 	public static int getRotationMetadata(int metadata, Entity entity) {
-		int rot = MathHelper.floor_double((double)(entity.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+		int rot = PC_MathHelper.floor_double(entity.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
 		return (rot<<2) | (metadata & 3);
 	}
 
@@ -335,11 +346,13 @@ public class PC_Utils {
 		}
 	}
 
+	@SuppressWarnings("static-method")
 	File iGetPowerCraftFile() {
 		return mcs().getFile("PowerCraft");
 	}
 
 
+	@SuppressWarnings("static-method")
 	GameType iGetGameTypeFor(EntityPlayer player) {
 
 		return ((EntityPlayerMP) player).theItemInWorldManager.getGameType();
@@ -366,6 +379,7 @@ public class PC_Utils {
 		return INSTANCE.iGetSide();
 	}
 	
+	@SuppressWarnings("static-method")
 	PC_Side iGetSide(){
 		return PC_Side.SERVER;
 	}
@@ -375,7 +389,7 @@ public class PC_Utils {
 	}
 	
 	void iMarkThreadAsServer(){
-		
+		//
 	}
 	
 	public static boolean isServer(){
@@ -405,33 +419,30 @@ public class PC_Utils {
 		if(Math.abs(mx)>Math.abs(mz)){
 			if(mx>0){
 				return PC_Direction.EAST;
-			}else{
-				return PC_Direction.WEST;
 			}
-		}else{
-			if(mz>0){
-				return PC_Direction.SOUTH;
-			}else{
-				return PC_Direction.NORTH;
-			}
+			return PC_Direction.WEST;
 		}
+		if(mz>0){
+			return PC_Direction.SOUTH;
+		}
+		return PC_Direction.NORTH;
 	}
 
 	public static NBTTagCompound getNBTTagOf(Entity entity) {
 		NBTTagCompound tag = entity.getEntityData();
 		if(tag.hasKey("PowerCraft")){
 			return tag.getCompoundTag("PowerCraft");
-		}else{
-			NBTTagCompound pctag = new NBTTagCompound();
-			tag.setTag("PowerCraft", pctag);
-			return pctag;
 		}
+		NBTTagCompound pctag = new NBTTagCompound();
+		tag.setTag("PowerCraft", pctag);
+		return pctag;
 	}
 
 	public static EntityPlayer getClientPlayer() {
 		return INSTANCE.iGetClientPlayer();
 	}
 	
+	@SuppressWarnings("static-method")
 	EntityPlayer iGetClientPlayer() {
 		return null;
 	}
@@ -450,6 +461,7 @@ public class PC_Utils {
 		return new String(digest.digest(s.getBytes()));
 	}
 
+	@SuppressWarnings("unused")
 	public static int getSideRotation(IBlockAccess world, int x, int y, int z, PC_Direction side, int faceSide) {
 		// TODO Auto-generated method stub
 		return 0;
@@ -462,10 +474,10 @@ public class PC_Utils {
 	public static ItemStack getSmeltingResult(ItemStack itemStack) {
 		if(itemStack==null)
 			return null;
-		itemStack = FurnaceRecipes.smelting().getSmeltingResult(itemStack);
-		if(itemStack==null)
+		ItemStack smelted = FurnaceRecipes.smelting().getSmeltingResult(itemStack);
+		if(smelted==null)
 			return null;
-		return itemStack.copy();
+		return smelted.copy();
 	}
 
 	public static Entity getEntity(World world, int entityID) {

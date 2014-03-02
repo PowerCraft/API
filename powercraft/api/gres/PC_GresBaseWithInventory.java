@@ -56,14 +56,14 @@ public abstract class PC_GresBaseWithInventory extends Container implements PC_I
 
 		if (player != null) {
 			for (int i = 0; i < 9; i++) {
-				inventoryPlayerLower[i] = new PC_Slot(player.inventory, i);
-				addSlotToContainer(inventoryPlayerLower[i]);
+				this.inventoryPlayerLower[i] = new PC_Slot(player.inventory, i);
+				addSlotToContainer(this.inventoryPlayerLower[i]);
 			}
 
 			for (int i = 0; i < 9; i++) {
 				for (int j = 0; j < 3; j++) {
-					inventoryPlayerUpper[i][j] = new PC_Slot(player.inventory, i + j * 9 + 9);
-					addSlotToContainer(inventoryPlayerUpper[i][j]);
+					this.inventoryPlayerUpper[i][j] = new PC_Slot(player.inventory, i + j * 9 + 9);
+					addSlotToContainer(this.inventoryPlayerUpper[i][j]);
 				}
 			}
 		}
@@ -80,29 +80,29 @@ public abstract class PC_GresBaseWithInventory extends Container implements PC_I
 
 	protected Slot[] getAllSlots() {
 
-		invSlots = new Slot[inventory.getSizeInventory()];
-		for (int i = 0; i < invSlots.length; i++) {
-			invSlots[i] = createSlot(i);
+		this.invSlots = new Slot[this.inventory.getSizeInventory()];
+		for (int i = 0; i < this.invSlots.length; i++) {
+			this.invSlots[i] = createSlot(i);
 		}
-		return invSlots;
+		return this.invSlots;
 	}
 
 	protected PC_Slot createSlot(int i){
-		return new PC_Slot(inventory, i);
+		return new PC_Slot(this.inventory, i);
 	}
 	
 	@Override
 	public boolean canInteractWith(EntityPlayer entityplayer) {
 
-		return inventory instanceof TileEntity ? ((TileEntity) inventory).getDistanceFrom(entityplayer.posX, entityplayer.posY, entityplayer.posZ) < 64
+		return this.inventory instanceof TileEntity ? ((TileEntity) this.inventory).getDistanceFrom(entityplayer.posX, entityplayer.posY, entityplayer.posZ) < 64
 				: true;
 	}
 
 
 	public void sendProgressBarUpdate(int key, int value) {
 
-		if (player instanceof EntityPlayerMP) {
-			((EntityPlayerMP) player).sendProgressBarUpdate(this, key, value);
+		if (this.player instanceof EntityPlayerMP) {
+			((EntityPlayerMP) this.player).sendProgressBarUpdate(this, key, value);
 		}
 	}
 
@@ -110,11 +110,11 @@ public abstract class PC_GresBaseWithInventory extends Container implements PC_I
 	public void onContainerClosed(EntityPlayer par1EntityPlayer) {
 
 		super.onContainerClosed(par1EntityPlayer);
-		if (inventory instanceof PC_TileEntity) {
-			((PC_TileEntity) inventory).closeContainer(this);
+		if (this.inventory instanceof PC_TileEntity) {
+			((PC_TileEntity) this.inventory).closeContainer(this);
 		}
-		if (inventory instanceof PC_Entity) {
-			((PC_Entity) inventory).closeContainer(this);
+		if (this.inventory instanceof PC_Entity) {
+			((PC_Entity) this.inventory).closeContainer(this);
 		}
 	}
 
@@ -123,11 +123,11 @@ public abstract class PC_GresBaseWithInventory extends Container implements PC_I
 	public void addCraftingToCrafters(ICrafting crafting) {
 
 		super.addCraftingToCrafters(crafting);
-		if (inventory instanceof PC_TileEntity) {
-			((PC_TileEntity) inventory).sendProgressBarUpdates();
+		if (this.inventory instanceof PC_TileEntity) {
+			((PC_TileEntity) this.inventory).sendProgressBarUpdates();
 		}
-		if (inventory instanceof PC_Entity) {
-			((PC_Entity) inventory).sendProgressBarUpdates();
+		if (this.inventory instanceof PC_Entity) {
+			((PC_Entity) this.inventory).sendProgressBarUpdates();
 		}
 	}
 
@@ -174,7 +174,7 @@ public abstract class PC_GresBaseWithInventory extends Container implements PC_I
 
 	@Override
 	public int getSizeInventory() {
-		return inventorySlots.size();
+		return this.inventorySlots.size();
 	}
 
 
@@ -204,43 +204,44 @@ public abstract class PC_GresBaseWithInventory extends Container implements PC_I
 
 	@Override
 	public String getInventoryName() {
-		return inventory.getInventoryName();
+		return this.inventory.getInventoryName();
 	}
 
 
 	@Override
 	public boolean hasCustomInventoryName() {
-		return inventory.hasCustomInventoryName();
+		return this.inventory.hasCustomInventoryName();
 	}
 
 
 	@Override
 	public int getInventoryStackLimit() {
-		return inventory.getInventoryStackLimit();
+		return this.inventory.getInventoryStackLimit();
 	}
 
 
 	@Override
 	public void markDirty() {
-		inventory.markDirty();
+		this.inventory.markDirty();
 	}
 
 
+	@SuppressWarnings("hiding")
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer player) {
-		return inventory.isUseableByPlayer(player);
+		return this.inventory.isUseableByPlayer(player);
 	}
 
 
 	@Override
 	public void openInventory() {
-		inventory.openInventory();
+		this.inventory.openInventory();
 	}
 
 
 	@Override
 	public void closeInventory() {
-		inventory.closeInventory();
+		this.inventory.closeInventory();
 	}
 
 
@@ -288,7 +289,7 @@ public abstract class PC_GresBaseWithInventory extends Container implements PC_I
 
 	@Override
 	public void onTick(World world) {
-		
+		//
 	}
 
 
@@ -316,8 +317,8 @@ public abstract class PC_GresBaseWithInventory extends Container implements PC_I
         return flag1;
     }
 	
-	protected void func_94533_d()
-    {
+	@Override
+	protected void func_94533_d(){
         this.field_94536_g = 0;
         this.field_94537_h.clear();
     }

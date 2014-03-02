@@ -18,7 +18,7 @@ final class PC_CreativeTab extends CreativeTabs {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public ItemStack getIconItemStack(){
-		return module.getCreativeTabItemStack();
+		return this.module.getCreativeTabItemStack();
 	}
 	
 	@Override

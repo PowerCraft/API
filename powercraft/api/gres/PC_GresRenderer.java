@@ -50,18 +50,21 @@ public class PC_GresRenderer {
      * Draws a solid color rectangle with the specified coordinates and color. Args: x1, y1, x2, y2, color
      */
     public static void drawRect(int x1, int y1, int x2, int y2, int color){
-        int tmp;
-
+        int nx1, nx2, ny1, ny2;
         if (x1 < x2){
-        	tmp = x1;
-            x1 = x2;
-            x2 = tmp;
+        	nx1 = x2;
+        	nx2 = x1;
+        }else{
+        	nx1 = x1;
+        	nx2 = x2;
         }
 
         if (y1 < y2){
-        	tmp = y1;
-        	y1 = y2;
-        	y2 = tmp;
+        	ny1 = y2;
+        	ny2 = y1;
+        }else{
+        	ny1 = y1;
+        	ny2 = y2;
         }
 
         int alpha = (color >> 24 & 255);
@@ -73,10 +76,10 @@ public class PC_GresRenderer {
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         tessellator.startDrawingQuads();
         tessellator.setColorRGBA(red, green, blue, alpha);
-        tessellator.addVertex(x1, y2, 0);
-        tessellator.addVertex(x2, y2, 0);
-        tessellator.addVertex(x2, y1, 0);
-        tessellator.addVertex(x1, y1, 0);
+        tessellator.addVertex(nx1, ny2, 0);
+        tessellator.addVertex(nx2, ny2, 0);
+        tessellator.addVertex(nx2, ny1, 0);
+        tessellator.addVertex(nx1, ny1, 0);
         tessellator.draw();
         GL11.glEnable(GL11.GL_TEXTURE_2D);
     }
@@ -128,43 +131,43 @@ public class PC_GresRenderer {
 			}
 		}
 
-		x += 12;
-		y += 12;
+		int nx = x+12;
+		int ny = y+12;
 		int k1 = 8;
 
 		if (list.size() > 1) {
 			k1 += 2 + (list.size() - 1) * 10;
 		}
 
-		if (x + maxWidth > wWidth) {
-			x -= 28 + maxWidth;
+		if (nx + maxWidth > wWidth) {
+			nx -= 28 + maxWidth;
 		}
 
-		if (y + k1 + 6 > wHeigth) {
-			y = wHeigth - k1 - 6;
+		if (ny + k1 + 6 > wHeigth) {
+			ny = wHeigth - k1 - 6;
 		}
 
 		final int l1 = -267386864;
-		drawGradientRect(x - 3, y - 4, maxWidth + 6, 1, l1, l1);
-		drawGradientRect(x - 3, y + k1 + 3, maxWidth + 6, 1, l1, l1);
-		drawGradientRect(x - 3, y - 3, maxWidth + 6, k1 + 6, l1, l1);
-		drawGradientRect(x - 4, y - 3, 1, k1 + 6, l1, l1);
-		drawGradientRect(x + maxWidth + 3, y - 3, 1, k1 + 6, l1, l1);
+		drawGradientRect(nx - 3, ny - 4, maxWidth + 6, 1, l1, l1);
+		drawGradientRect(nx - 3, ny + k1 + 3, maxWidth + 6, 1, l1, l1);
+		drawGradientRect(nx - 3, ny - 3, maxWidth + 6, k1 + 6, l1, l1);
+		drawGradientRect(nx - 4, ny - 3, 1, k1 + 6, l1, l1);
+		drawGradientRect(nx + maxWidth + 3, ny - 3, 1, k1 + 6, l1, l1);
 		final int i2 = 1347420415;
 		final int j2 = (i2 & 16711422) >> 1 | i2 & -16777216;
-		drawGradientRect(x - 3, y - 3 + 1, 1, k1 + 4, i2, j2);
-		drawGradientRect(x + maxWidth + 2, y - 3 + 1, 1, k1 + 4, i2, j2);
-		drawGradientRect(x - 3, y - 3, maxWidth + 6, 1, i2, i2);
-		drawGradientRect(x - 3, y + k1 + 2, maxWidth + 6, 1, j2, j2);
+		drawGradientRect(nx - 3, ny - 3 + 1, 1, k1 + 4, i2, j2);
+		drawGradientRect(nx + maxWidth + 2, ny - 3 + 1, 1, k1 + 4, i2, j2);
+		drawGradientRect(nx - 3, ny - 3, maxWidth + 6, 1, i2, i2);
+		drawGradientRect(nx - 3, ny + k1 + 2, maxWidth + 6, 1, j2, j2);
 
 		boolean isMainLine = true;
 		for (String s : list) {
-			fontRenderer.drawStringWithShadow(s, x, y, -1);
+			fontRenderer.drawStringWithShadow(s, nx, ny, -1);
 			if (isMainLine) {
-				y += 2;
+				ny += 2;
 				isMainLine = false;
 			}
-			y += 10;
+			ny += 10;
 		}
 		GL11.glEnable(GL11.GL_LIGHTING);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);

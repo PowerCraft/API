@@ -44,13 +44,15 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 	PC_AbstractBlockBase(Material material) {
 		super(material);
 		PC_Blocks.addBlock(this);
-		module = PC_Utils.getActiveMod();
+		this.module = PC_Utils.getActiveMod();
 	}
 
+	@SuppressWarnings("static-method")
 	public Class<? extends PC_ItemBlock> getItemBlock(){
 		return PC_ItemBlock.class;
 	}
 	
+	@SuppressWarnings("static-method")
 	public Object[] getItemBlockConstructorData(){
 		return null;
 	}
@@ -64,29 +66,30 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 	}
 	
 	public final PC_Module getModule() {
-		return (PC_Module)module.getMod();
+		return (PC_Module)this.module.getMod();
 	}
 	
 	@Override
 	public Block setCreativeTab(CreativeTabs creativeTab) {
 		if(creativeTab==null){
-			creativeTabs = NULLCREATIVTABS;
+			this.creativeTabs = NULLCREATIVTABS;
 		}else{
-			if(constructed){
+			if(this.constructed){
 				List<CreativeTabs> creativeTabList = new ArrayList<CreativeTabs>();
 				creativeTabList.add(creativeTab);
 				if(!creativeTabList.contains(getModule().getCreativeTab()))
 					creativeTabList.add(getModule().getCreativeTab());
 				if(!creativeTabList.contains(PC_Api.INSTANCE.getCreativeTab()))
 					creativeTabList.add(PC_Api.INSTANCE.getCreativeTab());
-				creativeTabs = creativeTabList.toArray(new CreativeTabs[creativeTabList.size()]);
+				this.creativeTabs = creativeTabList.toArray(new CreativeTabs[creativeTabList.size()]);
 			}else{
-				creativeTabs = new CreativeTabs[]{creativeTab};
+				this.creativeTabs = new CreativeTabs[]{creativeTab};
 			}
 		}
 		return this;
 	}
 
+	@SuppressWarnings("hiding")
 	void construct() {
 		PC_Module module = getModule();
 		Object[] itemBlockConstructorData = getItemBlockConstructorData();
@@ -94,9 +97,9 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 			itemBlockConstructorData = new Object[0];
 		setBlockName(getRegisterName());
 		GameRegistry.registerBlock(this, getItemBlock(), module.getName()+":"+getRegisterName(), module.getModId(), itemBlockConstructorData);
-		constructed = true;
-		if(creativeTabs.length>0)
-			setCreativeTab(creativeTabs[0]);
+		this.constructed = true;
+		if(this.creativeTabs.length>0)
+			setCreativeTab(this.creativeTabs[0]);
 	}
 	
 	@Override
@@ -126,6 +129,7 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 		return getIcon(PC_Direction.fromSide(side), metadata);
 	}
 
+	@SuppressWarnings({ "static-method", "unused" })
 	public List<AxisAlignedBB> getCollisionBoundingBoxes(World world, int x, int y, int z, Entity entity){
 		return null;
 	}
@@ -141,7 +145,7 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 			}
 		}else{
 		for(AxisAlignedBB b:boxes){
-			b = PC_Utils.rotateAABB(world, x, y, z, b).offset(x, y, z);;
+			b = PC_Utils.rotateAABB(world, x, y, z, b).offset(x, y, z);
 			if(b.intersectsWith(box)){
 				list.add(b);
 			}
@@ -153,8 +157,9 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 		return getMainCollisionBoundingBoxPre(world, x, y, z);
 	}
 	
+	@SuppressWarnings("unused")
 	public AxisAlignedBB getMainCollisionBoundingBoxPre(World world, int x, int y, int z) {
-		return AxisAlignedBB.getAABBPool().getAABB(minX, minY, minZ, maxX, maxY, maxZ);
+		return AxisAlignedBB.getAABBPool().getAABB(this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ);
 	}
 	
 	@Override
@@ -175,6 +180,7 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 		return PC_Utils.rotateAABB(world, x, y, z, box).offset(x, y, z);
 	}
 
+	@SuppressWarnings({ "static-method", "unused" })
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, PC_Direction side) {
 		return false;
 	}
@@ -194,6 +200,7 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 		return getRedstonePowerValue(world, x, y, z, PC_Utils.getSidePosition(world, x, y, z, PC_Direction.DOWN), PC_Utils.getSideRotation(world, x, y, z, PC_Direction.DOWN, side));
 	}
 
+	@SuppressWarnings("unused")
 	public boolean canRedstoneConnect(IBlockAccess world, int x, int y, int z, PC_Direction side, int faceSide){
 		return canProvidePower();
 	}
@@ -203,6 +210,7 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 		return canRedstoneConnect(world, x, y, z, PC_Utils.getSidePosition(world, x, y, z, side), PC_Utils.getSideRotation(world, x, y, z, side, faceSide));
 	}
 	
+	@SuppressWarnings({ "static-method", "unused" })
 	public int getRedstonePowerValue(IBlockAccess world, int x, int y, int z, PC_Direction side, int faceSide){
 		return 0;
 	}
@@ -212,8 +220,9 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 		return getRedstonePowerValue(world, x, y, z, PC_Utils.getSidePosition(world, x, y, z, side), PC_Utils.getSideRotation(world, x, y, z, side, faceSide));
 	}
 	
+	@SuppressWarnings("unused")
 	public void setRedstonePowerValue(World world, int x, int y, int z, PC_Direction side, int faceSide, int value){
-		
+		//
 	}
 	
 	@Override
@@ -221,6 +230,7 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 		setRedstonePowerValue(world, x, y, z, PC_Utils.getSidePosition(world, x, y, z, side), PC_Utils.getSideRotation(world, x, y, z, side, faceSide), value);
 	}
 	
+	@SuppressWarnings({ "static-method", "unused" })
 	public int getComparatorInput(World world, int x, int y, int z, PC_Direction side) {
 		return 0;
 	}
@@ -236,8 +246,9 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 		registerIcons(PC_ClientRegistry.getIconRegistry(iconRegister, this));
 	}
 
+	@SuppressWarnings("unused")
 	public void registerIcons(PC_IconRegistry iconRegistry){
-		
+		//
 	}
 	
 	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, PC_Direction side){
@@ -290,6 +301,7 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 		return canRedstoneConnect(world, x, y, z, PC_Utils.getSidePosition(world, x, y, z, PC_Direction.DOWN), PC_Utils.getSideRotation(world, x, y, z, PC_Direction.DOWN, side));
 	}
 
+	@SuppressWarnings({ "static-method", "unused" })
 	public boolean canSustainPlant(IBlockAccess world, int x, int y, int z, PC_Direction side, IPlantable plantable) {
 		return false;
 	}
@@ -309,6 +321,7 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 		return PC_Utils.getValidRotations(world, x, y, z);
 	}
 
+	@SuppressWarnings({ "unused", "static-method" })
 	public boolean recolourBlock(World world, int x, int y, int z, PC_Direction side, int colour) {
 		return false;
 	}
@@ -318,6 +331,7 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 		return recolourBlock(world, x, y, z, PC_Utils.getSidePosition(world, x, y, z, side), colour);
 	}
 
+	@SuppressWarnings("unused")
 	public boolean shouldCheckWeakPower(IBlockAccess world, int x, int y, int z, PC_Direction side) {
 		 return isNormalCube();
 	}
@@ -353,12 +367,13 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 		return PC_Renderer.getInstance().getRenderId();
 	}
 
+	@SuppressWarnings("unused")
 	public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider) {
-		
+		//
 	}
 
 	public CreativeTabs[] getCreativeTabs() {
-		return creativeTabs;
+		return this.creativeTabs;
 	}
 	
 }

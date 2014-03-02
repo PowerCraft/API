@@ -7,6 +7,7 @@ final class PC_Bootstrap {
 
 	private static boolean loaded;
 	
+	@SuppressWarnings("unused")
 	static void prepare() {
 		try{
 			if(FMLCommonHandler.instance().getSide()==Side.CLIENT){
@@ -20,7 +21,7 @@ final class PC_Bootstrap {
 			e.printStackTrace();
 			throw new RuntimeException("Failed to initialize PowerCraft");
 		}
-		PC_Logger.init(PC_Utils.getPowerCraftFile(null, PC_Api.POWERCRAFT+".log"));
+		PC_Logger.init(PC_Utils.getPowerCraftFile(null, PC_Module.POWERCRAFT+".log"));
 		loaded = true;
 	}
 

@@ -20,7 +20,7 @@ public abstract class PC_TileEntityRotateable extends PC_TileEntity {
 
 	@Override
 	public PC_3DRotation get3DRotation() {
-		return rotation;
+		return this.rotation;
 	}
 
 	@Override

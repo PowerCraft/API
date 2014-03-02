@@ -26,7 +26,7 @@ public class PC_Vec3 {
 
 		if (obj instanceof PC_Vec3) {
 			PC_Vec3 vec = (PC_Vec3) obj;
-			return vec.x == x && vec.y == y && vec.z == z;
+			return vec.x == this.x && vec.y == this.y && vec.z == this.z;
 		}
 		return false;
 	}	
@@ -34,21 +34,21 @@ public class PC_Vec3 {
 	@Override
 	public int hashCode() {
 
-		return ((int)x) ^ 34 + ((int)y) ^ 12 + ((int)z);
+		return ((int)this.x) ^ 34 + ((int)this.y) ^ 12 + ((int)this.z);
 	}
 
 
 	@Override
 	public String toString() {
 
-		return "Vec3I[" + x + ", " + y + ", " + z + "]";
+		return "Vec3I[" + this.x + ", " + this.y + ", " + this.z + "]";
 	}
 
 
 	public void setTo(PC_Vec3 vec) {
-		x = vec.x;
-		y = vec.y;
-		z = vec.z;
+		this.x = vec.x;
+		this.y = vec.y;
+		this.z = vec.z;
 	}
 
 

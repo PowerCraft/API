@@ -26,6 +26,7 @@ public abstract class PC_MultiblockItem extends PC_Item {
 
 	public abstract PC_MultiblockType getMultiblockType();
 
+	@Override
 	public String getTextureFolderName() {
 		return getClass().getSimpleName().replaceAll("PC.*_(Multiblock)?(Item)?", "");
 	}
@@ -41,7 +42,9 @@ public abstract class PC_MultiblockItem extends PC_Item {
 				PC_Logger.severe("Faild to generate multiblock tile entity");
 			}
 			return null;
-		} catch (Exception e) {}
+		} catch (Exception e) {
+			//
+		}
 		try {
 			return c.newInstance();
 		} catch (Exception e) {
@@ -54,26 +57,28 @@ public abstract class PC_MultiblockItem extends PC_Item {
 
 	@Override
 	public boolean onItemUse(ItemStack itemStack, EntityPlayer entityPlayer, World world, int x, int y, int z, int iside, float xHit, float yHit, float zHit) {
-		Block block = PC_Utils.getBlock(world, x, y, z);
+		int nx = x, ny = y, nz = z;
+		float nxHit = xHit, nyHit = yHit, nzHit = zHit;
+		Block block = PC_Utils.getBlock(world, nx, ny, nz);
 		PC_Direction side = PC_Direction.fromSide(iside);
 		boolean replaceAble = false;
 		if (block instanceof PC_BlockMultiblock) {
-			int ret = handleMultiblockClick(itemStack, entityPlayer, world, x, y, z, side, xHit, yHit, zHit, false);
+			int ret = handleMultiblockClick(itemStack, entityPlayer, world, nx, ny, nz, side, nxHit, nyHit, nzHit, false);
 			if (ret != -1) {
 				return ret != 0;
 			}
 		}
-		if (block == Blocks.snow && (world.getBlockMetadata(x, y, z) & 7) < 1) {
+		if (block == Blocks.snow && (world.getBlockMetadata(nx, ny, nz) & 7) < 1) {
 			side = PC_Direction.UP;
 			replaceAble = true;
 		} else if (block != Blocks.vine && block != Blocks.tallgrass && block != Blocks.deadbush
-				&& (block == null || !block.isReplaceable(world, x, y, z))) {
-			x += side.offsetX;
-        	y += side.offsetY;
-        	z += side.offsetZ;
-			block = PC_Utils.getBlock(world, x, y, z);
-			if ((block == Blocks.snow && (world.getBlockMetadata(x, y, z) & 7) < 1) || !(block != Blocks.vine && block != Blocks.tallgrass && block != Blocks.deadbush
-					&& (block == null || !block.isReplaceable(world, x, y, z)))) {
+				&& (block == null || !block.isReplaceable(world, nx, ny, nz))) {
+			nx += side.offsetX;
+        	ny += side.offsetY;
+        	nz += side.offsetZ;
+			block = PC_Utils.getBlock(world, nx, ny, nz);
+			if ((block == Blocks.snow && (world.getBlockMetadata(nx, ny, nz) & 7) < 1) || !(block != Blocks.vine && block != Blocks.tallgrass && block != Blocks.deadbush
+					&& (block == null || !block.isReplaceable(world, nx, ny, nz)))) {
 				replaceAble = true;
 			}
 		} else {
@@ -81,38 +86,38 @@ public abstract class PC_MultiblockItem extends PC_Item {
 		}
 		switch (side) {
 		case DOWN:
-			yHit = 1;
+			nyHit = 1;
 			break;
 		case UP:
-			yHit = 0;
+			nyHit = 0;
 			break;
 		case NORTH:
-			zHit = 1;
+			nzHit = 1;
 			break;
 		case SOUTH:
-			zHit = 0;
+			nzHit = 0;
 			break;
 		case WEST:
-			xHit = 1;
+			nxHit = 1;
 			break;
 		case EAST:
-			xHit = 0;
+			nxHit = 0;
 			break;
 		default:
 			break;
 		}
 		if (block == null || replaceAble) {
-			world.setBlock(x, y, z, PC_Api.MULTIBLOCK);
-			block = PC_Utils.getBlock(world, x, y, z);
+			world.setBlock(nx, ny, nz, PC_Api.MULTIBLOCK);
+			block = PC_Utils.getBlock(world, nx, ny, nz);
 		}
 		if (block instanceof PC_BlockMultiblock) {
-			int ret = handleMultiblockClick(itemStack, entityPlayer, world, x, y, z, side, xHit, yHit, zHit, true);
+			int ret = handleMultiblockClick(itemStack, entityPlayer, world, nx, ny, nz, side, nxHit, nyHit, nzHit, true);
 			if (ret != -1) {
 				return ret != 0;
 			}
-			PC_TileEntityMultiblock tem = PC_Utils.getTileEntity(world, x, y, z, PC_TileEntityMultiblock.class);
+			PC_TileEntityMultiblock tem = PC_Utils.getTileEntity(world, nx, ny, nz, PC_TileEntityMultiblock.class);
 			if(tem.noTiles()){
-				world.setBlockToAir(x, y, z);
+				world.setBlockToAir(nx, ny, nz);
 			}
 		}
 		return false;
@@ -122,7 +127,7 @@ public abstract class PC_MultiblockItem extends PC_Item {
 	@SuppressWarnings("unused")
 	public int handleMultiblockClick(ItemStack itemStack, EntityPlayer entityPlayer, World world, int x, int y, int z, PC_Direction side, float xHit,
 			float yHit, float zHit, boolean secoundTry) {
-
+		PC_Direction s = side;
 		PC_TileEntityMultiblock tem = PC_Utils.getTileEntity(world, x, y, z, PC_TileEntityMultiblock.class);
 		switch (getMultiblockType()) {
 			case CENTER:
@@ -143,7 +148,7 @@ public abstract class PC_MultiblockItem extends PC_Item {
 				float hit2;
 				float hit3;
 				final float a = 0.5f-2f/16f;
-				switch(side){
+				switch(s){
 				case DOWN:
 				case UP:
 					hit1 = xHit;
@@ -173,24 +178,24 @@ public abstract class PC_MultiblockItem extends PC_Item {
 				if(hit3==0 || hit3==1){
 					if(!secoundTry)
 						return -1;
-					side = side.getOpposite();
+					s = s.getOpposite();
 				}
 				if(Math.abs(hit1)>a || Math.abs(hit2)>a){
 					if(Math.abs(hit1)>Math.abs(hit2)){
 						if(hit1>0){
-							side = dirs[0];
+							s = dirs[0];
 						}else{
-							side = dirs[1];
+							s = dirs[1];
 						}
 					}else{
 						if(hit2>0){
-							side = dirs[2];
+							s = dirs[2];
 						}else{
-							side = dirs[3];
+							s = dirs[3];
 						}
 					}
 				}
-				if (side!=null && tem.setMultiblockTileEntity(PC_MultiblockIndex.FACEINDEXFORDIR[side.ordinal()], getMultiblockObject(itemStack))) {
+				if (s!=null && tem.setMultiblockTileEntity(PC_MultiblockIndex.FACEINDEXFORDIR[s.ordinal()], getMultiblockObject(itemStack))) {
 					itemStack.stackSize--;
 					return 1;
 				}
@@ -202,8 +207,9 @@ public abstract class PC_MultiblockItem extends PC_Item {
 		return 0;
 	}
 
+	@SuppressWarnings("unused")
 	public void loadMultiblockIcons(PC_IconRegistry iconRegistry) {
-		
+		//
 	}
 	
 }

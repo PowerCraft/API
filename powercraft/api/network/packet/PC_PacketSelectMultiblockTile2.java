@@ -1,10 +1,10 @@
 package powercraft.api.network.packet;
 
 import io.netty.buffer.ByteBuf;
+import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.INetHandler;
-import powercraft.api.PC_ClientUtils;
+import net.minecraft.world.World;
 import powercraft.api.PC_Utils;
 import powercraft.api.multiblock.PC_BlockMultiblock;
 import powercraft.api.multiblock.PC_MultiblockIndex;
@@ -33,34 +33,35 @@ public class PC_PacketSelectMultiblockTile2 extends PC_PacketServerToClient {
 		this.player = player.getEntityId();
 	}
 	
+	@SuppressWarnings("hiding")
 	@Override
 	@SideOnly(Side.CLIENT)
-	protected PC_Packet doAndReply(INetHandler iNetHandler) {
+	protected PC_Packet doAndReply(NetHandlerPlayClient iNetHandler, World world, EntityPlayer player) {
 		
-		Entity e = PC_ClientUtils.mc().theWorld.getEntityByID(player);
-		PC_BlockMultiblock block = PC_Utils.getBlock(PC_ClientUtils.mc().theWorld, x, y, z, PC_BlockMultiblock.class);
-		if(block!=null && e instanceof EntityPlayer && e!=PC_ClientUtils.mc().thePlayer){
-			PC_BlockMultiblock.playerSelect((EntityPlayer)e, PC_MultiblockIndex.values()[tile]);
+		Entity e = world.getEntityByID(this.player);
+		PC_BlockMultiblock block = PC_Utils.getBlock(world, this.x, this.y, this.z, PC_BlockMultiblock.class);
+		if(block!=null && e instanceof EntityPlayer && e!=player){
+			PC_BlockMultiblock.playerSelect((EntityPlayer)e, PC_MultiblockIndex.values()[this.tile]);
 		}
 		return null;
 	}
 
 	@Override
 	protected void fromByteBuffer(ByteBuf buf) {
-		x = buf.readInt();
-		y = buf.readInt();
-		z = buf.readInt();
-		tile = buf.readInt();
-		player = buf.readInt();
+		this.x = buf.readInt();
+		this.y = buf.readInt();
+		this.z = buf.readInt();
+		this.tile = buf.readInt();
+		this.player = buf.readInt();
 	}
 
 	@Override
 	protected void toByteBuffer(ByteBuf buf) {
-		buf.writeInt(x);
-		buf.writeInt(y);
-		buf.writeInt(z);
-		buf.writeInt(tile);
-		buf.writeInt(player);
+		buf.writeInt(this.x);
+		buf.writeInt(this.y);
+		buf.writeInt(this.z);
+		buf.writeInt(this.tile);
+		buf.writeInt(this.player);
 	}
 
 }

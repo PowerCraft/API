@@ -12,7 +12,7 @@ public class PC_GresFocusGotEvent extends PC_GresConsumeableEvent {
 	}
 	
 	public PC_GresComponent getOldFocusedComponent(){
-		return oldFocusedComponent;
+		return this.oldFocusedComponent;
 	}
 	
 }

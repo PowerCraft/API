@@ -71,6 +71,10 @@ public class PC_MiniscriptHighlighting {
 	
 	private static final class AutoAdd implements PC_AutoAdd{
 		
+		AutoAdd() {
+			
+		}
+
 		@Override
 		public void onCharAdded(PC_StringAdd add) {
 			if(add.toAdd.equals("[")){
@@ -95,20 +99,20 @@ public class PC_MiniscriptHighlighting {
 	
 	private static final class AutoComplete implements PC_AutoComplete{
 		
-		private HashMap<String, PC_GresDocumentLine> label2Line = new HashMap<String, PC_GresDocumentLine>();
-		private HashMap<PC_GresDocumentLine, String> line2Label = new HashMap<PC_GresDocumentLine, String>();
+		HashMap<String, PC_GresDocumentLine> label2Line = new HashMap<String, PC_GresDocumentLine>();
+		HashMap<PC_GresDocumentLine, String> line2Label = new HashMap<PC_GresDocumentLine, String>();
 		private InfoCollector infoCollector = new InfoCollector(this);
-		private PC_SortedStringList labelNames = new PC_SortedStringList();
+		PC_SortedStringList labelNames = new PC_SortedStringList();
 		private PC_SortedStringList asmInstructions = new PC_SortedStringList();
 		private PC_SortedStringList words = new PC_SortedStringList();
 		private PC_SortedStringList registers = new PC_SortedStringList();
 		
-		private AutoComplete(List<PC_StringWithInfo> words){
+		AutoComplete(List<PC_StringWithInfo> words){
 			for(String asm:MINISCRIPT_ASM){
-				asmInstructions.add(new PC_StringWithInfo(asm, PC_Lang.translate("miniscript.tooltip."+asm.toLowerCase()), PC_Lang.translate("miniscript.desk."+asm.toLowerCase())));
+				this.asmInstructions.add(new PC_StringWithInfo(asm, PC_Lang.translate("miniscript.tooltip."+asm.toLowerCase()), PC_Lang.translate("miniscript.desk."+asm.toLowerCase())));
 			}
 			for(int i=0; i<31; i++){
-				registers.add(new PC_StringWithInfo("r"+i, "Register Nr "+i));
+				this.registers.add(new PC_StringWithInfo("r"+i, "Register Nr "+i));
 			}
 			this.words.addAll(words);
 		}
@@ -157,16 +161,16 @@ public class PC_MiniscriptHighlighting {
 				info.info = type;
 				switch(type){
 				case INSTRUCTION:
-					info.parts = new PC_StringListPart[]{new PC_StringListPart(asmInstructions)};
+					info.parts = new PC_StringListPart[]{new PC_StringListPart(this.asmInstructions)};
 					break;
 				case LABEL:
-					info.parts = new PC_StringListPart[]{new PC_StringListPart(labelNames)};
+					info.parts = new PC_StringListPart[]{new PC_StringListPart(this.labelNames)};
 					break;
 				case WORD:
-					info.parts = new PC_StringListPart[]{new PC_StringListPart(words), new PC_StringListPart(registers)};
+					info.parts = new PC_StringListPart[]{new PC_StringListPart(this.words), new PC_StringListPart(this.registers)};
 					break;
 				case REGISTERS:
-					info.parts = new PC_StringListPart[]{new PC_StringListPart(registers)};
+					info.parts = new PC_StringListPart[]{new PC_StringListPart(this.registers)};
 					break;
 				default:
 					info.display = false;
@@ -185,7 +189,7 @@ public class PC_MiniscriptHighlighting {
 
 		@Override
 		public PC_GresDocInfoCollector getInfoCollector() {
-			return infoCollector;
+			return this.infoCollector;
 		}
 		
 		enum Type{
@@ -207,16 +211,16 @@ public class PC_MiniscriptHighlighting {
 		
 		private AutoComplete autoComplete;
 		
-		private InfoCollector(AutoComplete autoComplete){
+		InfoCollector(AutoComplete autoComplete){
 			this.autoComplete = autoComplete;
 		}
 		
 		@Override
 		public void onLineChange(PC_GresDocumentLine line) {
-			String label = autoComplete.line2Label.remove(line);
+			String label = this.autoComplete.line2Label.remove(line);
 			if(label!=null){
-				autoComplete.label2Line.remove(label);
-				autoComplete.labelNames.remove(label);
+				this.autoComplete.label2Line.remove(label);
+				this.autoComplete.labelNames.remove(label);
 			}
 		}
 
@@ -242,9 +246,9 @@ public class PC_MiniscriptHighlighting {
 						l = l.prev;
 						lineNum++;
 					}
-					autoComplete.line2Label.put(line, label);
-					autoComplete.label2Line.put(label, line);
-					autoComplete.labelNames.add(new PC_StringWithInfo(label, "In Line "+lineNum));
+					this.autoComplete.line2Label.put(line, label);
+					this.autoComplete.label2Line.put(label, line);
+					this.autoComplete.labelNames.add(new PC_StringWithInfo(label, "In Line "+lineNum));
 					return;
 				}else{
 					return;
@@ -257,8 +261,13 @@ public class PC_MiniscriptHighlighting {
 	
 	private static final class LabelHighlight implements IMultiplePossibilities{
 
+		LabelHighlight() {
+			
+		}
+
 		@Override
-		public int comesNowIn(String line, int i, Object lastInfo) {
+		public int comesNowIn(String line, int index, Object lastInfo) {
+			int i = index;
 			if(line.substring(0, i).trim().isEmpty()){
 				int size = 0;
 				boolean isEnd = false;
@@ -297,27 +306,26 @@ public class PC_MiniscriptHighlighting {
 		}
 		
 		@Override
-		public int comesNowIn(String line, int i, Object lastInfo) {
+		public int comesNowIn(String line, int index, Object lastInfo) {
+			int i = index;
 			if(lastInfo instanceof WordInfo){
 				return 0;
-			}else{
-				elementHighlight.wordInfo = new WordInfo();
-				elementHighlight.wordInfo.start = "";
 			}
+			this.elementHighlight.wordInfo = new WordInfo("");
 			char c = line.charAt(i);
 			int length = 0;
 			while(Character.isAlphabetic(c) || Character.isDigit(c)){
-				elementHighlight.wordInfo.start += c;
+				this.elementHighlight.wordInfo.start += c;
 				length++;
 				i++;
 				if(i>=line.length())
 					break;
 				c = line.charAt(i);
 			}
-			Iterator<String> it = words.iterator();
+			Iterator<String> it = this.words.iterator();
 			while(it.hasNext()){
 				String s = it.next().split("\\.", 2)[0];
-				if(s.equals(elementHighlight.wordInfo.start)){
+				if(s.equals(this.elementHighlight.wordInfo.start)){
 					return length;
 				}
 			}
@@ -342,27 +350,28 @@ public class PC_MiniscriptHighlighting {
 		}
 		
 		@Override
-		public int comesNowIn(String line, int i, Object lastInfo) {
+		public int comesNowIn(String line, int index, Object lastInfo) {
+			int i = index;
 			if(lastInfo instanceof WordInfo){
-				elementHighlight.wordInfo = (WordInfo) lastInfo;
-				elementHighlight.wordInfo.start += ".";
+				this.elementHighlight.wordInfo = (WordInfo) lastInfo;
+				this.elementHighlight.wordInfo.start += ".";
 			}else{
 				return 0;
 			}
 			char c = line.charAt(i);
 			int length = 0;
 			while(Character.isAlphabetic(c) || Character.isDigit(c)){
-				elementHighlight.wordInfo.start += c;
+				this.elementHighlight.wordInfo.start += c;
 				length++;
 				i++;
 				if(i>=line.length())
 					break;
 				c = line.charAt(i);
 			}
-			Iterator<String> it = words.iterator();
+			Iterator<String> it = this.words.iterator();
 			while(it.hasNext()){
 				String s = it.next();
-				if(s.startsWith(elementHighlight.wordInfo.start+".") || s.equals(elementHighlight.wordInfo.start)){
+				if(s.startsWith(this.elementHighlight.wordInfo.start+".") || s.equals(this.elementHighlight.wordInfo.start)){
 					return length;
 				}
 			}
@@ -378,8 +387,12 @@ public class PC_MiniscriptHighlighting {
 	
 	private static final class ElementHighlight implements IMultiplePossibilities{
 
-		private WordInfo wordInfo;
+		WordInfo wordInfo;
 		
+		ElementHighlight() {
+			
+		}
+
 		@Override
 		public int comesNowIn(String line, int i, Object lastInfo) {
 			if(line.charAt(i)=='.'){
@@ -390,21 +403,30 @@ public class PC_MiniscriptHighlighting {
 
 		@Override
 		public Object getInfo() {
-			return wordInfo;
+			return this.wordInfo;
 		}
 		
 	}
 	
 	private static final class WordInfo{
 		
-		private String start;
+		String start;
+		
+		WordInfo(String start) {
+			this.start = start;
+		}
 		
 	}
 	
 	private static final class JumperHightlights implements IMultiplePossibilities{
 
+		JumperHightlights() {
+			
+		}
+
 		@Override
-		public int comesNowIn(String line, int i, Object lastInfo) {
+		public int comesNowIn(String line, int index, Object lastInfo) {
+			int i = index;
 			String l = line.substring(0, i).trim();
 			for(String jmp:MINISCRIPT_ASM_JMP){
 				if(l.equalsIgnoreCase(jmp)){

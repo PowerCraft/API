@@ -18,7 +18,7 @@ public class PC_GresLabel extends PC_GresComponent {
 	@Override
 	protected PC_Vec2I calculateMinSize() {
 
-		return fontRenderer.getStringSize(text);
+		return fontRenderer.getStringSize(this.text);
 	}
 
 
@@ -39,7 +39,7 @@ public class PC_GresLabel extends PC_GresComponent {
 	@Override
 	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp) {
 
-		drawString(text, 0, 0, rect.width, rect.height, alignH, alignV, false);
+		drawString(this.text, 0, 0, this.rect.width, this.rect.height, this.alignH, this.alignV, false);
 	}
 
 }

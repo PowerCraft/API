@@ -17,7 +17,7 @@ final class PC_EnergyNodeConduit extends PC_EnergyNode<PC_IEnergyGridConduit> {
 
 	@Override
 	public void addToInfo(PC_EnergyInfo info) {
-		
+		//
 	}
 
 	@Override

@@ -33,11 +33,11 @@ public abstract class PC_Item extends Item implements PC_IItem{
 	
 	public PC_Item(){
 		PC_Items.addItem(this);
-		module = PC_Utils.getActiveMod();
+		this.module = PC_Utils.getActiveMod();
 	}
 	
 	public final PC_Module getModule() {
-		return (PC_Module)module.getMod();
+		return (PC_Module)this.module.getMod();
 	}
 
 	public String getRegisterName() {
@@ -51,35 +51,36 @@ public abstract class PC_Item extends Item implements PC_IItem{
 	@Override
 	public Item setCreativeTab(CreativeTabs creativeTab) {
 		if(creativeTab==null){
-			creativeTabs = NULLCREATIVTABS;
+			this.creativeTabs = NULLCREATIVTABS;
 		}else{
-			if(constructed){
+			if(this.constructed){
 				List<CreativeTabs> creativeTabList = new ArrayList<CreativeTabs>();
 				creativeTabList.add(creativeTab);
 				if(!creativeTabList.contains(getModule().getCreativeTab()))
 					creativeTabList.add(getModule().getCreativeTab());
 				if(!creativeTabList.contains(PC_Api.INSTANCE.getCreativeTab()))
 					creativeTabList.add(PC_Api.INSTANCE.getCreativeTab());
-				creativeTabs = creativeTabList.toArray(new CreativeTabs[creativeTabList.size()]);
+				this.creativeTabs = creativeTabList.toArray(new CreativeTabs[creativeTabList.size()]);
 			}else{
-				creativeTabs = new CreativeTabs[]{creativeTab};
+				this.creativeTabs = new CreativeTabs[]{creativeTab};
 			}
 		}
 		return this;
 	}
 	
+	@SuppressWarnings("hiding")
 	final void construct() {
 		PC_Module module = getModule();
 		setUnlocalizedName(getRegisterName());
 		GameRegistry.registerItem(this, module.getName()+":"+getRegisterName(), module.getModId());
-		constructed = true;
-		if(creativeTabs.length>0)
-			setCreativeTab(creativeTabs[0]);
+		this.constructed = true;
+		if(this.creativeTabs.length>0)
+			setCreativeTab(this.creativeTabs[0]);
 	}
 	
 	@Override
 	public CreativeTabs[] getCreativeTabs(){
-		return creativeTabs;
+		return this.creativeTabs;
 	}
 	
 	@Override
@@ -88,8 +89,9 @@ public abstract class PC_Item extends Item implements PC_IItem{
 		registerIcons(PC_ClientRegistry.getIconRegistry(iconRegister, this));
 	}
 
+	@SuppressWarnings("unused")
 	public void registerIcons(PC_IconRegistry iconRegistry){
-		
+		//
 	}
 
 	@Override
@@ -104,22 +106,25 @@ public abstract class PC_Item extends Item implements PC_IItem{
 
 	@Override
 	public void onTick(ItemStack itemStack, World world, IInventory inventory, int slot) {
-		
+		//
 	}
 	
+	@SuppressWarnings({ "static-method", "unused" })
 	@SideOnly(Side.CLIENT)
 	public boolean handleRenderType(ItemStack itemStack, ItemRenderType type) {
 		return false;
 	}
 
+	@SuppressWarnings({ "static-method", "unused" })
 	@SideOnly(Side.CLIENT)
 	public boolean shouldUseRenderHelper(ItemStack itemStack, ItemRenderType type, ItemRendererHelper helper) {
 		return false;
 	}
 
+	@SuppressWarnings("unused")
 	@SideOnly(Side.CLIENT)
 	public void renderItem(ItemStack itemStack, ItemRenderType type, Object[] data) {
-		
+		//
 	}
 	
 }

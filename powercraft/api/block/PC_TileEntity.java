@@ -61,18 +61,18 @@ public class PC_TileEntity extends TileEntity {
 		
 		private static Random sessionRand = new Random();
 		
-		private final int dimension;
-		private final int x;
-		private final int y;
-		private final int z;
-		private final long session;
+		final int dimension;
+		final int x;
+		final int y;
+		final int z;
+		final long session;
 		
-		private Session(PC_TileEntity tileEntity){
-			session = sessionRand.nextLong();
-			dimension = tileEntity.worldObj.getWorldInfo().getVanillaDimension();
-			x = tileEntity.xCoord;
-			y = tileEntity.yCoord;
-			z = tileEntity.zCoord;
+		Session(PC_TileEntity tileEntity){
+			this.session = sessionRand.nextLong();
+			this.dimension = tileEntity.getWorldObj().getWorldInfo().getVanillaDimension();
+			this.x = tileEntity.xCoord;
+			this.y = tileEntity.yCoord;
+			this.z = tileEntity.zCoord;
 		}
 		
 	}
@@ -102,31 +102,33 @@ public class PC_TileEntity extends TileEntity {
 		}
 	}
 
+	@SuppressWarnings("static-method")
 	public float getHardness() {
 		return Float.NaN;
 	}
 
 	@SideOnly(Side.CLIENT)
 	public void randomDisplayTick() {
-		
+		//
 	}
 
+	@SuppressWarnings("unused")
 	public void onNeighborBlockChange(Block neighbor) {
-		int newRedstoneValue = PC_Utils.getRedstoneValue(worldObj, xCoord, yCoord, zCoord);
+		int newRedstoneValue = PC_Utils.getRedstoneValue(this.worldObj, this.xCoord, this.yCoord, this.zCoord);
 		updateRedstone(newRedstoneValue);
 	}
 	
 	protected void updateRedstone(int newRedstoneValue){
-		if(newRedstoneValue!=redstoneValue){
-			onRedstoneValueChanging(newRedstoneValue, redstoneValue);
-			redstoneValue = newRedstoneValue;
+		if(newRedstoneValue!=this.redstoneValue){
+			onRedstoneValueChanging(newRedstoneValue, this.redstoneValue);
+			this.redstoneValue = newRedstoneValue;
 		}
 	}
 
 	protected void onRedstoneValueChanging(int newValue, int oldValue){
-		if(workWhen==null)
+		if(this.workWhen==null)
 			return;
-		switch(workWhen){
+		switch(this.workWhen){
 		case ON_FLANK:
 			if((newValue==0 && oldValue!=0) || (newValue!=0 && oldValue==0)){
 				startWorking();
@@ -168,19 +170,19 @@ public class PC_TileEntity extends TileEntity {
 	}
 	
 	protected void startWorking(){
-		
+		//
 	}
 	
 	protected void doWork(){
-		
+		//
 	}
 	
 	protected void stopWorking(){
-		
+		//
 	}
 	
 	public boolean isWorking(){
-		return workWhen == PC_RedstoneWorkType.EVER || (redstoneValue==0 && workWhen == PC_RedstoneWorkType.ON_OFF) || (redstoneValue!=0 && workWhen == PC_RedstoneWorkType.ON_ON);
+		return this.workWhen == PC_RedstoneWorkType.EVER || (this.redstoneValue==0 && this.workWhen == PC_RedstoneWorkType.ON_OFF) || (this.redstoneValue!=0 && this.workWhen == PC_RedstoneWorkType.ON_ON);
 	}
 	
 	@Override
@@ -194,163 +196,192 @@ public class PC_TileEntity extends TileEntity {
 			((PC_IGridHolder)this).getGridIfNull();
 		}
 		onTick();
-		if (!isClient() && sync) {
-			PC_PacketHandler.sendToAllAround(getSyncPacket(), worldObj.getWorldInfo().getVanillaDimension(), xCoord, yCoord, zCoord, 32);
+		if (!isClient() && this.sync) {
+			PC_PacketHandler.sendToAllAround(getSyncPacket(), this.worldObj.getWorldInfo().getVanillaDimension(), this.xCoord, this.yCoord, this.zCoord, 32);
 			this.sync = false;
 		}
 	}
 
 	public void onTick(){
-		
+		//
 	}
 
 	public void sync(){
 		if (isClient()) return;
-		sync = true;
+		this.sync = true;
 		markDirty();
 	}
 	
 	public void notifyNeighbors() {
-		if(worldObj!=null)
-			worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlockType());
+		if(this.worldObj!=null)
+			this.worldObj.notifyBlocksOfNeighborChange(this.xCoord, this.yCoord, this.zCoord, getBlockType());
 	}
 	
 	public void renderUpdate() {
-		if (this.worldObj != null) this.worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		if (this.worldObj != null) this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
 	}
 
 
 	public void lightUpdate() {
-		if (this.worldObj != null) this.worldObj.func_147451_t(xCoord, yCoord, zCoord);
+		if (this.worldObj != null) this.worldObj.func_147451_t(this.xCoord, this.yCoord, this.zCoord);
 	}
 	
+	@SuppressWarnings({ "static-method", "unused" })
 	public float getPlayerRelativeHardness(EntityPlayer player) {
 		return Float.NaN;
 	}
 
+	@SuppressWarnings("unused")
 	public void onEntityWalking(Entity entity) {
-		
+		//
 	}
 
+	@SuppressWarnings("unused")
 	public void onBlockClicked(EntityPlayer player) {
-		
+		//
 	}
 
+	@SuppressWarnings("unused")
 	public void velocityToAddToEntity(Entity entity, Vec3 velocity) {
-		
+		//
 	}
 
+	@SuppressWarnings("static-method")
 	public int getColorMultiplier() {
 		return 16777215;
 	}
 
+	@SuppressWarnings("unused")
 	public void onEntityCollidedWithBlock(Entity entity) {
-		
+		//
 	}
 
+	@SuppressWarnings("unused")
 	public void onFallenUpon(Entity entity, float fallDistance) {
-		
-		
+		//
 	}
 
 	public int getDamageValue() {
-		return getBlockType().damageDropped(blockMetadata);
+		return getBlockType().damageDropped(this.blockMetadata);
 	}
 
 	public void fillWithRain() {
-		
+		//
 	}
 
+	@SuppressWarnings("static-method")
 	public int getLightValue() {
 		return -1;
 	}
 
+	@SuppressWarnings({ "static-method", "unused" })
 	public boolean isLadder(EntityLivingBase entity) {
 		return false;
 	}
 
+	@SuppressWarnings("static-method")
 	public boolean isBurning() {
 		return false;
 	}
 
+	@SuppressWarnings({ "static-method", "unused" })
 	public ArrayList<ItemStack> getDrops(int fortune) {
 		return null;
 	}
 	
+	@SuppressWarnings({ "static-method", "unused" })
 	public boolean canCreatureSpawn(EnumCreatureType type) {
 		return false;
 	}
 
+	@SuppressWarnings("static-method")
 	public boolean canSustainLeaves() {
 		return false;
 	}
 
+	@SuppressWarnings({ "static-method", "unused" })
 	public float getExplosionResistance(Entity entity, double explosionX, double explosionY, double explosionZ) {
 		return Float.NaN;
 	}
 
+	@SuppressWarnings({ "static-method", "unused" })
 	public ItemStack getPickBlock(MovingObjectPosition target) {
 		return null;
 	}
 
+	@SuppressWarnings({ "static-method", "unused" })
 	@SideOnly(Side.CLIENT)
 	public boolean addDestroyEffects(EffectRenderer effectRenderer) {
 		return false;
 	}
 
+	@SuppressWarnings("unused")
 	public void onPlantGrow(int sourceX, int sourceY, int sourceZ) {
-		
+		//
 	}
 
+	@SuppressWarnings("static-method")
 	public boolean isFertile() {
 		return false;
 	}
 
+	@SuppressWarnings("static-method")
 	public int getLightOpacity() {
 		return -1;
 	}
 
+	@SuppressWarnings({ "static-method", "unused" })
 	public boolean canEntityDestroy(Entity entity) {
 		return true;
 	}
 
+	@SuppressWarnings({ "static-method", "unused" })
 	public boolean isBeaconBase(int beaconX, int beaconY, int beaconZ) {
 		return false;
 	}
 
+	@SuppressWarnings("static-method")
 	public float getEnchantPowerBonus() {
 		return 0;
 	}
 
+	@SuppressWarnings("unused")
 	public void onNeighborTEChange(int tileX, int tileY, int tileZ) {
-		
+		//
 	}
 
+	@SuppressWarnings("unused")
 	public void onBlockPostSet(PC_Direction side, ItemStack stack, EntityPlayer player, float hitX, float hitY, float hitZ) {
-		
+		//
 	}
 
+	@SuppressWarnings("static-method")
 	public PC_3DRotation get3DRotation() {
 		return null;
 	}
 
+	@SuppressWarnings({ "static-method", "unused" })
 	public IIcon getIcon(PC_Direction side) {
 		return null;
 	}
 
+	@SuppressWarnings({ "static-method", "unused" })
 	public List<AxisAlignedBB> getCollisionBoundingBoxes(Entity entity) {
 		return null;
 	}
 
+	@SuppressWarnings("static-method")
 	public AxisAlignedBB getMainCollisionBoundingBox() {
 		return null;
 	}
 
+	@SuppressWarnings("static-method")
 	@SideOnly(Side.CLIENT)
 	public AxisAlignedBB getSelectedBoundingBox() {
 		return null;
 	}
 
+	@SuppressWarnings("unused")
 	public boolean onBlockActivated(EntityPlayer player, PC_Direction side) {
 		
 		if(this instanceof PC_IGresGuiOpenHandler){
@@ -376,68 +407,83 @@ public class PC_TileEntity extends TileEntity {
 		return false;
 	}
 
+	@SuppressWarnings({ "static-method", "unused" })
 	public int getComparatorInput(PC_Direction side) {
 		return 0;
 	}
 
+	@SuppressWarnings("unused")
 	public boolean isSideSolid(PC_Direction side) {
-		return getBlockType().isNormalCube(worldObj, xCoord, yCoord, zCoord);
+		return getBlockType().isNormalCube(this.worldObj, this.xCoord, this.yCoord, this.zCoord);
 	}
 
+	@SuppressWarnings({ "static-method", "unused" })
 	public int getFlammability(PC_Direction side) {
 		return 0;
 	}
 
+	@SuppressWarnings({ "static-method", "unused" })
 	public boolean isFlammable(PC_Direction side) {
 		return false;
 	}
 
+	@SuppressWarnings({ "static-method", "unused" })
 	public int getFireSpreadSpeed(PC_Direction side) {
 		return 0;
 	}
 
+	@SuppressWarnings({ "static-method", "unused" })
 	public boolean isFireSource(PC_Direction side) {
 		return false;
 	}
 
+	@SuppressWarnings({ "static-method", "unused" })
 	public boolean canSilkHarvest(EntityPlayer player) {
 		return false;
 	}
 
+	@SuppressWarnings({ "static-method", "unused" })
 	public boolean canSustainPlant(PC_Direction side, IPlantable plantable) {
 		return false;
 	}
 
+	@SuppressWarnings({ "static-method", "unused" })
 	public boolean recolourBlock(PC_Direction side, int colour) {
 		return false;
 	}
 
+	@SuppressWarnings("unused")
 	public boolean shouldCheckWeakPower(PC_Direction side) {
 		return getBlockType().isNormalCube();
 	}
 
+	@SuppressWarnings("static-method")
 	public boolean getWeakChanges() {
 		return false;
 	}
 
+	@SuppressWarnings("static-method")
 	public boolean canRotate() {
 		return false;
 	}
 
+	@SuppressWarnings({ "static-method", "unused" })
 	public boolean set3DRotation(PC_3DRotation rotation) {
 		return false;
 	}
 
+	@SuppressWarnings("unused")
 	public void openContainer(Container container) {
-		
+		//		
 	}
 
+	@SuppressWarnings("unused")
 	public void closeContainer(Container container) {
-		
+		//
 	}
 
 	public void sendProgressBarUpdates() {
-		
+		//
 	}
 
 	public void sendProgressBarUpdate(int key, int value) {
@@ -479,7 +525,7 @@ public class PC_TileEntity extends TileEntity {
 	}
 	
 	public final String getOwner(){
-		return owner;
+		return this.owner;
 	}
 	
 	private final void readFromNBT(final NBTTagCompound nbtTagCompound, final Flag flag){
@@ -494,8 +540,8 @@ public class PC_TileEntity extends TileEntity {
 						name = field.getName();
 					}
 					Class<?> type = field.getType();
-					value = PC_NBTTagHandler.loadFromNBT(nbtTagCompound, name, type, flag);
-					results.put(Result.SET, value);
+					Object nvalue = PC_NBTTagHandler.loadFromNBT(nbtTagCompound, name, type, flag);
+					results.put(Result.SET, nvalue);
 				}
 			}
 			
@@ -527,9 +573,9 @@ public class PC_TileEntity extends TileEntity {
 	public final void readFromNBT(NBTTagCompound nbtTagCompound) {
 		readFromNBT(nbtTagCompound, Flag.SAVE);
 		if(nbtTagCompound.hasKey("owner")){
-			owner = nbtTagCompound.getString("owner");
+			this.owner = nbtTagCompound.getString("owner");
 			if(nbtTagCompound.hasKey("password")){
-				password = nbtTagCompound.getString("password");
+				this.password = nbtTagCompound.getString("password");
 			}
 		}
 		super.readFromNBT(nbtTagCompound);
@@ -538,27 +584,29 @@ public class PC_TileEntity extends TileEntity {
 	@Override
 	public final void writeToNBT(NBTTagCompound nbtTagCompound) {
 		writeToNBT(nbtTagCompound, Flag.SAVE);
-		if(owner!=null){
-			nbtTagCompound.setString("owner", owner);
-			if(password!=null){
-				nbtTagCompound.setString("password", password);
+		if(this.owner!=null){
+			nbtTagCompound.setString("owner", this.owner);
+			if(this.password!=null){
+				nbtTagCompound.setString("password", this.password);
 			}
 		}
 		super.writeToNBT(nbtTagCompound);
 	}
 	
+	@SuppressWarnings("unused")
 	public void onLoadedFromNBT(Flag flag){
-		
+		//
 	}
 	
 	public final boolean canDoWithoutPassword(EntityPlayer player){
-		return owner==null || owner.equals(player.getGameProfile().getName()) || PC_Utils.isOP(player);
+		return this.owner==null || this.owner.equals(player.getGameProfile().getName()) || PC_Utils.isOP(player);
 	}
 
 	public final boolean canDoWithPassword(EntityPlayer player){
-		return owner==null || owner.equals(player.getGameProfile().getName()) || password!=null;
+		return this.owner==null || this.owner.equals(player.getGameProfile().getName()) || this.password!=null;
 	}
 	
+	@SuppressWarnings("hiding")
 	public final boolean checkPassword(EntityPlayer player, String password){
 		return canDoWithoutPassword(player) || (this.password!=null && this.password.equals(password));
 	}
@@ -566,19 +614,20 @@ public class PC_TileEntity extends TileEntity {
 	public final boolean setPassword(EntityPlayer player, String newPassword){
 		if(canDoWithoutPassword(player)){
 			if(newPassword==null){
-				password = null;
+				this.password = null;
 			}else{
-				password = PC_Utils.getMD5(newPassword);
+				this.password = PC_Utils.getMD5(newPassword);
 			}
-			owner = PC_Utils.getUsername(player);
+			this.owner = PC_Utils.getUsername(player);
 			return true;
 		}
 		return false;
 	}
 	
+	@SuppressWarnings("hiding")
 	public final boolean guiOpenPasswordReply(EntityPlayer player, String password) {
-		password = PC_Utils.getMD5(password);
-		if(checkPassword(player, password)){
+		String md5password = PC_Utils.getMD5(password);
+		if(checkPassword(player, md5password)){
 			PC_Gres.openGui(player, this);
 			return true;
 		}
@@ -587,7 +636,7 @@ public class PC_TileEntity extends TileEntity {
 	
 	public long getSession(){
 		if(isClient())
-			return session;
+			return this.session;
 		return 0;
 	}
 	
@@ -596,6 +645,7 @@ public class PC_TileEntity extends TileEntity {
 			this.session = session;
 	}
 
+	@SuppressWarnings("hiding")
 	public long getNewSession(EntityPlayer player) {
 		if(isClient())
 			return 0;
@@ -623,7 +673,7 @@ public class PC_TileEntity extends TileEntity {
 	}
 	
 	public final PC_Packet getSyncPacket(){
-		sync = false;
+		this.sync = false;
 		NBTTagCompound nbtTagCompound = new NBTTagCompound();
 		makeSync(nbtTagCompound);
 		return new PC_PacketTileEntitySync(this, nbtTagCompound);
@@ -634,39 +684,43 @@ public class PC_TileEntity extends TileEntity {
 	}
 	
 	public final void applySync(NBTTagCompound nbtTagCompound) {
-		if(worldObj.isRemote){
+		if(this.worldObj.isRemote){
 			readFromNBT(nbtTagCompound, Flag.SYNC);
 		}
 	}
 
 	@SideOnly(Side.CLIENT)
 	public boolean renderWorldBlock(int modelId, RenderBlocks renderer) {
-		return PC_Renderer.renderBlockInWorld(worldObj, xCoord, yCoord, zCoord, getBlockType(), modelId, renderer);
+		return PC_Renderer.renderBlockInWorld(this.worldObj, this.xCoord, this.yCoord, this.zCoord, getBlockType(), modelId, renderer);
 	}
 
+	@SuppressWarnings("unused")
 	public boolean canRedstoneConnect(PC_Direction side, int faceSide) {
 		return getBlockType().canProvidePower();
 	}
 
+	@SuppressWarnings({ "unused", "static-method" })
 	public int getRedstonePowerValue(PC_Direction side, int faceSide) {
 		return 0;
 	}
 
+	@SuppressWarnings("unused")
 	public void setRedstonePowerValue(PC_Direction side, int faceSide, int value) {
 		updateRedstone(value);
 	}
 
+	@SuppressWarnings("hiding")
 	@SideOnly(Side.CLIENT)
 	public final void onClientMessageCheck(EntityPlayer player, NBTTagCompound nbtTagCompound, long session, boolean intern) {
 		Session pSession = sessions.get(player);
-		if(pSession!=null && pSession.dimension == worldObj.getWorldInfo().getVanillaDimension() && pSession.x == xCoord && pSession.y == yCoord && pSession.z == zCoord && pSession.session == session){
+		if(pSession!=null && pSession.dimension == this.worldObj.getWorldInfo().getVanillaDimension() && pSession.x == this.xCoord && pSession.y == this.yCoord && pSession.z == this.zCoord && pSession.session == session){
 			if(intern){
 				onInternMessage(player, nbtTagCompound);
 			}else{
 				onMessage(player, nbtTagCompound);
 			}
 		}else{
-			PC_Logger.warning("Player %s tries to send not signated messaged", session);
+			PC_Logger.warning("Player %s tries to send not signated messaged", Long.valueOf(session));
 		}
 	}
 	
@@ -675,6 +729,7 @@ public class PC_TileEntity extends TileEntity {
 		onMessage(player, nbtTagCompound);
 	}
 	
+	@SuppressWarnings("unused")
 	public void onInternMessage(EntityPlayer player, NBTTagCompound nbtTagCompound) {
 		if(nbtTagCompound.getInteger("type")==0){
 			if(nbtTagCompound.hasKey("workWhen")){
@@ -685,21 +740,22 @@ public class PC_TileEntity extends TileEntity {
 		}
 	}
 	
+	@SuppressWarnings("unused")
 	public void onMessage(EntityPlayer player, NBTTagCompound nbtTagCompound) {
-		
+		//
 	}
 	
 	public void sendMessage(NBTTagCompound nbtTagCompound){
 		if(isClient()){
-			PC_PacketHandler.sendToServer(new PC_PacketTileEntityMessageCTS(this, nbtTagCompound, session));
+			PC_PacketHandler.sendToServer(new PC_PacketTileEntityMessageCTS(this, nbtTagCompound, this.session));
 		}else{
-			PC_PacketHandler.sendToAllAround(new PC_PacketTileEntityMessageSTC(this, nbtTagCompound), worldObj.getWorldInfo().getVanillaDimension(), xCoord, yCoord, zCoord, 32);
+			PC_PacketHandler.sendToAllAround(new PC_PacketTileEntityMessageSTC(this, nbtTagCompound), this.worldObj.getWorldInfo().getVanillaDimension(), this.xCoord, this.yCoord, this.zCoord, 32);
 		}
 	}
 	
 	public void sendInternMessage(NBTTagCompound nbtTagCompound){
 		if(isClient()){
-			PC_PacketHandler.sendToServer(new PC_PacketTileEntityMessageIntCTS(this, nbtTagCompound, session));
+			PC_PacketHandler.sendToServer(new PC_PacketTileEntityMessageIntCTS(this, nbtTagCompound, this.session));
 		}
 	}
 
@@ -707,7 +763,7 @@ public class PC_TileEntity extends TileEntity {
 		PC_RedstoneWorkType allowed[] = getAllowedRedstoneWorkTypes();
 		for(int i=0; i<allowed.length; i++){
 			if(allowed[i]== rwt){
-				workWhen = rwt;
+				this.workWhen = rwt;
 				sync();
 				markDirty();
 				NBTTagCompound tagCompound = new NBTTagCompound();
@@ -719,14 +775,16 @@ public class PC_TileEntity extends TileEntity {
 		}
 	}
 
+	@SuppressWarnings("static-method")
 	public PC_RedstoneWorkType[] getAllowedRedstoneWorkTypes() {
 		return new PC_RedstoneWorkType[]{null};
 	}
 	
 	public PC_RedstoneWorkType getRedstoneWorkType() {
-		return workWhen;
+		return this.workWhen;
 	}
 
+	@SuppressWarnings("unused")
 	public void onAdded(EntityPlayer player) {
 		if(this instanceof PC_IGridHolder){
 			((PC_IGridHolder)this).getGridIfNull();

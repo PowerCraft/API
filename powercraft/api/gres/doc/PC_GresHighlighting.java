@@ -16,39 +16,39 @@ public class PC_GresHighlighting {
 	private final List<Highlight> wordHighlights = new ArrayList<Highlight>();
 	
 	public void addBlockHighlight(IMultiplePossibilities start, IMultiplePossibilities escape, IMultiplePossibilities end, boolean isMultiline, String formatting){
-		specialHighlights.add(new BlockHighlight(start, escape, end, isMultiline, formatting));
+		this.specialHighlights.add(new BlockHighlight(start, escape, end, isMultiline, formatting));
 	}
 	
 	public void addBlockHighlight(IMultiplePossibilities start, IMultiplePossibilities escape, IMultiplePossibilities end, String formatting){
-		specialHighlights.add(new BlockHighlight(start, escape, end, formatting));
+		this.specialHighlights.add(new BlockHighlight(start, escape, end, formatting));
 	}
 	
 	public void addBlockHighlight(IMultiplePossibilities start, IMultiplePossibilities escape, IMultiplePossibilities end, boolean isMultiline, String formatting, PC_GresHighlighting highlighting){
-		specialHighlights.add(new BlockHighlight(start, escape, end, isMultiline, formatting, highlighting));
+		this.specialHighlights.add(new BlockHighlight(start, escape, end, isMultiline, formatting, highlighting));
 	}
 	
 	public void addOperatorHighlight(IMultiplePossibilities operators, String formatting){
-		operatorHightlights.add(new Highlight(operators, formatting));
+		this.operatorHightlights.add(new Highlight(operators, formatting));
 	}
 	
 	public void addWordHighlight(IMultiplePossibilities words, String formatting){
-		wordHighlights.add(new Highlight(words, formatting));
+		this.wordHighlights.add(new Highlight(words, formatting));
 	}
 	
 	public void addSpecialHighlight(IMultiplePossibilities words, String formatting){
-		specialHighlights.add(new Highlight(words, formatting));
+		this.specialHighlights.add(new Highlight(words, formatting));
 	}
 
 	public List<Highlight> getOperatorHighlights() {
-		return operatorHightlights;
+		return this.operatorHightlights;
 	}
 	
 	public List<Highlight> getSpecialHighlights() {
-		return specialHighlights;
+		return this.specialHighlights;
 	}
 	
 	public List<Highlight> getWordHighlighteds() {
-		return wordHighlights;
+		return this.wordHighlights;
 	}
 	
 	public static class BlockHighlight extends Highlight{
@@ -83,19 +83,19 @@ public class PC_GresHighlighting {
 		}
 
 		public IMultiplePossibilities getEscapeString() {
-			return escape;
+			return this.escape;
 		}
 
 		public IMultiplePossibilities getEndString() {
-			return end;
+			return this.end;
 		}
 
 		public boolean isMultiline() {
-			return isMultiline;
+			return this.isMultiline;
 		}
 
 		public PC_GresHighlighting getHighlighting() {
-			return highlighting;
+			return this.highlighting;
 		}
 		
 	}
@@ -111,11 +111,11 @@ public class PC_GresHighlighting {
 		}
 
 		public String getHighlightingString() {
-			return formatting;
+			return this.formatting;
 		}
 
 		public IMultiplePossibilities getHighlightStrings() {
-			return operator;
+			return this.operator;
 		}
 		
 	}
@@ -135,12 +135,12 @@ public class PC_GresHighlighting {
 		
 		public MultipleStringPossibilities(String string, boolean caseSentive) {
 			if(string==null){
-				possibilities = new String[0];
+				this.possibilities = new String[0];
 			}else{
-				possibilities = string.replaceAll("\\s\\s", " ").split("\\s");
+				this.possibilities = string.replaceAll("\\s\\s", " ").split("\\s");
 				if(!caseSentive){
-					for(int i=0; i<possibilities.length; i++){
-						possibilities[i] = possibilities[i].toLowerCase();
+					for(int i=0; i<this.possibilities.length; i++){
+						this.possibilities[i] = this.possibilities[i].toLowerCase();
 					}
 				}
 			}
@@ -160,11 +160,12 @@ public class PC_GresHighlighting {
 		@Override
 		public int comesNowIn(String line, int i, Object info) {
 			int l = 0;
-			if(!caseSentive){
-				line = line.toLowerCase();
+			String lin = line;
+			if(!this.caseSentive){
+				lin = lin.toLowerCase();
 			}
-			for(String possibility:possibilities){
-				if(possibility.length()>l && line.startsWith(possibility, i)){
+			for(String possibility:this.possibilities){
+				if(possibility.length()>l && lin.startsWith(possibility, i)){
 					l = possibility.length();
 				}
 			}
@@ -188,7 +189,7 @@ public class PC_GresHighlighting {
 
 		@Override
 		public int comesNowIn(String line, int i, Object info) {
-			Matcher match = regex.matcher(line);
+			Matcher match = this.regex.matcher(line);
 			if(match.find(i) && match.start()==i)
 				return match.end()-i;
 			return 0;

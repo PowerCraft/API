@@ -16,6 +16,7 @@ import powercraft.api.PC_Direction;
 import powercraft.api.PC_Field;
 import powercraft.api.PC_Field.Flag;
 import powercraft.api.PC_NBTTagHandler;
+import powercraft.api.PC_Utils;
 import powercraft.api.block.PC_TileEntity;
 import powercraft.api.grid.PC_IGridSided;
 import powercraft.api.grid.PC_IGridTile;
@@ -28,18 +29,18 @@ public final class PC_TileEntityMultiblock extends PC_TileEntity implements PC_I
 	private PC_MultiblockObject tiles[] = new PC_MultiblockObject[27];
 	
 	public PC_MultiblockObject getTile(PC_MultiblockIndex index) {
-		return tiles[index.ordinal()];
+		return this.tiles[index.ordinal()];
 	}
 
 	public List<ItemStack> removeMultiblockTileEntity(PC_MultiblockIndex index) {
 		int i = index.ordinal();
-		if (tiles[i] == null) {
+		if (this.tiles[i] == null) {
 			return null;
 		}
-		List<ItemStack> drop = tiles[i].getDrop();
-		PC_MultiblockObject te = tiles[i];
+		List<ItemStack> drop = this.tiles[i].getDrop();
+		PC_MultiblockObject te = this.tiles[i];
 		te.onPreRemove();
-		tiles[i] = null;
+		this.tiles[i] = null;
 		te.onRemoved();
 		markDirty();
 		notifyNeighbors();
@@ -49,20 +50,20 @@ public final class PC_TileEntityMultiblock extends PC_TileEntity implements PC_I
 
 	public boolean setMultiblockTileEntity(PC_MultiblockIndex index, PC_MultiblockObject multiblockObject) {
 		int i = index.ordinal();
-		for(PC_MultiblockObject tile:tiles){
+		for(PC_MultiblockObject tile:this.tiles){
 			if(tile!=null && tile.isUsing(index, multiblockObject))
 				return false;
 		}
-		if (tiles[i] == null) {
-			tiles[i] = multiblockObject;
+		if (this.tiles[i] == null) {
+			this.tiles[i] = multiblockObject;
 			multiblockObject.setIndexAndMultiblock(PC_MultiblockIndex.values()[i], this);
 			if (!multiblockObject.onAdded()) {
 				return false;
 			}
 		} else {
-			if (tiles[i].canMixWith(multiblockObject)) {
-				tiles[i] = tiles[i].mixWith(multiblockObject);
-				tiles[i].setIndexAndMultiblock(PC_MultiblockIndex.values()[i], this);
+			if (this.tiles[i].canMixWith(multiblockObject)) {
+				this.tiles[i] = this.tiles[i].mixWith(multiblockObject);
+				this.tiles[i].setIndexAndMultiblock(PC_MultiblockIndex.values()[i], this);
 			} else {
 				return false;
 			}
@@ -75,7 +76,7 @@ public final class PC_TileEntityMultiblock extends PC_TileEntity implements PC_I
 
 	
 	public boolean noTiles() {
-		for(PC_MultiblockObject tile:tiles){
+		for(PC_MultiblockObject tile:this.tiles){
 			if(tile!=null)
 				return false;
 		}
@@ -84,7 +85,7 @@ public final class PC_TileEntityMultiblock extends PC_TileEntity implements PC_I
 
 	@Override
 	public void onNeighborBlockChange(Block neighbor) {
-		for(PC_MultiblockObject tile:tiles){
+		for(PC_MultiblockObject tile:this.tiles){
 			if(tile!=null)
 				tile.onNeighborBlockChange(neighbor);
 		}
@@ -93,8 +94,8 @@ public final class PC_TileEntityMultiblock extends PC_TileEntity implements PC_I
 	@Override
 	public float getPlayerRelativeHardness(EntityPlayer player) {
 		PC_MultiblockIndex index = PC_BlockMultiblock.playerSelection.get(player);
-		if(index!=null && tiles[index.ordinal()]!=null){
-			return tiles[index.ordinal()].getPlayerRelativeHardness(player);
+		if(index!=null && this.tiles[index.ordinal()]!=null){
+			return this.tiles[index.ordinal()].getPlayerRelativeHardness(player);
 		}
 		return -1;
 	}
@@ -102,14 +103,14 @@ public final class PC_TileEntityMultiblock extends PC_TileEntity implements PC_I
 	@Override
 	public void onBlockClicked(EntityPlayer player) {
 		PC_MultiblockIndex index = PC_BlockMultiblock.playerSelection.get(player);
-		if(index!=null && tiles[index.ordinal()]!=null){
-			tiles[index.ordinal()].onClicked(player);
+		if(index!=null && this.tiles[index.ordinal()]!=null){
+			this.tiles[index.ordinal()].onClicked(player);
 		}
 	}
 
 	@Override
 	public void fillWithRain() {
-		for(PC_MultiblockObject tile:tiles){
+		for(PC_MultiblockObject tile:this.tiles){
 			if(tile!=null)
 				tile.fillWithRain();
 		}
@@ -118,7 +119,7 @@ public final class PC_TileEntityMultiblock extends PC_TileEntity implements PC_I
 	@Override
 	public int getLightValue() {
 		int lightValue = 0;
-		for(PC_MultiblockObject tile:tiles){
+		for(PC_MultiblockObject tile:this.tiles){
 			if(tile!=null){
 				int value = tile.getLightValue();
 				if(value>lightValue){
@@ -131,7 +132,7 @@ public final class PC_TileEntityMultiblock extends PC_TileEntity implements PC_I
 
 	@Override
 	public boolean isLadder(EntityLivingBase entity) {
-		for(PC_MultiblockObject tile:tiles){
+		for(PC_MultiblockObject tile:this.tiles){
 			if(tile!=null)
 				return tile.isLadder(entity);
 		}
@@ -140,7 +141,7 @@ public final class PC_TileEntityMultiblock extends PC_TileEntity implements PC_I
 
 	@Override
 	public boolean isBurning() {
-		for(PC_MultiblockObject tile:tiles){
+		for(PC_MultiblockObject tile:this.tiles){
 			if(tile!=null)
 				return tile.isBurning();
 		}
@@ -156,8 +157,8 @@ public final class PC_TileEntityMultiblock extends PC_TileEntity implements PC_I
 	@Override
 	public ItemStack getPickBlock(MovingObjectPosition target) {
 		PC_MultiblockIndex index = PC_MultiblockIndex.values()[target.subHit];
-		if(index!=null && tiles[index.ordinal()]!=null){
-			return tiles[index.ordinal()].getPickBlock();
+		if(index!=null && this.tiles[index.ordinal()]!=null){
+			return this.tiles[index.ordinal()].getPickBlock();
 		}
 		return null;
 	}
@@ -165,7 +166,7 @@ public final class PC_TileEntityMultiblock extends PC_TileEntity implements PC_I
 	@Override
 	public float getEnchantPowerBonus() {
 		float bonus = 0;
-		for(PC_MultiblockObject tile:tiles){
+		for(PC_MultiblockObject tile:this.tiles){
 			if(tile!=null)
 				bonus += tile.getEnchantPowerBonus();
 		}
@@ -174,7 +175,7 @@ public final class PC_TileEntityMultiblock extends PC_TileEntity implements PC_I
 
 	@Override
 	public void onNeighborTEChange(int tileX, int tileY, int tileZ) {
-		for(PC_MultiblockObject tile:tiles){
+		for(PC_MultiblockObject tile:this.tiles){
 			if(tile!=null)
 				tile.onNeighborTEChange(tileX, tileY, tileZ);
 		}
@@ -183,7 +184,7 @@ public final class PC_TileEntityMultiblock extends PC_TileEntity implements PC_I
 	@Override
 	public List<AxisAlignedBB> getCollisionBoundingBoxes(Entity entity) {
 		List<AxisAlignedBB> list = new ArrayList<AxisAlignedBB>();
-		for(PC_MultiblockObject tile:tiles){
+		for(PC_MultiblockObject tile:this.tiles){
 			if(tile!=null){
 				List<AxisAlignedBB> l = tile.getCollisionBoundingBoxes();
 				if(l!=null)
@@ -196,8 +197,8 @@ public final class PC_TileEntityMultiblock extends PC_TileEntity implements PC_I
 	@Override
 	public boolean onBlockActivated(EntityPlayer player, PC_Direction side) {
 		PC_MultiblockIndex index = PC_BlockMultiblock.playerSelection.get(player);
-		if(index!=null && tiles[index.ordinal()]!=null){
-			return tiles[index.ordinal()].onBlockActivated(player);
+		if(index!=null && this.tiles[index.ordinal()]!=null){
+			return this.tiles[index.ordinal()].onBlockActivated(player);
 		}
 		return false;
 	}
@@ -210,8 +211,8 @@ public final class PC_TileEntityMultiblock extends PC_TileEntity implements PC_I
 	@Override
 	public boolean isSideSolid(PC_Direction side) {
 		PC_MultiblockIndex index = PC_MultiblockIndex.getFromDir(side);
-		if(index!=null && tiles[index.ordinal()]!=null){
-			return tiles[index.ordinal()].isSolid();
+		if(index!=null && this.tiles[index.ordinal()]!=null){
+			return this.tiles[index.ordinal()].isSolid();
 		}
 		return false;
 	}
@@ -220,7 +221,7 @@ public final class PC_TileEntityMultiblock extends PC_TileEntity implements PC_I
 	public boolean renderWorldBlock(int modelId, RenderBlocks renderer) {
 		if(renderer.hasOverrideBlockTexture())
 			return true;
-		for(PC_MultiblockObject tile:tiles){
+		for(PC_MultiblockObject tile:this.tiles){
 			if(tile!=null)
 				tile.renderWorldBlock(renderer);
 		}
@@ -229,7 +230,7 @@ public final class PC_TileEntityMultiblock extends PC_TileEntity implements PC_I
 
 	@Override
 	public void onTick() {
-		for(PC_MultiblockObject tile:tiles){
+		for(PC_MultiblockObject tile:this.tiles){
 			if(tile!=null)
 				tile.updateObject();
 		}
@@ -237,15 +238,15 @@ public final class PC_TileEntityMultiblock extends PC_TileEntity implements PC_I
 	
 	@Override
 	public void onLoadedFromNBT(Flag flag) {
-		for(int i=0; i<tiles.length; i++){
-			if(tiles[i]!=null)
-				tiles[i].setIndexAndMultiblock(PC_MultiblockIndex.values()[i], this);
+		for(int i=0; i<this.tiles.length; i++){
+			if(this.tiles[i]!=null)
+				this.tiles[i].setIndexAndMultiblock(PC_MultiblockIndex.values()[i], this);
 		}
 	}
 
 	@Override
 	public void onChunkUnload() {
-		for(PC_MultiblockObject tile:tiles){
+		for(PC_MultiblockObject tile:this.tiles){
 			if(tile!=null)
 				tile.onChunkUnload();
 		}
@@ -256,7 +257,7 @@ public final class PC_TileEntityMultiblock extends PC_TileEntity implements PC_I
 			NBTTagCompound nbtTagCompound = new NBTTagCompound();
 			nbtTagCompound.setInteger("type", 1);
 			nbtTagCompound.setInteger("index", index);
-			PC_NBTTagHandler.saveToNBT(nbtTagCompound, "tile", tiles[index], Flag.SYNC);
+			PC_NBTTagHandler.saveToNBT(nbtTagCompound, "tile", this.tiles[index], Flag.SYNC);
 			sendMessage(nbtTagCompound);
 		}
 	}
@@ -267,22 +268,29 @@ public final class PC_TileEntityMultiblock extends PC_TileEntity implements PC_I
 		switch(nbtTagCompound.getInteger("type")){
 		case 1:
 			int index = nbtTagCompound.getInteger("index");
-			tiles[index] = PC_NBTTagHandler.loadFromNBT(nbtTagCompound, "tile", PC_MultiblockObject.class, Flag.SYNC);
-			if(tiles[index]!=null){
-				tiles[index].setIndexAndMultiblock(PC_MultiblockIndex.values()[index], this);
+			this.tiles[index] = PC_NBTTagHandler.loadFromNBT(nbtTagCompound, "tile", PC_MultiblockObject.class, Flag.SYNC);
+			if(this.tiles[index]!=null){
+				this.tiles[index].setIndexAndMultiblock(PC_MultiblockIndex.values()[index], this);
 			}
 			renderUpdate();
+			break;
+		default:
 			break;
 		}
 	}
 
 	@Override
 	public <T extends PC_IGridTile<?, T, ?, ?>> T getTile(PC_Direction side, Class<T> tileClass) {
-		PC_MultiblockObject tile = tiles[0];
+		PC_MultiblockObject tile = this.tiles[0];
 		if(tile!=null && tileClass.isAssignableFrom(tile.getClass())){
 			return tileClass.cast(tile);
 		}
 		return null;
+	}
+
+	public void drop(List<ItemStack> drops) {
+
+		PC_Utils.spawnItems(this.worldObj, this.xCoord, this.yCoord, this.zCoord, drops);
 	}
 	
 }

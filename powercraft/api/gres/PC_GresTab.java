@@ -29,24 +29,24 @@ public class PC_GresTab extends PC_GresContainer {
 	private boolean move;
 	
 	public PC_GresTab(){
-		frame.setTo(getTextureFrame(textureName));
+		this.frame.setTo(getTextureFrame(textureName));
 	}
 	
 	@Override
 	public void add(PC_GresComponent component){
-		add("Tab"+(tabs.size()+1), component);
+		add("Tab"+(this.tabs.size()+1), component);
 	}
 	
 	public void add(String tabName, PC_GresComponent component){
 		super.add(component);
-		if(children.contains(component)){
-			tabs.add(new Tab(tabName, component));
+		if(this.children.contains(component)){
+			this.tabs.add(new Tab(tabName, component));
 		}
 	}
 	
 	@Override
 	public void remove(PC_GresComponent component) {
-		Iterator<Tab> iterator = tabs.iterator();
+		Iterator<Tab> iterator = this.tabs.iterator();
 		while(iterator.hasNext()){
 			if(iterator.next().child==component){
 				iterator.remove();
@@ -58,43 +58,44 @@ public class PC_GresTab extends PC_GresContainer {
 	
 	@Override
 	public void removeAll() {
-		tabs.clear();
+		this.tabs.clear();
 		super.removeAll();
 	}
 	
 	private PC_Vec2I calcFrameSize(){
-		return frame.getLocation().add(frame.getSize());
+		return this.frame.getLocation().add(this.frame.getSize());
 	}
 	
 	private PC_Vec2I addFrameSize(PC_Vec2I vec){
 		PC_Vec2I vecS = calcFrameSize();
-		vec = new PC_Vec2I(vec);
-		if(vec.x>=0)
-			vec.x += vecS.x;
-		if(vec.y>=0)
-			vec.y += vecS.y;
-		return vec;
+		PC_Vec2I nvec = new PC_Vec2I(vec);
+		if(nvec.x>=0)
+			nvec.x += vecS.x;
+		if(nvec.y>=0)
+			nvec.y += vecS.y;
+		return nvec;
 	}
 	
 	@Override
 	protected PC_Vec2I calculateMinSize() {
-		return addFrameSize(children.size()>0?children.get(0).getMinSize():new PC_Vec2I(10, 10));
+		return addFrameSize(this.children.size()>0?this.children.get(0).getMinSize():new PC_Vec2I(10, 10));
 	}
 
 	@Override
 	protected PC_Vec2I calculateMaxSize() {
-		return addFrameSize(children.size()>0?children.get(0).getMaxSize():new PC_Vec2I(-1, -1));
+		return addFrameSize(this.children.size()>0?this.children.get(0).getMaxSize():new PC_Vec2I(-1, -1));
 	}
 
 	@Override
 	protected PC_Vec2I calculatePrefSize() {
-		return addFrameSize(children.size()>0?children.get(0).getPrefSize():new PC_Vec2I(-1, -1));
+		return addFrameSize(this.children.size()>0?this.children.get(0).getPrefSize():new PC_Vec2I(-1, -1));
 	}
 
+	@SuppressWarnings("hiding")
 	@Override
 	protected void doPaint(PC_Vec2I offset, PC_RectI scissorOld, double scale, int displayHeight, float timeStamp) {
 
-		if (visible) {
+		if (this.visible) {
 			PC_RectI rect = new PC_RectI(this.rect);
 			rect.x += offset.x;
 			rect.y += offset.y;
@@ -106,12 +107,12 @@ public class PC_GresTab extends PC_GresContainer {
 			GL11.glColor3f(1.0f, 1.0f, 1.0f);
 			paint(scissor, scale, displayHeight, timeStamp);
 			doDebugRendering(0, 0, rect.width, rect.height);
-			rect.x += frame.x;
-			rect.y += frame.y;
-			GL11.glTranslatef(frame.x, frame.y, 0);
-			offset = rect.getLocation();
-			if(children.size()>0){
-				children.get(0).doPaint(offset, scissor, scale, displayHeight, timeStamp);
+			rect.x += this.frame.x;
+			rect.y += this.frame.y;
+			GL11.glTranslatef(this.frame.x, this.frame.y, 0);
+			PC_Vec2I noffset = rect.getLocation();
+			if(this.children.size()>0){
+				this.children.get(0).doPaint(noffset, scissor, scale, displayHeight, timeStamp);
 			}
 			GL11.glPopMatrix();
 		}
@@ -119,45 +120,46 @@ public class PC_GresTab extends PC_GresContainer {
 	
 	@Override
 	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp) {
-		drawTexture(textureName, 0, 0, rect.width, rect.height);
+		drawTexture(textureName, 0, 0, this.rect.width, this.rect.height);
 		PC_Vec2I rl = getRealLocation();
-		setDrawRect(scissor, new PC_RectI(1+rl.x, 1+rl.y, rect.width-2, 12), scale, displayHeight);
-		int x = -tabsScroll+1;
-		for(Tab tab:tabs){
+		setDrawRect(scissor, new PC_RectI(1+rl.x, 1+rl.y, this.rect.width-2, 12), scale, displayHeight);
+		int x = -this.tabsScroll+1;
+		for(Tab tab:this.tabs){
 			int width = fontRenderer.getStringSize(tab.tab).x+4;
-			int state = tab.child == children.get(0)?2:tab==mouseOverTab&&mouseOver?1:0;
+			int state = tab.child == this.children.get(0)?2:tab==this.mouseOverTab&&this.mouseOver?1:0;
 			drawTexture(textureNameTab, x, 1, width, 12, state);
 			drawString(tab.tab, x+2, 3, false);
 			GL11.glColor4f(1, 1, 1, 1);
 			x+=width;
 		}
-		setDrawRect(scissor, new PC_RectI(rl.x, rl.y, rect.width, rect.height), scale, displayHeight);
+		setDrawRect(scissor, new PC_RectI(rl.x, rl.y, this.rect.width, this.rect.height), scale, displayHeight);
 		int width = getTextureDefaultSize(textureNameTabScroll).x;
-		x = (int) (getTabScrollProz()*(rect.width-width-4));
-		drawTexture(textureNameTabScroll, x+2, 13, width, 1, move?2:0);
+		x = (int) (getTabScrollProz()*(this.rect.width-width-4));
+		drawTexture(textureNameTabScroll, x+2, 13, width, 1, this.move?2:0);
 	}
 	
 	private float getTabScrollProz(){
 		int width = 0;
-		for(Tab tab:tabs){
+		for(Tab tab:this.tabs){
 			width += fontRenderer.getStringSize(tab.tab).x+4;
 		}
-		int over = width-(rect.width-2);
+		int over = width-(this.rect.width-2);
 		if(over<=0){
 			return 0;
 		}
-		return tabsScroll/(float)over;
+		return this.tabsScroll/(float)over;
 	}
 
+	@SuppressWarnings("hiding")
 	@Override
 	protected PC_GresComponent getComponentAtPosition(PC_Vec2I position) {
 
-		if (visible && children.size()>0) {
-			position = position.sub(frame.getLocation());
-			PC_GresComponent child = children.get(0);
+		if (this.visible && this.children.size()>0) {
+			PC_Vec2I nposition = position.sub(this.frame.getLocation());
+			PC_GresComponent child = this.children.get(0);
 			PC_RectI rect = child.getRect();
-			if (rect.contains(position)){
-				PC_GresComponent component = child.getComponentAtPosition(position.sub(rect.getLocation()));
+			if (rect.contains(nposition)){
+				PC_GresComponent component = child.getComponentAtPosition(nposition.sub(rect.getLocation()));
 				if (component != null) return component;
 			}
 			return this;
@@ -165,15 +167,16 @@ public class PC_GresTab extends PC_GresContainer {
 		return null;
 	}
 
+	@SuppressWarnings("hiding")
 	@Override
 	protected Slot getSlotAtPosition(PC_Vec2I position) {
 
-		if (visible && children.size()>0) {
-			position = position.sub(frame.getLocation());
-			PC_GresComponent child = children.get(0);
+		if (this.visible && this.children.size()>0) {
+			PC_Vec2I nposition = position.sub(this.frame.getLocation());
+			PC_GresComponent child = this.children.get(0);
 			PC_RectI rect = child.getRect();
-			if (rect.contains(position)){
-				Slot slot = child.getSlotAtPosition(position.sub(rect.getLocation()));
+			if (rect.contains(nposition)){
+				Slot slot = child.getSlotAtPosition(nposition.sub(rect.getLocation()));
 				return slot;
 			}
 		}
@@ -183,25 +186,25 @@ public class PC_GresTab extends PC_GresContainer {
 	@Override
 	protected void tryActionOnKeyTyped(char key, int keyCode, boolean repeat, PC_GresHistory history) {
 
-		if (visible && children.size()>0) {
-			children.get(0).tryActionOnKeyTyped(key, keyCode, repeat, null);
+		if (this.visible && this.children.size()>0) {
+			this.children.get(0).tryActionOnKeyTyped(key, keyCode, repeat, null);
 		}
 	}
 	
 	private void clampTabScroll(){
-		if(tabsScroll<0){
-			tabsScroll = 0;
+		if(this.tabsScroll<0){
+			this.tabsScroll = 0;
 		}else{
 			int width = 0;
-			for(Tab tab:tabs){
+			for(Tab tab:this.tabs){
 				width += fontRenderer.getStringSize(tab.tab).x+4;
 			}
-			int over = width-(rect.width-2);
+			int over = width-(this.rect.width-2);
 			if(over<0){
-				tabsScroll = 0;
+				this.tabsScroll = 0;
 			}else{
-				if(tabsScroll>over){
-					tabsScroll = over;
+				if(this.tabsScroll>over){
+					this.tabsScroll = over;
 				}
 			}
 		}
@@ -209,27 +212,27 @@ public class PC_GresTab extends PC_GresContainer {
 	
 	@Override
 	protected void handleMouseLeave(PC_Vec2I mouse, int buttons, PC_GresHistory history) {
-		mouseOver = false;
+		this.mouseOver = false;
 	}
 
 	@Override
 	protected boolean handleMouseMove(PC_Vec2I mouse, int buttons, PC_GresHistory history) {
-		if(mouseDown){
-			if(Math.abs(mouse.x-xPosDown)>5 || move){
-				move = true;
-				tabsScroll += xPosDown-mouse.x;
+		if(this.mouseDown){
+			if(Math.abs(mouse.x-this.xPosDown)>5 || this.move){
+				this.move = true;
+				this.tabsScroll += this.xPosDown-mouse.x;
 				clampTabScroll();
-				xPosDown = mouse.x;
+				this.xPosDown = mouse.x;
 			}
 		}
-		if(!mouseDown || move){
-			mouseOverTab = null;
+		if(!this.mouseDown || this.move){
+			this.mouseOverTab = null;
 			if(mouse.y>=1 && mouse.y<=13){
-				int x = -tabsScroll+1;
-				for(Tab tab:tabs){
+				int x = -this.tabsScroll+1;
+				for(Tab tab:this.tabs){
 					int width = fontRenderer.getStringSize(tab.tab).x+4;
 					if(mouse.x>=x && mouse.x <= x + width){
-						mouseOverTab = tab;
+						this.mouseOverTab = tab;
 						break;
 					}
 					x += width;
@@ -241,32 +244,32 @@ public class PC_GresTab extends PC_GresContainer {
 	
 	@Override
 	protected boolean handleMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton, boolean doubleClick, PC_GresHistory history) {
-		move = false;
-		xPosDown = mouse.x;
+		this.move = false;
+		this.xPosDown = mouse.x;
 		return super.handleMouseButtonDown(mouse, buttons, eventButton, doubleClick, history);
 	}
 
 	@Override
 	protected boolean handleMouseButtonUp(PC_Vec2I mouse, int buttons, int eventButton, PC_GresHistory history) {
-		if(!move){
-			moveToTop(mouseOverTab.child);
+		if(!this.move){
+			moveToTop(this.mouseOverTab.child);
 			return super.handleMouseButtonUp(mouse, buttons, eventButton, history);
 		}
-		move = false;
-		mouseDown = false;
+		this.move = false;
+		this.mouseDown = false;
 		return true;
 	}
 
 	@Override
 	protected void handleMouseWheel(PC_GresMouseWheelEvent event, PC_GresHistory history) {
-		float bev=tabsScroll;
+		float bev=this.tabsScroll;
 		if(event.getWheel()>0){
-			tabsScroll--;
+			this.tabsScroll--;
 		}else if(event.getWheel()<0){
-			tabsScroll++;
+			this.tabsScroll++;
 		}
 		clampTabScroll();
-		if(bev!=tabsScroll)
+		if(bev!=this.tabsScroll)
 			event.consume();
 	}
 

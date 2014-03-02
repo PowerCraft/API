@@ -76,9 +76,10 @@ public final class PC_BlockMultiblock extends PC_BlockTileEntity implements PC_I
 		return best;
 	}
 	
-	private MovingObjectPosition doRay(World world, int x, int y, int z, Vec3 pos, Vec3 ray, AxisAlignedBB aabb) {
-        pos = pos.addVector((double)(-x), (double)(-y), (double)(-z));
-        ray = ray.addVector((double)(-x), (double)(-y), (double)(-z));
+	@SuppressWarnings("unused")
+	private static MovingObjectPosition doRay(World world, int x, int y, int z, Vec3 inpos, Vec3 inray, AxisAlignedBB aabb) {
+		Vec3 pos = inpos.addVector(-x, -y, -z);
+		Vec3 ray = inray.addVector(-x, -y, -z);
         Vec3 vecXmin = pos.getIntermediateWithXValue(ray, aabb.minX);
         Vec3 vecXmax = pos.getIntermediateWithXValue(ray, aabb.maxX);
         Vec3 vecYmin = pos.getIntermediateWithYValue(ray, aabb.minY);
@@ -129,36 +130,35 @@ public final class PC_BlockMultiblock extends PC_BlockTileEntity implements PC_I
         
         if (shortestVec == null){
             return null;
-        }else{
-            byte side = -1;
-
-            if (shortestVec == vecXmin){
-            	side = 4;
-            }else if (shortestVec == vecXmax){
-            	side = 5;
-            }else if (shortestVec == vecYmin){
-            	side = 0;
-            }else if (shortestVec == vecYmax){
-            	side = 1;
-            }else if (shortestVec == vecZmin){
-            	side = 2;
-            }else if (shortestVec == vecZmax){
-            	side = 3;
-            }
-
-            return new MovingObjectPosition(x, y, z, side, shortestVec.addVector((double)x, (double)y, (double)z));
         }
+		byte side = -1;
+
+		if (shortestVec == vecXmin){
+			side = 4;
+		}else if (shortestVec == vecXmax){
+			side = 5;
+		}else if (shortestVec == vecYmin){
+			side = 0;
+		}else if (shortestVec == vecYmax){
+			side = 1;
+		}else if (shortestVec == vecZmin){
+			side = 2;
+		}else if (shortestVec == vecZmax){
+			side = 3;
+		}
+
+		return new MovingObjectPosition(x, y, z, side, shortestVec.addVector(x, y, z));
     }
 	
-	private boolean isVecInsideYZBounds(Vec3 vec, AxisAlignedBB aabb) {
+	private static boolean isVecInsideYZBounds(Vec3 vec, AxisAlignedBB aabb) {
         return vec == null ? false : vec.yCoord >= aabb.minY && vec.yCoord <= aabb.maxY && vec.zCoord >= aabb.minZ && vec.zCoord <= aabb.maxZ;
     }
 
-    private boolean isVecInsideXZBounds(Vec3 vec, AxisAlignedBB aabb){
+    private static boolean isVecInsideXZBounds(Vec3 vec, AxisAlignedBB aabb){
         return vec == null ? false : vec.xCoord >= aabb.minX && vec.xCoord <= aabb.maxX && vec.zCoord >= aabb.minZ && vec.zCoord <= aabb.maxZ;
     }
 
-    private boolean isVecInsideXYBounds(Vec3 vec, AxisAlignedBB aabb){
+    private static boolean isVecInsideXYBounds(Vec3 vec, AxisAlignedBB aabb){
         return vec == null ? false : vec.xCoord >= aabb.minX && vec.xCoord <= aabb.maxX && vec.yCoord >= aabb.minY && vec.yCoord <= aabb.maxY;
     }
 	
@@ -201,6 +201,10 @@ public final class PC_BlockMultiblock extends PC_BlockTileEntity implements PC_I
 	@SideOnly(Side.CLIENT)
 	private static class ClientSelector implements ISelector{
 		
+		public ClientSelector() {
+			
+		}
+
 		@Override
 		public void select(World world, int x, int y, int z, MovingObjectPosition select){
 			EntityPlayer player = PC_ClientUtils.mc().thePlayer;
@@ -213,6 +217,7 @@ public final class PC_BlockMultiblock extends PC_BlockTileEntity implements PC_I
 			}
 		}
 		
+		@SuppressWarnings("boxing")
 		private static void resetClientDigging(int x, int y, int z, int side){
 			if(PC_Reflection.getValue(PlayerControllerMP.class, PC_ClientUtils.mc().playerController, 9, boolean.class)){
 				PC_ClientUtils.mc().playerController.resetBlockRemoving();
@@ -252,12 +257,12 @@ public final class PC_BlockMultiblock extends PC_BlockTileEntity implements PC_I
 	}
 
 	@SideOnly(Side.CLIENT)
-	public void drawBlockDamages(RenderBlocks renderer){
+	public static void drawBlockDamages(RenderBlocks renderer){
 		RenderGlobal renderGlobal = PC_ClientUtils.mc().renderGlobal;
 		IIcon[] destroyBlockIcons = PC_Reflection.getValue(RenderGlobal.class, renderGlobal, 31, IIcon[].class);
 		Map<Integer, DestroyBlockProgress> damagedBlocks = PC_Reflection.getValue(RenderGlobal.class, renderGlobal, 29, Map.class);
 		for(Entry<Integer, DestroyBlockProgress> e:damagedBlocks.entrySet()){
-			EntityPlayer player = (EntityPlayer) PC_ClientUtils.mc().theWorld.getEntityByID(e.getKey());
+			EntityPlayer player = (EntityPlayer) PC_ClientUtils.mc().theWorld.getEntityByID(e.getKey().intValue());
 			DestroyBlockProgress destroyblockprogress = e.getValue();
 			int x = destroyblockprogress.getPartialBlockX();
 			int y = destroyblockprogress.getPartialBlockY();
@@ -282,7 +287,9 @@ public final class PC_BlockMultiblock extends PC_BlockTileEntity implements PC_I
 	}
 
 	@Override
-	public void onEndTick(float renderTickTime) {}
+	public void onEndTick(float renderTickTime) {
+		//
+	}
 	
 	@Override
 	public boolean isOpaqueCube() {

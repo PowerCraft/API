@@ -1,9 +1,10 @@
 package powercraft.api.network.packet;
 
 import io.netty.buffer.ByteBuf;
+import net.minecraft.client.network.NetHandlerPlayClient;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.INetHandler;
-import powercraft.api.PC_ClientUtils;
+import net.minecraft.world.World;
 import powercraft.api.PC_Utils;
 import powercraft.api.multiblock.PC_MultiblockIndex;
 import powercraft.api.multiblock.PC_MultiblockObject;
@@ -25,20 +26,20 @@ public class PC_PacketMultiblockObjectSync extends PC_PacketServerToClient {
 	
 	public PC_PacketMultiblockObjectSync(PC_MultiblockObject multiblockObject, NBTTagCompound nbtTagCompound){
 		PC_TileEntityMultiblock multiblock = multiblockObject.getTileEntity();
-		x = multiblock.xCoord;
-		y = multiblock.yCoord;
-		z = multiblock.zCoord;
-		subTile = multiblockObject.getIndex().ordinal();
+		this.x = multiblock.xCoord;
+		this.y = multiblock.yCoord;
+		this.z = multiblock.zCoord;
+		this.subTile = multiblockObject.getIndex().ordinal();
 		this.nbtTagCompound = nbtTagCompound;
 	}
 	
 	@Override
-	protected PC_Packet doAndReply(INetHandler iNetHandler) {
-		PC_TileEntityMultiblock tem = PC_Utils.getTileEntity(PC_ClientUtils.mc().theWorld, x, y, z, PC_TileEntityMultiblock.class);
+	protected PC_Packet doAndReply(NetHandlerPlayClient iNetHandler, World world, EntityPlayer player) {
+		PC_TileEntityMultiblock tem = PC_Utils.getTileEntity(world, this.x, this.y, this.z, PC_TileEntityMultiblock.class);
 		if(tem!=null){
-			PC_MultiblockObject multiblockObject = tem.getTile(PC_MultiblockIndex.values()[subTile]);
+			PC_MultiblockObject multiblockObject = tem.getTile(PC_MultiblockIndex.values()[this.subTile]);
 			if(multiblockObject!=null){
-				multiblockObject.applySync(nbtTagCompound);
+				multiblockObject.applySync(this.nbtTagCompound);
 			}
 		}
 		return null;
@@ -46,20 +47,20 @@ public class PC_PacketMultiblockObjectSync extends PC_PacketServerToClient {
 
 	@Override
 	protected void fromByteBuffer(ByteBuf buf) {
-		x = buf.readInt();
-		y = buf.readInt();
-		z = buf.readInt();
-		subTile = buf.readInt();
-		nbtTagCompound = readNBTFromBuf(buf);
+		this.x = buf.readInt();
+		this.y = buf.readInt();
+		this.z = buf.readInt();
+		this.subTile = buf.readInt();
+		this.nbtTagCompound = readNBTFromBuf(buf);
 	}
 
 	@Override
 	protected void toByteBuffer(ByteBuf buf) {
-		buf.writeInt(x);
-		buf.writeInt(y);
-		buf.writeInt(z);
-		buf.writeInt(subTile);
-		writeNBTToBuf(buf, nbtTagCompound);
+		buf.writeInt(this.x);
+		buf.writeInt(this.y);
+		buf.writeInt(this.z);
+		buf.writeInt(this.subTile);
+		writeNBTToBuf(buf, this.nbtTagCompound);
 	}
 
 }

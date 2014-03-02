@@ -50,12 +50,14 @@ public abstract class PC_BlockTileEntity extends PC_AbstractBlockBase implements
 		return null;
 	}
 	
+	@Override
 	void construct() {
 		super.construct();
 		Class<? extends PC_TileEntity> tileEntity = getTileEntityClass();
 		PC_Registry.registerTileEntity(tileEntity);
 	}
 	
+	@Override
 	public boolean canRotate(){
 		return getTileEntityClass().isAssignableFrom(PC_TileEntityRotateable.class);
 	}
@@ -187,9 +189,8 @@ public abstract class PC_BlockTileEntity extends PC_AbstractBlockBase implements
         
         if (!ForgeHooks.canHarvestBlock(block, player, metadata)){
             return player.getBreakSpeed(block, true, metadata) / hardness / 100F;
-        }else{
-            return player.getBreakSpeed(block, false, metadata) / hardness / 30F;
         }
+		return player.getBreakSpeed(block, false, metadata) / hardness / 30F;
 	}
 
 	@Override
@@ -362,6 +363,7 @@ public abstract class PC_BlockTileEntity extends PC_AbstractBlockBase implements
 		return super.getDrops(world, x, y, z, metadata, fortune);
 	}
 
+	@Override
 	public boolean canSilkHarvest(){
 		return false;
 	}
@@ -528,7 +530,7 @@ public abstract class PC_BlockTileEntity extends PC_AbstractBlockBase implements
 	}
 
 	@Override
-	public final void harvestBlock(World world, EntityPlayer player, int x, int y, int z, int metadata){}
+	public final void harvestBlock(World world, EntityPlayer player, int x, int y, int z, int metadata){/**/}
 	
 	public void onHarvestBlock(World world, EntityPlayer player, int x, int y, int z){
 		if(!PC_Utils.isCreativ(player)){
@@ -560,6 +562,7 @@ public abstract class PC_BlockTileEntity extends PC_AbstractBlockBase implements
 		}
 	}
 	
+	@Override
 	public boolean onBlockEventReceived(World world, int x, int y, int z, int event, int argument){
 		TileEntity te = PC_Utils.getTileEntity(world, x, y, z);
 		if(te!=null){

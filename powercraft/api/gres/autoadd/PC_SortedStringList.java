@@ -12,7 +12,7 @@ public class PC_SortedStringList implements List<PC_StringWithInfo> {
 	
 	@Override
 	public boolean add(PC_StringWithInfo e) {
-		ListIterator<PC_StringWithInfo> li = sortedList.listIterator();
+		ListIterator<PC_StringWithInfo> li = this.sortedList.listIterator();
 		while(li.hasNext()){
 			PC_StringWithInfo s = li.next();
 			int comp = s.compareTo(e);
@@ -48,59 +48,59 @@ public class PC_SortedStringList implements List<PC_StringWithInfo> {
 
 	@Override
 	public void clear() {
-		sortedList.clear();
+		this.sortedList.clear();
 	}
 
 	@Override
 	public boolean contains(Object o) {
-		return sortedList.contains(o);
+		return this.sortedList.contains(o);
 	}
 
 	@Override
 	public boolean containsAll(Collection<?> c) {
-		return sortedList.containsAll(c);
+		return this.sortedList.containsAll(c);
 	}
 
 	@Override
 	public PC_StringWithInfo get(int index) {
-		return sortedList.get(index);
+		return this.sortedList.get(index);
 	}
 
 	@Override
 	public int indexOf(Object o) {
-		return sortedList.indexOf(o);
+		return this.sortedList.indexOf(o);
 	}
 
 	@Override
 	public boolean isEmpty() {
-		return sortedList.isEmpty();
+		return this.sortedList.isEmpty();
 	}
 
 	@Override
 	public Iterator<PC_StringWithInfo> iterator() {
-		return sortedList.iterator();
+		return this.sortedList.iterator();
 	}
 
 	@Override
 	public int lastIndexOf(Object o) {
-		return sortedList.lastIndexOf(o);
+		return this.sortedList.lastIndexOf(o);
 	}
 
 	@Override
 	public ListIterator<PC_StringWithInfo> listIterator() {
-		return new LI(sortedList.listIterator());
+		return new LI(this.sortedList.listIterator());
 	}
 
 	@Override
 	public ListIterator<PC_StringWithInfo> listIterator(int index) {
-		return new LI(sortedList.listIterator(index));
+		return new LI(this.sortedList.listIterator(index));
 	}
 
 	private static class LI implements ListIterator<PC_StringWithInfo>{
 		
 		private ListIterator<PC_StringWithInfo> li;
 
-		private LI(ListIterator<PC_StringWithInfo> li){
+		LI(ListIterator<PC_StringWithInfo> li){
 			this.li = li;
 		}
 		
@@ -111,37 +111,37 @@ public class PC_SortedStringList implements List<PC_StringWithInfo> {
 
 		@Override
 		public boolean hasNext() {
-			return li.hasNext();
+			return this.li.hasNext();
 		}
 
 		@Override
 		public boolean hasPrevious() {
-			return li.hasPrevious();
+			return this.li.hasPrevious();
 		}
 
 		@Override
 		public PC_StringWithInfo next() {
-			return li.next();
+			return this.li.next();
 		}
 
 		@Override
 		public int nextIndex() {
-			return li.nextIndex();
+			return this.li.nextIndex();
 		}
 
 		@Override
 		public PC_StringWithInfo previous() {
-			return li.previous();
+			return this.li.previous();
 		}
 
 		@Override
 		public int previousIndex() {
-			return li.previousIndex();
+			return this.li.previousIndex();
 		}
 
 		@Override
 		public void remove() {
-			li.remove();
+			this.li.remove();
 		}
 
 		@Override
@@ -153,17 +153,17 @@ public class PC_SortedStringList implements List<PC_StringWithInfo> {
 	
 	@Override
 	public boolean remove(Object o) {
-		return sortedList.remove(o);
+		return this.sortedList.remove(o);
 	}
 
 	@Override
 	public PC_StringWithInfo remove(int index) {
-		return sortedList.remove(index);
+		return this.sortedList.remove(index);
 	}
 
 	@Override
 	public boolean removeAll(Collection<?> c) {
-		return sortedList.removeAll(c);
+		return this.sortedList.removeAll(c);
 	}
 
 	@Override
@@ -178,7 +178,7 @@ public class PC_SortedStringList implements List<PC_StringWithInfo> {
 
 	@Override
 	public int size() {
-		return sortedList.size();
+		return this.sortedList.size();
 	}
 
 	@Override
@@ -188,12 +188,12 @@ public class PC_SortedStringList implements List<PC_StringWithInfo> {
 
 	@Override
 	public Object[] toArray() {
-		return sortedList.toArray();
+		return this.sortedList.toArray();
 	}
 
 	@Override
 	public <T> T[] toArray(T[] a) {
-		return sortedList.toArray(a);
+		return this.sortedList.toArray(a);
 	}
 
 }

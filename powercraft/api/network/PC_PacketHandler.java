@@ -54,7 +54,7 @@ public final class PC_PacketHandler extends SimpleChannelInboundHandler<PC_Packe
 	private static HashMap<Class<? extends PC_Packet>, Integer> packetID = new HashMap<Class<? extends PC_Packet>, Integer>();
 	
 	static{
-		packetID.put(PC_PacketPacketResolve.class, 0);
+		packetID.put(PC_PacketPacketResolve.class, Integer.valueOf(0));
 	}
 	
 	public static void register(){
@@ -84,10 +84,11 @@ public final class PC_PacketHandler extends SimpleChannelInboundHandler<PC_Packe
 	
 	public static class Listener{
 		
-		private Listener(){
+		Listener(){
 			
 		}
 		
+		@SuppressWarnings("static-method")
 		@SubscribeEvent
 		public void clientConnected(PlayerLoggedInEvent event){
 			sendPacketResolveTo((EntityPlayerMP) event.player);
@@ -98,7 +99,7 @@ public final class PC_PacketHandler extends SimpleChannelInboundHandler<PC_Packe
 	@Sharable
 	public static class Indexer extends MessageToMessageCodec<FMLProxyPacket, PC_Packet>{
 
-		private Indexer(){
+		Indexer(){
 			
 		}
 		
@@ -140,14 +141,14 @@ public final class PC_PacketHandler extends SimpleChannelInboundHandler<PC_Packe
 		packets = new Class[packetList.size()+1];
 		packetID.clear();
 		packets[0] = PC_PacketPacketResolve.class;
-		packetID.put(PC_PacketPacketResolve.class, 0);
+		packetID.put(PC_PacketPacketResolve.class, Integer.valueOf(0));
 		for(int i=1; i<packets.length; i++){
 			packets[i] = packetList.get(i-1);
-			packetID.put(packets[i], i);
+			packetID.put(packets[i], Integer.valueOf(i));
 		}
 	}
 	
-	private static void sendPacketResolveTo(EntityPlayerMP player){
+	static void sendPacketResolveTo(EntityPlayerMP player){
 		String[] packetClasses = new String[packets.length-1];
 		for(int i=0; i<packetClasses.length; i++){
 			packetClasses[i] = packets[i+1].getClass().getName();
@@ -175,7 +176,7 @@ public final class PC_PacketHandler extends SimpleChannelInboundHandler<PC_Packe
 			PC_Logger.severe("YOU HAVE TO REGISTER CLASS %s", packet.getClass());
 			return;
 		}
-		buf.writeInt(id);
+		buf.writeInt(id.intValue());
 		packet.toByteBuffer(buf);
 	}
 
@@ -187,11 +188,11 @@ public final class PC_PacketHandler extends SimpleChannelInboundHandler<PC_Packe
 		packets = new Class[packetClasses.length+1];
 		packetID.clear();
 		packets[0] = PC_PacketPacketResolve.class;
-		packetID.put(PC_PacketPacketResolve.class, 0);
+		packetID.put(PC_PacketPacketResolve.class, Integer.valueOf(0));
 		for(int i=1; i<packets.length; i++){
 			try {
 				packets[i] = (Class<? extends PC_Packet>) Class.forName(packetClasses[i-1]);
-				packetID.put(packets[i], i);
+				packetID.put(packets[i], Integer.valueOf(i));
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
@@ -221,7 +222,7 @@ public final class PC_PacketHandler extends SimpleChannelInboundHandler<PC_Packe
 	public static void sendToDimension(PC_Packet packet, int dimension){
 		checkServer(packet);
 		channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.DIMENSION);
-	    channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(dimension);
+	    channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(Integer.valueOf(dimension));
 	    channels.get(Side.SERVER).writeAndFlush(packet).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
 	}
 	
@@ -255,8 +256,8 @@ public final class PC_PacketHandler extends SimpleChannelInboundHandler<PC_Packe
 	
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, PC_Packet msg) throws Exception {
-		INetHandler iNetHandler = channels.get(side.side).attr(NetworkRegistry.NET_HANDLER).get();
-		PC_Packet result = msg.doAndReply(side, iNetHandler);
+		INetHandler iNetHandler = channels.get(this.side.side).attr(NetworkRegistry.NET_HANDLER).get();
+		PC_Packet result = msg.doAndReply(this.side, iNetHandler);
         if (result != null){
             ctx.writeAndFlush(result).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
         }

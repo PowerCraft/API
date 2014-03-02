@@ -84,18 +84,18 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 	
 	@Override
 	public void setLayout(PC_IGresLayout layout) {
-		
+		//
 	}
 
 	public PC_IGresGui getClient() {
 
-		return gui;
+		return this.gui;
 	}
 
 
 	public void close() {
 
-		mc.thePlayer.closeScreen();
+		this.mc.thePlayer.closeScreen();
 	}
 
 
@@ -183,26 +183,27 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 	}
 
 
+	@SuppressWarnings("hiding")
 	@Override
 	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp) {
 
-		PC_GresRenderer.drawGradientRect(0, 0, rect.width, rect.height, -1072689136, -804253680);
+		PC_GresRenderer.drawGradientRect(0, 0, this.rect.width, this.rect.height, -1072689136, -804253680);
 	}
 
 
 	protected void eventInitGui(int width, int height) {
-		minSize.setTo(new PC_Vec2I(width, height));
-		maxSize.setTo(minSize);
-		prefSize.setTo(minSize);
-		super.setSize(minSize);
-		if (!initialized) {
-			gui.initGui(this);
-			initialized = true;
+		this.minSize.setTo(new PC_Vec2I(width, height));
+		this.maxSize.setTo(this.minSize);
+		this.prefSize.setTo(this.minSize);
+		super.setSize(this.minSize);
+		if (!this.initialized) {
+			this.gui.initGui(this);
+			this.initialized = true;
 		}
-		ScaledResolution scaledresolution = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
+		ScaledResolution scaledresolution = new ScaledResolution(this.mc.gameSettings, this.mc.displayWidth, this.mc.displayHeight);
 		int newScale = scaledresolution.getScaleFactor();
-		if(newScale!=scale){
-			scale = newScale;
+		if(newScale!=this.scale){
+			this.scale = newScale;
 			onScaleChanged(newScale);
 		}
 	}
@@ -212,23 +213,24 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 		fireEvent(new PC_GresTickEvent(this, EventType.PRE));
 		onTick();
 		fireEvent(new PC_GresTickEvent(this, EventType.POST));
-		if (!mc.thePlayer.isEntityAlive() || mc.thePlayer.isDead){
+		if (!this.mc.thePlayer.isEntityAlive() || this.mc.thePlayer.isDead){
 			close();
         }
 	}
 
 
+	@SuppressWarnings("unused")
 	protected void eventDrawScreen(PC_Vec2I mouse, float timeStamp) {
 		long t = System.currentTimeMillis();
-		float ts = (t-last)/1000.0f;
-		last = t;
+		float ts = (t-this.last)/1000.0f;
+		this.last = t;
 		
-		ScaledResolution scaledresolution = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
+		ScaledResolution scaledresolution = new ScaledResolution(this.mc.gameSettings, this.mc.displayWidth, this.mc.displayHeight);
 		fireEvent(new PC_GresPaintEvent(this, EventType.PRE, ts));
 		onDrawTick(ts);
 		GL11.glEnable(GL11.GL_SCISSOR_TEST);
 		GL11.glEnable(GL11.GL_BLEND);
-		doPaint(new PC_Vec2I(0, 0), null, scaledresolution.getScaleFactor(), mc.displayHeight, ts);
+		doPaint(new PC_Vec2I(0, 0), null, scaledresolution.getScaleFactor(), this.mc.displayHeight, ts);
 		GL11.glDisable(GL11.GL_SCISSOR_TEST);
 		GL11.glDisable(GL11.GL_BLEND);
 		drawMouseItemStack(mouse);
@@ -238,9 +240,9 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 
 	private void drawTooltip(PC_Vec2I mouse) {
 
-		List<String> list = mouseOverComponent.onGetTooltip(mouse.sub(mouseOverComponent.getRealLocation()));
+		List<String> list = this.mouseOverComponent.onGetTooltip(mouse.sub(this.mouseOverComponent.getRealLocation()));
 		if (list != null && !list.isEmpty()) {
-			PC_GresRenderer.drawTooltip(mouse.x, mouse.y, rect.width, rect.height, list);
+			PC_GresRenderer.drawTooltip(mouse.x, mouse.y, this.rect.width, this.rect.height, list);
 		}
 	}
 
@@ -250,38 +252,40 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 		switch(keyCode){
 		case Keyboard.KEY_Z:
 			if(Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL)){
-				history.undo();
+				this.history.undo();
 				return;
 			}
 			break;
 		case Keyboard.KEY_Y:
 			if(Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL)){
-				history.redo();
+				this.history.redo();
 				return;
 			}
 			break;
+		default:
+			break;
 		}
 		
-		PC_GresComponent c = focusedComponent;
-		while(c!=null && !c.onKeyTyped(key, keyCode, repeat, history)){
+		PC_GresComponent c = this.focusedComponent;
+		while(c!=null && !c.onKeyTyped(key, keyCode, repeat, this.history)){
 			c = c.getParent();
 		}
 		if(c==null){
-			PC_GresKeyEvent event = new PC_GresKeyEvent(this, key, keyCode, repeat, history);
+			PC_GresKeyEvent event = new PC_GresKeyEvent(this, key, keyCode, repeat, this.history);
 			fireEvent(event);
 			if (!event.isConsumed()) {
 				if(!checkHotbarKeys(keyCode)){
-					tryActionOnKeyTyped(key, keyCode, repeat, history);
+					tryActionOnKeyTyped(key, keyCode, repeat, this.history);
 				}
 			}
 		}
 	}
 
 	private boolean checkHotbarKeys(int keyCode){
-		if (this.mc.thePlayer.inventory.getItemStack() == null && slotOver != null){
+		if (this.mc.thePlayer.inventory.getItemStack() == null && this.slotOver != null){
 	    	for (int j = 0; j < 9; ++j){
 	    		if (keyCode == 2 + j){
-	    			sentMouseClickToServer(slotOver.slotNumber, j, 2);
+	    			sentMouseClickToServer(this.slotOver.slotNumber, j, 2);
 	                return true;
 	            }
 	        }
@@ -297,26 +301,26 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 		if (newMouseOverComponent == null) {
 			newMouseOverComponent = this;
 		}
-		if (newMouseOverComponent != mouseOverComponent) {
-			mouseOverComponent.onMouseLeave(mouse.sub(mouseOverComponent.getRealLocation()), buttons, history);
-			newMouseOverComponent.onMouseEnter(mouse.sub(newMouseOverComponent.getRealLocation()), buttons, history);
-			mouseOverComponent = newMouseOverComponent;
+		if (newMouseOverComponent != this.mouseOverComponent) {
+			this.mouseOverComponent.onMouseLeave(mouse.sub(this.mouseOverComponent.getRealLocation()), buttons, this.history);
+			newMouseOverComponent.onMouseEnter(mouse.sub(newMouseOverComponent.getRealLocation()), buttons, this.history);
+			this.mouseOverComponent = newMouseOverComponent;
 		}
 	}
 
 
 	protected void eventMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton, boolean doubleClick) {
 
-		setFocus(mouseOverComponent);
+		setFocus(this.mouseOverComponent);
 		inventoryMouseDown(mouse, buttons, eventButton, doubleClick);
-		focusedComponent.onMouseButtonDown(mouse.sub(focusedComponent.getRealLocation()), buttons, eventButton, doubleClick, history);
+		this.focusedComponent.onMouseButtonDown(mouse.sub(this.focusedComponent.getRealLocation()), buttons, eventButton, doubleClick, this.history);
 	}
 
 
 	protected void eventMouseButtonUp(PC_Vec2I mouse, int buttons, int eventButton) {
 
 		inventoryMouseUp(mouse, buttons, eventButton);
-		focusedComponent.onMouseButtonUp(mouse.sub(focusedComponent.getRealLocation()), buttons, eventButton, history);
+		this.focusedComponent.onMouseButtonUp(mouse.sub(this.focusedComponent.getRealLocation()), buttons, eventButton, this.history);
 	}
 
 
@@ -324,15 +328,15 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 
 		checkMouseOverComponent(mouse, buttons);
 		inventoryMouseMove(mouse, buttons);
-		mouseOverComponent.onMouseMove(mouse.sub(mouseOverComponent.getRealLocation()), buttons, history);
-		if(mouseOverComponent!=focusedComponent)
-			focusedComponent.onMouseMove(mouse.sub(focusedComponent.getRealLocation()), buttons, history);
+		this.mouseOverComponent.onMouseMove(mouse.sub(this.mouseOverComponent.getRealLocation()), buttons, this.history);
+		if(this.mouseOverComponent!=this.focusedComponent)
+			this.focusedComponent.onMouseMove(mouse.sub(this.focusedComponent.getRealLocation()), buttons, this.history);
 	}
 
 
 	protected void eventMouseWheel(PC_Vec2I mouse, int buttons, int wheel) {
-		PC_GresComponent c = focusedComponent;
-		while(c!=null && !c.onMouseWheel(mouse.sub(c.getRealLocation()), buttons, wheel, history)){
+		PC_GresComponent c = this.focusedComponent;
+		while(c!=null && !c.onMouseWheel(mouse.sub(c.getRealLocation()), buttons, wheel, this.history)){
 			c = c.getParent();
 		}
 	}
@@ -348,20 +352,21 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 	public void setFocus(PC_GresComponent focusedComponent) {
 		if(this.focusedComponent != focusedComponent){
 			if(this.focusedComponent!=null){
-				this.focusedComponent.onFocusLost(focusedComponent, history);
+				this.focusedComponent.onFocusLost(focusedComponent, this.history);
 			}
 			PC_GresComponent oldFocusedComponent = this.focusedComponent;
 			this.focusedComponent = focusedComponent;
 			if(focusedComponent!=null){
-				focusedComponent.onFocusGot(oldFocusedComponent, history);
+				focusedComponent.onFocusGot(oldFocusedComponent, this.history);
 			}
 		}
 	}
 
 	private ItemStack getMouseItemStack(){
-		return mc.thePlayer.inventory.getItemStack();
+		return this.mc.thePlayer.inventory.getItemStack();
 	}
 	
+	@SuppressWarnings("hiding")
 	private void drawMouseItemStack(PC_Vec2I mouse){
 		ItemStack holdItemStack = getMouseItemStack();
 		if (holdItemStack == null) {
@@ -369,8 +374,8 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 		}else{
 			String text = null;
 			holdItemStack = holdItemStack.copy();
-			if(selectedSlots.size()>1){
-				holdItemStack.stackSize = stackSize==-1?0:stackSize;
+			if(this.selectedSlots.size()>1){
+				holdItemStack.stackSize = this.stackSize==-1?0:this.stackSize;
 				if(holdItemStack.stackSize==0){
 					text = EnumChatFormatting.YELLOW+"0";
 				}
@@ -392,10 +397,10 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 	
 	@SuppressWarnings("unused")
 	private void inventoryMouseMove(PC_Vec2I mouse, int buttons){
-		slotOver = getSlotAtPosition(mouse);
-		if(!takeAll && slotOver!=null && getMouseItemStack()!=null && stackSize!=-1 && slotClickButton!=-1 && isItemStacksCompatibleForSlot(getMouseItemStack(), slotOver) && canDragIntoSlot(slotOver)){
-			if(!selectedSlots.contains(slotOver)){
-				selectedSlots.add(slotOver);
+		this.slotOver = getSlotAtPosition(mouse);
+		if(!this.takeAll && this.slotOver!=null && getMouseItemStack()!=null && this.stackSize!=-1 && this.slotClickButton!=-1 && isItemStacksCompatibleForSlot(getMouseItemStack(), this.slotOver) && canDragIntoSlot(this.slotOver)){
+			if(!this.selectedSlots.contains(this.slotOver)){
+				this.selectedSlots.add(this.slotOver);
 				calcMouseStackSize();
 			}
 		}
@@ -404,15 +409,15 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 	private void calcMouseStackSize(){
 		ItemStack itemStack = getMouseItemStack();
 		if(itemStack==null){
-			stackSize = 0;
+			this.stackSize = 0;
 		}else{
-			stackSize = itemStack.stackSize;
-			for(Slot slot:selectedSlots){
+			this.stackSize = itemStack.stackSize;
+			for(Slot slot:this.selectedSlots){
 				int size = slot.getHasStack()?slot.getStack().stackSize:0;
 				ItemStack is = itemStack.copy();
 				is.stackSize = size+calcCount();
-				if(is.stackSize>stackSize){
-					is.stackSize = stackSize;
+				if(is.stackSize>this.stackSize){
+					is.stackSize = this.stackSize;
 				}
 				if (is.stackSize+size > is.getMaxStackSize()) {
 					is.stackSize = is.getMaxStackSize()-size;
@@ -420,10 +425,10 @@ public class PC_GresGuiHandler extends PC_GresContainer {
                 if (is.stackSize+size > slot.getSlotStackLimit()) {
                 	is.stackSize = slot.getSlotStackLimit()-size;
                 }
-                stackSize -= is.stackSize;
+                this.stackSize -= is.stackSize;
 			}
-			if(selectedSlots.size()>=itemStack.stackSize){
-				stackSize = -1;
+			if(this.selectedSlots.size()>=itemStack.stackSize){
+				this.stackSize = -1;
 			}
 		}
 	}
@@ -446,25 +451,25 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 	}
 	
 	private void inventoryMouseDown(PC_Vec2I mouse, int buttons, int eventButton, boolean doubleClick) {
-		if(slotClickButton==-1){
-			boolean flag = lastSlotOver == slotOver && lastSlotOver!=null && doubleClick && lastClickButton == eventButton;
-			lastSlotOver = slotOver;
-			if (slotOver!=null && slotOver.getHasStack() && eventButton == mc.gameSettings.keyBindPickBlock.getKeyCode() + 100){
-				sentMouseClickToServer(slotOver.slotNumber, eventButton, 3);
-            }else if(slotOver!=null && slotOver.getHasStack() && getMouseItemStack()==null){
-				slotClickButton = eventButton;
-				if(mc.gameSettings.touchscreen){
+		if(this.slotClickButton==-1){
+			boolean flag = this.lastSlotOver == this.slotOver && this.lastSlotOver!=null && doubleClick && this.lastClickButton == eventButton;
+			this.lastSlotOver = this.slotOver;
+			if (this.slotOver!=null && this.slotOver.getHasStack() && eventButton == this.mc.gameSettings.keyBindPickBlock.getKeyCode() + 100){
+				sentMouseClickToServer(this.slotOver.slotNumber, eventButton, 3);
+            }else if(this.slotOver!=null && this.slotOver.getHasStack() && getMouseItemStack()==null){
+				this.slotClickButton = eventButton;
+				if(this.mc.gameSettings.touchscreen){
 					onSlotClicked();
 					if(getMouseItemStack()!=null)
-						stackSize = getMouseItemStack().stackSize;
+						this.stackSize = getMouseItemStack().stackSize;
 				}
 			}else if(getMouseItemStack()!=null){
-				if(slotOver!=null){
-					takeAll = flag;
-					slotClickButton = eventButton;
-					selectedSlots.clear();
+				if(this.slotOver!=null){
+					this.takeAll = flag;
+					this.slotClickButton = eventButton;
+					this.selectedSlots.clear();
 					inventoryMouseMove(mouse, buttons);
-				}else if(mouseOverComponent==this){
+				}else if(this.mouseOverComponent==this){
 					sentMouseClickToServer(-999, eventButton, 0);
 				}
 			}
@@ -473,52 +478,52 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 	
 	private void onSlotClicked(){
 		if(GuiScreen.isShiftKeyDown()){
-			sentMouseClickToServer(slotOver.slotNumber, slotClickButton, 1);
+			sentMouseClickToServer(this.slotOver.slotNumber, this.slotClickButton, 1);
 		}else{
-			sentMouseClickToServer(slotOver.slotNumber, slotClickButton, 0);
+			sentMouseClickToServer(this.slotOver.slotNumber, this.slotClickButton, 0);
 		}
 	}
 	
 	@SuppressWarnings("unused")
 	private void inventoryMouseUp(PC_Vec2I mouse, int buttons, int eventButton){
-		if(slotClickButton==eventButton && getMouseItemStack()==null){
-			if(slotOver==null)
+		if(this.slotClickButton==eventButton && getMouseItemStack()==null){
+			if(this.slotOver==null)
 				return;
 			onSlotClicked();
 		}else if(getMouseItemStack()!=null){
 			onSlotFill();
-			selectedSlots.clear();
+			this.selectedSlots.clear();
 		}
-		takeAll = false;
-		slotClickButton = -1;
+		this.takeAll = false;
+		this.slotClickButton = -1;
 		if(getMouseItemStack()!=null)
-			stackSize = getMouseItemStack().stackSize;
+			this.stackSize = getMouseItemStack().stackSize;
 	}
 	
 	private void onSlotFill(){
-		if(takeAll){
-			takeAll = false;
-			sentMouseClickToServer(lastSlotOver.slotNumber, slotClickButton, 6);
+		if(this.takeAll){
+			this.takeAll = false;
+			sentMouseClickToServer(this.lastSlotOver.slotNumber, this.slotClickButton, 6);
 		}else{
-			if(selectedSlots.size()==1){
-				sentMouseClickToServer(selectedSlots.get(0).slotNumber, slotClickButton, 0);
-			}else if(selectedSlots.size()>0){
-				sentMouseClickToServer(-999, Container.func_94534_d(0, slotClickButton), 5);
-				for(Slot slot:selectedSlots){
-		            sentMouseClickToServer(slot.slotNumber, Container.func_94534_d(1, slotClickButton), 5);
+			if(this.selectedSlots.size()==1){
+				sentMouseClickToServer(this.selectedSlots.get(0).slotNumber, this.slotClickButton, 0);
+			}else if(this.selectedSlots.size()>0){
+				sentMouseClickToServer(-999, Container.func_94534_d(0, this.slotClickButton), 5);
+				for(Slot slot:this.selectedSlots){
+		            sentMouseClickToServer(slot.slotNumber, Container.func_94534_d(1, this.slotClickButton), 5);
 				}
-				sentMouseClickToServer(-999, Container.func_94534_d(2, slotClickButton), 5);
+				sentMouseClickToServer(-999, Container.func_94534_d(2, this.slotClickButton), 5);
 			}
 		}
 	}
 	
 	private int calcCount(){
-        switch (slotClickButton){
+        switch (this.slotClickButton){
         case 0:
         	ItemStack itemStack = getMouseItemStack();
         	if(itemStack==null)
         		return 0;
-        	return PC_MathHelper.floor_float(itemStack.stackSize / (float)selectedSlots.size());
+        	return PC_MathHelper.floor_float(itemStack.stackSize / (float)this.selectedSlots.size());
         case 1:
             return 1;
 		default:
@@ -527,17 +532,18 @@ public class PC_GresGuiHandler extends PC_GresContainer {
     }
 	
 	private void sentMouseClickToServer(int slotNumber, int mouseButton, int transfer){
-		if(gui instanceof PC_GresBaseWithInventory){
-			this.mc.playerController.windowClick(((PC_GresBaseWithInventory)gui).windowId, slotNumber, mouseButton, transfer, this.mc.thePlayer);
+		if(this.gui instanceof PC_GresBaseWithInventory){
+			this.mc.playerController.windowClick(((PC_GresBaseWithInventory)this.gui).windowId, slotNumber, mouseButton, transfer, this.mc.thePlayer);
 		}
 	}
 	
+	@SuppressWarnings("hiding")
 	protected void renderSlot(int x, int y, Slot slot) {
 		boolean renderGray = false;
 		String text = null;
 		ItemStack itemStack = slot.getStack();
 		ItemStack mouseItemStack = getMouseItemStack();
-		if(selectedSlots.contains(slot) && selectedSlots.size()>1){
+		if(this.selectedSlots.contains(slot) && this.selectedSlots.size()>1){
 			if(isItemStacksCompatibleForSlot(mouseItemStack, slot) && canDragIntoSlot(slot)){
 				int size = slot.getHasStack()?itemStack.stackSize:0;
 				itemStack = mouseItemStack.copy();
@@ -552,9 +558,9 @@ public class PC_GresGuiHandler extends PC_GresContainer {
                 	itemStack.stackSize = slot.getSlotStackLimit();
                 }
 			}else{
-				selectedSlots.remove(slot);
+				this.selectedSlots.remove(slot);
 			}
-		}else if(slot==slotOver){
+		}else if(slot==this.slotOver){
 			renderGray = true;
 		}
 		renderGray &= slot.func_111238_b();
@@ -576,13 +582,13 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 	}
 
 	public void eventGuiClosed() {
-		if (mc.thePlayer != null && gui instanceof PC_GresBaseWithInventory) {
-            ((PC_GresBaseWithInventory)gui).onContainerClosed(this.mc.thePlayer);
+		if (this.mc.thePlayer != null && this.gui instanceof PC_GresBaseWithInventory) {
+            ((PC_GresBaseWithInventory)this.gui).onContainerClosed(this.mc.thePlayer);
         }
 	}
 	
 	public PC_GresHistory getHistory(){
-		return history;
+		return this.history;
 	}
 	
 }

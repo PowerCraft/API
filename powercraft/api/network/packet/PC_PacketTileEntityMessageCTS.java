@@ -3,8 +3,8 @@ package powercraft.api.network.packet;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.INetHandler;
 import net.minecraft.network.NetHandlerPlayServer;
+import net.minecraft.world.World;
 import powercraft.api.PC_Utils;
 import powercraft.api.block.PC_TileEntity;
 import powercraft.api.network.PC_Packet;
@@ -23,39 +23,38 @@ public class PC_PacketTileEntityMessageCTS extends PC_PacketClientToServer {
 	}
 	
 	public PC_PacketTileEntityMessageCTS(PC_TileEntity te, NBTTagCompound nbtTagCompound, long session){
-		x = te.xCoord;
-		y = te.yCoord;
-		z = te.zCoord;
+		this.x = te.xCoord;
+		this.y = te.yCoord;
+		this.z = te.zCoord;
 		this.nbtTagCompound = nbtTagCompound;
 		this.session = session;
 	}
 	
 	@Override
-	protected PC_Packet doAndReply(INetHandler iNetHandler) {
-		EntityPlayer player = ((NetHandlerPlayServer)iNetHandler).playerEntity;
-		PC_TileEntity te = PC_Utils.getTileEntity(player.worldObj, x, y, z, PC_TileEntity.class);
+	protected PC_Packet doAndReply(NetHandlerPlayServer iNetHandler, World world, EntityPlayer player) {
+		PC_TileEntity te = PC_Utils.getTileEntity(world, this.x, this.y, this.z, PC_TileEntity.class);
 		if(te!=null){
-			te.onClientMessageCheck(player, nbtTagCompound, session, false);
+			te.onClientMessageCheck(player, this.nbtTagCompound, this.session, false);
 		}
 		return null;
 	}
 
 	@Override
 	protected void fromByteBuffer(ByteBuf buf) {
-		x = buf.readInt();
-		y = buf.readInt();
-		z = buf.readInt();
-		nbtTagCompound = readNBTFromBuf(buf);
-		session = buf.readLong();
+		this.x = buf.readInt();
+		this.y = buf.readInt();
+		this.z = buf.readInt();
+		this.nbtTagCompound = readNBTFromBuf(buf);
+		this.session = buf.readLong();
 	}
 
 	@Override
 	protected void toByteBuffer(ByteBuf buf) {
-		buf.writeInt(x);
-		buf.writeInt(y);
-		buf.writeInt(z);
-		writeNBTToBuf(buf, nbtTagCompound);
-		buf.writeLong(session);
+		buf.writeInt(this.x);
+		buf.writeInt(this.y);
+		buf.writeInt(this.z);
+		writeNBTToBuf(buf, this.nbtTagCompound);
+		buf.writeLong(this.session);
 	}
 
 }

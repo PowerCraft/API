@@ -1,19 +1,21 @@
 package powercraft.api;
 
-import powercraft.api.PC_Field.Flag;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
+import powercraft.api.PC_Field.Flag;
 
 public class PC_3DRotationFull implements PC_3DRotation {
 
+	@SuppressWarnings("unused")
 	public PC_3DRotationFull(PC_Direction side, Entity entity) {
 		// TODO Auto-generated constructor stub
 	}
 
+	@SuppressWarnings("unused")
 	public PC_3DRotationFull(NBTTagCompound nbtTagCompound, Flag flag){
-		
+		// TODO Auto-generated constructor stub
 	}
 	
 	@Override

@@ -19,19 +19,19 @@ public class PC_GresKeyEvent extends PC_GresConsumeableEvent {
 	}
 	
 	public char getKey(){
-		return key;
+		return this.key;
 	}
 	
 	public int getKeyCode(){
-		return keyCode;
+		return this.keyCode;
 	}
 	
 	public boolean isRepeatEvents(){
-		return repeat;
+		return this.repeat;
 	}
 	
 	public PC_GresHistory getHistory(){
-		return history;
+		return this.history;
 	}
 	
 }

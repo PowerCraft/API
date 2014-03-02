@@ -18,26 +18,27 @@ public class PC_3DRotationY implements PC_3DRotation {
 		this.rotation = PC_Utils.getRotationMetadata(0, entity)>>2;
 	}
 	
+	@SuppressWarnings("unused")
 	public PC_3DRotationY(NBTTagCompound nbtTagCompound, Flag flag){
-		rotation = nbtTagCompound.getByte("rotation");
+		this.rotation = nbtTagCompound.getByte("rotation");
 	}
 	
 	@Override
 	public PC_Direction getSidePosition(PC_Direction side) {
-		return side.getRotation(PC_Direction.UP, rotation);
+		return side.getRotation(PC_Direction.UP, this.rotation);
 	}
 	
 	@Override
 	public PC_Direction getSidePositionInv(PC_Direction side) {
-		return side.getRotation(PC_Direction.DOWN, rotation);
+		return side.getRotation(PC_Direction.DOWN, this.rotation);
 	}
 
 	@Override
 	public int getSideRotation(PC_Direction side){
 		if(side==PC_Direction.UP){
-			return rotation;
+			return this.rotation;
 		}else if(side==PC_Direction.DOWN){
-			return (4-rotation)%4;
+			return (4-this.rotation)%4;
 		}
 		return 0;
 	}
@@ -45,9 +46,9 @@ public class PC_3DRotationY implements PC_3DRotation {
 	@Override
 	public PC_3DRotation rotateAround(PC_Direction axis) {
 		if(axis==PC_Direction.UP){
-			return new PC_3DRotationY(rotation+1%4);
+			return new PC_3DRotationY(this.rotation+1%4);
 		}else if(axis==PC_Direction.DOWN){
-			return new PC_3DRotationY(rotation+3%4);
+			return new PC_3DRotationY(this.rotation+3%4);
 		}
 		return null;
 	}
@@ -65,12 +66,12 @@ public class PC_3DRotationY implements PC_3DRotation {
 
 	@Override
 	public void saveToNBT(NBTTagCompound nbtTagCompound, Flag flag) {
-		nbtTagCompound.setByte("rotation", (byte) rotation);
+		nbtTagCompound.setByte("rotation", (byte) this.rotation);
 	}
 
 	@Override
 	public String toString() {
-		return "PC_3DRotationY [rotation=" + rotation + "]";
+		return "PC_3DRotationY [rotation=" + this.rotation + "]";
 	}
 	
 }

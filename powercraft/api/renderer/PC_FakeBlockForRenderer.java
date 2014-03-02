@@ -14,7 +14,6 @@ class PC_FakeBlockForRenderer extends Block {
 
 	IIcon[] icons;
 	int colorMultiplier;
-	int lightValue;
 	
 	@Override
 	public int getMixedBrightnessForBlock(IBlockAccess world, int x, int y, int z) {
@@ -28,24 +27,19 @@ class PC_FakeBlockForRenderer extends Block {
 
 	@Override
 	public IIcon getIcon(int side, int metadata) {
-		if (icons == null) return null;
-		if (side >= icons.length) side = icons.length - 1;
-		return icons[side];
+		if (this.icons == null) return null;
+		if (side >= this.icons.length) return this.icons[this.icons.length - 1];
+		return this.icons[side];
 	}
 
 	@Override
 	public int getRenderColor(int metadata) {
-		return colorMultiplier;
+		return this.colorMultiplier;
 	}
 
 	@Override
 	public int colorMultiplier(IBlockAccess world, int x, int y, int z) {
-		return colorMultiplier;
-	}
-
-	@Override
-	public int getLightValue() {
-		return lightValue;
+		return this.colorMultiplier;
 	}
 	
 }

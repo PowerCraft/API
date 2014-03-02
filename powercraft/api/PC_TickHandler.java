@@ -44,6 +44,7 @@ public class PC_TickHandler {
 		}
 	}
 	
+	@SuppressWarnings("static-method")
 	@SubscribeEvent
 	public void tickEvent(TickEvent event){
 		switch(event.phase){
@@ -58,7 +59,7 @@ public class PC_TickHandler {
 		}
 	}
 	
-	private void onStartTickEvent(TickEvent event){
+	private static void onStartTickEvent(TickEvent event){
 		PC_Side side = PC_Side.from(event.side);
 		switch(event.type){
 		case CLIENT:
@@ -90,7 +91,7 @@ public class PC_TickHandler {
 		}
 	}
 	
-	private void onEndTickEvent(TickEvent event){
+	private static void onEndTickEvent(TickEvent event){
 		PC_Side side = PC_Side.from(event.side);
 		switch(event.type){
 		case CLIENT:
@@ -123,7 +124,7 @@ public class PC_TickHandler {
 	}
 	
 	static interface PC_IBaseTickHandler{
-		
+		//
 	}
 	
 	public static interface PC_ITickHandler extends PC_IBaseTickHandler{

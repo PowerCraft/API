@@ -47,21 +47,21 @@ public class PC_TileEntityWithInventory extends PC_TileEntity implements PC_ISid
 	
 	@Override
 	public int getSizeInventory() {
-		return inventoryContents.length;
+		return this.inventoryContents.length;
 	}
 	
 	@Override
 	public ItemStack getStackInSlot(int i) {
-		return inventoryContents[i];
+		return this.inventoryContents[i];
 	}
 
 	@Override
 	public ItemStack decrStackSize(int i, int j) {
-		if (inventoryContents[i] != null) {
+		if (this.inventoryContents[i] != null) {
 			ItemStack itemstack;
-			if (inventoryContents[i].stackSize <= j) {
+			if (this.inventoryContents[i].stackSize <= j) {
 				itemstack = this.inventoryContents[i];
-				inventoryContents[i] = null;
+				this.inventoryContents[i] = null;
 				markDirty();
 				return itemstack;
 			} 
@@ -87,7 +87,7 @@ public class PC_TileEntityWithInventory extends PC_TileEntity implements PC_ISid
 
 	@Override
 	public void setInventorySlotContents(int i, ItemStack itemstack) {
-		inventoryContents[i] = itemstack;
+		this.inventoryContents[i] = itemstack;
 		if (itemstack != null && itemstack.stackSize > getInventoryStackLimit()) {
 			itemstack.stackSize = getInventoryStackLimit();
 		}
@@ -95,25 +95,26 @@ public class PC_TileEntityWithInventory extends PC_TileEntity implements PC_ISid
 	}
 
 	public void moveOrStore(int i, ItemStack itemstack){
+		ItemStack itemStack2 = itemstack;
 		int[] sides = getAppliedSides(i);
 			if(sides!=null){
 			List<PC_Direction> sideList = new ArrayList<PC_Direction>(sides.length);
 			for(int j=0; j<sides.length; j++){
 				sideList.add(PC_Direction.fromSide(sides[j]));
 			}
-			while(!sideList.isEmpty() && itemstack!=null){
+			while(!sideList.isEmpty() && itemStack2!=null){
 				PC_Direction side = sideList.remove((int)(Math.random()*sideList.size()));
-				itemstack = PC_InventoryUtils.tryToStore(worldObj, xCoord+side.offsetX, yCoord+side.offsetY, zCoord+side.offsetZ, side.getOpposite(), itemstack);
+				itemStack2 = PC_InventoryUtils.tryToStore(this.worldObj, this.xCoord+side.offsetX, this.yCoord+side.offsetY, this.zCoord+side.offsetZ, side.getOpposite(), itemstack);
 			}
 		}
-		if(itemstack!=null){
-			setInventorySlotContents(i, itemstack);
+		if(itemStack2!=null){
+			setInventorySlotContents(i, itemStack2);
 		}
 	}
 	
 	@Override
 	public String getInventoryName() {
-		return name;
+		return this.name;
 	}
 
 	@Override
@@ -133,12 +134,12 @@ public class PC_TileEntityWithInventory extends PC_TileEntity implements PC_ISid
 
 	@Override
 	public void openInventory() {
-
+		//
 	}
 
 	@Override
 	public void closeInventory() {
-
+		//
 	}
 
 	@Override
@@ -152,7 +153,7 @@ public class PC_TileEntityWithInventory extends PC_TileEntity implements PC_ISid
 		if(groupID==-1){
 			return new int[0];
 		}
-		return groups[groupID].slotIds;
+		return this.groups[groupID].slotIds;
 	}
 
 	@Override
@@ -182,20 +183,23 @@ public class PC_TileEntityWithInventory extends PC_TileEntity implements PC_ISid
 	
 	@Override
 	public void onTick(World world) {
-		PC_InventoryUtils.onTick(this, worldObj);
+		PC_InventoryUtils.onTick(this, this.worldObj);
 	}
 	
 	@Override
 	public int[] getAppliedGroups(int i) {
 		List<Integer> sides = new ArrayList<Integer>();
-		for(int j=0; j<side2IdMaper.length; j++){
-			int groupID = side2IdMaper[j];
-			if(groupID!=-1 && !sides.contains(groupID)){
-				int[] slotIds = groups[groupID].slotIds;
-				for(int k=0; k<slotIds.length; k++){
-					if(slotIds[k] == i){
-						sides.add(groupID);
-						break;
+		for(int j=0; j<this.side2IdMaper.length; j++){
+			int groupID = this.side2IdMaper[j];
+			if(groupID!=-1){
+				Integer gid = Integer.valueOf(groupID);
+				if(!sides.contains(gid)){
+					int[] slotIds = this.groups[groupID].slotIds;
+					for(int k=0; k<slotIds.length; k++){
+						if(slotIds[k] == i){
+							sides.add(gid);
+							break;
+						}
 					}
 				}
 			}
@@ -204,7 +208,7 @@ public class PC_TileEntityWithInventory extends PC_TileEntity implements PC_ISid
 			return null;
 		int[] a = new int[sides.size()];
 		for(int j=0; j<a.length; j++){
-			a[j] = sides.get(j);
+			a[j] = sides.get(j).intValue();
 		}
 		Arrays.sort(a);
 		return a;
@@ -213,13 +217,13 @@ public class PC_TileEntityWithInventory extends PC_TileEntity implements PC_ISid
 	@Override
 	public int[] getAppliedSides(int i) {
 		List<Integer> sides = new ArrayList<Integer>();
-		for(int j=0; j<side2IdMaper.length; j++){
-			int groupID = side2IdMaper[j];
-			if(groupID!=-1 && !groups[groupID].input){
-				int[] slotIds = groups[groupID].slotIds;
+		for(int j=0; j<this.side2IdMaper.length; j++){
+			int groupID = this.side2IdMaper[j];
+			if(groupID!=-1 && !this.groups[groupID].input){
+				int[] slotIds = this.groups[groupID].slotIds;
 				for(int k=0; k<slotIds.length; k++){
 					if(slotIds[k] == i){
-						sides.add(j);
+						sides.add(Integer.valueOf(j));
 						break;
 					}
 				}
@@ -229,7 +233,7 @@ public class PC_TileEntityWithInventory extends PC_TileEntity implements PC_ISid
 			return null;
 		int[] a = new int[sides.size()];
 		for(int j=0; j<a.length; j++){
-			a[j] = PC_Utils.getSidePosition(worldObj, xCoord, yCoord, zCoord, sides.get(j)).ordinal();
+			a[j] = PC_Utils.getSidePosition(this.worldObj, this.xCoord, this.yCoord, this.zCoord, sides.get(j).intValue()).ordinal();
 		}
 		Arrays.sort(a);
 		return a;
@@ -240,17 +244,17 @@ public class PC_TileEntityWithInventory extends PC_TileEntity implements PC_ISid
 	}
 	
 	public int getIDForSide(PC_Direction side){
-		side = PC_Utils.getSidePositionInv(worldObj, xCoord, yCoord, zCoord, side);
-		return side2IdMaper[side.ordinal()];
+		PC_Direction rside = PC_Utils.getSidePositionInv(this.worldObj, this.xCoord, this.yCoord, this.zCoord, side);
+		return this.side2IdMaper[rside.ordinal()];
 	}
 	
 	public boolean isSlotCompatibleWithSide(int i, int side, boolean insert){
 		int groupID = getIDForSide(side);
 		if(groupID==-1)
 			return false;
-		if(groups[groupID].input!=insert)
+		if(this.groups[groupID].input!=insert)
 			return false;
-		int[] slotsForSide = groups[groupID].slotIds;
+		int[] slotsForSide = this.groups[groupID].slotIds;
 		for(int j=0; j<slotsForSide.length; j++){
 			if(slotsForSide[j]==i)
 				return true;
@@ -261,15 +265,17 @@ public class PC_TileEntityWithInventory extends PC_TileEntity implements PC_ISid
 	@Override
 	public void onBreak() {
 		super.onBreak();
-		PC_InventoryUtils.dropInventoryContent(this, worldObj, xCoord, yCoord, zCoord);
+		PC_InventoryUtils.dropInventoryContent(this, this.worldObj, this.xCoord, this.yCoord, this.zCoord);
 	}
 
+	@Override
 	public int getGroupCount() {
-		return groups.length;
+		return this.groups.length;
 	}
 
+	@Override
 	public void setSideGroup(int i, int j) {
-		side2IdMaper[i] = j;
+		this.side2IdMaper[i] = j;
 		NBTTagCompound tagCompound = new NBTTagCompound();
 		tagCompound.setInteger("type", 1);
 		tagCompound.setInteger("i", i);
@@ -280,7 +286,7 @@ public class PC_TileEntityWithInventory extends PC_TileEntity implements PC_ISid
 	@Override
 	public void onInternMessage(EntityPlayer player, NBTTagCompound nbtTagCompound) {
 		if(nbtTagCompound.getInteger("type")==1){
-			side2IdMaper[nbtTagCompound.getInteger("i")] = nbtTagCompound.getInteger("j");
+			this.side2IdMaper[nbtTagCompound.getInteger("i")] = nbtTagCompound.getInteger("j");
 			sync();
 			markDirty();
 		}else{
@@ -288,13 +294,14 @@ public class PC_TileEntityWithInventory extends PC_TileEntity implements PC_ISid
 		}
 	}
 
+	@Override
 	public int getSideGroup(int i) {
-		return side2IdMaper[i];
+		return this.side2IdMaper[i];
 	}
 
 	@Override
 	public IIcon getFrontIcon() {
-		return ((PC_AbstractBlockBase)getBlockType()).getIcon(worldObj, xCoord, yCoord, zCoord, PC_Direction.NORTH);
+		return ((PC_AbstractBlockBase)getBlockType()).getIcon(this.worldObj, this.xCoord, this.yCoord, this.zCoord, PC_Direction.NORTH);
 	}
 	
 }

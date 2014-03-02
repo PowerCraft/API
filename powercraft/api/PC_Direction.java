@@ -46,10 +46,10 @@ public enum PC_Direction {
     };
 
     private PC_Direction(int x, int y, int z) {
-        offsetX = x;
-        offsetY = y;
-        offsetZ = z;
-        flag = 1 << ordinal();
+        this.offsetX = x;
+        this.offsetY = y;
+        this.offsetZ = z;
+        this.flag = 1 << ordinal();
     }
 
     public static PC_Direction fromSide(int id){
@@ -73,14 +73,14 @@ public enum PC_Direction {
     }
 
 	public PC_Direction getRotation(PC_Direction axis, int times) {
-		times = ((times %4) +4) %4;
-		if(times==0)
+		int ttimes = ((times %4) +4) %4;
+		if(ttimes==0)
 			return this;
-		else if(times==1)
+		else if(ttimes==1)
 			return getRotation(axis);
-		else if(times==2)
+		else if(ttimes==2)
 			return this==axis||getOpposite()==axis?this:getOpposite();
-		else if(times==3)
+		else if(ttimes==3)
 			return getRotation(axis.getOpposite());
 		return UNKNOWN;
 	}

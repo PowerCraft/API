@@ -12,11 +12,11 @@ final class PC_EnergyEdge extends PC_Edge<PC_EnergyGrid, PC_IEnergyGridTile, PC_
 
 	@Override
 	protected void onChanged() {
-		maxEnergy = Float.POSITIVE_INFINITY;
-		for(PC_IEnergyGridTile tile:tiles){
+		this.maxEnergy = Float.POSITIVE_INFINITY;
+		for(PC_IEnergyGridTile tile:this.tiles){
 			float conduitMax = ((PC_IEnergyGridConduit)tile).getMaxEnergy();
-			if(conduitMax>=0 && conduitMax<maxEnergy){
-				maxEnergy = conduitMax;
+			if(conduitMax>=0 && conduitMax<this.maxEnergy){
+				this.maxEnergy = conduitMax;
 			}
 		}
 	}

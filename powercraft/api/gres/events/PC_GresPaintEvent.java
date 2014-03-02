@@ -12,7 +12,7 @@ public class PC_GresPaintEvent extends PC_GresPrePostEvent {
 	}
 
 	public float getTimeStamp(){
-		return timeStamp;
+		return this.timeStamp;
 	}
 	
 }

@@ -12,7 +12,7 @@ public class PC_GresFocusLostEvent extends PC_GresConsumeableEvent {
 	}
 	
 	public PC_GresComponent getNewFocusedComponent(){
-		return newFocusedComponent;
+		return this.newFocusedComponent;
 	}
 	
 }

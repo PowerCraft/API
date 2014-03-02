@@ -18,15 +18,15 @@ public class PC_GresMouseButtonEvent extends PC_GresMouseEvent {
 	}
 
 	public int getEventButton(){
-		return eventButton;
+		return this.eventButton;
 	}
 	
 	public Event getEvent(){
-		return event;
+		return this.event;
 	}
 	
 	public boolean isDoubleClick(){
-		return doubleClick;
+		return this.doubleClick;
 	}
 	
 	public static enum Event{

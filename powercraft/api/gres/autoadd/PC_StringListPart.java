@@ -8,73 +8,73 @@ import java.util.ListIterator;
 
 public class PC_StringListPart implements List<PC_StringWithInfo> {
 
-	private List<PC_StringWithInfo> sortedList;
-	private int start;
-	private int end;
+	List<PC_StringWithInfo> sortedList;
+	int start;
+	int end;
 	private String lastSearch;
 	
 	public PC_StringListPart(List<PC_StringWithInfo> sortedList){
 		this.sortedList = sortedList;
-		end = sortedList.size();
+		this.end = sortedList.size();
 	}
 	
 	public void searchForAdd(String toAdd) {
-		searchFor(lastSearch+toAdd);
+		searchFor(this.lastSearch+toAdd);
 	}
 	
 	public void searchFor(String s){
-		if(lastSearch!=null && s.startsWith(lastSearch)){
-			int oldStart = start;
-			int oldEnd = end;
-			start = -1;
-			end = -1;
+		if(this.lastSearch!=null && s.startsWith(this.lastSearch)){
+			int oldStart = this.start;
+			int oldEnd = this.end;
+			this.start = -1;
+			this.end = -1;
 			for(int i=oldStart; i<oldEnd; i++){
-				PC_StringWithInfo ss = sortedList.get(i);
+				PC_StringWithInfo ss = this.sortedList.get(i);
 				if(ss.startsWith(s)){
-					if(start==-1)
-						start = i;
-					end = i+1;
-				}else if(end!=-1)
+					if(this.start==-1)
+						this.start = i;
+					this.end = i+1;
+				}else if(this.end!=-1)
 					break;
 			}
-			if(start==-1)
-				start = 0;
-			if(end==-1)
-				end = 0;
-		}else if(lastSearch!=null && lastSearch.startsWith(s)){
-			for(int i=0; i<start; i++){
-				PC_StringWithInfo ss = sortedList.get(i);
+			if(this.start==-1)
+				this.start = 0;
+			if(this.end==-1)
+				this.end = 0;
+		}else if(this.lastSearch!=null && this.lastSearch.startsWith(s)){
+			for(int i=0; i<this.start; i++){
+				PC_StringWithInfo ss = this.sortedList.get(i);
 				if(ss.startsWith(s)){
-					start = i;
+					this.start = i;
 					break;
 				}
 			}
-			for(int i=end; i<sortedList.size(); i++){
-				PC_StringWithInfo ss = sortedList.get(i);
+			for(int i=this.end; i<this.sortedList.size(); i++){
+				PC_StringWithInfo ss = this.sortedList.get(i);
 				if(ss.startsWith(s)){
-					end = i+1;
+					this.end = i+1;
 				}else{
 					break;
 				}
 			}
 		}else{
-			start = -1;
-			end = -1;
-			for(int i=0; i<sortedList.size(); i++){
-				PC_StringWithInfo ss = sortedList.get(i);
+			this.start = -1;
+			this.end = -1;
+			for(int i=0; i<this.sortedList.size(); i++){
+				PC_StringWithInfo ss = this.sortedList.get(i);
 				if(ss.startsWith(s)){
-					if(start==-1)
-						start = i;
-					end = i+1;
-				}else if(end!=-1)
+					if(this.start==-1)
+						this.start = i;
+					this.end = i+1;
+				}else if(this.end!=-1)
 					break;
 			}
-			if(start==-1)
-				start = 0;
-			if(end==-1)
-				end = 0;
+			if(this.start==-1)
+				this.start = 0;
+			if(this.end==-1)
+				this.end = 0;
 		}
-		lastSearch = s;
+		this.lastSearch = s;
 	}
 	
 	@Override
@@ -104,8 +104,8 @@ public class PC_StringListPart implements List<PC_StringWithInfo> {
 	
 	@Override
 	public boolean contains(Object o) {
-		int index = sortedList.indexOf(o);
-		return index>=start && index<end;
+		int index = this.sortedList.indexOf(o);
+		return index>=this.start && index<this.end;
 	}
 	
 	@Override
@@ -120,13 +120,13 @@ public class PC_StringListPart implements List<PC_StringWithInfo> {
 	
 	@Override
 	public PC_StringWithInfo get(int index) {
-		return sortedList.get(index+start);
+		return this.sortedList.get(index+this.start);
 	}
 	
 	@Override
 	public int indexOf(Object o) {
-		int index = sortedList.indexOf(o);
-		if(index>=start && index<end){
+		int index = this.sortedList.indexOf(o);
+		if(index>=this.start && index<this.end){
 			return index;
 		}
 		return -1;
@@ -134,7 +134,7 @@ public class PC_StringListPart implements List<PC_StringWithInfo> {
 	
 	@Override
 	public boolean isEmpty() {
-		return start==end;
+		return this.start==this.end;
 	}
 	
 	@Override
@@ -144,8 +144,8 @@ public class PC_StringListPart implements List<PC_StringWithInfo> {
 	
 	@Override
 	public int lastIndexOf(Object o) {
-		int index = sortedList.lastIndexOf(o);
-		if(index>=start && index<end){
+		int index = this.sortedList.lastIndexOf(o);
+		if(index>=this.start && index<this.end){
 			return index;
 		}
 		return -1;
@@ -158,7 +158,7 @@ public class PC_StringListPart implements List<PC_StringWithInfo> {
 	
 	@Override
 	public ListIterator<PC_StringWithInfo> listIterator(int index) {
-		return new It(index+start);
+		return new It(index+this.start);
 	}
 	
 	private class It implements ListIterator<PC_StringWithInfo>{
@@ -176,32 +176,32 @@ public class PC_StringListPart implements List<PC_StringWithInfo> {
 
 		@Override
 		public boolean hasNext() {
-			return index<end;
+			return this.index<PC_StringListPart.this.end;
 		}
 
 		@Override
 		public boolean hasPrevious() {
-			return index>start;
+			return this.index>PC_StringListPart.this.start;
 		}
 
 		@Override
 		public PC_StringWithInfo next() {
-			return sortedList.get(index++);
+			return PC_StringListPart.this.sortedList.get(this.index++);
 		}
 
 		@Override
 		public int nextIndex() {
-			return index;
+			return this.index;
 		}
 
 		@Override
 		public PC_StringWithInfo previous() {
-			return sortedList.get(--index);
+			return PC_StringListPart.this.sortedList.get(--this.index);
 		}
 
 		@Override
 		public int previousIndex() {
-			return index-1;
+			return this.index-1;
 		}
 
 		@Override
@@ -243,7 +243,7 @@ public class PC_StringListPart implements List<PC_StringWithInfo> {
 	
 	@Override
 	public int size() {
-		return end-start;
+		return this.end-this.start;
 	}
 	
 	@Override
@@ -264,13 +264,14 @@ public class PC_StringListPart implements List<PC_StringWithInfo> {
 	@Override
 	public <T> T[] toArray(T[] a) {
 		int size = size();
-		if(a.length<size){
-			a = (T[]) Array.newInstance(a.getClass().getComponentType(), size);
+		T[] na = a;
+		if(na.length<size){
+			na = (T[]) Array.newInstance(na.getClass().getComponentType(), size);
 		}
 		for(int i=0; i<size; i++){
-			a[i] = (T) get(i);
+			na[i] = (T) get(i);
 		}
-		return a;
+		return na;
 	}
 	
 }

@@ -32,19 +32,19 @@ public class PC_GresTexture {
 
 	public PC_RectI getFrame() {
 
-		return new PC_RectI(frame);
+		return new PC_RectI(this.frame);
 	}
 
 
 	public PC_Vec2I getMinSize() {
 
-		return frame.getSize().add(frame.getLocation());
+		return this.frame.getSize().add(this.frame.getLocation());
 	}
 
 
 	public PC_Vec2I getDefaultSize() {
 
-		return new PC_Vec2I(size);
+		return new PC_Vec2I(this.size);
 	}
 
 
@@ -52,8 +52,8 @@ public class PC_GresTexture {
 
 		float f = 0.00390625F;
 		float f1 = 0.00390625F;
-		float uc = (u * size.x) + locations[state].x;
-		float vc = (v * size.y) + locations[state].y;
+		float uc = (u * this.size.x) + this.locations[state].x;
+		float vc = (v * this.size.y) + this.locations[state].y;
 		Tessellator tessellator = Tessellator.instance;
 		tessellator.startDrawingQuads();
 		tessellator.addVertexWithUV(x, y + height, 0, uc * f, (vc + height) * f1);
@@ -66,45 +66,45 @@ public class PC_GresTexture {
 
 	public void draw(int x, int y, int width, int height, int state) {
 
-		PC_ClientUtils.mc().getTextureManager().bindTexture(texture);
+		PC_ClientUtils.mc().getTextureManager().bindTexture(this.texture);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		PC_Vec2I location = locations[state];
+		PC_Vec2I location = this.locations[state];
 
 		Tessellator tessellator = Tessellator.instance;
 		tessellator.startDrawingQuads();
 		
-		if (frame.y > 0) {
-			if (frame.x > 0) {
-				drawTexturedModalRect(x, y, location.x, location.y, frame.x, frame.y);
+		if (this.frame.y > 0) {
+			if (this.frame.x > 0) {
+				drawTexturedModalRect(x, y, location.x, location.y, this.frame.x, this.frame.y);
 			}
-			renderTextureSliced_static(x + frame.x, y, width - frame.x - frame.width, frame.y, location.x + frame.x, location.y, size.x - frame.x
-					- frame.width, size.y);
-			if (frame.width > 0) {
-				drawTexturedModalRect(x + width - frame.width, y, location.x + size.x - frame.width, location.y, frame.width, frame.y);
+			renderTextureSliced_static(x + this.frame.x, y, width - this.frame.x - this.frame.width, this.frame.y, location.x + this.frame.x, location.y, this.size.x - this.frame.x
+					- this.frame.width, this.size.y);
+			if (this.frame.width > 0) {
+				drawTexturedModalRect(x + width - this.frame.width, y, location.x + this.size.x - this.frame.width, location.y, this.frame.width, this.frame.y);
 			}
 		}
-		if (frame.x > 0) {
-			renderTextureSliced_static(x, y + frame.y, frame.x, height - frame.y - frame.height, location.x, location.y + frame.y, size.x, size.y
-					- frame.y - frame.height);
+		if (this.frame.x > 0) {
+			renderTextureSliced_static(x, y + this.frame.y, this.frame.x, height - this.frame.y - this.frame.height, location.x, location.y + this.frame.y, this.size.x, this.size.y
+					- this.frame.y - this.frame.height);
 		}
 
-		renderTextureSliced_static(x + frame.x, y + frame.y, width - frame.x - frame.width, height - frame.y - frame.height, location.x + frame.x,
-				location.y + frame.y, size.x - frame.x - frame.width, size.y - frame.y - frame.height);
+		renderTextureSliced_static(x + this.frame.x, y + this.frame.y, width - this.frame.x - this.frame.width, height - this.frame.y - this.frame.height, location.x + this.frame.x,
+				location.y + this.frame.y, this.size.x - this.frame.x - this.frame.width, this.size.y - this.frame.y - this.frame.height);
 
-		if (frame.width > 0) {
-			renderTextureSliced_static(x + width - frame.width, y + frame.y, frame.width, height - frame.y - frame.height, location.x + size.x
-					- frame.width, location.y + frame.y, frame.width, size.y - frame.y - frame.height);
+		if (this.frame.width > 0) {
+			renderTextureSliced_static(x + width - this.frame.width, y + this.frame.y, this.frame.width, height - this.frame.y - this.frame.height, location.x + this.size.x
+					- this.frame.width, location.y + this.frame.y, this.frame.width, this.size.y - this.frame.y - this.frame.height);
 		}
 
-		if (frame.height > 0) {
-			if (frame.x > 0) {
-				drawTexturedModalRect(x, y + height - frame.height, location.x, location.y + size.y - frame.height, frame.x, frame.height);
+		if (this.frame.height > 0) {
+			if (this.frame.x > 0) {
+				drawTexturedModalRect(x, y + height - this.frame.height, location.x, location.y + this.size.y - this.frame.height, this.frame.x, this.frame.height);
 			}
-			renderTextureSliced_static(x + frame.x, y + height - frame.height, width - frame.x - frame.width, frame.height, location.x + frame.x,
-					location.y + size.y - frame.height, size.x - frame.x - frame.width, frame.height);
-			if (frame.width > 0) {
-				drawTexturedModalRect(x + width - frame.width, y + height - frame.height, location.x + size.x - frame.width, location.y + size.y
-						- frame.height, frame.width, frame.height);
+			renderTextureSliced_static(x + this.frame.x, y + height - this.frame.height, width - this.frame.x - this.frame.width, this.frame.height, location.x + this.frame.x,
+					location.y + this.size.y - this.frame.height, this.size.x - this.frame.x - this.frame.width, this.frame.height);
+			if (this.frame.width > 0) {
+				drawTexturedModalRect(x + width - this.frame.width, y + height - this.frame.height, location.x + this.size.x - this.frame.width, location.y + this.size.y
+						- this.frame.height, this.frame.width, this.frame.height);
 			}
 		}
 		
@@ -115,13 +115,13 @@ public class PC_GresTexture {
 	public void drawProzentual(int x, int y, int width, int height, float u, float v, float w, float h, int state) {
 		float f = 0.00390625F;
 		float f1 = 0.00390625F;
-		float uc = (u * size.x) + locations[state].x;
-		float vc = (v * size.y) + locations[state].y;
+		float uc = (u * this.size.x) + this.locations[state].x;
+		float vc = (v * this.size.y) + this.locations[state].y;
 		Tessellator tessellator = Tessellator.instance;
 		tessellator.startDrawingQuads();
-		tessellator.addVertexWithUV(x, y + height, 0, uc * f, (vc + h*size.y) * f1);
-		tessellator.addVertexWithUV(x + width, y + height, 0, (uc + w*size.x) * f, (vc + h*size.y) * f1);
-		tessellator.addVertexWithUV(x + width, y, 0, (uc + w*size.x) * f, vc * f1);
+		tessellator.addVertexWithUV(x, y + height, 0, uc * f, (vc + h*this.size.y) * f1);
+		tessellator.addVertexWithUV(x + width, y + height, 0, (uc + w*this.size.x) * f, (vc + h*this.size.y) * f1);
+		tessellator.addVertexWithUV(x + width, y, 0, (uc + w*this.size.x) * f, vc * f1);
 		tessellator.addVertexWithUV(x, y, 0, uc * f, vc * f1);
 		tessellator.draw();
 	}

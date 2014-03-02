@@ -2,8 +2,8 @@ package powercraft.api.network.packet;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.INetHandler;
 import net.minecraft.network.NetHandlerPlayServer;
+import net.minecraft.world.World;
 import powercraft.api.PC_Utils;
 import powercraft.api.multiblock.PC_BlockMultiblock;
 import powercraft.api.multiblock.PC_MultiblockIndex;
@@ -30,31 +30,30 @@ public class PC_PacketSelectMultiblockTile extends PC_PacketClientToServer {
 	}
 	
 	@Override
-	protected PC_Packet doAndReply(INetHandler iNetHandler) {
-		EntityPlayer player = ((NetHandlerPlayServer)iNetHandler).playerEntity;
-		PC_BlockMultiblock block = PC_Utils.getBlock(player.worldObj, x, y, z, PC_BlockMultiblock.class);
+	protected PC_Packet doAndReply(NetHandlerPlayServer iNetHandler, World world, EntityPlayer player) {
+		PC_BlockMultiblock block = PC_Utils.getBlock(world, this.x, this.y, this.z, PC_BlockMultiblock.class);
 		if(block!=null){
-			PC_MultiblockIndex index = PC_MultiblockIndex.values()[tile];
+			PC_MultiblockIndex index = PC_MultiblockIndex.values()[this.tile];
 			PC_BlockMultiblock.playerSelect(player, index);
-			PC_PacketHandler.sendToAllAround(new PC_PacketSelectMultiblockTile2(x, y, z, index, player), player.dimension, x, y, z, 32);
+			PC_PacketHandler.sendToAllAround(new PC_PacketSelectMultiblockTile2(this.x, this.y, this.z, index, player), player.dimension, this.x, this.y, this.z, 32);
 		}
 		return null;
 	}
 
 	@Override
 	protected void fromByteBuffer(ByteBuf buf) {
-		x = buf.readInt();
-		y = buf.readInt();
-		z = buf.readInt();
-		tile = buf.readInt();
+		this.x = buf.readInt();
+		this.y = buf.readInt();
+		this.z = buf.readInt();
+		this.tile = buf.readInt();
 	}
 
 	@Override
 	protected void toByteBuffer(ByteBuf buf) {
-		buf.writeInt(x);
-		buf.writeInt(y);
-		buf.writeInt(z);
-		buf.writeInt(tile);
+		buf.writeInt(this.x);
+		buf.writeInt(this.y);
+		buf.writeInt(this.z);
+		buf.writeInt(this.tile);
 	}
 
 }

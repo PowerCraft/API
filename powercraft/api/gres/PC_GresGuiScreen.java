@@ -20,84 +20,88 @@ class PC_GresGuiScreen extends GuiScreen {
 	private long lastLeftClick;
 	
 	protected PC_GresGuiScreen(PC_IGresGui client) {
-		guiHandler = new PC_GresGuiHandler(client);
+		this.guiHandler = new PC_GresGuiHandler(client);
 		Keyboard.enableRepeatEvents(true);
 	}
 	
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float timeStamp){
-		guiHandler.eventDrawScreen(new PC_Vec2I(mouseX, mouseY), timeStamp);
+		this.guiHandler.eventDrawScreen(new PC_Vec2I(mouseX, mouseY), timeStamp);
 	}
 	
 	@Override
 	public void handleMouseInput() {
-		int x = Mouse.getEventX() * width / mc.displayWidth;
-		int y = height - Mouse.getEventY() * height / mc.displayHeight - 1;
+		int x = Mouse.getEventX() * this.width / this.mc.displayWidth;
+		int y = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
 		PC_Vec2I mouse = new PC_Vec2I(x, y);
 		int eventButton = Mouse.getEventButton();
 		int eventWheel = Mouse.getEventDWheel();
 		if (Mouse.getEventDX() != 0 || Mouse.getEventDY() != 0) {
-			eventMouseMove(mouse, buttons);
+			eventMouseMove(mouse, this.buttons);
 		}
 		if (eventButton != -1) {
 			if (Mouse.getEventButtonState()) {
 				boolean doubleClick = false;
 				if(eventButton==0){
 					long clickTime = Mouse.getEventNanoseconds();
-					doubleClick = clickTime - lastLeftClick<DOUBLE_CLICK_DIFF;
-					lastLeftClick = clickTime;
+					doubleClick = clickTime - this.lastLeftClick<DOUBLE_CLICK_DIFF;
+					this.lastLeftClick = clickTime;
 				}
-				buttons |= 1 << eventButton;
-				eventMouseButtonDown(mouse, buttons, eventButton, doubleClick);
+				this.buttons |= 1 << eventButton;
+				eventMouseButtonDown(mouse, this.buttons, eventButton, doubleClick);
 			} else {
-				buttons &= ~(1 << eventButton);
-				eventMouseButtonUp(mouse, buttons, eventButton);
+				this.buttons &= ~(1 << eventButton);
+				eventMouseButtonUp(mouse, this.buttons, eventButton);
 			}
 		}
 		if (eventWheel != 0) {
-			eventMouseWheel(mouse, buttons, eventWheel>0?1:-1);
+			eventMouseWheel(mouse, this.buttons, eventWheel>0?1:-1);
 		}
 	}
 	
+	@SuppressWarnings("hiding")
 	private void eventMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton, boolean doubleClick) {
-		guiHandler.eventMouseButtonDown(mouse, buttons, eventButton, doubleClick);
+		this.guiHandler.eventMouseButtonDown(mouse, buttons, eventButton, doubleClick);
 	}
 
 
+	@SuppressWarnings("hiding")
 	private void eventMouseButtonUp(PC_Vec2I mouse, int buttons, int eventButton) {
-		guiHandler.eventMouseButtonUp(mouse, buttons, eventButton);
+		this.guiHandler.eventMouseButtonUp(mouse, buttons, eventButton);
 	}
 
 
+	@SuppressWarnings("hiding")
 	private void eventMouseMove(PC_Vec2I mouse, int buttons) {
-		guiHandler.eventMouseMove(mouse, buttons);
+		this.guiHandler.eventMouseMove(mouse, buttons);
 	}
 
 
+	@SuppressWarnings("hiding")
 	private void eventMouseWheel(PC_Vec2I mouse, int buttons, int wheel) {
-		guiHandler.eventMouseWheel(mouse, buttons, wheel);
+		this.guiHandler.eventMouseWheel(mouse, buttons, wheel);
 	}
 	
 	@Override
 	protected void keyTyped(char key, int keyCode){
-		guiHandler.eventKeyTyped(key, keyCode, Keyboard.isRepeatEvent());
+		this.guiHandler.eventKeyTyped(key, keyCode, Keyboard.isRepeatEvent());
 	}
 	
 	@Override
 	public void updateScreen() {
-		guiHandler.eventUpdateScreen();
+		this.guiHandler.eventUpdateScreen();
 	}
 
 	@Override
 	public void onGuiClosed() {
 		Keyboard.enableRepeatEvents(false);
-		guiHandler.eventGuiClosed();
+		this.guiHandler.eventGuiClosed();
 	}
 
 	@Override
 	public void setWorldAndResolution(Minecraft minecraft, int width, int height) {
 		super.setWorldAndResolution(minecraft, width, height);
-		guiHandler.eventInitGui(width, height);
+		this.guiHandler.eventInitGui(width, height);
 	}
 
 	@Override
@@ -106,7 +110,7 @@ class PC_GresGuiScreen extends GuiScreen {
 	}
 
 	public PC_IGresGui getCurrentClientGui() {
-		return guiHandler.getClient();
+		return this.guiHandler.getClient();
 	}
 	
 }

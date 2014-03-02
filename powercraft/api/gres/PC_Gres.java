@@ -15,7 +15,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.client.resources.IResourceManager;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -35,7 +34,7 @@ import powercraft.api.PC_RectI;
 import powercraft.api.PC_Utils;
 import powercraft.api.PC_Vec2I;
 import powercraft.api.block.PC_TileEntity;
-import powercraft.api.entity.PC_Entity;
+import powercraft.api.entity.PC_IEntity;
 import powercraft.api.network.PC_PacketHandler;
 import powercraft.api.network.packet.PC_PacketOpenGresEntity;
 import powercraft.api.network.packet.PC_PacketOpenGresHandler;
@@ -72,7 +71,7 @@ public class PC_Gres {
 	}
 	
 	@SideOnly(Side.CLIENT)
-	public static void openClientGui(EntityPlayer player, Entity entity, int windowId, NBTTagCompound nbtTagCompound) {
+	public static void openClientGui(EntityPlayer player, PC_IEntity entity, int windowId, NBTTagCompound nbtTagCompound) {
 
 		if (entity instanceof PC_IGresGuiOpenHandler) {
 			PC_IGresGui gui = ((PC_IGresGuiOpenHandler) entity).openClientGui(player, nbtTagCompound);
@@ -140,7 +139,7 @@ public class PC_Gres {
 		}
 	}
 
-	public static void openGui(EntityPlayer player, PC_Entity entity) {
+	public static void openGui(EntityPlayer player, PC_IEntity entity) {
 
 		if (player instanceof EntityPlayerMP && entity instanceof PC_IGresGuiOpenHandler) {
 			EntityPlayerMP playerMP = (EntityPlayerMP) player;

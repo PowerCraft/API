@@ -42,18 +42,18 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 	}
 
 	public List<PC_GresComponent> getLayoutChildOrder(){
-		return layoutChildOrder;
+		return this.layoutChildOrder;
 	}
 
 	public PC_RectI getFrame() {
 
-		return new PC_RectI(frame);
+		return new PC_RectI(this.frame);
 	}
 
 
 	public PC_RectI getChildRect() {
 
-		return new PC_RectI(frame.x, frame.y, rect.width - frame.x - frame.width, rect.height - frame.y - frame.height);
+		return new PC_RectI(this.frame.x, this.frame.y, this.rect.width - this.frame.x - this.frame.width, this.rect.height - this.frame.y - this.frame.height);
 	}
 
 
@@ -66,22 +66,22 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 
 	public PC_IGresLayout getLayout() {
 
-		return layout;
+		return this.layout;
 	}
 
 
 	public void updateLayout() {
 
-		if (layout != null) {
-			if (!updatingLayout) {
-				updatingLayout = true;
+		if (this.layout != null) {
+			if (!this.updatingLayout) {
+				this.updatingLayout = true;
 				do {
-					updatingLayoutAgain = false;
-					layout.updateLayout(this);
-				} while (updatingLayoutAgain);
-				updatingLayout = false;
+					this.updatingLayoutAgain = false;
+					this.layout.updateLayout(this);
+				} while (this.updatingLayoutAgain);
+				this.updatingLayout = false;
 			} else {
-				updatingLayoutAgain = true;
+				this.updatingLayoutAgain = true;
 			}
 		}
 	}
@@ -89,16 +89,16 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 
 	public void add(PC_GresComponent component) {
 
-		if (!children.contains(component)) {
-			children.add(component);
-			layoutChildOrder.add(component);
+		if (!this.children.contains(component)) {
+			this.children.add(component);
+			this.layoutChildOrder.add(component);
 			component.takeFocus();
 			component.setParent(this);
 			if(component.getParent()==this){
 				notifyChange();
 			}else{
-				children.remove(component);
-				layoutChildOrder.remove(component);
+				this.children.remove(component);
+				this.layoutChildOrder.remove(component);
 			}
 		}
 	}
@@ -106,8 +106,8 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 
 	public void remove(PC_GresComponent component) {
 
-		children.remove(component);
-		layoutChildOrder.remove(component);
+		this.children.remove(component);
+		this.layoutChildOrder.remove(component);
 		if(component.hasFocus()){
 			takeFocus();
 		}
@@ -118,9 +118,9 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 
 	public void removeAll() {
 
-		while (!children.isEmpty()){
-			PC_GresComponent component = children.remove(0);
-			layoutChildOrder.remove(component);
+		while (!this.children.isEmpty()){
+			PC_GresComponent component = this.children.remove(0);
+			this.layoutChildOrder.remove(component);
 			if(component.hasFocus()){
 				takeFocus();
 			}
@@ -133,7 +133,7 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 
 	public boolean isChild(PC_GresComponent component) {
 
-		return children.contains(component);
+		return this.children.contains(component);
 	}
 
 
@@ -154,20 +154,20 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 	@Override
 	public void setMinSize(PC_Vec2I minSize) {
 
-		if (minSize == null && layout != null) {
-			this.minSize.setTo(layout.getMinimumLayoutSize(this));
-			this.minSize.x += frame.x + frame.width;
-			this.minSize.y += frame.y + frame.height;
-			minSizeSet = false;
+		if (minSize == null && this.layout != null) {
+			this.minSize.setTo(this.layout.getMinimumLayoutSize(this));
+			this.minSize.x += this.frame.x + this.frame.width;
+			this.minSize.y += this.frame.y + this.frame.height;
+			this.minSizeSet = false;
 		} else {
 			if (minSize == null) {
 				this.minSize.setTo(calculateMinSize());
-				this.minSize.x += frame.x + frame.width;
-				this.minSize.y += frame.y + frame.height;
-				minSizeSet = false;
+				this.minSize.x += this.frame.x + this.frame.width;
+				this.minSize.y += this.frame.y + this.frame.height;
+				this.minSizeSet = false;
 			} else {
 				this.minSize.setTo(minSize);
-				minSizeSet = true;
+				this.minSizeSet = true;
 			}
 		}
 		setSize(getSize().max(this.minSize));
@@ -180,10 +180,10 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 		if (maxSize == null) {
 			this.maxSize.setTo(calculateMaxSize());
 			
-			maxSizeSet = false;
+			this.maxSizeSet = false;
 		} else {
 			this.maxSize.setTo(maxSize);
-			maxSizeSet = true;
+			this.maxSizeSet = true;
 		}
 	}
 
@@ -191,24 +191,24 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 	@Override
 	public void setPrefSize(PC_Vec2I prefSize) {
 
-		if (prefSize == null && layout != null) {
-			this.prefSize.setTo(layout.getPreferredLayoutSize(this));
+		if (prefSize == null && this.layout != null) {
+			this.prefSize.setTo(this.layout.getPreferredLayoutSize(this));
 			if(this.prefSize.x!=-1)
-				this.prefSize.x += frame.x + frame.width;
+				this.prefSize.x += this.frame.x + this.frame.width;
 			if(this.prefSize.y!=-1)
-				this.prefSize.y += frame.y + frame.height;
-			prefSizeSet = false;
+				this.prefSize.y += this.frame.y + this.frame.height;
+			this.prefSizeSet = false;
 		} else {
 			if (prefSize == null) {
 				this.prefSize.setTo(calculatePrefSize());
 				if(this.prefSize.x!=-1)
-					this.prefSize.x += frame.x + frame.width;
+					this.prefSize.x += this.frame.x + this.frame.width;
 				if(this.prefSize.y!=-1)
-					this.prefSize.y += frame.y + frame.height;
-				prefSizeSet = false;
+					this.prefSize.y += this.frame.y + this.frame.height;
+				this.prefSizeSet = false;
 			} else {
 				this.prefSize.setTo(prefSize);
-				prefSizeSet = true;
+				this.prefSizeSet = true;
 			}
 		}
 		
@@ -219,7 +219,7 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 	public void setVisible(boolean visible) {
 
 		super.setVisible(visible);
-		for (PC_GresComponent child : children) {
+		for (PC_GresComponent child : this.children) {
 			child.setParentVisible(visible);
 		}
 	}
@@ -228,8 +228,8 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 	@Override
 	protected void setParentVisible(boolean visible) {
 
-		super.setParentVisible(enabled);
-		for (PC_GresComponent child : children) {
+		super.setParentVisible(this.enabled);
+		for (PC_GresComponent child : this.children) {
 			child.setParentVisible(visible);
 		}
 	}
@@ -239,7 +239,7 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 	public void setEnabled(boolean enabled) {
 
 		super.setEnabled(enabled);
-		for (PC_GresComponent child : children) {
+		for (PC_GresComponent child : this.children) {
 			child.setParentEnabled(enabled);
 		}
 	}
@@ -249,16 +249,17 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 	protected void setParentEnabled(boolean enabled) {
 
 		super.setParentEnabled(enabled);
-		for (PC_GresComponent child : children) {
-			child.setParentEnabled(visible);
+		for (PC_GresComponent child : this.children) {
+			child.setParentEnabled(this.visible);
 		}
 	}
 
 
+	@SuppressWarnings("hiding")
 	@Override
 	protected void doPaint(PC_Vec2I offset, PC_RectI scissorOld, double scale, int displayHeight, float timeStamp) {
 
-		if (visible) {
+		if (this.visible) {
 			PC_RectI rect = new PC_RectI(this.rect);
 			rect.x += offset.x;
 			rect.y += offset.y;
@@ -270,17 +271,17 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 			GL11.glColor3f(1.0f, 1.0f, 1.0f);
 			paint(scissor, scale, displayHeight, timeStamp);
 			doDebugRendering(0, 0, rect.width, rect.height);
-			rect.x += frame.x;
-			rect.y += frame.y;
-			rect.width -= frame.x + frame.width;
-			rect.height -= frame.y + frame.height;
-			GL11.glTranslatef(frame.x, frame.y, 0);
-			offset = rect.getLocation();
-			ListIterator<PC_GresComponent> iterator = children.listIterator(children.size());
+			rect.x += this.frame.x;
+			rect.y += this.frame.y;
+			rect.width -= this.frame.x + this.frame.width;
+			rect.height -= this.frame.y + this.frame.height;
+			GL11.glTranslatef(this.frame.x, this.frame.y, 0);
+			PC_Vec2I noffset = rect.getLocation();
+			ListIterator<PC_GresComponent> iterator = this.children.listIterator(this.children.size());
 			scissor = setDrawRect(scissor, rect, scale, displayHeight);
 			if(scissor!=null){
 				while(iterator.hasPrevious()){
-					iterator.previous().doPaint(offset, scissor, scale, displayHeight, timeStamp);
+					iterator.previous().doPaint(noffset, scissor, scale, displayHeight, timeStamp);
 				}
 			}
 			GL11.glPopMatrix();
@@ -288,16 +289,17 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 	}
 
 
+	@SuppressWarnings("hiding")
 	@Override
 	protected PC_GresComponent getComponentAtPosition(PC_Vec2I position) {
 
-		if (visible) {
+		if (this.visible) {
 			if(getChildRect().contains(position)){
-				position = position.sub(frame.getLocation());
-				for (PC_GresComponent child : children) {
+				PC_Vec2I nposition = position.sub(this.frame.getLocation());
+				for (PC_GresComponent child : this.children) {
 					PC_RectI rect = child.getRect();
-					if (rect.contains(position)){
-						PC_GresComponent component = child.getComponentAtPosition(position.sub(rect.getLocation()));
+					if (rect.contains(nposition)){
+						PC_GresComponent component = child.getComponentAtPosition(nposition.sub(rect.getLocation()));
 						if (component != null) return component;
 					}
 				}
@@ -311,7 +313,7 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 	@Override
 	protected void onTick() {
 
-		for (PC_GresComponent child : children) {
+		for (PC_GresComponent child : this.children) {
 			child.onTick();
 		}
 	}
@@ -319,21 +321,22 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 	@Override
 	protected void onDrawTick(float timeStamp) {
 
-		for (PC_GresComponent child : children) {
+		for (PC_GresComponent child : this.children) {
 			child.onDrawTick(timeStamp);
 		}
 	}
 
 
+	@SuppressWarnings("hiding")
 	@Override
 	protected Slot getSlotAtPosition(PC_Vec2I position) {
 
-		if (visible && getChildRect().contains(position)) {
-			position = position.sub(frame.getLocation());
-			for (PC_GresComponent child : children) {
+		if (this.visible && getChildRect().contains(position)) {
+			PC_Vec2I nposition = position.sub(this.frame.getLocation());
+			for (PC_GresComponent child : this.children) {
 				PC_RectI rect = child.getRect();
-				if (rect.contains(position)){
-					Slot slot = child.getSlotAtPosition(position.sub(rect.getLocation()));
+				if (rect.contains(nposition)){
+					Slot slot = child.getSlotAtPosition(nposition.sub(rect.getLocation()));
 					return slot;
 				}
 			}
@@ -345,29 +348,29 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 	@Override
 	protected void tryActionOnKeyTyped(char key, int keyCode, boolean repeat, PC_GresHistory history) {
 
-		if (visible) {
-			for (PC_GresComponent child : children) {
+		if (this.visible) {
+			for (PC_GresComponent child : this.children) {
 				child.tryActionOnKeyTyped(key, keyCode, repeat, history);
 			}
 		}
 	}
 
 	protected void moveToTop(PC_GresComponent component){
-		if(children.remove(component)){
-			children.add(0, component);
+		if(this.children.remove(component)){
+			this.children.add(0, component);
 		}
 		moveToTop();
 	}
 	
 	protected void moveToBottom(PC_GresComponent component){
-		if(children.remove(component)){
-			children.add(component);
+		if(this.children.remove(component)){
+			this.children.add(component);
 		}
 	}
 	
 	@Override
 	protected void onScaleChanged(int newScale){
-		for (PC_GresComponent child : children) {
+		for (PC_GresComponent child : this.children) {
 			child.onScaleChanged(newScale);
 		}
 	}

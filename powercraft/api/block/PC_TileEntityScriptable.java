@@ -26,16 +26,18 @@ public abstract class PC_TileEntityScriptable extends PC_TileEntity {
 	protected ScriptException e;
 	
 	public PC_TileEntityScriptable(int extSize){
-		ext = new int[extSize];
+		this.ext = new int[extSize];
 	}
 	
+	@SuppressWarnings("static-method")
 	protected HashMap<String, Integer> getReplacements(){
 		return null;
 	}
 	
+	@SuppressWarnings("hiding")
 	public void setSource(String source){
-		diagnostic = null;
-		script = null;
+		this.diagnostic = null;
+		this.script = null;
 		if(source==null || source.trim().isEmpty()){
 			this.source = null;
 			return;
@@ -43,38 +45,40 @@ public abstract class PC_TileEntityScriptable extends PC_TileEntity {
 		if(this.source!=source)
 			markDirty();
 		this.source = source;
-		if(worldObj==null?PC_Utils.isClient():worldObj.isRemote)
+		if(this.worldObj==null?PC_Utils.isClient():this.worldObj.isRemote)
 			return;
 		DiagnosticCollector<Void> diagnostic = new DiagnosticCollector<Void>();
 		try{
-			script = PC_Miniscript.compile(source, diagnostic, getReplacements());
+			this.script = PC_Miniscript.compile(source, diagnostic, getReplacements());
 		}catch(ScriptException e) {
 			this.diagnostic = diagnostic;
 		}
 	}
 	
 	public String getSource(){
-		return source;
+		return this.source;
 	}
 	
 	protected int[] getExt(){
-		return ext;
+		return this.ext;
 	}
 	
+	@SuppressWarnings("hiding")
 	protected void invoke(){
-		if(e!=null || script==null || isClient())
+		if(this.e!=null || this.script==null || isClient())
 			return;
 		markDirty();
 		try{
-			PC_Miniscript.invoke(script, ext);
+			PC_Miniscript.invoke(this.script, this.ext);
 		}catch(ScriptException e) {
 			this.e = e;
 			e.printStackTrace();
 		}
 	}
 
+	@Override
 	public void onLoadedFromNBT(Flag flag){
-		setSource(source);
+		setSource(this.source);
 	}
 	
 }

@@ -29,15 +29,15 @@ public class PC_Vec2I {
 
 		String[] attributes = attribute.split(",");
 		if (attributes.length != 2) throw new NumberFormatException();
-		x = Integer.parseInt(attributes[0].trim());
-		y = Integer.parseInt(attributes[1].trim());
+		this.x = Integer.parseInt(attributes[0].trim());
+		this.y = Integer.parseInt(attributes[1].trim());
 	}
 
 
 	public void setTo(PC_Vec2I vec) {
 
-		x = vec.x;
-		y = vec.y;
+		this.x = vec.x;
+		this.y = vec.y;
 	}
 
 
@@ -46,7 +46,7 @@ public class PC_Vec2I {
 
 		if (obj instanceof PC_Vec2I) {
 			PC_Vec2I vec = (PC_Vec2I) obj;
-			return vec.x == x && vec.y == y;
+			return vec.x == this.x && vec.y == this.y;
 		}
 		return false;
 	}
@@ -55,23 +55,24 @@ public class PC_Vec2I {
 	@Override
 	public int hashCode() {
 
-		return x ^ 34 + y;
+		return this.x ^ 34 + this.y;
 	}
 
 
 	@Override
 	public String toString() {
 
-		return "Vec2I[" + x + ", " + y + "]";
+		return "Vec2I[" + this.x + ", " + this.y + "]";
 	}
 
 
 	public PC_Vec2I add(int n) {
 
-		return new PC_Vec2I(x + n, y + n);
+		return new PC_Vec2I(this.x + n, this.y + n);
 	}
 
 
+	@SuppressWarnings("hiding")
 	public PC_Vec2I add(int x, int y) {
 
 		return new PC_Vec2I(this.x + x, this.y + y);
@@ -80,16 +81,17 @@ public class PC_Vec2I {
 
 	public PC_Vec2I add(PC_Vec2I vec) {
 
-		return new PC_Vec2I(x + vec.x, y + vec.y);
+		return new PC_Vec2I(this.x + vec.x, this.y + vec.y);
 	}
 
 
 	public PC_Vec2I sub(int n) {
 
-		return new PC_Vec2I(x - n, y - n);
+		return new PC_Vec2I(this.x - n, this.y - n);
 	}
 
 
+	@SuppressWarnings("hiding")
 	public PC_Vec2I sub(int x, int y) {
 
 		return new PC_Vec2I(this.x - x, this.y - y);
@@ -98,16 +100,17 @@ public class PC_Vec2I {
 
 	public PC_Vec2I sub(PC_Vec2I vec) {
 
-		return new PC_Vec2I(x - vec.x, y - vec.y);
+		return new PC_Vec2I(this.x - vec.x, this.y - vec.y);
 	}
 
 
 	public PC_Vec2I max(int n) {
 
-		return new PC_Vec2I(x > n ? x : n, y > n ? y : n);
+		return new PC_Vec2I(this.x > n ? this.x : n, this.y > n ? this.y : n);
 	}
 
 
+	@SuppressWarnings("hiding")
 	public PC_Vec2I max(int x, int y) {
 
 		return new PC_Vec2I(this.x > x ? this.x : x, this.y > y ? this.y : y);
@@ -116,15 +119,16 @@ public class PC_Vec2I {
 
 	public PC_Vec2I max(PC_Vec2I vec) {
 
-		return new PC_Vec2I(x > vec.x ? x : vec.x, y > vec.y ? y : vec.y);
+		return new PC_Vec2I(this.x > vec.x ? this.x : vec.x, this.y > vec.y ? this.y : vec.y);
 	}
 
 	public PC_Vec2I min(int n) {
 
-		return new PC_Vec2I(x < n ? x : n, y < n ? y : n);
+		return new PC_Vec2I(this.x < n ? this.x : n, this.y < n ? this.y : n);
 	}
 
 
+	@SuppressWarnings("hiding")
 	public PC_Vec2I min(int x, int y) {
 
 		return new PC_Vec2I(this.x < x ? this.x : x, this.y < y ? this.y : y);
@@ -133,7 +137,7 @@ public class PC_Vec2I {
 
 	public PC_Vec2I min(PC_Vec2I vec) {
 
-		return new PC_Vec2I(x < vec.x ? x : vec.x, y < vec.y ? y : vec.y);
+		return new PC_Vec2I(this.x < vec.x ? this.x : vec.x, this.y < vec.y ? this.y : vec.y);
 	}
 
 	

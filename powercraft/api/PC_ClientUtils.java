@@ -32,7 +32,7 @@ public final class PC_ClientUtils extends PC_Utils {
 	PC_ClientUtils() throws InstanceAlreadyExistsException {
 
 		PC_Renderer.getInstance();
-		isClient.set(true);
+		isClient.set(Boolean.TRUE);
 		PC_ResourceReloadListener.register();
 		
 	}
@@ -71,12 +71,13 @@ public final class PC_ClientUtils extends PC_Utils {
 	 * is this game running on client
 	 * @return always yes
 	 */
+	@SuppressWarnings("hiding")
 	@Override
 	PC_Side iGetSide(){
 		Boolean isClient = PC_ClientUtils.isClient.get();
 		if(isClient==null){
 			return PC_Side.CLIENT;
-		}else if(isClient){
+		}else if(isClient.booleanValue()){
 			return PC_Side.CLIENT;
 		}
 		return PC_Side.SERVER;
@@ -84,7 +85,7 @@ public final class PC_ClientUtils extends PC_Utils {
 	
 	@Override
 	void iMarkThreadAsServer(){
-		isClient.set(false);
+		isClient.set(Boolean.FALSE);
 	}
 	
 	@Override

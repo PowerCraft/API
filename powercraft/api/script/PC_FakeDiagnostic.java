@@ -48,29 +48,29 @@ public class PC_FakeDiagnostic implements Diagnostic<Void> {
 	
 	private PC_FakeDiagnostic(NBTTagCompound compound){
 		if(compound.hasKey("line"))
-			line = compound.getLong("line");
+			this.line = compound.getLong("line");
 		else
-			line = NOPOS;
+			this.line = NOPOS;
 		if(compound.hasKey("message"))
-			message = compound.getString("message");
+			this.message = compound.getString("message");
 		if(compound.hasKey("columnNumber"))
-			columnNumber = compound.getLong("columnNumber");
+			this.columnNumber = compound.getLong("columnNumber");
 		else
-			columnNumber = NOPOS;
+			this.columnNumber = NOPOS;
 		if(compound.hasKey("endPos"))
-			endPos = compound.getLong("endPos");
+			this.endPos = compound.getLong("endPos");
 		else
-			endPos = NOPOS;
+			this.endPos = NOPOS;
 		if(compound.hasKey("pos"))
-			pos = compound.getLong("pos");
+			this.pos = compound.getLong("pos");
 		else
-			pos = NOPOS;
+			this.pos = NOPOS;
 		if(compound.hasKey("startPos"))
-			startPos = compound.getLong("startPos");
+			this.startPos = compound.getLong("startPos");
 		else
-			startPos = NOPOS;
+			this.startPos = NOPOS;
 		if(compound.hasKey("kind"))
-			kind = Kind.values()[compound.getInteger("kind")];
+			this.kind = Kind.values()[compound.getInteger("kind")];
 	}
 	
 	@Override
@@ -80,32 +80,32 @@ public class PC_FakeDiagnostic implements Diagnostic<Void> {
 
 	@Override
 	public long getColumnNumber() {
-		return columnNumber;
+		return this.columnNumber;
 	}
 
 	@Override
 	public long getEndPosition() {
-		return endPos;
+		return this.endPos;
 	}
 
 	@Override
 	public Kind getKind() {
-		return kind;
+		return this.kind;
 	}
 
 	@Override
 	public long getLineNumber() {
-		return line;
+		return this.line;
 	}
 
 	@Override
 	public String getMessage(Locale locale) {
-		return message;
+		return this.message;
 	}
 
 	@Override
 	public long getPosition() {
-		return pos;
+		return this.pos;
 	}
 
 	@Override
@@ -115,7 +115,7 @@ public class PC_FakeDiagnostic implements Diagnostic<Void> {
 
 	@Override
 	public long getStartPosition() {
-		return startPos;
+		return this.startPos;
 	}
 
 }

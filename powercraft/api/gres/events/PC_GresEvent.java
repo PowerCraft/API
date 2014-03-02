@@ -11,7 +11,7 @@ public abstract class PC_GresEvent {
 	}
 	
 	public PC_GresComponent getComponent(){
-		return component;
+		return this.component;
 	}
 	
 }

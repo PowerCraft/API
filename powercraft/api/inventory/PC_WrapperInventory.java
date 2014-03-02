@@ -14,12 +14,12 @@ public class PC_WrapperInventory implements IInventory {
 
 	@Override
 	public int getSizeInventory() {
-		return inventoryContents.length;
+		return this.inventoryContents.length;
 	}
 
 	@Override
 	public ItemStack getStackInSlot(int i) {
-		return inventoryContents[i];
+		return this.inventoryContents[i];
 	}
 
 	@Override
@@ -29,11 +29,13 @@ public class PC_WrapperInventory implements IInventory {
 
 	@Override
 	public ItemStack getStackInSlotOnClosing(int i) {
-		return inventoryContents[i];
+		return this.inventoryContents[i];
 	}
 
 	@Override
-	public void setInventorySlotContents(int i, ItemStack itemstack) {}
+	public void setInventorySlotContents(int i, ItemStack itemstack) {
+		//
+	}
 
 	@Override
 	public String getInventoryName() {
@@ -51,7 +53,9 @@ public class PC_WrapperInventory implements IInventory {
 	}
 
 	@Override
-	public void markDirty() {}
+	public void markDirty() {
+		//
+	}
 
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer entityplayer) {
@@ -59,10 +63,14 @@ public class PC_WrapperInventory implements IInventory {
 	}
 
 	@Override
-	public void openInventory() {}
+	public void openInventory() {
+		//
+	}
 
 	@Override
-	public void closeInventory() {}
+	public void closeInventory() {
+		//
+	}
 
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack) {

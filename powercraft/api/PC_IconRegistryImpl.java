@@ -20,7 +20,7 @@ final class PC_IconRegistryImpl implements PC_IconRegistry {
 	
 	@Override
 	public IIcon registerIcon(String name) {
-		return iconRegister.registerIcon(module.getName()+":"+tileName+"/"+name);
+		return this.iconRegister.registerIcon(this.module.getName()+":"+this.tileName+"/"+name);
 	}
 	
 }

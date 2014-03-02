@@ -20,7 +20,7 @@ public class PC_GresComboBox extends PC_GresComponent {
 
 	private static final String textureName = "Button";
 	
-	private PC_GresFrame frame;
+	PC_GresFrame frame;
 	private List<String> items;
 	
 	public PC_GresComboBox(List<String> items, int select){
@@ -37,7 +37,7 @@ public class PC_GresComboBox extends PC_GresComponent {
 	protected PC_Vec2I calculateMinSize() {
 		PC_Vec2I s = getTextureMinSize(textureName);
 		PC_Vec2I size = new PC_Vec2I();
-		for(String item:items){
+		for(String item:this.items){
 			PC_Vec2I fsize = fontRenderer.getStringSize(item);
 			size = fsize.max(size);
 		}
@@ -53,7 +53,7 @@ public class PC_GresComboBox extends PC_GresComponent {
 	protected PC_Vec2I calculatePrefSize() {
 		PC_Vec2I s = getTextureMinSize(textureName);
 		PC_Vec2I size = new PC_Vec2I();
-		for(String item:items){
+		for(String item:this.items){
 			PC_Vec2I fsize = fontRenderer.getStringSize(item);
 			size = fsize.max(size);
 		}
@@ -62,37 +62,37 @@ public class PC_GresComboBox extends PC_GresComponent {
 
 	@Override
 	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp) {
-		drawTexture(textureName, 0, 0, rect.width, rect.height);
-		drawString(text, 3, frame!=null ? 4 : 3, rect.width - 6, rect.height - 6, PC_GresAlign.H.CENTER, PC_GresAlign.V.CENTER, true);
+		drawTexture(textureName, 0, 0, this.rect.width, this.rect.height);
+		drawString(this.text, 3, this.frame!=null ? 4 : 3, this.rect.width - 6, this.rect.height - 6, PC_GresAlign.H.CENTER, PC_GresAlign.V.CENTER, true);
 	}
 	
 	@Override
 	protected boolean handleMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton, boolean doubleClick, PC_GresHistory history) {
-		if(frame==null){
-			mouseDown = true;
-			frame = new PC_GresComboBoxFrame(this);
-			frame.setLayout(new PC_GresLayoutVertical());
+		if(this.frame==null){
+			this.mouseDown = true;
+			this.frame = new PC_GresComboBoxFrame(this);
+			this.frame.setLayout(new PC_GresLayoutVertical());
 			ComboBoxEventListener cbel = new ComboBoxEventListener();
 			PC_GresScrollArea sa;
-			frame.add(sa = new PC_GresScrollArea());
+			this.frame.add(sa = new PC_GresScrollArea());
 			sa.setFill(Fill.BOTH);
 			sa.addEventListener(cbel);
-			sa.setMinSize(new PC_Vec2I(rect.width, 50));
-			sa.setSize(new PC_Vec2I(rect.width, 50));
+			sa.setMinSize(new PC_Vec2I(this.rect.width, 50));
+			sa.setSize(new PC_Vec2I(this.rect.width, 50));
 			PC_GresContainer c = sa.getContainer();
 			c.addEventListener(cbel);
 			c.setLayout(new PC_GresLayoutVertical());
-			for(String item:items){
+			for(String item:this.items){
 				PC_GresButton b = new PC_GresButton(item);
 				b.setFill(Fill.BOTH);
 				b.addEventListener(cbel);
 				c.add(b);
 			}
-			frame.addEventListener(cbel);
-			frame.setMinSize(new PC_Vec2I(rect.width, 50));
-			frame.setSize(new PC_Vec2I(rect.width, 50));
-			getGuiHandler().add(frame);
-			frame.takeFocus();
+			this.frame.addEventListener(cbel);
+			this.frame.setMinSize(new PC_Vec2I(this.rect.width, 50));
+			this.frame.setSize(new PC_Vec2I(this.rect.width, 50));
+			getGuiHandler().add(this.frame);
+			this.frame.takeFocus();
 		}else{
 			closeDropDown();
 		}
@@ -106,34 +106,38 @@ public class PC_GresComboBox extends PC_GresComponent {
 	
 	@Override
 	protected void handleMouseLeave(PC_Vec2I mouse, int buttons, PC_GresHistory history) {
-		mouseOver = false;
+		this.mouseOver = false;
 	}
 
 	@Override
 	protected void setParent(PC_GresContainer parent) {
-		if(frame!=null){
+		if(this.frame!=null){
 			closeDropDown();
 		}
 		super.setParent(parent);
 	}
 
-	private void closeDropDown(){
-		getGuiHandler().remove(frame);
-		frame = null;
-		mouseDown = false;
+	void closeDropDown(){
+		getGuiHandler().remove(this.frame);
+		this.frame = null;
+		this.mouseDown = false;
 	}
 	
 	private class ComboBoxEventListener implements PC_IGresEventListener{
 
 		private boolean handleClosing;
 		
+		ComboBoxEventListener() {
+			//
+		}
+
 		@Override
 		public void onEvent(PC_GresEvent event) {
 			if(event instanceof PC_GresFocusLostEvent){
 				PC_GresFocusLostEvent le = (PC_GresFocusLostEvent)event;
-				if(!isParentOf(frame, le.getNewFocusedComponent()) && le.getNewFocusedComponent()!=PC_GresComboBox.this){
-					if(!handleClosing){
-						handleClosing = true;
+				if(!isParentOf(PC_GresComboBox.this.frame, le.getNewFocusedComponent()) && le.getNewFocusedComponent()!=PC_GresComboBox.this){
+					if(!this.handleClosing){
+						this.handleClosing = true;
 						closeDropDown();
 					}
 				}
@@ -142,8 +146,8 @@ public class PC_GresComboBox extends PC_GresComponent {
 				if(ev.getEvent()==PC_GresMouseButtonEvent.Event.CLICK){
 					if(ev.getComponent() instanceof PC_GresButton){
 						setText(ev.getComponent().getText());
-						if(!handleClosing){
-							handleClosing = true;
+						if(!this.handleClosing){
+							this.handleClosing = true;
 							closeDropDown();
 						}
 					}
@@ -152,10 +156,11 @@ public class PC_GresComboBox extends PC_GresComponent {
 		}
 		
 		private boolean isParentOf(PC_GresContainer c, PC_GresComponent com){
-			while(c!=com){
-				if(com==null)
+			PC_GresComponent comp = com;
+			while(c!=comp){
+				if(comp==null)
 					return false;
-				com = com.getParent();
+				comp = comp.getParent();
 			}
 			return true;
 		}

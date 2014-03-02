@@ -42,18 +42,19 @@ public abstract class PC_MultiblockObject implements PC_INBT{
 	}
 
 	public PC_TileEntityMultiblock getTileEntity() {
-		return multiblock;
+		return this.multiblock;
 	}
 
 
 	public int getThickness() {
-		return thickness;
+		return this.thickness;
 	}
 	
 	public boolean isClient() {
-		return multiblock.isClient();
+		return this.multiblock.isClient();
 	}
 	
+	@SuppressWarnings("static-method")
 	public List<AxisAlignedBB> getCollisionBoundingBoxes() {
 		return null;
 	}
@@ -88,74 +89,93 @@ public abstract class PC_MultiblockObject implements PC_INBT{
 		return aabb;
 	}
 	
+	@SuppressWarnings("static-method")
 	public List<ItemStack> getDrop() {
 		return null;
 	}
 
-	public void onPreRemove() {}
+	public void onPreRemove() {
+		//
+	}
 
-	public void onRemoved() {}
+	public void onRemoved() {
+		//
+	}
 
+	@SuppressWarnings("unused")
 	public void onClicked(EntityPlayer player) {
-		
+		//
 	}
 
 	public ItemStack getPickBlock() {
 		return new ItemStack(PC_Multiblocks.getItem(this), 1, 0);
 	}
 
+	@SuppressWarnings({ "static-method", "unused" })
 	public boolean onBlockActivated(EntityPlayer player) {
 		return false;
 	}
 
+	@SuppressWarnings("unused")
 	public void onNeighborBlockChange(Block neighbor) {
-		
+		//
 	}
 
+	@SuppressWarnings({ "static-method", "unused" })
 	public float getPlayerRelativeHardness(EntityPlayer player) {
 		return 0;
 	}
 
 	public void fillWithRain() {
-		
+		//
 	}
 
+	@SuppressWarnings("static-method")
 	public int getLightValue() {
 		return 0;
 	}
 
+	@SuppressWarnings({ "static-method", "unused" })
 	public boolean isLadder(EntityLivingBase entity) {
 		return false;
 	}
 
+	@SuppressWarnings("static-method")
 	public boolean isBurning() {
 		return false;
 	}
 
+	@SuppressWarnings("static-method")
 	public float getEnchantPowerBonus() {
 		return 0;
 	}
 
+	@SuppressWarnings("unused")
 	public void onNeighborTEChange(int tileX, int tileY, int tileZ) {
-		
+		//
 	}
 
+	@SuppressWarnings("unused")
 	public void renderWorldBlock(RenderBlocks renderer) {
-		
+		//
 	}
 
+	@SuppressWarnings("static-method")
 	public boolean isSolid() {
 		return false;
 	}
 
+	@SuppressWarnings({ "static-method", "unused" })
 	public boolean canConnectRedstone(PC_Direction side) {
 		return false;
 	}
 
+	@SuppressWarnings({ "static-method", "unused" })
 	public boolean canMixWith(PC_MultiblockObject multiblockObject) {
 		return false;
 	}
 
+	@SuppressWarnings({ "static-method", "unused" })
 	public PC_MultiblockObject mixWith(PC_MultiblockObject multiblockObject) {
 		return null;
 	}
@@ -165,13 +185,14 @@ public abstract class PC_MultiblockObject implements PC_INBT{
 		this.multiblock = multiblock;
 	}
 
+	@SuppressWarnings("static-method")
 	public boolean onAdded() {
 		return true;
 	}
 
 	public void updateObject() {
-		if (!isClient() && sync) {
-			PC_PacketHandler.sendToAllAround(getSyncPacket(), getWorld().getWorldInfo().getVanillaDimension(), multiblock.xCoord, multiblock.yCoord, multiblock.zCoord, 32);
+		if (!isClient() && this.sync) {
+			PC_PacketHandler.sendToAllAround(getSyncPacket(), getWorld().getWorldInfo().getVanillaDimension(), this.multiblock.xCoord, this.multiblock.yCoord, this.multiblock.zCoord, 32);
 			this.sync = false;
 		}
 	}
@@ -187,24 +208,25 @@ public abstract class PC_MultiblockObject implements PC_INBT{
 	}
 	
 	public void onChunkUnload() {
-		
+		//
 	}
 	
 	public void markDirty(){
-		multiblock.markDirty();
+		this.multiblock.markDirty();
 	}
 	
+	@SuppressWarnings({ "hiding", "unused" })
 	public boolean isUsing(PC_MultiblockIndex index, PC_MultiblockObject multiblockObject){
 		return this.index == index;
 	}
 	
 	public World getWorld(){
-		return multiblock.getWorldObj();
+		return this.multiblock.getWorldObj();
 	}
 	
 	public void sync(){
 		if (!isClient())
-			sync = true;
+			this.sync = true;
 	}
 
 	@Override
@@ -224,8 +246,8 @@ public abstract class PC_MultiblockObject implements PC_INBT{
 						name = field.getName();
 					}
 					Class<?> type = field.getType();
-					value = PC_NBTTagHandler.loadFromNBT(nbtTagCompound, name, type, flag);
-					results.put(Result.SET, value);
+					Object nvalue = PC_NBTTagHandler.loadFromNBT(nbtTagCompound, name, type, flag);
+					results.put(Result.SET, nvalue);
 				}
 			}
 			
@@ -253,12 +275,12 @@ public abstract class PC_MultiblockObject implements PC_INBT{
 	}
 	
 	public PC_MultiblockIndex getIndex(){
-		return index;
+		return this.index;
 	}
 
 	public final void applySync(NBTTagCompound nbtTagCompound) {
 		readFromNBT(nbtTagCompound, Flag.SYNC);
-		multiblock.renderUpdate();
+		this.multiblock.renderUpdate();
 	}
 	
 }

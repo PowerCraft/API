@@ -2,8 +2,8 @@ package powercraft.api.network.packet;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.INetHandler;
 import net.minecraft.network.NetHandlerPlayServer;
+import net.minecraft.world.World;
 import powercraft.api.PC_Utils;
 import powercraft.api.block.PC_TileEntity;
 import powercraft.api.network.PC_Packet;
@@ -21,18 +21,17 @@ public class PC_PacketPasswordReply extends PC_PacketClientToServer {
 	}
 	
 	public PC_PacketPasswordReply(PC_TileEntity te, String password){
-		x = te.xCoord;
-		y = te.yCoord;
-		z = te.zCoord;
+		this.x = te.xCoord;
+		this.y = te.yCoord;
+		this.z = te.zCoord;
 		this.password = password;
 	}
 	
 	@Override
-	protected PC_Packet doAndReply(INetHandler iNetHandler) {
-		EntityPlayer player = ((NetHandlerPlayServer)iNetHandler).playerEntity;
-		PC_TileEntity te = PC_Utils.getTileEntity(player.worldObj, x, y, z, PC_TileEntity.class);
+	protected PC_Packet doAndReply(NetHandlerPlayServer iNetHandler, World world, EntityPlayer player) {
+		PC_TileEntity te = PC_Utils.getTileEntity(world, this.x, this.y, this.z, PC_TileEntity.class);
 		if(te!=null){
-			if(!te.guiOpenPasswordReply(player, password)){
+			if(!te.guiOpenPasswordReply(player, this.password)){
 				return new PC_PacketWrongPassword(te);
 			}
 		}
@@ -41,18 +40,18 @@ public class PC_PacketPasswordReply extends PC_PacketClientToServer {
 
 	@Override
 	protected void fromByteBuffer(ByteBuf buf) {
-		x = buf.readInt();
-		y = buf.readInt();
-		z = buf.readInt();
-		password = readStringFromBuf(buf);
+		this.x = buf.readInt();
+		this.y = buf.readInt();
+		this.z = buf.readInt();
+		this.password = readStringFromBuf(buf);
 	}
 
 	@Override
 	protected void toByteBuffer(ByteBuf buf) {
-		buf.writeInt(x);
-		buf.writeInt(y);
-		buf.writeInt(z);
-		writeStringToBuf(buf, password);
+		buf.writeInt(this.x);
+		buf.writeInt(this.y);
+		buf.writeInt(this.z);
+		writeStringToBuf(buf, this.password);
 	}
 
 }

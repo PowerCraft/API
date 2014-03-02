@@ -118,6 +118,10 @@ public class PC_InventoryUtils {
 	
 	private static class EntitySelector implements IEntitySelector{
 
+		public EntitySelector() {
+			
+		}
+
 		@Override
 		public boolean isEntityApplicable(Entity entity) {
 			return getInventoryFrom(entity)!=null;

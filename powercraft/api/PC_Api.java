@@ -2,6 +2,7 @@ package powercraft.api;
 
 
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.MinecraftForge;
 import powercraft.api.block.PC_Blocks;
 import powercraft.api.energy.PC_EnergyGrid;
 import powercraft.api.gres.PC_Gres;
@@ -10,7 +11,6 @@ import powercraft.api.multiblock.PC_BlockMultiblock;
 import powercraft.api.multiblock.PC_Multiblocks;
 import powercraft.api.network.PC_PacketHandler;
 import powercraft.api.script.miniscript.PC_Miniscript;
-import powercraft.api.script.weasel.PC_Weasel;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.InstanceFactory;
@@ -50,6 +50,7 @@ public final class PC_Api extends PC_Module {
 		
 	}
 	
+	@SuppressWarnings({ "static-method", "unused" })
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 
@@ -57,7 +58,6 @@ public final class PC_Api extends PC_Module {
 		PC_TickHandler.register();
 		PC_ForgeHandler.register();
 		PC_Miniscript.register();
-		PC_Weasel.register();
 		PC_Gres.register();
 		PC_Multiblocks.register();
 		PC_EnergyGrid.register();
@@ -65,20 +65,26 @@ public final class PC_Api extends PC_Module {
 		PC_Blocks.construct();
 		PC_Items.construct();
 		PC_Multiblocks.construct();
+		
+		MinecraftForge.EVENT_BUS.register(new PC_EventHandler());
+		
 	}
 
 
+	@SuppressWarnings("unused")
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
-		
+		//
 	}
 
 
+	@SuppressWarnings("unused")
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
-		
+		//
 	}
 	
+	@SuppressWarnings({ "unused", "static-method" })
 	@EventHandler
 	public void serverStarted(FMLServerAboutToStartEvent start) {
 		PC_Utils.markThreadAsServer();

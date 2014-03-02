@@ -27,7 +27,7 @@ public final class PC_Logger {
 	
 	private static boolean inited;
 	
-	private static boolean printToStdout = false;
+	static boolean printToStdout = false;
 
 	/**
 	 * inits the logger, called from PC_Api
@@ -168,6 +168,8 @@ public final class PC_Logger {
 	private static class PC_LogFormatter extends Formatter {
 
 		private static final String nl = System.getProperty("line.separator");
+
+		public PC_LogFormatter() {}
 
 		@Override
 		public String format(LogRecord record) {

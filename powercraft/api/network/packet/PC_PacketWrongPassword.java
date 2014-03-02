@@ -1,8 +1,9 @@
 package powercraft.api.network.packet;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.network.INetHandler;
-import powercraft.api.PC_ClientUtils;
+import net.minecraft.client.network.NetHandlerPlayClient;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.World;
 import powercraft.api.PC_Utils;
 import powercraft.api.block.PC_TileEntity;
 import powercraft.api.network.PC_Packet;
@@ -21,15 +22,15 @@ public class PC_PacketWrongPassword extends PC_PacketServerToClient {
 	}
 	
 	public PC_PacketWrongPassword(PC_TileEntity te){
-		x = te.xCoord;
-		y = te.yCoord;
-		z = te.zCoord;
+		this.x = te.xCoord;
+		this.y = te.yCoord;
+		this.z = te.zCoord;
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	protected PC_Packet doAndReply(INetHandler iNetHandler) {
-		PC_TileEntity te = PC_Utils.getTileEntity(PC_ClientUtils.mc().theWorld, x, y, z, PC_TileEntity.class);
+	protected PC_Packet doAndReply(NetHandlerPlayClient iNetHandler, World world, EntityPlayer player) {
+		PC_TileEntity te = PC_Utils.getTileEntity(world, this.x, this.y, this.z, PC_TileEntity.class);
 		if(te!=null){
 			te.wrongPasswordInput();
 		}
@@ -38,16 +39,16 @@ public class PC_PacketWrongPassword extends PC_PacketServerToClient {
 
 	@Override
 	protected void fromByteBuffer(ByteBuf buf) {
-		x = buf.readInt();
-		y = buf.readInt();
-		z = buf.readInt();
+		this.x = buf.readInt();
+		this.y = buf.readInt();
+		this.z = buf.readInt();
 	}
 
 	@Override
 	protected void toByteBuffer(ByteBuf buf) {
-		buf.writeInt(x);
-		buf.writeInt(y);
-		buf.writeInt(z);
+		buf.writeInt(this.x);
+		buf.writeInt(this.y);
+		buf.writeInt(this.z);
 	}
 
 }

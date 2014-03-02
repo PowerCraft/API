@@ -16,6 +16,7 @@ public abstract class PC_Block extends PC_AbstractBlockBase {
 		super(material);
 	}
 
+	@Override
 	public boolean canRotate() {
 		return false;
 	}
@@ -43,7 +44,7 @@ public abstract class PC_Block extends PC_AbstractBlockBase {
 
 	@Override
 	public void onBlockPostSet(World world, int x, int y, int z, PC_Direction side, ItemStack stack, EntityPlayer player, float hitX, float hitY, float hitZ, int metadata) {
-		
+		//
 	}
 	
 }

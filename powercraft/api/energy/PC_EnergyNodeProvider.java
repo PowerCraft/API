@@ -19,38 +19,38 @@ final class PC_EnergyNodeProvider extends PC_EnergyNode<PC_IEnergyGridProvider> 
 
 	@Override
 	public void onTickStart() {
-		used = 0;
-		useable = getTile().getEnergyUseable();
-		dynamic = getTile().dynamic();
+		this.used = 0;
+		this.useable = getTile().getEnergyUseable();
+		this.dynamic = getTile().dynamic();
 	}
 
 	@Override
 	public void onTickEnd() {
-		getTile().takeEnergy(used);
+		getTile().takeEnergy(this.used);
 	}
 
 	@Override
 	public float getFlow() {
-		return -used;
+		return -this.used;
 	}
 
 	@Override
 	public void addToInfo(PC_EnergyInfo info) {
-		if(dynamic)
-			info.notProduceNeccecerly += useable;
+		if(this.dynamic)
+			info.notProduceNeccecerly += this.useable;
 	}
 
 	@Override
 	public float takeEnergy() {
-		used = useable;
-		return useable;
+		this.used = this.useable;
+		return this.useable;
 	}
 
 	@Override
 	public float notUsing(float energy, float p) {
-		if(dynamic){
-			used = useable*(1-p);
-			energy -= useable-used;
+		if(this.dynamic){
+			this.used = this.useable*(1-p);
+			return energy - this.useable + this.used;
 		}
 		return energy;
 	}

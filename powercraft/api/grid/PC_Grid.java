@@ -9,28 +9,30 @@ public abstract class PC_Grid<G extends PC_Grid<G, T, N, E>, T extends PC_IGridT
 	protected final List<E> edges = new ArrayList<E>();
 	protected boolean spitting = true;
 	
-	@SuppressWarnings("unchecked")
 	protected PC_Grid(T tile){
-		tile.setGrid((G) this);
-		newNode(tile);
+		addTile(tile);
 	}
 	
 	protected PC_Grid(){
 		
 	}
 	
-	@SuppressWarnings("unchecked")
 	public void addTile(T tile, T connection){
+		addTile(tile);
+		makeConnection(tile, connection);
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected void addTile(T tile){
 		tile.setGrid((G) this);
 		newNode(tile);
-		makeConnection(tile, connection);
 	}
 	
 	protected abstract N createNode(T tile);
 	
 	protected N newNode(T tile){
 		N node = createNode(tile);
-		nodes.add(node);
+		this.nodes.add(node);
 		return node;
 	}
 	
@@ -38,7 +40,7 @@ public abstract class PC_Grid<G extends PC_Grid<G, T, N, E>, T extends PC_IGridT
 	
 	protected E newEdge(N start, N end){
 		E edge = createEdge(start, end);
-		edges.add(edge);
+		this.edges.add(edge);
 		return edge;
 	}
 	
@@ -65,10 +67,10 @@ public abstract class PC_Grid<G extends PC_Grid<G, T, N, E>, T extends PC_IGridT
 	}
 	
 	protected void destroy(){
-		
+		//
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "hiding" })
 	protected void addAll(List<N> nodes, List<E> edges){
 		this.nodes.addAll(nodes);
 		this.edges.addAll(edges);
@@ -87,12 +89,12 @@ public abstract class PC_Grid<G extends PC_Grid<G, T, N, E>, T extends PC_IGridT
 	}
 	
 	protected PC_TileHolder<G, T, N, E> getTileHolderFor(T tile){
-		for(N node:nodes){
+		for(N node:this.nodes){
 			if(node.hasTile(tile)){
 				return node;
 			}
 		}
-		for(E edge:edges){
+		for(E edge:this.edges){
 			if(edge.hasTile(tile)){
 				return edge;
 			}
@@ -101,18 +103,18 @@ public abstract class PC_Grid<G extends PC_Grid<G, T, N, E>, T extends PC_IGridT
 	}
 	
 	protected void removeNode(N node){
-		nodes.remove(node);
-		if(nodes.isEmpty())
+		this.nodes.remove(node);
+		if(this.nodes.isEmpty())
 			destroy();
 	}
 	
 	protected void removeEdge(E edge){
-		edges.remove(edge);
+		this.edges.remove(edge);
 	}
 	
 	protected void splitGridsIfAble(){
-		if(spitting){
-			List<N> remainingNodes = new ArrayList<N>(nodes);
+		if(this.spitting){
+			List<N> remainingNodes = new ArrayList<N>(this.nodes);
 			List<N> visibleNodes = new ArrayList<N>();
 			List<E> visibleEdges = new ArrayList<E>();
 			while(!remainingNodes.isEmpty()){
@@ -120,8 +122,9 @@ public abstract class PC_Grid<G extends PC_Grid<G, T, N, E>, T extends PC_IGridT
 				remainingNodes.removeAll(visibleNodes);
 				if(remainingNodes.isEmpty())
 					break;
-				nodes.removeAll(visibleNodes);
-				edges.removeAll(visibleEdges);
+				moveToOtherGrid(visibleNodes, visibleEdges);
+				this.nodes.removeAll(visibleNodes);
+				this.edges.removeAll(visibleEdges);
 				G grid = createGrid();
 				grid.addAll(visibleNodes, visibleEdges);
 				visibleNodes.clear();
@@ -130,26 +133,31 @@ public abstract class PC_Grid<G extends PC_Grid<G, T, N, E>, T extends PC_IGridT
 		}
 	}
 	
+	@SuppressWarnings({ "unused", "hiding" })
+	protected void moveToOtherGrid(List<N> nodes, List<E> edges){
+		//
+	}
+	
 	protected abstract G createGrid();
 	
 	@Override
 	public String toString(){
 		String s = "";
-		for(N node:nodes){
+		for(N node:this.nodes){
 			s += node.toString()+"\n";
 		}
-		for(E edge:edges){
+		for(E edge:this.edges){
 			s += edge.toString()+"\n";
 		}
 		return s;
 	}
 	
 	public void disableSplitting() {
-		spitting = false;
+		this.spitting = false;
 	}
 
 	public void enableSplitting() {
-		spitting = true;
+		this.spitting = true;
 		splitGridsIfAble();
 	}
 	

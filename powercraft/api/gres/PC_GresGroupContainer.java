@@ -28,6 +28,8 @@ public class PC_GresGroupContainer extends PC_GresContainer {
 	}
 
 	@Override
-	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp) {}
+	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp) {
+		//
+	}
 
 }

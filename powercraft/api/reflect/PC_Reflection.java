@@ -19,10 +19,12 @@ public final class PC_Reflection {
 	
 	private static class PC_CallerGetterSecMan extends SecurityManager implements PC_ICallerGetter{
 		
-		private PC_CallerGetterSecMan(){
+		PC_CallerGetterSecMan(){
 			
 		}
 		
+		@SuppressWarnings("boxing")
+		@Override
 		public Class<?> getCallerClass(int num){
 			Class<?>[] classes = getClassContext();
 			if (classes.length > 3 + num) {
@@ -36,6 +38,11 @@ public final class PC_Reflection {
 	
 	private static class PC_CallerGetterFallback implements PC_ICallerGetter{
 
+		PC_CallerGetterFallback() {
+			
+		}
+
+		@SuppressWarnings("boxing")
 		@Override
 		public Class<?> getCallerClass(int num) {
 			StackTraceElement[] stackTraceElements = new Exception().getStackTrace();
@@ -73,27 +80,29 @@ public final class PC_Reflection {
 		return callerGetter.getCallerClass(num);
 	}
 	
+	@SuppressWarnings("boxing")
 	public static Field findNearestBestField(Class<?> clazz, int index, Class<?> type) {
 
 		Field fields[] = clazz.getDeclaredFields();
 		Field f;
-		if (index >= 0 && index < fields.length) {
-			f = fields[index];
+		int i = index;
+		if (i >= 0 && i < fields.length) {
+			f = fields[i];
 			if (type.isAssignableFrom(f.getType())) {
 				return f;
 			}
 		} else {
-			if (index < 0) index = 0;
-			if (index >= fields.length) {
-				index = fields.length - 1;
+			if (i < 0) i = 0;
+			if (i >= fields.length) {
+				i = fields.length - 1;
 			}
 		}
-		int min = index - 1, max = index + 1;
+		int min = i - 1, max = i + 1;
 		while (min >= 0 || max < fields.length) {
 			if (max < fields.length) {
 				f = fields[max];
 				if (type.isAssignableFrom(f.getType())) {
-					PC_Logger.warning("Field in %s which should be at index %s not found, now using index %s", clazz, index, max);
+					PC_Logger.warning("Field in %s which should be at index %s not found, now using index %s", clazz, i, max);
 					return f;
 				}
 				max++;
@@ -101,13 +110,13 @@ public final class PC_Reflection {
 			if (min >= 0) {
 				f = fields[min];
 				if (type.isAssignableFrom(f.getType())) {
-					PC_Logger.warning("Field in %s which should be at index %s not found, now using index %s", clazz, index, min);
+					PC_Logger.warning("Field in %s which should be at index %s not found, now using index %s", clazz, i, min);
 					return f;
 				}
 				min--;
 			}
 		}
-		PC_Logger.severe("Field in %s which should be at index %s not found", clazz, index);
+		PC_Logger.severe("Field in %s which should be at index %s not found", clazz, i);
 		return null;
 	}
 
@@ -175,13 +184,11 @@ public final class PC_Reflection {
 					field.setAccessible(true);
 					Object value = field.get(obj);
 					processor.process(field, value, results);
-					if(results!=null){
-						if(results.containsKey(Result.SET)){
-							field.set(obj, results.get(Result.SET));
-						}
-						if(results.containsKey(Result.STOP)){
-							return results.get(Result.STOP);
-						}
+					if(results.containsKey(Result.SET)){
+						field.set(obj, results.get(Result.SET));
+					}
+					if(results.containsKey(Result.STOP)){
+						return results.get(Result.STOP);
 					}
 				}catch(IllegalAccessException e){
 					PC_Logger.severe("Cannot access field %s.%s", c, field);

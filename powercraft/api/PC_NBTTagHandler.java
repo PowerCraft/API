@@ -61,19 +61,19 @@ public final class PC_NBTTagHandler {
 			return null;
 		Class<?> c = value.getClass();
 		if(c==Boolean.class){
-			return new NBTTagByte((byte)((Boolean)value?1:0));
+			return new NBTTagByte((byte)(((Boolean)value).booleanValue()?1:0));
 		}else if(c==Byte.class){
-			return new NBTTagByte((Byte)value);
+			return new NBTTagByte(((Byte)value).byteValue());
 		}else if(c==Short.class){
-			return new NBTTagShort((Short)value);
+			return new NBTTagShort(((Short)value).shortValue());
 		}else if(c==Integer.class){
-			return new NBTTagInt((Integer)value);
+			return new NBTTagInt(((Integer)value).intValue());
 		}else if(c==Long.class){
-			return new NBTTagLong((Long)value);
+			return new NBTTagLong(((Long)value).longValue());
 		}else if(c==Float.class){
-			return new NBTTagFloat((Float)value);
+			return new NBTTagFloat(((Float)value).floatValue());
 		}else if(c==Double.class){
-			return new NBTTagDouble((Double)value);
+			return new NBTTagDouble(((Double)value).doubleValue());
 		}else if(c==String.class){
 			return new NBTTagString((String)value);
 		}else if(c==int[].class){
@@ -189,19 +189,19 @@ public final class PC_NBTTagHandler {
 			}
 		}
 		if(c==Boolean.class || c==boolean.class){
-			return (T)(Boolean)(((NBTPrimitive)base).func_150290_f()!=0);
+			return (T)Boolean.valueOf(((NBTPrimitive)base).func_150290_f()!=0);
 		}else if(c==Byte.class || c==byte.class){
-			return (T)(Byte)((NBTPrimitive)base).func_150290_f();
+			return (T)Byte.valueOf(((NBTPrimitive)base).func_150290_f());
 		}else if(c==Short.class || c==short.class){
-			return (T)(Short)((NBTPrimitive)base).func_150289_e();
+			return (T)Short.valueOf(((NBTPrimitive)base).func_150289_e());
 		}else if(c==Integer.class || c==int.class){
-			return (T)(Integer)((NBTPrimitive)base).func_150287_d();
+			return (T)Integer.valueOf(((NBTPrimitive)base).func_150287_d());
 		}else if(c==Long.class || c==long.class){
-			return (T)(Long)((NBTPrimitive)base).func_150291_c();
+			return (T)Long.valueOf(((NBTPrimitive)base).func_150291_c());
 		}else if(c==Float.class || c==float.class){
-			return (T)(Float)((NBTPrimitive)base).func_150288_h();
+			return (T)Float.valueOf(((NBTPrimitive)base).func_150288_h());
 		}else if(c==Double.class || c==double.class){
-			return (T)(Double)((NBTPrimitive)base).func_150286_g();
+			return (T)Double.valueOf(((NBTPrimitive)base).func_150286_g());
 		}else if(c==String.class){
 			return c.cast(((NBTTagString)base).func_150285_a_());
 		}else if(c==int[].class){
@@ -270,7 +270,7 @@ public final class PC_NBTTagHandler {
 				try{
 					Constructor<?> constr = cc.getConstructor(NBTTagCompound.class, Flag.class);
 					return c.cast(constr.newInstance(tag, flag));
-				}catch(NoSuchMethodException e){}
+				}catch(NoSuchMethodException e){/**/}
 				Constructor<?> constr = cc.getConstructor(NBTTagCompound.class);
 				return c.cast(constr.newInstance(tag));
 			} catch (ClassNotFoundException e) {
@@ -300,7 +300,7 @@ public final class PC_NBTTagHandler {
 			NBTTagCompound tag = (NBTTagCompound) base;
 			String eName = tag.getString("Enum");
 			try {
-				Class<?> ec = (Class<?>) Class.forName(eName);
+				Class<?> ec = Class.forName(eName);
 				if(Enum.class.isAssignableFrom(ec)){
 					return c.cast(Enum.valueOf((Class<? extends Enum>)ec, tag.getString("value")));
 				}

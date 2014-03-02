@@ -51,12 +51,12 @@ public class PC_GresTextEdit extends PC_GresComponent {
 	public PC_GresTextEdit(String text, int chars, PC_GresInputType type) {
 		setText(text);
 		this.type = type;
-		maxChars = chars;
+		this.maxChars = chars;
 	}
 
 	@Override
 	protected PC_Vec2I calculateMinSize() {
-		return new PC_Vec2I(maxChars * 8 + 4, fontRenderer.getStringSize(" ").y + 12);
+		return new PC_Vec2I(this.maxChars * 8 + 4, fontRenderer.getStringSize(" ").y + 12);
 	}
 
 	@Override
@@ -66,46 +66,46 @@ public class PC_GresTextEdit extends PC_GresComponent {
 
 	@Override
 	protected PC_Vec2I calculatePrefSize() {
-		return new PC_Vec2I(maxChars * 8 + 4, fontRenderer.getStringSize(" ").y + 12);
+		return new PC_Vec2I(this.maxChars * 8 + 4, fontRenderer.getStringSize(" ").y + 12);
 	}
 
 	@Override
 	protected void paint(PC_RectI scissor, double scale, int displayHeight,
 			float timeStamp) {
-		drawTexture(textureName, 0, 0, rect.width, rect.height);
+		drawTexture(textureName, 0, 0, this.rect.width, this.rect.height);
 		PC_Vec2I offset = getRealLocation();
 		setDrawRect(scissor,
-				new PC_RectI(2+offset.x, 6+offset.y, rect.width - 4, rect.height - 12), scale,
+				new PC_RectI(2+offset.x, 6+offset.y, this.rect.width - 4, this.rect.height - 12), scale,
 				displayHeight);
 
-		String t = text;
-		if(type==PC_GresInputType.PASSWORD){
+		String t = this.text;
+		if(this.type==PC_GresInputType.PASSWORD){
 			char c[] = new char[t.length()];
 			Arrays.fill(c, '*');
 			t = new String(c);
 		}
 		
-		if (focus && mouseSelectStart != mouseSelectEnd) {
-			int s = mouseSelectStart;
-			int e = mouseSelectEnd;
+		if (this.focus && this.mouseSelectStart != this.mouseSelectEnd) {
+			int s = this.mouseSelectStart;
+			int e = this.mouseSelectEnd;
 			if (s > e) {
-				e = mouseSelectStart;
-				s = mouseSelectEnd;
+				e = this.mouseSelectStart;
+				s = this.mouseSelectEnd;
 			}
 			drawTexture(textureName2,
-					fontRenderer.getStringSize(t.substring(0, s)).x - scroll
+					fontRenderer.getStringSize(t.substring(0, s)).x - this.scroll
 							+ 2, 1,
 					fontRenderer.getStringSize(t.substring(s, e)).x,
-					rect.height+1);
+					this.rect.height+1);
 		}
 
-		drawString(t, 2 - scroll, 6, false);
+		drawString(t, 2 - this.scroll, 6, false);
 
-		if (focus && cursorCounter / 6 % 2 == 0) {
+		if (this.focus && this.cursorCounter / 6 % 2 == 0) {
 			PC_Vec2I max = fontRenderer.getStringSize(t);
-			PC_Vec2I size = fontRenderer.getStringSize(t.substring(0, mouseSelectEnd));
+			PC_Vec2I size = fontRenderer.getStringSize(t.substring(0, this.mouseSelectEnd));
 			PC_GresRenderer.drawVerticalLine(size.x + 2, 6,
-					6 + max.y, fontColors[0]|0xff000000);
+					6 + max.y, this.fontColors[0]|0xff000000);
 		}
 
 		if(scissor==null){
@@ -117,22 +117,22 @@ public class PC_GresTextEdit extends PC_GresComponent {
 
 	private int getMousePositionInString(int x) {
 		int charSize;
-		x -= 2 + scroll;
-		for (int i = 0; i < text.length(); i++) {
-			charSize = fontRenderer.getCharSize(type==PC_GresInputType.PASSWORD?'*':text.charAt(i)).x;
-			if (x - charSize / 2 < 0) {
+		int nx = x-2-this.scroll;
+		for (int i = 0; i < this.text.length(); i++) {
+			charSize = fontRenderer.getCharSize(this.type==PC_GresInputType.PASSWORD?'*':this.text.charAt(i)).x;
+			if (nx - charSize / 2 < 0) {
 				return i;
 			}
-			x -= charSize;
+			nx -= charSize;
 		}
-		return text.length();
+		return this.text.length();
 	}
 
 	@Override
 	protected boolean handleKeyTyped(char key, int keyCode, boolean repeat, PC_GresHistory history) {
 		super.handleKeyTyped(key, keyCode, repeat, history);
-		cursorCounter = 0;
-		if (type == PC_GresInputType.NONE)
+		this.cursorCounter = 0;
+		if (this.type == PC_GresInputType.NONE)
 			return true;
 		switch (key) {
 		case 3:
@@ -153,35 +153,35 @@ public class PC_GresTextEdit extends PC_GresComponent {
 				key_backspace();
 				return true;
 			case Keyboard.KEY_HOME:
-				mouseSelectEnd = mouseSelectStart = 0;
+				this.mouseSelectEnd = this.mouseSelectStart = 0;
 				return true;
 			case Keyboard.KEY_END:
-				mouseSelectEnd = mouseSelectStart = text.length();
+				this.mouseSelectEnd = this.mouseSelectStart = this.text.length();
 				return true;
 			case Keyboard.KEY_DELETE:
 				key_delete();
 				return true;
 			case Keyboard.KEY_LEFT:
-				if (mouseSelectEnd > 0) {
-					mouseSelectEnd -= 1;
+				if (this.mouseSelectEnd > 0) {
+					this.mouseSelectEnd -= 1;
 					if (!(Keyboard.isKeyDown(Keyboard.KEY_RSHIFT) || Keyboard
 							.isKeyDown(Keyboard.KEY_LSHIFT))) {
-						mouseSelectStart = mouseSelectEnd;
+						this.mouseSelectStart = this.mouseSelectEnd;
 					}
 
 				}
 				return true;
 			case Keyboard.KEY_RIGHT:
-				if (mouseSelectEnd < text.length()) {
-					mouseSelectEnd += 1;
+				if (this.mouseSelectEnd < this.text.length()) {
+					this.mouseSelectEnd += 1;
 					if (!(Keyboard.isKeyDown(Keyboard.KEY_RSHIFT) || Keyboard
 							.isKeyDown(Keyboard.KEY_LSHIFT))) {
-						mouseSelectStart = mouseSelectEnd;
+						this.mouseSelectStart = this.mouseSelectEnd;
 					}
 				}
 				return true;
 			default:
-				switch (type) {
+				switch (this.type) {
 				case UNSIGNED_INT:
 					if (Character.isDigit(key)) {
 						addKey(key);
@@ -191,15 +191,15 @@ public class PC_GresTextEdit extends PC_GresComponent {
 
 				case INT:
 					// writing before minus
-					if (text.length() > 0 && text.charAt(0) == '-'
-							&& mouseSelectStart == 0 && mouseSelectEnd == 0) {
+					if (this.text.length() > 0 && this.text.charAt(0) == '-'
+							&& this.mouseSelectStart == 0 && this.mouseSelectEnd == 0) {
 						return true;
 					}
 
 					if (Character.isDigit(key)) {
 						addKey(key);
 						return true;
-					} else if ((mouseSelectStart == 0 || mouseSelectEnd == 0)
+					} else if ((this.mouseSelectStart == 0 || this.mouseSelectEnd == 0)
 							&& key == '-') {
 						addKey(key);
 						return true;
@@ -209,30 +209,30 @@ public class PC_GresTextEdit extends PC_GresComponent {
 				case SIGNED_FLOAT:
 
 					if (key == '.') {
-						if (mouseSelectStart == 0 || mouseSelectEnd == 0) {
+						if (this.mouseSelectStart == 0 || this.mouseSelectEnd == 0) {
 							return true;
 						}
-						if (text.length() > 0
-								&& (mouseSelectStart == 1 || mouseSelectEnd == 1)
-								&& text.charAt(0) == '-') {
+						if (this.text.length() > 0
+								&& (this.mouseSelectStart == 1 || this.mouseSelectEnd == 1)
+								&& this.text.charAt(0) == '-') {
 							return true;
 						}
-						if (text.length() > 0 && text.contains(".")) {
+						if (this.text.length() > 0 && this.text.contains(".")) {
 							return true;
 						}
 						addKey(key);
 						return true;
 					}
 
-					if (text.length() > 0 && text.charAt(0) == '-'
-							&& mouseSelectStart == 0 && mouseSelectEnd == 0) {
+					if (this.text.length() > 0 && this.text.charAt(0) == '-'
+							&& this.mouseSelectStart == 0 && this.mouseSelectEnd == 0) {
 						return true;
 					}
 
 					if (Character.isDigit(key)) {
 						addKey(key);
 						return true;
-					} else if ((mouseSelectStart == 0 || mouseSelectEnd == 0)
+					} else if ((this.mouseSelectStart == 0 || this.mouseSelectEnd == 0)
 							&& key == '-') {
 						addKey(key);
 						return true;
@@ -243,10 +243,10 @@ public class PC_GresTextEdit extends PC_GresComponent {
 				case UNSIGNED_FLOAT:
 
 					if (key == '.') {
-						if (mouseSelectStart == 0 || mouseSelectEnd == 0) {
+						if (this.mouseSelectStart == 0 || this.mouseSelectEnd == 0) {
 							return true;
 						}
-						if (text.length() > 0 && text.contains(".")) {
+						if (this.text.length() > 0 && this.text.contains(".")) {
 							return true;
 						}
 						addKey(key);
@@ -263,7 +263,7 @@ public class PC_GresTextEdit extends PC_GresComponent {
 				case IDENTIFIER:
 
 					if (Character.isDigit(key)) {
-						if (mouseSelectStart == 0 || mouseSelectEnd == 0) {
+						if (this.mouseSelectStart == 0 || this.mouseSelectEnd == 0) {
 							return true;
 						}
 						addKey(key);
@@ -298,73 +298,73 @@ public class PC_GresTextEdit extends PC_GresComponent {
 	 *            character
 	 */
 	protected void addKey(char c) {
-		int s = mouseSelectStart, e = mouseSelectEnd;
+		int s = this.mouseSelectStart, e = this.mouseSelectEnd;
 		if (s > e) {
-			e = mouseSelectStart;
-			s = mouseSelectEnd;
+			e = this.mouseSelectStart;
+			s = this.mouseSelectEnd;
 		}
 		try {
-			String s1 = text.substring(0, s);
-			String s2 = text.substring(e);
-			if ((s1 + c + s2).length() > maxChars) {
+			String s1 = this.text.substring(0, s);
+			String s2 = this.text.substring(e);
+			if ((s1 + c + s2).length() > this.maxChars) {
 				return;
 			}
-			text = s1 + c + s2;
-			mouseSelectEnd =  s + 1;
-			mouseSelectStart = mouseSelectEnd;
+			this.text = s1 + c + s2;
+			this.mouseSelectEnd =  s + 1;
+			this.mouseSelectStart = this.mouseSelectEnd;
 		} catch (StringIndexOutOfBoundsException ss) {
 			ss.printStackTrace();
 		}
 	}
 
 	private void deleteSelected() {
-		int s = mouseSelectStart, e = mouseSelectEnd;
+		int s = this.mouseSelectStart, e = this.mouseSelectEnd;
 		if (s > e) {
-			e = mouseSelectStart;
-			s = mouseSelectEnd;
+			e = this.mouseSelectStart;
+			s = this.mouseSelectEnd;
 		}
-		String s1 = text.substring(0, s);
-		String s2 = text.substring(e);
-		text = s1 + s2;
-		mouseSelectEnd = s;
-		mouseSelectStart = s;
+		String s1 = this.text.substring(0, s);
+		String s2 = this.text.substring(e);
+		this.text = s1 + s2;
+		this.mouseSelectEnd = s;
+		this.mouseSelectStart = s;
 	}
 
 	private void key_backspace() {
-		if (mouseSelectStart != mouseSelectEnd) {
+		if (this.mouseSelectStart != this.mouseSelectEnd) {
 			deleteSelected();
 			return;
 		}
-		if (mouseSelectEnd <= 0) {
+		if (this.mouseSelectEnd <= 0) {
 			return;
 		}
-		String s1 = text.substring(0, mouseSelectEnd - 1);
-		String s2 = text.substring(mouseSelectEnd);
-		text = s1 + s2;
-		mouseSelectEnd -= 1;
-		mouseSelectStart = mouseSelectEnd;
+		String s1 = this.text.substring(0, this.mouseSelectEnd - 1);
+		String s2 = this.text.substring(this.mouseSelectEnd);
+		this.text = s1 + s2;
+		this.mouseSelectEnd -= 1;
+		this.mouseSelectStart = this.mouseSelectEnd;
 	}
 
 	private void key_delete() {
-		if (mouseSelectStart != mouseSelectEnd) {
+		if (this.mouseSelectStart != this.mouseSelectEnd) {
 			deleteSelected();
 			return;
 		}
-		if (mouseSelectEnd >= text.length()) {
+		if (this.mouseSelectEnd >= this.text.length()) {
 			return;
 		}
-		String s1 = text.substring(0, mouseSelectEnd);
-		String s2 = text.substring(mouseSelectEnd + 1);
-		text = s1 + s2;
+		String s1 = this.text.substring(0, this.mouseSelectEnd);
+		String s2 = this.text.substring(this.mouseSelectEnd + 1);
+		this.text = s1 + s2;
 	}
 
 	private String getSelect() {
-		int s = mouseSelectStart, e = mouseSelectEnd;
+		int s = this.mouseSelectStart, e = this.mouseSelectEnd;
 		if (s > e) {
-			e = mouseSelectStart;
-			s = mouseSelectEnd;
+			e = this.mouseSelectStart;
+			s = this.mouseSelectEnd;
 		}
-		return text.substring(s, e);
+		return this.text.substring(s, e);
 	}
 
 	/**
@@ -374,27 +374,27 @@ public class PC_GresTextEdit extends PC_GresComponent {
 	 *            replacement
 	 */
 	private void setSelected(String stri) {
-		int s = mouseSelectStart, e = mouseSelectEnd;
+		int s = this.mouseSelectStart, e = this.mouseSelectEnd;
 		if (s > e) {
-			e = mouseSelectStart;
-			s = mouseSelectEnd;
+			e = this.mouseSelectStart;
+			s = this.mouseSelectEnd;
 		}
-		String s1 = text.substring(0, s);
-		String s2 = text.substring(e);
+		String s1 = this.text.substring(0, s);
+		String s2 = this.text.substring(e);
 		String ss = "";
-		switch (type) {
+		switch (this.type) {
 		case UNSIGNED_INT:
 			for (int i = 0; i < stri.length(); i++) {
-				if (Character.isDigit(Character.valueOf(stri.charAt(i)))) {
+				if (Character.isDigit(stri.charAt(i))) {
 					ss += stri.charAt(i);
 				}
 			}
 			break;
 
 		case INT:
-			if (text.length() > 0) {
-				if (text.charAt(0) == '-') {
-					if (mouseSelectStart == 0 && mouseSelectEnd == 0) {
+			if (this.text.length() > 0) {
+				if (this.text.charAt(0) == '-') {
+					if (this.mouseSelectStart == 0 && this.mouseSelectEnd == 0) {
 						break;
 					}
 				}
@@ -407,16 +407,16 @@ public class PC_GresTextEdit extends PC_GresComponent {
 						}
 					}
 				}
-				if (Character.isDigit(Character.valueOf(stri.charAt(i)))) {
+				if (Character.isDigit(stri.charAt(i))) {
 					ss += stri.charAt(i);
 				}
 			}
 			break;
 
 		case SIGNED_FLOAT:
-			if (text.length() > 0) {
-				if (text.charAt(0) == '-') {
-					if (mouseSelectStart == 0 && mouseSelectEnd == 0) {
+			if (this.text.length() > 0) {
+				if (this.text.charAt(0) == '-') {
+					if (this.mouseSelectStart == 0 && this.mouseSelectEnd == 0) {
 						break;
 					}
 				}
@@ -435,7 +435,7 @@ public class PC_GresTextEdit extends PC_GresComponent {
 						ss += ".";
 					}
 				}
-				if (Character.isDigit(Character.valueOf(stri.charAt(i)))) {
+				if (Character.isDigit(stri.charAt(i))) {
 					ss += stri.charAt(i);
 				}
 			}
@@ -449,7 +449,7 @@ public class PC_GresTextEdit extends PC_GresComponent {
 						ss += ".";
 					}
 				}
-				if (Character.isDigit(Character.valueOf(stri.charAt(i)))) {
+				if (Character.isDigit(stri.charAt(i))) {
 					ss += stri.charAt(i);
 				}
 			}
@@ -466,20 +466,20 @@ public class PC_GresTextEdit extends PC_GresComponent {
 			}
 			break;
 		}
-		if ((s1 + ss + s2).length() > maxChars) {
+		if ((s1 + ss + s2).length() > this.maxChars) {
 			return;
 		}
-		text = s1 + ss + s2;
-		mouseSelectEnd = s + ss.length();
-		mouseSelectStart = s;
+		this.text = s1 + ss + s2;
+		this.mouseSelectEnd = s + ss.length();
+		this.mouseSelectStart = s;
 	}
 
 	@Override
 	protected boolean handleMouseMove(PC_Vec2I mouse, int buttons, PC_GresHistory history) {
 		super.handleMouseMove(mouse, buttons, history);
-		if (mouseDown) {
-			mouseSelectEnd = getMousePositionInString(mouse.x);
-			cursorCounter = 0;
+		if (this.mouseDown) {
+			this.mouseSelectEnd = getMousePositionInString(mouse.x);
+			this.cursorCounter = 0;
 		}
 		return true;
 	}
@@ -488,18 +488,18 @@ public class PC_GresTextEdit extends PC_GresComponent {
 	protected boolean handleMouseButtonDown(PC_Vec2I mouse, int buttons,
 			int eventButton, boolean doubleClick, PC_GresHistory history) {
 		super.handleMouseButtonDown(mouse, buttons, eventButton, doubleClick, history);
-		mouseSelectStart = getMousePositionInString(mouse.x);
-		mouseSelectEnd = mouseSelectStart;
-		cursorCounter = 0;
+		this.mouseSelectStart = getMousePositionInString(mouse.x);
+		this.mouseSelectEnd = this.mouseSelectStart;
+		this.cursorCounter = 0;
 		return true;
 	}
 
 	@Override
 	protected void onTick() {
-		if (focus) {
-			cursorCounter++;
+		if (this.focus) {
+			this.cursorCounter++;
 		} else {
-			cursorCounter = 0;
+			this.cursorCounter = 0;
 		}
 	}
 

@@ -28,7 +28,7 @@ public final class PC_TileEntitySpecialRenderer extends TileEntitySpecialRendere
 	}
 	
 	public TileEntityRendererDispatcher getRenderDispatcher(){
-		return field_147501_a;
+		return this.field_147501_a;
 	}
 	
 }

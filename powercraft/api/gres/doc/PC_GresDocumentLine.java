@@ -23,24 +23,24 @@ public class PC_GresDocumentLine {
 	public String[] errors;
 	
 	public PC_GresDocumentLine(String text) {
-		line = text;
+		this.line = text;
 	}
 
 	public void resetHighlighting(){
-		line = getText();
+		this.line = getText();
 	}
 	
 	public boolean recalcHighlighting(PC_GresHighlighting highlighting){
 		resetHighlighting();
-		String oldLine = line;
-		line = "";
+		String oldLine = this.line;
+		this.line = "";
 		Object lastInfo = null;
 		List<BlockHighlight> blockHighlight = null;
-		if(prev!=null&&prev.endsWithBlockHightlight!=null){
-			blockHighlight = prev.endsWithBlockHightlight;
+		if(this.prev!=null&&this.prev.endsWithBlockHightlight!=null){
+			blockHighlight = this.prev.endsWithBlockHightlight;
 		}
 		if(blockHighlight!=null){
-			line += blockHighlight.get(0).getHighlightingString();
+			this.line += blockHighlight.get(0).getHighlightingString();
 		}else{
 			blockHighlight = new ArrayList<BlockHighlight>();
 		}
@@ -54,7 +54,7 @@ public class PC_GresDocumentLine {
 					int length = o.comesNowIn(oldLine, i, lastInfo);
 					if(length>0){
 						length++;
-						line += oldLine.substring(i, i+length);
+						this.line += oldLine.substring(i, i+length);
 						i += length;
 						lastInfo = o.getInfo();
 						continue;
@@ -64,15 +64,15 @@ public class PC_GresDocumentLine {
 				if(s!=null){
 					int length = s.comesNowIn(oldLine, i, lastInfo);
 					if(length>0){
-						line += oldLine.substring(i, i+length);
+						this.line += oldLine.substring(i, i+length);
 						i += length;
 						blockHighlight.remove(0);
-						line += PC_Formatter.reset();
+						this.line += PC_Formatter.reset();
 						if(blockHighlight.isEmpty()){
 							blockHighlighting = highlighting;
 						}else{
 							blockHighlighting = blockHighlight.get(0).getHighlighting();
-							line += blockHighlight.get(0).getHighlightingString();
+							this.line += blockHighlight.get(0).getHighlightingString();
 						}
 						lastInfo = s.getInfo();
 						continue;
@@ -111,40 +111,39 @@ public class PC_GresDocumentLine {
 				if(!blockHighlight.isEmpty()){
 					reset += blockHighlight.get(0).getHighlightingString();
 				}
-				if(maxLength>0 && bestHighlight!=null){
+				if(maxLength>0 && bestHighlight!=null && bestMP!=null){
 					lastInfo = makeWordHighlighted(oldLine, wordStart, wordLength, reset, blockHighlighting, lastInfo);
-					line += bestHighlight.getHighlightingString() + oldLine.substring(i, i+maxLength);
+					this.line += bestHighlight.getHighlightingString() + oldLine.substring(i, i+maxLength);
 					if(bestHighlight instanceof BlockHighlight){
 						blockHighlight.add(0, (BlockHighlight)bestHighlight);
 						blockHighlighting = ((BlockHighlight)bestHighlight).getHighlighting();
 					}else{
-						line += reset;
+						this.line += reset;
 					}
 					wordLength = 0;
 					i += maxLength;
 					lastInfo = bestMP.getInfo();
 					continue;
+				}
+				char c = oldLine.charAt(i);
+				if(c==' ' || c=='\t' || c=='\r' || c=='\n'){
+					lastInfo = makeWordHighlighted(oldLine, wordStart, wordLength, reset, blockHighlighting, lastInfo);
+					wordLength = 0;
+					this.line += c;
 				}else{
-					char c = oldLine.charAt(i);
-					if(c==' ' || c=='\t' || c=='\r' || c=='\n'){
-						lastInfo = makeWordHighlighted(oldLine, wordStart, wordLength, reset, blockHighlighting, lastInfo);
-						wordLength = 0;
-						line += c;
-					}else{
-						if(wordLength==0){
-							wordStart = i;
-						}
-						wordLength++;
+					if(wordLength==0){
+						wordStart = i;
 					}
+					wordLength++;
 				}
 			}else{
-				line += oldLine.charAt(i);
+				this.line += oldLine.charAt(i);
 			}
 			i++;
 		}
 		makeWordHighlighted(oldLine, wordStart, wordLength, "", blockHighlighting, lastInfo);
 		wordLength = 0;
-		endsWithBlockHightlight = null;
+		this.endsWithBlockHightlight = null;
 		for(int i=0; i<blockHighlight.size(); i++){
 			if(!blockHighlight.get(i).isMultiline()){
 				while(blockHighlight.size()>i)
@@ -152,41 +151,41 @@ public class PC_GresDocumentLine {
 				break;
 			}
 		}
-		if(errors!=null){
+		if(this.errors!=null){
 			checkErrors();
-			if(errors!=null){
+			if(this.errors!=null){
 				int j=0;
-				oldLine = line;
-				line = "";
+				oldLine = this.line;
+				this.line = "";
 				boolean error = false;
 				for(int i=0; i<oldLine.length(); i++){
 					char c = oldLine.charAt(i);
 					if(c==PC_Formatter.START_SEQ && i + 1 < oldLine.length()){
-						line += c;
+						this.line += c;
 						c = oldLine.charAt(++i);
 						int s = i;
 						i += PC_Formatter.data[c];
-						line += c;
-						line += oldLine.substring(s+1, i+1);
+						this.line += c;
+						this.line += oldLine.substring(s+1, i+1);
 					}else{
-						if(error && errors[j]==null){
+						if(error && this.errors[j]==null){
 							error = false;
-							line += PC_Formatter.errorStop();
-						}else if(!error && errors[j]!=null){
-							line += PC_Formatter.error();
+							this.line += PC_Formatter.errorStop();
+						}else if(!error && this.errors[j]!=null){
+							this.line += PC_Formatter.error();
 							error = true;
 						}
-						line += c;
+						this.line += c;
 						j++;
 					}
 				}
 			}
 		}
-		if(endsWithBlockHightlight==null?blockHighlight.isEmpty():endsWithBlockHightlight.equals(blockHighlight))
+		if(this.endsWithBlockHightlight==null?blockHighlight.isEmpty():this.endsWithBlockHightlight.equals(blockHighlight))
 			return false;
-		endsWithBlockHightlight = null;
+		this.endsWithBlockHightlight = null;
 		if(!blockHighlight.isEmpty())
-			endsWithBlockHightlight = blockHighlight;
+			this.endsWithBlockHightlight = blockHighlight;
 		return true;
 	}
 	
@@ -198,46 +197,47 @@ public class PC_GresDocumentLine {
 			if(mp!=null){
 				int l = mp.comesNowIn(test, start, info);
 				if(l==length){
-					line += highlight.getHighlightingString()+test.substring(start, start+length)+reset;
+					this.line += highlight.getHighlightingString()+test.substring(start, start+length)+reset;
 					return mp.getInfo();
 				}
 			}
 		}
-		line += test.substring(start, start+length);
+		this.line += test.substring(start, start+length);
 		return null;
 	}
 	
 	public String getText() {
-		return PC_Formatter.removeFormatting(line);
+		return PC_Formatter.removeFormatting(this.line);
 	}
 
 	public void setText(String text) {
-		line = text;
+		this.line = text;
 	}
 
 	public String getHighlightedString() {
-		return line;
+		return this.line;
 	}
 
 	public void checkErrors(){
-		if(errors!=null){
-			for(String error:errors){
+		if(this.errors!=null){
+			for(String error:this.errors){
 				if(error!=null)
 					return;
 			}
-			errors = null;
+			this.errors = null;
 		}
 	}
 	
 	public void addError(int sx, int ex, String message) {
-		if(errors==null){
-			errors = new String[getText().length()];
+		if(this.errors==null){
+			this.errors = new String[getText().length()];
 		}
-		if(ex==-1){
-			ex = errors.length;
+		int exx = ex;
+		if(exx==-1){
+			exx = this.errors.length;
 		}
-		for(int i=sx; i<ex; i++){
-			errors[i] = message;
+		for(int i=sx; i<exx; i++){
+			this.errors[i] = message;
 		}
 	}
 	

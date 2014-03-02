@@ -18,7 +18,7 @@ import powercraft.api.reflect.PC_Security;
 public class PC_EnergyGrid extends PC_Grid<PC_EnergyGrid, PC_IEnergyGridTile, PC_EnergyNode<?>, PC_EnergyEdge> {
 
 	private static boolean isEnergyModulePresent;
-	private static List<WeakReference<PC_EnergyGrid>> grids = new ArrayList<WeakReference<PC_EnergyGrid>>();
+	static List<WeakReference<PC_EnergyGrid>> grids = new ArrayList<WeakReference<PC_EnergyGrid>>();
 	private static Ticker ticker;
 	
 	public static final PC_IGridFactory<PC_EnergyGrid, PC_IEnergyGridTile, PC_EnergyNode<?>, PC_EnergyEdge> factory = new Factory();
@@ -32,6 +32,10 @@ public class PC_EnergyGrid extends PC_Grid<PC_EnergyGrid, PC_IEnergyGridTile, PC
 	}
 	
 	private static class Ticker implements PC_IWorldTickHandler{
+
+		Ticker() {
+			//
+		}
 
 		@Override
 		public void onStartTick(PC_Side side, World world) {
@@ -48,12 +52,16 @@ public class PC_EnergyGrid extends PC_Grid<PC_EnergyGrid, PC_IEnergyGridTile, PC
 
 		@Override
 		public void onEndTick(PC_Side side, World world) {
-			
+			//
 		}
 		
 	}
 	
 	private static class Factory implements PC_IGridFactory<PC_EnergyGrid, PC_IEnergyGridTile, PC_EnergyNode<?>, PC_EnergyEdge>{
+
+		Factory() {
+			//
+		}
 
 		@Override
 		public PC_EnergyGrid make(PC_IEnergyGridTile tile) {
@@ -67,11 +75,11 @@ public class PC_EnergyGrid extends PC_Grid<PC_EnergyGrid, PC_IEnergyGridTile, PC
 		isEnergyModulePresent = true;
 	}
 	
-	public PC_EnergyGrid(){
+	PC_EnergyGrid(){
 		grids.add(new WeakReference<PC_EnergyGrid>(this));
 	}
 	
-	public PC_EnergyGrid(PC_IEnergyGridTile tile){
+	PC_EnergyGrid(PC_IEnergyGridTile tile){
 		super(tile);
 		grids.add(new WeakReference<PC_EnergyGrid>(this));
 	}
@@ -85,7 +93,7 @@ public class PC_EnergyGrid extends PC_Grid<PC_EnergyGrid, PC_IEnergyGridTile, PC
 		if(isEnergyModulePresent){
 			PC_EnergyInfo info = new PC_EnergyInfo();
 			List<PC_EnergyNodeBuffer> buffer = new ArrayList<PC_EnergyNodeBuffer>();
-			for(PC_EnergyNode<?> node:nodes){
+			for(PC_EnergyNode<?> node:this.nodes){
 				node.onTickStart();
 				node.addToInfo(info);
 				if(node instanceof PC_EnergyNodeBuffer){
@@ -93,13 +101,13 @@ public class PC_EnergyGrid extends PC_Grid<PC_EnergyGrid, PC_IEnergyGridTile, PC
 				}
 			}
 			float energy = 0;
-			for(PC_EnergyNode<?> node:nodes){
+			for(PC_EnergyNode<?> node:this.nodes){
 				energy += node.takeEnergy();
 			}
 			float p = energy/info.energyRequested;
 			if(p>1)
 				p=1;
-			for(PC_EnergyNode<?> node:nodes){
+			for(PC_EnergyNode<?> node:this.nodes){
 				energy = node.useEnergy(energy, p);
 			}
 			if(energy>0 && !buffer.isEmpty()){
@@ -141,22 +149,22 @@ public class PC_EnergyGrid extends PC_Grid<PC_EnergyGrid, PC_IEnergyGridTile, PC
 				p = energy/info.notProduceNeccecerly;
 				if(p>1)
 					p=1;
-				for(PC_EnergyNode<?> node:nodes){
+				for(PC_EnergyNode<?> node:this.nodes){
 					energy = node.notUsing(energy, p);
 				}
 			}
 		}else{
-			for(PC_EnergyNode<?> node:nodes){
+			for(PC_EnergyNode<?> node:this.nodes){
 				node.onTickStart();
 			}
-			for(PC_EnergyNode<?> node:nodes){
+			for(PC_EnergyNode<?> node:this.nodes){
 				if(node instanceof PC_EnergyNodeConsumer){
 					PC_EnergyNodeConsumer consumer = (PC_EnergyNodeConsumer)node;
 					consumer.useable = consumer.requested;
 				}
 			}
 		}
-		for(PC_EnergyNode<?> node:nodes){
+		for(PC_EnergyNode<?> node:this.nodes){
 			node.onTickEnd();
 		}
 	}

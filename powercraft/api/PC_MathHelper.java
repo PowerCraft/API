@@ -2,194 +2,146 @@ package powercraft.api;
 
 import java.util.Random;
 
+import net.minecraft.util.MathHelper;
+
 public class PC_MathHelper {
-	private static float[] SIN_TABLE = new float[65536];
 	
-	public static final float sin(float par0) {
-		return SIN_TABLE[(int) (par0 * 10430.378F) & 65535];
+	private static int[] multiplyDeBruijnBitPosition = {0, 1, 28, 2, 29, 14, 24, 3, 30, 22, 20, 15, 25, 17, 4, 8, 31, 27, 13, 23, 21, 19, 16, 7, 26, 12, 18, 6, 11, 5, 10, 9};
+	
+	public static final float sin(float value) {
+		return MathHelper.sin(value);
 	}
 	
-	public static final float cos(float par0) {
-		return SIN_TABLE[(int) (par0 * 10430.378F + 16384.0F) & 65535];
+	public static final float cos(float value) {
+		return MathHelper.cos(value);
 	}
 	
-	public static final float sqrt_float(float par0) {
-		return (float) Math.sqrt(par0);
+	public static final float sqrt_float(float value) {
+		return (float) Math.sqrt(value);
 	}
 	
-	public static final float sqrt_double(double par0) {
-		return (float) Math.sqrt(par0);
+	public static final float sqrt_double(double value) {
+		return (float) Math.sqrt(value);
 	}
 	
-	public static int floor_float(float par0) {
-		int var1 = (int) par0;
-		return par0 < var1 ? var1 - 1 : var1;
+	public static int floor_float(float value) {
+		int var1 = (int) value;
+		return value < var1 ? var1 - 1 : var1;
 	}
 	
-	public static int truncateDoubleToInt(double par0) {
-		return (int) (par0 + 1024.0D) - 1024;
+	public static int truncateDoubleToInt(double value) {
+		return (int) (value + 1024.0D) - 1024;
 	}
 	
-	public static int floor_double(double par0) {
-		int var2 = (int) par0;
-		return par0 < var2 ? var2 - 1 : var2;
+	public static int floor_double(double value) {
+		int var2 = (int) value;
+		return value < var2 ? var2 - 1 : var2;
 	}
 	
-	public static long floor_double_long(double par0) {
-		long var2 = (long) par0;
-		return par0 < var2 ? var2 - 1L : var2;
+	public static long floor_double_long(double value) {
+		long var2 = (long) value;
+		return value < var2 ? var2 - 1L : var2;
 	}
 	
-	public static float abs(float par0) {
-		return par0 >= 0.0F ? par0 : -par0;
+	public static float abs(float value) {
+		return value >= 0.0F ? value : -value;
 	}
 	
-	public static int abs_int(int par0) {
-		return par0 >= 0 ? par0 : -par0;
+	public static int abs_int(int value) {
+		return value >= 0 ? value : -value;
 	}
 	
-	public static double abs_double(double par0) {
-		return par0 >= 0 ? par0 : -par0;
+	public static double abs_double(double value) {
+		return value >= 0 ? value : -value;
 	}
 	
-	public static int ceiling_float_int(float par0) {
-		int var1 = (int) par0;
-		return par0 > var1 ? var1 + 1 : var1;
+	public static int ceiling_float_int(float value) {
+		int var1 = (int) value;
+		return value > var1 ? var1 + 1 : var1;
 	}
 	
-	public static int ceiling_double_int(double par0) {
-		int var2 = (int) par0;
-		return par0 > var2 ? var2 + 1 : var2;
+	public static int ceiling_double_int(double value) {
+		int var2 = (int) value;
+		return value > var2 ? var2 + 1 : var2;
 	}
 	
-	public static int clamp_int(int par0, int par1, int par2) {
-		return par0 < par1 ? par1 : (par0 > par2 ? par2 : par0);
+	public static int clamp_int(int value, int min, int max) {
+		return value < min ? min : (value > max ? max : value);
 	}
 	
-	public static float clamp_float(float par0, float par1, float par2) {
-		return par0 < par1 ? par1 : (par0 > par2 ? par2 : par0);
+	public static float clamp_float(float value, float min, float max) {
+		return value < min ? min : (value > max ? max : value);
 	}
 	
-	public static double abs_max(double par0, double par2) {
-		if (par0 < 0.0D) {
-			par0 = -par0;
-		}
-		
-		if (par2 < 0.0D) {
-			par2 = -par2;
-		}
-		
-		return par0 > par2 ? par0 : par2;
+	public static double abs_max(double value, double max) {
+		return MathHelper.abs_max(value, max);
 	}
 	
-	public static int bucketInt(int par0, int par1) {
-		return par0 < 0 ? -((-par0 - 1) / par1) - 1 : par0 / par1;
+	public static int bucketInt(int value, int times) {
+		return value < 0 ? -((-value - 1) / times) - 1 : value / times;
 	}
 	
-	public static boolean stringNullOrLengthZero(String par0Str) {
-		return par0Str == null || par0Str.length() == 0;
+	public static boolean stringNullOrLengthZero(String value) {
+		return value == null || value.isEmpty();
 	}
 	
-	public static int getRandomIntegerInRange(Random par0Random, int par1, int par2) {
-		return par1 >= par2 ? par1 : par0Random.nextInt(par2 - par1 + 1) + par1;
+	public static int getRandomIntegerInRange(Random random, int min, int max) {
+		return min >= max ? min : random.nextInt(max - min + 1) + min;
 	}
 	
-	public static double func_82716_a(Random par0Random, double par1, double par3) {
-		return par1 >= par3 ? par1 : par0Random.nextDouble() * (par3 - par1) + par1;
+	public static double getRandomDoubleInRange(Random random, double min, double max) {
+		return min >= max ? min : random.nextDouble() * (max - min) + min;
 	}
 	
-	public static double average(long[] par0ArrayOfLong) {
-		long var1 = 0L;
-		long[] var3 = par0ArrayOfLong;
-		int var4 = par0ArrayOfLong.length;
-		
-		for (int var5 = 0; var5 < var4; ++var5) {
-			long var6 = var3[var5];
-			var1 += var6;
-		}
-		
-		return (double) var1 / (double) par0ArrayOfLong.length;
+	public static double average(long[] array) {
+		return MathHelper.average(array);
 	}
 	
-	public static float wrapAngleTo180_float(float par0) {
-		par0 %= 360.0F;
-		
-		if (par0 >= 180.0F) {
-			par0 -= 360.0F;
-		}
-		
-		if (par0 < -180.0F) {
-			par0 += 360.0F;
-		}
-		
-		return par0;
+	public static float wrapAngleTo180_float(float angle) {
+		return MathHelper.wrapAngleTo180_float(angle);
 	}
 	
-	public static double wrapAngleTo180_double(double par0) {
-		par0 %= 360.0D;
-		
-		if (par0 >= 180.0D) {
-			par0 -= 360.0D;
-		}
-		
-		if (par0 < -180.0D) {
-			par0 += 360.0D;
-		}
-		
-		return par0;
+	public static double wrapAngleTo180_double(double angle) {
+		return MathHelper.wrapAngleTo180_double(angle);
 	}
 	
-	public static int func_82715_a(String par0Str, int par1) {
-		int var2 = par1;
-		
-		try {
-			var2 = Integer.parseInt(par0Str);
-		} catch (Throwable var4) {}
-		
-		return var2;
-	}
-	
-	public static int func_82714_a(String par0Str, int par1, int par2) {
-		int var3 = par1;
-		
-		try {
-			var3 = Integer.parseInt(par0Str);
-		} catch (Throwable var5) {}
-		
-		if (var3 < par2) {
-			var3 = par2;
-		}
-		
-		return var3;
-	}
-	
-	public static double func_82712_a(String par0Str, double par1) {
-		double var3 = par1;
-		
-		try {
-			var3 = Double.parseDouble(par0Str);
-		} catch (Throwable var6) {}
-		
-		return var3;
-	}
-	
-	public static double func_82713_a(String par0Str, double par1, double par3) {
-		double var5 = par1;
-		
-		try {
-			var5 = Double.parseDouble(par0Str);
-		} catch (Throwable var8) {}
-		
-		if (var5 < par3) {
-			var5 = par3;
-		}
-		
-		return var5;
-	}
-	
-	static {
-		for (int var0 = 0; var0 < 65536; ++var0) {
-			SIN_TABLE[var0] = (float) Math.sin(var0 * Math.PI * 2.0D / 65536.0D);
-		}
-	}
+	public static int parseIntWithDefault(String value, int defaultValue){
+		return MathHelper.parseIntWithDefault(value, defaultValue);
+    }
+
+    public static int parseIntWithDefaultAndMax(String value, int defaultValue, int max){
+    	return MathHelper.parseIntWithDefaultAndMax(value, defaultValue, max);
+    }
+
+    public static double parseDoubleWithDefault(String value, double defaultValue) {
+    	return MathHelper.parseDoubleWithDefault(value, defaultValue);
+    }
+
+    public static double parseDoubleWithDefaultAndMax(String value, double defaultValue, double max){
+    	return MathHelper.parseDoubleWithDefaultAndMax(value, defaultValue, max);
+    }
+
+    public static int roundUpToPowerOfTwo(int value){
+        int j = value - 1;
+        j |= j >> 1;
+        j |= j >> 2;
+        j |= j >> 4;
+        j |= j >> 8;
+        j |= j >> 16;
+        return j + 1;
+    }
+
+    private static boolean isPowerOfTwo(int value){
+        return value != 0 && (value & value - 1) == 0;
+    }
+
+    private static int calculateLogBaseTwoDeBruijn(int value){
+        int index = isPowerOfTwo(value) ? value : roundUpToPowerOfTwo(value);
+        return multiplyDeBruijnBitPosition[(int)(index * 125613361L >> 27) & 31];
+    }
+
+    public static int calculateLogBaseTwo(int value){
+        return calculateLogBaseTwoDeBruijn(value) - (isPowerOfTwo(value) ? 0 : 1);
+    }
+
 }

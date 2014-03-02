@@ -12,7 +12,7 @@ public abstract class PC_GresPrePostEvent extends PC_GresEvent {
 	}
 	
 	public EventType getEventType(){
-		return eventType;
+		return this.eventType;
 	}
 	
 	public static enum EventType{

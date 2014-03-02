@@ -29,7 +29,7 @@ public class PC_GresProgressImage extends PC_GresComponent {
 
 	public float getProgress() {
 
-		return progress;
+		return this.progress;
 	}
 
 
@@ -50,28 +50,28 @@ public class PC_GresProgressImage extends PC_GresComponent {
 	@Override
 	protected PC_Vec2I calculatePrefSize() {
 
-		return getTextureDefaultSize(textureNameShadow);
+		return getTextureDefaultSize(this.textureNameShadow);
 	}
 
 
 	@Override
 	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp) {
 
-		drawTexture(textureNameShadow, 0, 0, rect.width, rect.height);
-		PC_GresTexture texture = PC_Gres.getGresTexture(textureNameOn);
-		int state = enabled && parentEnabled ? mouseDown ? 2 : mouseOver ? 1 : 0 : 3;
+		drawTexture(this.textureNameShadow, 0, 0, this.rect.width, this.rect.height);
+		PC_GresTexture texture = PC_Gres.getGresTexture(this.textureNameOn);
+		int state = this.enabled && this.parentEnabled ? this.mouseDown ? 2 : this.mouseOver ? 1 : 0 : 3;
 		if (texture != null) {
 			PC_RectI frame = texture.getFrame();
 			if (frame.x > 0) {
-				texture.drawBasic(0, 0, (int) (rect.width * progress / 100.0), rect.height, 0, 0, state);
+				texture.drawBasic(0, 0, (int) (this.rect.width * this.progress / 100.0), this.rect.height, 0, 0, state);
 			} else if (frame.y > 0) {
-				texture.drawBasic(0, 0, rect.width, (int) (rect.height * progress / 100.0), 0, 0, state);
+				texture.drawBasic(0, 0, this.rect.width, (int) (this.rect.height * this.progress / 100.0), 0, 0, state);
 			} else if (frame.width > 0) {
-				int prog = (int) (rect.width * progress / 100.0 + 0.5);
-				texture.drawBasic(rect.width - prog, 0, prog, rect.height, 1.0f - prog / (float) frame.width, 0, state);
+				int prog = (int) (this.rect.width * this.progress / 100.0 + 0.5);
+				texture.drawBasic(this.rect.width - prog, 0, prog, this.rect.height, 1.0f - prog / (float) frame.width, 0, state);
 			} else if (frame.height > 0) {
-				int prog = (int) (rect.height * progress / 100.0 + 0.5);
-				texture.drawBasic(0, rect.height - prog, rect.width, prog, 0, 1.0f - prog / (float) frame.height, state);
+				int prog = (int) (this.rect.height * this.progress / 100.0 + 0.5);
+				texture.drawBasic(0, this.rect.height - prog, this.rect.width, prog, 0, 1.0f - prog / (float) frame.height, state);
 			}
 		}
 	}

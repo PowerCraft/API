@@ -104,20 +104,20 @@ public abstract class PC_GresComponent {
 		if (parent == null) {
 			if (this.parent!=null && !this.parent.isChild(this)) {
 				this.parent = null;
-				parentVisible = true;
-				parentEnabled = true;
+				this.parentVisible = true;
+				this.parentEnabled = true;
 			}
 		} else if (parent.isChild(this)) {
 			this.parent = parent;
-			parentVisible = parent.isRecursiveVisible();
-			parentEnabled = parent.isRecursiveEnabled();
+			this.parentVisible = parent.isRecursiveVisible();
+			this.parentEnabled = parent.isRecursiveEnabled();
 		}
 	}
 
 
 	public PC_GresContainer getParent() {
 
-		return parent;
+		return this.parent;
 	}
 
 
@@ -132,7 +132,7 @@ public abstract class PC_GresComponent {
 
 	public String getText() {
 
-		return text;
+		return this.text;
 	}
 
 
@@ -147,13 +147,13 @@ public abstract class PC_GresComponent {
 
 	public PC_RectI getRect() {
 
-		return new PC_RectI(rect);
+		return new PC_RectI(this.rect);
 	}
 
 
 	public void setLocation(PC_Vec2I location) {
 
-		if (rect.setLocation(location)) {
+		if (this.rect.setLocation(location)) {
 			notifyChange();
 		}
 	}
@@ -161,13 +161,13 @@ public abstract class PC_GresComponent {
 
 	public PC_Vec2I getLocation() {
 
-		return rect.getLocation();
+		return this.rect.getLocation();
 	}
 
 
 	public void setSize(PC_Vec2I size) {
 
-		if (rect.setSize(size)) {
+		if (this.rect.setSize(size)) {
 			notifyChange();
 		}
 	}
@@ -175,19 +175,19 @@ public abstract class PC_GresComponent {
 
 	public PC_Vec2I getSize() {
 
-		return rect.getSize();
+		return this.rect.getSize();
 	}
 
 
 	public void setPadding(PC_RectI rect) {
 
-		padding.setTo(rect);
+		this.padding.setTo(rect);
 	}
 
 
 	public PC_RectI getPadding() {
 
-		return new PC_RectI(padding);
+		return new PC_RectI(this.padding);
 	}
 
 
@@ -199,7 +199,7 @@ public abstract class PC_GresComponent {
 
 	public PC_GresAlign.H getAlignH() {
 
-		return alignH;
+		return this.alignH;
 	}
 
 
@@ -211,7 +211,7 @@ public abstract class PC_GresComponent {
 
 	public PC_GresAlign.V getAlignV() {
 
-		return alignV;
+		return this.alignV;
 	}
 
 
@@ -223,7 +223,7 @@ public abstract class PC_GresComponent {
 
 	public PC_GresAlign.Fill getFill() {
 
-		return fill;
+		return this.fill;
 	}
 
 
@@ -232,45 +232,45 @@ public abstract class PC_GresComponent {
 		//if (width > maxSize.x && maxSize.x >= 0) width = maxSize.x;
 		//if (height > maxSize.y && maxSize.y >= 0) height = maxSize.y;
 		boolean needUpdate = false;
-		if (fill == PC_GresAlign.Fill.BOTH || fill == PC_GresAlign.Fill.HORIZONTAL) {
-			needUpdate |= rect.x != x;
-			rect.x = x;
-			needUpdate |= rect.width != width;
-			rect.width = width;
+		if (this.fill == PC_GresAlign.Fill.BOTH || this.fill == PC_GresAlign.Fill.HORIZONTAL) {
+			needUpdate |= this.rect.x != x;
+			this.rect.x = x;
+			needUpdate |= this.rect.width != width;
+			this.rect.width = width;
 		} else {
-			switch (alignH) {
+			switch (this.alignH) {
 				case CENTER:
-					needUpdate |= rect.x != x + width / 2 - rect.width / 2;
-					rect.x = x + width / 2 - rect.width / 2;
+					needUpdate |= this.rect.x != x + width / 2 - this.rect.width / 2;
+					this.rect.x = x + width / 2 - this.rect.width / 2;
 					break;
 				case RIGHT:
-					needUpdate |= rect.x != x + width - rect.width;
-					rect.x = x + width - rect.width;
+					needUpdate |= this.rect.x != x + width - this.rect.width;
+					this.rect.x = x + width - this.rect.width;
 					break;
 				default:
-					needUpdate |= rect.x != x;
-					rect.x = x;
+					needUpdate |= this.rect.x != x;
+					this.rect.x = x;
 					break;
 			}
 		}
-		if (fill == PC_GresAlign.Fill.BOTH || fill == PC_GresAlign.Fill.VERTICAL) {
-			needUpdate |= rect.y != y;
-			rect.y = y;
-			needUpdate |= rect.height != height;
-			rect.height = height;
+		if (this.fill == PC_GresAlign.Fill.BOTH || this.fill == PC_GresAlign.Fill.VERTICAL) {
+			needUpdate |= this.rect.y != y;
+			this.rect.y = y;
+			needUpdate |= this.rect.height != height;
+			this.rect.height = height;
 		} else {
-			switch (alignV) {
+			switch (this.alignV) {
 				case CENTER:
-					needUpdate |= rect.y != y + (height - rect.height) / 2;
-					rect.y = y + (height - rect.height) / 2;
+					needUpdate |= this.rect.y != y + (height - this.rect.height) / 2;
+					this.rect.y = y + (height - this.rect.height) / 2;
 					break;
 				case BOTTOM:
-					needUpdate |= rect.y != y + height - rect.height;
-					rect.y = y + height - rect.height;
+					needUpdate |= this.rect.y != y + height - this.rect.height;
+					this.rect.y = y + height - this.rect.height;
 					break;
 				default:
-					needUpdate |= rect.y != y;
-					rect.y = y;
+					needUpdate |= this.rect.y != y;
+					this.rect.y = y;
 					break;
 			}
 		}
@@ -282,10 +282,10 @@ public abstract class PC_GresComponent {
 
 		if (minSize == null) {
 			this.minSize.setTo(calculateMinSize());
-			minSizeSet = false;
+			this.minSizeSet = false;
 		} else {
 			this.minSize.setTo(minSize);
-			minSizeSet = true;
+			this.minSizeSet = true;
 		}
 		setSize(getSize().max(this.minSize));
 	}
@@ -293,13 +293,13 @@ public abstract class PC_GresComponent {
 
 	public PC_Vec2I getMinSize() {
 
-		return minSize;
+		return this.minSize;
 	}
 
 
 	public void updateMinSize() {
 
-		if (!minSizeSet) {
+		if (!this.minSizeSet) {
 			setMinSize(null);
 		}
 	}
@@ -312,23 +312,23 @@ public abstract class PC_GresComponent {
 
 		if (maxSize == null) {
 			this.maxSize.setTo(calculateMaxSize());
-			maxSizeSet = false;
+			this.maxSizeSet = false;
 		} else {
 			this.maxSize.setTo(maxSize);
-			maxSizeSet = true;
+			this.maxSizeSet = true;
 		}
 	}
 
 
 	public PC_Vec2I getMaxSize() {
 
-		return maxSize;
+		return this.maxSize;
 	}
 
 
 	public void updateMaxSize() {
 
-		if (!maxSizeSet) {
+		if (!this.maxSizeSet) {
 			setMaxSize(null);
 		}
 	}
@@ -341,23 +341,23 @@ public abstract class PC_GresComponent {
 
 		if (prefSize == null) {
 			this.prefSize.setTo(calculatePrefSize());
-			prefSizeSet = false;
+			this.prefSizeSet = false;
 		} else {
 			this.prefSize.setTo(prefSize);
-			prefSizeSet = true;
+			this.prefSizeSet = true;
 		}
 	}
 
 
 	public PC_Vec2I getPrefSize() {
 
-		return prefSize;
+		return this.prefSize;
 	}
 
 
 	public void updatePrefSize() {
 
-		if (!prefSizeSet) {
+		if (!this.prefSizeSet) {
 			setPrefSize(null);
 		}
 	}
@@ -375,19 +375,19 @@ public abstract class PC_GresComponent {
 
 	protected void setParentVisible(boolean visible) {
 
-		parentVisible = visible;
+		this.parentVisible = visible;
 	}
 
 
 	public boolean isVisible() {
 
-		return visible;
+		return this.visible;
 	}
 
 
 	public boolean isRecursiveVisible() {
 
-		return visible && (parent == null || parent.isRecursiveVisible());
+		return this.visible && (this.parent == null || this.parent.isRecursiveVisible());
 	}
 
 
@@ -399,24 +399,24 @@ public abstract class PC_GresComponent {
 
 	protected void setParentEnabled(boolean enabled) {
 
-		parentEnabled = enabled;
+		this.parentEnabled = enabled;
 	}
 
 
 	public boolean isEnabled() {
 
-		return enabled;
+		return this.enabled;
 	}
 
 
 	public boolean isRecursiveEnabled() {
 
-		return enabled && (parent == null || parent.isRecursiveEnabled());
+		return this.enabled && (this.parent == null || this.parent.isRecursiveEnabled());
 	}
 
 	public boolean hasFocus(){
 		
-		return focus;
+		return this.focus;
 		
 	}
 
@@ -440,7 +440,7 @@ public abstract class PC_GresComponent {
 
 	protected void notifyParentOfChange() {
 
-		if (parent != null) parent.notifyChildChange(this);
+		if (this.parent != null) this.parent.notifyChildChange(this);
 	}
 
 
@@ -459,9 +459,10 @@ public abstract class PC_GresComponent {
 	}
 
 
+	@SuppressWarnings("hiding")
 	protected void doPaint(PC_Vec2I offset, PC_RectI scissorOld, double scale, int displayHeight, float timeStamp) {
 
-		if (visible) {
+		if (this.visible) {
 			PC_RectI rect = new PC_RectI(this.rect);
 			rect.x += offset.x;
 			rect.y += offset.y;
@@ -510,6 +511,7 @@ public abstract class PC_GresComponent {
 	}
 
 
+	@SuppressWarnings("static-method")
 	protected boolean handleKeyTyped(char key, int keyCode, boolean repeat, PC_GresHistory history) {
 
 		return false;
@@ -517,7 +519,7 @@ public abstract class PC_GresComponent {
 
 
 	protected void tryActionOnKeyTyped(char key, int keyCode, boolean repeat, PC_GresHistory history) {
-
+		//
 	}
 
 
@@ -533,7 +535,7 @@ public abstract class PC_GresComponent {
 
 	protected void handleMouseEnter(PC_Vec2I mouse, int buttons, PC_GresHistory history) {
 
-		mouseOver = enabled && parentEnabled;
+		this.mouseOver = this.enabled && this.parentEnabled;
 	}
 
 
@@ -549,8 +551,8 @@ public abstract class PC_GresComponent {
 
 	protected void handleMouseLeave(PC_Vec2I mouse, int buttons, PC_GresHistory history) {
 
-		mouseOver = false;
-		mouseDown = false;
+		this.mouseOver = false;
+		this.mouseDown = false;
 	}
 
 
@@ -565,6 +567,7 @@ public abstract class PC_GresComponent {
 	}
 
 
+	@SuppressWarnings("static-method")
 	protected boolean handleMouseMove(PC_Vec2I mouse, int buttons, PC_GresHistory history) {
 		return false;
 	}
@@ -583,7 +586,7 @@ public abstract class PC_GresComponent {
 
 	protected boolean handleMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton, boolean doubleClick, PC_GresHistory history) {
 
-		mouseDown = enabled && parentEnabled;
+		this.mouseDown = this.enabled && this.parentEnabled;
 		return false;
 	}
 
@@ -602,7 +605,7 @@ public abstract class PC_GresComponent {
 	protected boolean handleMouseButtonUp(PC_Vec2I mouse, int buttons, int eventButton, PC_GresHistory history) {
 
 		boolean consumed = false;
-		if (mouseDown) {
+		if (this.mouseDown) {
 			PC_GresMouseEvent event = new PC_GresMouseButtonEvent(this, mouse, buttons, eventButton, false, PC_GresMouseButtonEvent.Event.CLICK, history);
 			fireEvent(event);
 			if (!event.isConsumed()) {
@@ -611,11 +614,12 @@ public abstract class PC_GresComponent {
 				consumed = true;
 			}
 		}
-		mouseDown = false;
+		this.mouseDown = false;
 		return consumed;
 	}
 
 
+	@SuppressWarnings("static-method")
 	protected boolean handleMouseButtonClick(PC_Vec2I mouse, int buttons, int eventButton, PC_GresHistory history) {
 		return false;
 	}
@@ -634,7 +638,9 @@ public abstract class PC_GresComponent {
 		}
 	}
 
-	protected void handleMouseWheel(PC_GresMouseWheelEvent event, PC_GresHistory history) {}
+	protected void handleMouseWheel(PC_GresMouseWheelEvent event, PC_GresHistory history) {
+		//
+	}
 
 	protected void onFocusLost(PC_GresComponent newFocusedComponent, PC_GresHistory history) {
 		PC_GresFocusLostEvent event = new PC_GresFocusLostEvent(this, newFocusedComponent);
@@ -645,7 +651,7 @@ public abstract class PC_GresComponent {
 	}
 
 	protected void handleFocusLost(PC_GresHistory history) {
-		focus = false;
+		this.focus = false;
 	}
 	
 	protected void onFocusGot(PC_GresComponent oldFocusedComponent, PC_GresHistory history) {
@@ -658,24 +664,25 @@ public abstract class PC_GresComponent {
 
 	protected void handleFocusGot(PC_GresHistory history) {
 		moveToTop();
-		focus = true;
+		this.focus = true;
 	}
 	
 	protected PC_GresComponent getComponentAtPosition(PC_Vec2I mouse) {
 
-		return visible ? this : null;
+		return this.visible ? this : null;
 	}
 
 
 	protected void onTick() {
-
+		//
 	}
 	
 	protected void onDrawTick(float timeStamp) {
-
+		//
 	}
 
 
+	@SuppressWarnings("static-method")
 	protected Slot getSlotAtPosition(PC_Vec2I position) {
 
 		return null;
@@ -691,6 +698,7 @@ public abstract class PC_GresComponent {
 		return tooltip;
 	}
 
+	@SuppressWarnings("static-method")
 	protected List<String> getTooltip(PC_Vec2I position) {
 
 		return null;
@@ -699,35 +707,35 @@ public abstract class PC_GresComponent {
 
 	protected PC_Vec2I getRealLocation() {
 
-		if (parent == null) {
-			return rect.getLocation();
+		if (this.parent == null) {
+			return this.rect.getLocation();
 		} 
-		return rect.getLocation().add(parent.getRealLocation()).add(parent.getFrame().getLocation());
+		return this.rect.getLocation().add(this.parent.getRealLocation()).add(this.parent.getFrame().getLocation());
 	}
 
 
 	public PC_GresGuiHandler getGuiHandler() {
 
-		if (parent == null) return null;
-		return parent.getGuiHandler();
+		if (this.parent == null) return null;
+		return this.parent.getGuiHandler();
 	}
 
 
 	public void addEventListener(PC_IGresEventListener eventListener) {
 
-		if (!eventListeners.contains(eventListener)) eventListeners.add(eventListener);
+		if (!this.eventListeners.contains(eventListener)) this.eventListeners.add(eventListener);
 	}
 
 
 	public void removeEventListener(PC_IGresEventListener eventListener) {
 
-		eventListeners.remove(eventListener);
+		this.eventListeners.remove(eventListener);
 	}
 
 
 	protected void fireEvent(PC_GresEvent event) {
 
-		for (PC_IGresEventListener eventListener : eventListeners) {
+		for (PC_IGresEventListener eventListener : this.eventListeners) {
 			if (eventListener instanceof PC_IGresEventListenerEx) {
 				PC_IGresEventListenerEx eventListenerEx = (PC_IGresEventListenerEx) eventListener;
 				Class<? extends PC_GresEvent>[] handelableEvents = eventListenerEx.getHandelableEvents();
@@ -746,10 +754,11 @@ public abstract class PC_GresComponent {
 
 	protected void drawTexture(String textureName, int x, int y, int width, int height) {
 
-		drawTexture(textureName, x, y, width, height, enabled && parentEnabled ? mouseDown ? 2 : mouseOver ? 1 : 0 : 3);
+		drawTexture(textureName, x, y, width, height, this.enabled && this.parentEnabled ? this.mouseDown ? 2 : this.mouseOver ? 1 : 0 : 3);
 	}
 
 
+	@SuppressWarnings("static-method")
 	protected void drawTexture(String textureName, int x, int y, int width, int height, int state) {
 
 		PC_GresTexture texture = PC_Gres.getGresTexture(textureName);
@@ -759,6 +768,7 @@ public abstract class PC_GresComponent {
 	}
 
 
+	@SuppressWarnings("static-method")
 	protected PC_Vec2I getTextureMinSize(String textureName) {
 
 		PC_GresTexture texture = PC_Gres.getGresTexture(textureName);
@@ -768,6 +778,7 @@ public abstract class PC_GresComponent {
 		return texture.getMinSize();
 	}
 
+	@SuppressWarnings("static-method")
 	protected PC_RectI getTextureFrame(String textureName) {
 
 		PC_GresTexture texture = PC_Gres.getGresTexture(textureName);
@@ -778,6 +789,7 @@ public abstract class PC_GresComponent {
 	}
 
 
+	@SuppressWarnings("static-method")
 	protected PC_Vec2I getTextureDefaultSize(String textureName) {
 
 		PC_GresTexture texture = PC_Gres.getGresTexture(textureName);
@@ -788,29 +800,34 @@ public abstract class PC_GresComponent {
 	}
 
 
+	@SuppressWarnings("hiding")
 	protected void drawString(String text, int x, int y, boolean shadow) {
 		PC_Vec2I size = fontRenderer.getStringSize(text);
 		drawString(text, x, y, size.x, size.y, PC_GresAlign.H.LEFT, PC_GresAlign.V.TOP, shadow);
 	}
 
 
+	@SuppressWarnings("hiding")
 	protected void drawString(String text, int x, int y, int width, PC_GresAlign.H alignH, boolean shadow) {
 		PC_Vec2I size = fontRenderer.getStringSize(text);
 		drawString(text, x, y, width, size.y, alignH, PC_GresAlign.V.TOP, shadow);
 	}
 
+	@SuppressWarnings("hiding")
 	protected void drawString(String text, int x, int y, int width, int height, PC_GresAlign.H alignH, PC_GresAlign.V alignV, boolean shadow) {
-		drawString(text, x, y, width, height, alignH, alignV, shadow, enabled && parentEnabled ? mouseDown ? 2 : mouseOver ? 1 : 0 : 3);
+		drawString(text, x, y, width, height, alignH, alignV, shadow, this.enabled && this.parentEnabled ? this.mouseDown ? 2 : this.mouseOver ? 1 : 0 : 3);
 	}
 
+	@SuppressWarnings("hiding")
 	protected void drawString(String text, int x, int y, int width, int height, PC_GresAlign.H alignH, PC_GresAlign.V alignV, boolean shadow, int state) {
+		int nx = x, ny = y;
 		PC_Vec2I size = fontRenderer.getStringSize(text);
 		switch (alignV) {
 			case BOTTOM:
-				y += height - size.y;
+				ny += height - size.y;
 				break;
 			case CENTER:
-				y += height / 2 - size.y / 2;
+				ny += height / 2 - size.y / 2;
 				break;
 			default:
 				break;
@@ -823,36 +840,32 @@ public abstract class PC_GresComponent {
 		size = fontRenderer.getStringSize(writeText);
 		switch (alignH) {
 			case CENTER:
-				x += width / 2 - size.x / 2;
+				nx += width / 2 - size.x / 2;
 				break;
 			case RIGHT:
-				x += width - size.x;
+				nx += width - size.x;
 				break;
 			default:
 				break;
 		}
-		fontRenderer.drawString(writeText, x, y, fontColors[state], shadow);
+		fontRenderer.drawString(writeText, nx, ny, this.fontColors[state], shadow);
 		GL11.glEnable(GL11.GL_BLEND);
 	}
 
 	protected void moveToTop(){
-		if(parent!=null){
-			parent.moveToTop(this);
+		if(this.parent!=null){
+			this.parent.moveToTop(this);
 		}
 	}
 	
 	protected void moveToBottom(){
-		if(parent!=null){
-			parent.moveToBottom(this);
+		if(this.parent!=null){
+			this.parent.moveToBottom(this);
 		}
 	}
 	
 	protected void onScaleChanged(int newScale){
-		
-	}
-	
-	public boolean enableRepeatEvents(){
-		return false;
+		//
 	}
 	
 }

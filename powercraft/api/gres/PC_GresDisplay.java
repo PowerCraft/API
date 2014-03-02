@@ -25,7 +25,7 @@ public class PC_GresDisplay extends PC_GresComponent {
 	}
 	
 	public PC_GresDisplayObject getDisplayObject(){
-		return displayObject;
+		return this.displayObject;
 	}
 	
 	public void setBackground(PC_GresDisplayObject background){
@@ -33,7 +33,7 @@ public class PC_GresDisplay extends PC_GresComponent {
 	}
 	
 	public PC_GresDisplayObject getBackground(){
-		return background;
+		return this.background;
 	}
 	
 	public void setFrame(PC_RectI frame){
@@ -43,7 +43,7 @@ public class PC_GresDisplay extends PC_GresComponent {
 	
 	@Override
 	protected PC_Vec2I calculateMinSize() {
-		return displayObject==null?new PC_Vec2I(0, 0):displayObject.getMinSize().add(frame.getLocation()).add(frame.getSize());
+		return this.displayObject==null?new PC_Vec2I(0, 0):this.displayObject.getMinSize().add(this.frame.getLocation()).add(this.frame.getSize());
 	}
 
 	@Override
@@ -53,15 +53,15 @@ public class PC_GresDisplay extends PC_GresComponent {
 
 	@Override
 	protected PC_Vec2I calculatePrefSize() {
-		return (displayObject==null?new PC_Vec2I(16, 16):displayObject.getPrefSize()).add(frame.getLocation()).add(frame.getSize());
+		return (this.displayObject==null?new PC_Vec2I(16, 16):this.displayObject.getPrefSize()).add(this.frame.getLocation()).add(this.frame.getSize());
 	}
 
 	@Override
 	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp) {
-		if(background!=null)
-			background.draw(0, 0, rect.width, rect.height);
-		if(displayObject!=null)
-			displayObject.draw(frame.x, frame.y, rect.width-frame.x-frame.width, rect.height-frame.y-frame.height);
+		if(this.background!=null)
+			this.background.draw(0, 0, this.rect.width, this.rect.height);
+		if(this.displayObject!=null)
+			this.displayObject.draw(this.frame.x, this.frame.y, this.rect.width-this.frame.x-this.frame.width, this.rect.height-this.frame.y-this.frame.height);
 	}
 
 }

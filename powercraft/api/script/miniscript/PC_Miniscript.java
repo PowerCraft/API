@@ -22,7 +22,7 @@ public final class PC_Miniscript {
 	public static void register(){
 		PC_Security.allowedCaller("PC_Miniscript.register()", PC_Api.class);
 		scriptEngine = new ScriptEngineManager().getEngineByName(MiniScriptLang.NAME);
-		scriptEngine.getContext().setAttribute(MiniScriptLang.COMPILER_BACKJUMPDISABLED, true, ScriptContext.ENGINE_SCOPE);
+		scriptEngine.getContext().setAttribute(MiniScriptLang.COMPILER_BACKJUMPDISABLED, Boolean.TRUE, ScriptContext.ENGINE_SCOPE);
 	}
 	
 	public static CompiledScript compile(String script, DiagnosticListener<Void> diagnosticListener, HashMap<String, Integer> replacements) throws ScriptException{

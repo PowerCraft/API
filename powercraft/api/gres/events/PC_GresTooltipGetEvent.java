@@ -15,7 +15,7 @@ public class PC_GresTooltipGetEvent extends PC_GresConsumeableEvent {
 	}
 	
 	public List<String> getTooltip(){
-		return tooltip==null?null:new PC_ImmutableList<String>(tooltip);
+		return this.tooltip==null?null:new PC_ImmutableList<String>(this.tooltip);
 	}
 	
 	public void setTooltip(List<String> tooltip){
