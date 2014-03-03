@@ -68,7 +68,7 @@ public class PC_MiniscriptHighlighting {
 	
 	public static final String[] MINISCRIPT_ASM = 
 		{"NOT", "NEG", "INC", "DEC", "ADD", "SUB", "MUL", "DIV", "MOD", "SHL", "SHR", "USHR", "AND", "OR", 
-		"XOR", "MOV", "CMP", "JMP", "JMPL", "JEQ", "JNE", "JL", "JLE", "JB", "JBE", "EXT", "SWITCH", "RND"};
+		"XOR", "MOV", "CMP", "JMP", "JMPL", "JEQ", "JNE", "JL", "JLE", "JB", "JBE", "EXT", "SWITCH", "RND", "ELM"};
 	
 	public static final String[] MINISCRIPT_ASM_JMP = {"JMP", "JMPL", "JEQ", "JNE", "JL", "JLE", "JB", "JBE"};
 	
