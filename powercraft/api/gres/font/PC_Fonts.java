@@ -49,13 +49,13 @@ public class PC_Fonts {
 		for(PC_FontTexture font:fonts){
 			if(font!=null && fontName.equalsIgnoreCase(font.getName())){
 				Font fo=null;
-				if(font.isAntiAliased()==antiAliased && !font.noFont() && (fo=font.getFont()).getSize()==(int)size && fo.getStyle()==style){
-					PC_Logger.warning("Font %s was already loaded.", fontName);
+				if(!font.noFont() && (fo=font.getFont()).getSize()==(int)size && fo.getStyle()==style){
+					PC_Logger.warning("Font %s, %s, %s was already loaded.", fontName, style, size);
 					return font;
 				}
 				if (fo != null) {
 					f.setFont(fo);
-					PC_Logger.warning("Font %s was already loaded.", fontName);
+					PC_Logger.warning("Font %s (, %s, %s) was already loaded.", fontName, style, size);
 					break;
 				}
 			}
@@ -64,19 +64,19 @@ public class PC_Fonts {
 		if(f.noFont()){
 			f.setResourceLocation(PC_Utils.getResourceLocation(PC_Api.INSTANCE, "fonts/"+fontName+".ttf"));
 			if(f.reloadFromFile())
-				PC_Logger.warning("Font %s was found locally.", fontName);
+				PC_Logger.warning("Font %s, %s, %s was found locally.", fontName, style, size);
 		}
 		if(f.noFont()){
 			for (Font font : GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts()) {
 				if (font.getName().equalsIgnoreCase(fontName)) {
 					f.setFont(font);
-					PC_Logger.warning("Font %s found at the systems files.", fontName);
+					PC_Logger.warning("Font %s, %s, %s found at the systems files.", fontName, style, size);
 					break;
 				}
 			}
 		}
 		if (f.noFont() && canBeDefault) {
-			PC_Logger.severe("Font %s isn't existent in the system. Using Default Font instead.", fontName);
+			PC_Logger.severe("Font %s, %s, %s isn't existent in the system. Using Default Font instead.", fontName, style, size);
 			PC_FontTexture ft = getDefaultFont();
 			if (ft != null)
 				f = new PC_FontTexture(ft);
@@ -86,7 +86,7 @@ public class PC_Fonts {
 			return null;
 		}
 		f.deriveFont(style, size);
-		PC_Logger.warning("Font %s has been derived and is "+(f.readyToUse()?"":"not ")+"ready to use.", fontName);
+		PC_Logger.warning("Font %s, %s, %s has been derived and is "+(f.readyToUse()?"":"not ")+"ready to use.", fontName, style, size);
 		return f;
 	}
 
