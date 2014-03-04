@@ -24,20 +24,6 @@ public class PC_Fonts {
 		return fonts.get(fontID - 1);
 	}
 
-	public static PC_FontTexture create(PC_FontTexture font) {
-		return create(font, null);
-	}
-
-	public static PC_FontTexture create(PC_FontTexture font, char[] customCharsArray) {
-		font.addCustomChars(customCharsArray);
-		if (!font.canBeRendered()) {
-			PC_Logger.warning("%s can't be rendered or is already rendered", font.getName());
-			return font;
-		}
-		font.createTextures();
-		return font;
-	}
-
 	private static final String defaultTextureName = "minecraftia";
 
 	public static PC_FontTexture getDefaultFont() {
@@ -64,12 +50,12 @@ public class PC_Fonts {
 			if(font!=null && fontName.equalsIgnoreCase(font.getName())){
 				Font fo=null;
 				if(font.isAntiAliased()==antiAliased && !font.noFont() && (fo=font.getFont()).getSize()==(int)size && fo.getStyle()==style){
-					PC_Logger.warning("Font %s was already loaded and is "+(f.readyToUse()?"":"not ")+"ready to use", fontName);
+					PC_Logger.warning("Font %s was already loaded.", fontName);
 					return font;
 				}
 				if (fo != null) {
 					f.setFont(fo);
-					PC_Logger.warning("Font %s was already loaded and is "+(f.readyToUse()?"":"not ")+"ready to use", fontName);
+					PC_Logger.warning("Font %s was already loaded.", fontName);
 					break;
 				}
 			}
@@ -78,13 +64,13 @@ public class PC_Fonts {
 		if(f.noFont()){
 			f.setResourceLocation(PC_Utils.getResourceLocation(PC_Api.INSTANCE, "fonts/"+fontName+".ttf"));
 			if(f.reloadFromFile())
-				PC_Logger.warning("Font %s was found locally and is "+(f.readyToUse()?"":"not ")+"ready to use", fontName);
+				PC_Logger.warning("Font %s was found locally.", fontName);
 		}
 		if(f.noFont()){
 			for (Font font : GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts()) {
 				if (font.getName().equalsIgnoreCase(fontName)) {
 					f.setFont(font);
-					PC_Logger.warning("Font %s found at the systems files and is "+(f.readyToUse()?"":"not ")+"ready to use", fontName);
+					PC_Logger.warning("Font %s found at the systems files.", fontName);
 					break;
 				}
 			}
@@ -100,8 +86,8 @@ public class PC_Fonts {
 			return null;
 		}
 		f.deriveFont(style, size);
-		PC_Logger.warning("Font %s has been derived.", fontName);
-		return create(f, customCharsArray);
+		PC_Logger.warning("Font %s has been derived and is "+(f.readyToUse()?"":"not ")+"ready to use.", fontName);
+		return f;
 	}
 
 }
