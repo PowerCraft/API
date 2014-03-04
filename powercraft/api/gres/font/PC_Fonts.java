@@ -65,8 +65,10 @@ public class PC_Fonts {
 		return fromResourceLocation(PC_Utils.getResourceLocation(PC_Api.INSTANCE, "fonts/"+name.toLowerCase()+".ttf"));
 	}
 	
+	private static final String defaultTextureName = "Minecraftia";
+	
 	public static PC_FontTexture getDefaultFont(){
-		return getByName("Minecraftia", 0, 8);
+		return getByName(defaultTextureName, 0, 8);
 	}
 	
 	public static PC_FontTexture getByName(String fontName, int style, float size){
@@ -94,14 +96,14 @@ public class PC_Fonts {
 				}
 			}
 		}
-		if(f.noFont()){
+		if(f.noFont() && !(fontName==defaultTextureName)){
 			PC_Logger.severe("Font %s isn't existent in the system. Using Default Font instead.", fontName);
 			PC_FontTexture ft = getDefaultFont();
 			if(ft!=null && !ft.getCont().noFont())
 				f.copyFrom(ft.getCont());
 		}
 		if(f.noFont()){
-			PC_Logger.severe("Even the the default font couldn't be found. Returning NULL");
+			PC_Logger.severe("Even the default font couldn't be found. Returning NULL");
 			return null;
 		}
 		f.deriveFont(style, size);
