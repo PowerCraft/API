@@ -59,7 +59,14 @@ public class PC_FontTexture extends AbstractTexture{
 		this.fontName = fontName;
 		this.antiAlias = antiAlias;
 		addCustomChars(customCharsArray);
-		this.fontID = PC_Fonts.addFont(this);
+		this.isRendered = false;
+	}
+	
+	PC_FontTexture(PC_FontTexture ft){
+		this.fontName = ft.fontName;
+		setFont(ft.font);
+		this.res = ft.res;
+		this.isRendered = false;
 	}
 	
 	public void setAntiAliased(boolean b){
@@ -78,6 +85,7 @@ public class PC_FontTexture extends AbstractTexture{
 			return;
 		font = f;
 		isRendered=false;
+		this.fontID = PC_Fonts.addFont(this);
 		if(canBeRendered())
 			createTextures();
 	}
@@ -161,6 +169,7 @@ public class PC_FontTexture extends AbstractTexture{
 				createTextures();
 		} catch (Exception e) { // Do not use Java 1.7, use Java 1.6
 			this.font = null;
+			this.res = null;
 		} finally {
 			if (inputstream != null)
 				try {
@@ -326,6 +335,7 @@ public class PC_FontTexture extends AbstractTexture{
 	@SuppressWarnings("hiding")
 	public void addCustomChars(char[] customCharsArray) {
 		if (customCharsArray != null) {
+			isRendered = false;
 			List<Character> customCharsList = new ArrayList<Character>();
 			for (int i = 0; i < customCharsArray.length; i++){
 				Character c = Character.valueOf(customCharsArray[i]);
@@ -340,6 +350,8 @@ public class PC_FontTexture extends AbstractTexture{
 			this.customCharsArray = new char[customCharsList.size()];
 			for (int i = 0; i < this.customCharsArray.length; i++)
 				this.customCharsArray[i] = customCharsList.get(i).charValue();
+			if(canBeRendered())
+				createTextures();
 		}
 	}
     
