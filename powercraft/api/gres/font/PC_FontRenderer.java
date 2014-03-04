@@ -1,8 +1,5 @@
 package powercraft.api.gres.font;
 
-import java.awt.Font;
-import java.awt.GraphicsEnvironment;
-
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.util.ResourceLocation;
@@ -22,13 +19,6 @@ public class PC_FontRenderer {
 	
 	public PC_FontRenderer(PC_FontTexture texture){
 		this.texture = texture;
-	}
-	
-	public PC_FontRenderer(ResourceLocation location){
-		ITextureObject textureObject = PC_ClientUtils.mc().renderEngine.getTexture(location);
-		if(textureObject instanceof PC_FontTexture){
-			this.texture = (PC_FontTexture)textureObject;
-		}
 	}
 	
 	public void drawString(String text, int x, int y){
@@ -231,30 +221,6 @@ public class PC_FontRenderer {
 			}
 		}
 		return text;
-	}
-	
-	public static boolean isSupported(String fontname) {
-		Font font[] = getFonts();
-		for (int i = font.length - 1; i >= 0; i--) {
-			if (font[i].getName().equalsIgnoreCase(fontname))
-				return true;
-		}
-		return false;
-	}
-
-	public static Font[] getFonts() {
-		return GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts();
-	}
-
-	public static Font getFont(String fontname, int style, float size) {
-		Font result = null;
-		for (Font font : getFonts()) {
-			if (font.getName().equalsIgnoreCase(fontname)) {
-				result = font.deriveFont(style, size);
-				break;
-			}
-		}
-		return result;
 	}
 	
 }

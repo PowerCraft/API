@@ -5,7 +5,6 @@ import java.awt.Font;
 import powercraft.api.gres.autoadd.PC_AutoAdd;
 import powercraft.api.gres.autoadd.PC_StringAdd;
 import powercraft.api.gres.doc.PC_GresHighlighting;
-import powercraft.api.gres.font.PC_FontRenderer;
 import powercraft.api.gres.font.PC_Fonts;
 import powercraft.api.gres.font.PC_Formatter;
 
@@ -14,8 +13,8 @@ public class PC_WeaselHighlighting {
 	public static PC_GresHighlighting makeHighlighting(){
 		PC_GresHighlighting highlighting = new PC_GresHighlighting();
 		PC_GresHighlighting INNER = new PC_GresHighlighting();
-		INNER.addWordHighlight(PC_GresHighlighting.msp(false, "weasel", "xscript"), PC_Formatter.color(84, 217, 255)+PC_Formatter.font(PC_Fonts.create(PC_FontRenderer.getFont("Consolas", Font.ITALIC, 24), null)));
-		INNER.addWordHighlight(PC_GresHighlighting.msp(true, "TODO"), PC_Formatter.color(84, 217, 255)+PC_Formatter.font(PC_Fonts.create(PC_FontRenderer.getFont("Consolas", Font.BOLD, 24), null)));
+		INNER.addWordHighlight(PC_GresHighlighting.msp(false, "weasel", "xscript"), PC_Formatter.color(84, 217, 255)+PC_Formatter.font(PC_Fonts.getByName("Consolas", Font.ITALIC, 24)));
+		INNER.addWordHighlight(PC_GresHighlighting.msp(true, "TODO"), PC_Formatter.color(84, 217, 255)+PC_Formatter.font(PC_Fonts.getByName("Consolas", Font.BOLD, 24)));
 		highlighting.addOperatorHighlight(PC_GresHighlighting.msp(true, "+", "-", "*", "/", "%"), "");
 		highlighting.addOperatorHighlight(PC_GresHighlighting.msp(true, ">", "<", "="), "");
 		highlighting.addOperatorHighlight(PC_GresHighlighting.msp(true, "|", "&", "^"), "");

@@ -11,8 +11,6 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferByte;
 import java.awt.image.DataBufferInt;
-import java.io.IOException;
-import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
@@ -20,23 +18,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.client.renderer.texture.AbstractTexture;
-import net.minecraft.client.resources.IResource;
-import net.minecraft.client.resources.IResourceManager;
+import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 
+import powercraft.api.PC_Api;
+import powercraft.api.PC_Logger;
+import powercraft.api.PC_Utils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class PC_FontTexture extends AbstractTexture {
+public class PC_FontTexture {
 
-	private Font font;
-	private boolean hasLocation;
-	private ResourceLocation location;
+	private PC_FontContainer fontCont;
 	private boolean antiAlias;
 	private int fontSize;
 	private int fontHeight;
@@ -46,28 +43,28 @@ public class PC_FontTexture extends AbstractTexture {
 	private Map<Character, PC_CharData> customChars = new HashMap<Character, PC_CharData>();
 	private int fontID;
 
-	PC_FontTexture(Font font, boolean antiAlias, char[] customCharsArray) {
-		this.font = font;
-		this.location = new ResourceLocation("PowerCraft", "*" + font.getFontName());
+	PC_FontTexture(PC_FontContainer font, boolean antiAlias, char[] customCharsArray) {
+		this.fontCont = font;
 		this.antiAlias = antiAlias;
 		addCustomChars(customCharsArray);
 		this.fontID = PC_Fonts.addFont(this);
-	}
-
-	PC_FontTexture(ResourceLocation location, boolean antiAlias, char[] customCharsArray) {
-		this.location = location;
-		this.hasLocation = true;
-		this.antiAlias = antiAlias;
-		addCustomChars(customCharsArray);
-		this.fontID = PC_Fonts.addFont(this);
-	}
-
-	public int getFontID() {
-		return this.fontID;
 	}
 
 	public ResourceLocation getResourceLocation() {
-		return this.location;
+		ResourceLocation rs;
+		return (rs=fontCont.getResourceLocation())!=null?rs:PC_Utils.getResourceLocation(PC_Api.INSTANCE, "fonts/"+fontCont.getFont().hashCode()+".ttf");
+	}
+	
+	public PC_FontContainer getCont(){
+		return fontCont;
+	}
+	
+	public Font getFont(){
+		return fontCont.getFont();
+	}
+	
+	public int getFontID() {
+		return this.fontID;
 	}
 
 	public PC_CharData getCharData(char c) {
@@ -80,29 +77,12 @@ public class PC_FontTexture extends AbstractTexture {
 		return this.textureSize;
 	}
 
-	@Override
-	public void loadTexture(IResourceManager resourceManager) {
+	public void createTextures(){
+		PC_Logger.warning("entered: createTextures");
+		if(fontCont==null)
+			return;
+		PC_Logger.warning("passed: font==null");
 		deleteGlTexture();
-		if (this.hasLocation) {
-			InputStream inputstream = null;
-			try {
-				IResource resource = resourceManager.getResource(this.location);
-				inputstream = resource.getInputStream();
-				this.font = Font.createFont(Font.TRUETYPE_FONT, inputstream);
-				this.font = this.font.deriveFont(8.0f);
-				inputstream.close();
-			} catch (Exception e) { // Do not use Java 1.7, use Java 1.6
-				throw new RuntimeException(e); // Should we create a runtime Error and crash report?
-			} finally {
-				if (inputstream != null)
-					try {
-						inputstream.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-			}
-		}
-		System.out.println("LOAD Font:"+resourceManager+"=>"+this.font);
 		this.textureSize = 256;
 		int lastTextureSize = 0;
 		BufferedImage imgTemp = new BufferedImage(this.textureSize, this.textureSize,
@@ -114,6 +94,7 @@ public class PC_FontTexture extends AbstractTexture {
 		int positionX = 0;
 		int positionY = 0;
 
+		PC_Logger.warning("passed: random1");
 		int customCharsLength = (this.customCharsArray != null) ? this.customCharsArray.length : 0;
 
 		for (int i = 0; i < 256 + customCharsLength; i++) {
@@ -174,6 +155,7 @@ public class PC_FontTexture extends AbstractTexture {
 			fontImage = null;
 		}
 
+		PC_Logger.warning("passed: random2");
 		int bpp = imgTemp.getColorModel().getPixelSize();
 		ByteBuffer byteBuffer;
 		DataBuffer db = imgTemp.getData().getDataBuffer();
@@ -206,6 +188,7 @@ public class PC_FontTexture extends AbstractTexture {
 
 		GLU.gluBuild2DMipmaps(GL11.GL_TEXTURE_2D, internalFormat, this.textureSize, this.textureSize, format,
 				GL11.GL_UNSIGNED_BYTE, byteBuffer);
+		PC_Logger.warning("exit: createTextures");
 	}
 
 	private BufferedImage getFontImage(char ch) {
@@ -214,7 +197,7 @@ public class PC_FontTexture extends AbstractTexture {
 		if (this.antiAlias == true && g instanceof Graphics2D)
 			((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 					RenderingHints.VALUE_ANTIALIAS_ON);
-		g.setFont(this.font);
+		g.setFont(this.fontCont.getFont());
 		FontMetrics fontMetrics = g.getFontMetrics();
 		Rectangle2D r = fontMetrics.getStringBounds(ch=='\t'?"    ":"" + ch, g);
 
@@ -234,7 +217,7 @@ public class PC_FontTexture extends AbstractTexture {
 					RenderingHints.VALUE_ANTIALIAS_ON);
 		gt.setColor(new Color(0, 0, 0, 1));
 		gt.fillRect(0, 0, charwidth, charheight);
-		gt.setFont(this.font);
+		gt.setFont(this.fontCont.getFont());
 		gt.setColor(Color.WHITE);
 		int charx = 0;
 		int chary = 0;
@@ -264,4 +247,12 @@ public class PC_FontTexture extends AbstractTexture {
 		}
 	}
 
+    public int getGlTextureId(){
+    	return fontCont.getGlTextureId();
+    }
+
+    public void deleteGlTexture(){
+        fontCont.deleteGlTexture();
+    }
+    
 }

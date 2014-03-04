@@ -359,7 +359,6 @@ public class PC_Utils {
 	}
 
 	public static ResourceLocation getResourceLocation(PC_Module module, String file) {
-
 		return new ResourceLocation(module.getMetadata().modId.toLowerCase(), file);
 	}
 

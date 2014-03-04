@@ -74,7 +74,7 @@ public abstract class PC_GresComponent {
 
 	protected boolean mouseDown;
 
-	protected static PC_FontRenderer fontRenderer = new PC_FontRenderer(PC_Fonts.getStandardFont());
+	protected static PC_FontRenderer fontRenderer = new PC_FontRenderer(PC_Fonts.getDefaultFont());
 
 	protected final int fontColors[] = { 4210752, 4210752, 4210752, 4210752 };
 
