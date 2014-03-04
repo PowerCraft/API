@@ -19,7 +19,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class PC_Fonts {
 
 	private static List<PC_FontTexture> fonts = new ArrayList<PC_FontTexture>();
-	private static HashMap<Font, PC_FontTexture> fontTextures = new HashMap<Font, PC_FontTexture>();
 	
 	static int addFont(PC_FontTexture font){
 		fonts.add(font);
@@ -30,62 +29,47 @@ public class PC_Fonts {
 		return fonts.get(fontID-1);
 	}
 
-	public static PC_FontTexture create(PC_FontContainer font) {
+	public static PC_FontTexture create(PC_FontTexture font) {
 		return create(font, null);
 	}
 	
-	public static PC_FontTexture create(PC_FontContainer font, char[] customCharsArray){
-		PC_FontTexture texture = fontTextures.get(font);
-		if(texture==null){
-			fontTextures.put(font.getFont(), texture = new PC_FontTexture(font, true, customCharsArray));
-		}else{
-			texture.addCustomChars(customCharsArray);
+	public static PC_FontTexture create(PC_FontTexture font, char[] customCharsArray){
+		font.addCustomChars(customCharsArray);
+		if(!font.canBeRendered()){
+			PC_Logger.warning("%s can't be rendered since there is no font", font.getName());
+			return null;
 		}
-		texture.createTextures();
-		return texture;
-	}
-	
-	private static PC_FontContainer fromResourceLocation(ResourceLocation location){
-		ITextureObject texture = PC_ClientUtils.mc().renderEngine.getTexture(location);
-		PC_FontContainer fc = null;
-		if(texture==null){
-			fc = new PC_FontContainer();
-			fc.setResourceLocation(location);
-		}else if(texture instanceof PC_FontContainer){
-			fc = (PC_FontContainer) texture;
-		}
-		if(fc!=null){
-			PC_ClientUtils.mc().renderEngine.loadTexture(location, fc);
-			return fc;
-		}
-		return null;
-	}
-	
-	private static PC_FontContainer getFont(String name){
-		return fromResourceLocation(PC_Utils.getResourceLocation(PC_Api.INSTANCE, "fonts/"+name.toLowerCase()+".ttf"));
+		font.createTextures();
+		return font;
 	}
 	
 	private static final String defaultTextureName = "Minecraftia";
 	
 	public static PC_FontTexture getDefaultFont(){
-		return getByName(defaultTextureName, 0, 8);
+		return getByName(defaultTextureName, false, 0, 8, null, false);
 	}
 	
-	public static PC_FontTexture getByName(String fontName, int style, float size){
-		return getByName(fontName, style, size, null);
+	public static PC_FontTexture getByName(String fontName, boolean antiAliased, int style, float size){
+		return getByName(fontName, antiAliased, style, size, null);
+	}
+	
+	public static PC_FontTexture getByName(String fontName, boolean antiAliased, int style, float size, char[] customCharsArray){
+		return getByName(fontName, antiAliased, style, size, customCharsArray, true);
 	}
 		
-	public static PC_FontTexture getByName(String fontName, int style, float size, char[] customCharsArray){
-		PC_FontContainer f=new PC_FontContainer();
-		for(PC_FontTexture font:fontTextures.values()){
-			if(font!=null && fontName.equalsIgnoreCase(font.getFont().getName())){
-				f.copyFrom(font.getCont());
-				break;
+	private static PC_FontTexture getByName(String fontName, boolean antiAliased, int style, float size, char[] customCharsArray, boolean canBeDefault){
+		for(PC_FontTexture font:fonts){
+			if(font!=null && fontName.equalsIgnoreCase(font.getName())){
+				Font fo;
+				if(font.isAntiAliased()==antiAliased && !font.noFont() && (fo=font.getFont()).getSize()==(int)size && fo.getStyle()==style){
+					return font;
+				}
 			}
 		}
+		PC_FontTexture f=new PC_FontTexture(fontName.toLowerCase(), antiAliased, customCharsArray);
+		
 		if(f.noFont()){
 			PC_Logger.warning("Font %s hasn't been loaded yet.", fontName);
-			f.copyFrom(getFont(fontName));
 		}
 		if(f.noFont()){
 			PC_Logger.warning("Font %s couldn't be found at the local files.", fontName);
@@ -96,7 +80,7 @@ public class PC_Fonts {
 				}
 			}
 		}
-		if(f.noFont() && !(fontName==defaultTextureName)){
+		if(f.noFont() && canBeDefault){
 			PC_Logger.severe("Font %s isn't existent in the system. Using Default Font instead.", fontName);
 			PC_FontTexture ft = getDefaultFont();
 			if(ft!=null && !ft.getCont().noFont())
