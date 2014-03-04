@@ -32,7 +32,7 @@ public class PC_Fonts {
 		font.addCustomChars(customCharsArray);
 		if (!font.canBeRendered()) {
 			PC_Logger.warning("%s can't be rendered or is already rendered", font.getName());
-			return null;
+			return font;
 		}
 		font.createTextures();
 		return font;
@@ -66,10 +66,18 @@ public class PC_Fonts {
 				if (font.isAntiAliased() == antiAliased && !font.noFont()
 						&& (fo = font.getFont()).getSize() == (int) size && fo.getStyle() == style) {
 					PC_Logger.warning("return nr.1");
+=======
+		for(PC_FontTexture font:fonts){
+			if(font!=null && fontName.equalsIgnoreCase(font.getName())){
+				Font fo=null;
+				if(font.isAntiAliased()==antiAliased && !font.noFont() && (fo=font.getFont()).getSize()==(int)size && fo.getStyle()==style){
+					PC_Logger.warning("Font %s was already loaded and is "+(f.readyToUse()?"":"not ")+"ready to use", fontName);
+>>>>>>> 45bd7af2179bfbfa8351e623f4659a34712dfe75
 					return font;
 				}
 				if (fo != null) {
 					f.setFont(fo);
+					PC_Logger.warning("Font %s was already loaded and is "+(f.readyToUse()?"":"not ")+"ready to use", fontName);
 					break;
 				}
 			}
@@ -82,9 +90,19 @@ public class PC_Fonts {
 		}
 		if (f.noFont()) {
 			PC_Logger.warning("Font %s couldn't be found at the local files.", fontName);
+=======
+		
+		if(f.noFont()){
+			f.setResourceLocation(PC_Utils.getResourceLocation(PC_Api.INSTANCE, "fonts/"+fontName+".ttf"));
+			if(f.reloadFromFile())
+				PC_Logger.warning("Font %s was found locally and is "+(f.readyToUse()?"":"not ")+"ready to use", fontName);
+		}
+		if(f.noFont()){
+>>>>>>> 45bd7af2179bfbfa8351e623f4659a34712dfe75
 			for (Font font : GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts()) {
 				if (font.getName().equalsIgnoreCase(fontName)) {
 					f.setFont(font);
+					PC_Logger.warning("Font %s found at the systems files and is "+(f.readyToUse()?"":"not ")+"ready to use", fontName);
 					break;
 				}
 			}

@@ -72,8 +72,6 @@ public class PC_FontTexture extends AbstractTexture{
 	public void setAntiAliased(boolean b){
 		antiAlias=b;
 		isRendered=false;
-		if(canBeRendered())
-			createTextures();
 	}
 	
 	public boolean isAntiAliased(){
@@ -85,9 +83,6 @@ public class PC_FontTexture extends AbstractTexture{
 			return;
 		font = f;
 		isRendered=false;
-		this.fontID = PC_Fonts.addFont(this);
-		if(canBeRendered())
-			createTextures();
 	}
 
 	public void setResourceLocation(ResourceLocation rl) {
@@ -96,8 +91,6 @@ public class PC_FontTexture extends AbstractTexture{
 		res = rl;
 		isRendered=false;
 		reloadFromFile();
-		if(canBeRendered())
-			createTextures();
 	}
 
 	public ResourceLocation getResourceLocation() {
@@ -128,15 +121,17 @@ public class PC_FontTexture extends AbstractTexture{
 		return this.fontID;
 	}
 	
-	public void reloadFromFile(){
+	public boolean reloadFromFile(){
 		isRendered=false;
 		if(res!=null)
 			PC_ClientUtils.mc().renderEngine.loadTexture(res, this);
+		return canBeRendered() || readyToUse();
 	}
 	
 	public void deriveFont(int style, float size){
 		font = font.deriveFont(style, size);
 		isRendered=false;
+		this.fontID = PC_Fonts.addFont(this);
 		if(canBeRendered())
 			createTextures();
 			
@@ -154,19 +149,17 @@ public class PC_FontTexture extends AbstractTexture{
 	
 	@Override
 	public void loadTexture(IResourceManager resourceManager) {
-		if (!noFont())
+		if (!noFont() || res==null)
 			return;
-		isRendered=false;
 		PC_Logger.warning("trying to read %s", res.toString());
 		InputStream inputstream = null;
 		try {
 			IResource resource = resourceManager.getResource(res);
 			inputstream = resource.getInputStream();
-			this.font = Font.createFont(Font.TRUETYPE_FONT, inputstream);
+			Font f = Font.createFont(Font.TRUETYPE_FONT, inputstream);
 			inputstream.close();
 			PC_Logger.warning("read %s", res.toString());
-			if(canBeRendered())
-				createTextures();
+			setFont(f);
 		} catch (Exception e) { // Do not use Java 1.7, use Java 1.6
 			this.font = null;
 			this.res = null;
@@ -350,8 +343,6 @@ public class PC_FontTexture extends AbstractTexture{
 			this.customCharsArray = new char[customCharsList.size()];
 			for (int i = 0; i < this.customCharsArray.length; i++)
 				this.customCharsArray[i] = customCharsList.get(i).charValue();
-			if(canBeRendered())
-				createTextures();
 		}
 	}
     
