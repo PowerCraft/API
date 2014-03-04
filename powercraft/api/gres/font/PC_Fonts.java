@@ -46,27 +46,27 @@ public class PC_Fonts {
 	private static PC_FontTexture getByName(String fontName, boolean antiAliased, int style, float size,
 			char[] customCharsArray, boolean canBeDefault) {
 		PC_FontTexture f = new PC_FontTexture(fontName.toLowerCase(), antiAliased, customCharsArray);
-		for(PC_FontTexture font:fonts){
-			if(font!=null && fontName.equalsIgnoreCase(font.getName())){
-				Font fo=null;
-				if(!font.noFont() && (fo=font.getFont()).getSize()==(int)size && fo.getStyle()==style){
-					PC_Logger.warning("Font %s, %s, %s was already loaded.", fontName, style, size);
+		for (PC_FontTexture font : fonts) {
+			if (font != null && fontName.equalsIgnoreCase(font.getName())) {
+				Font fo = null;
+				if (!font.noFont() && (fo = font.getFont()).getSize() == (int) size) {
+					PC_Logger.warning("Font %s, %s, %s was already loaded.1", fontName, style, size);
 					return font;
 				}
 				if (fo != null) {
 					f.setFont(fo);
-					PC_Logger.warning("Font %s (, %s, %s) was already loaded.", fontName, style, size);
+					PC_Logger.warning("Font %s (, %s, %s) was already loaded.2", fontName, style, size);
 					break;
 				}
 			}
 		}
-		
-		if(f.noFont()){
-			f.setResourceLocation(PC_Utils.getResourceLocation(PC_Api.INSTANCE, "fonts/"+fontName+".ttf"));
-			if(f.reloadFromFile())
+
+		if (f.noFont()) {
+			f.setResourceLocation(PC_Utils.getResourceLocation(PC_Api.INSTANCE, "fonts/" + fontName + ".ttf"));
+			if (f.reloadFromFile())
 				PC_Logger.warning("Font %s, %s, %s was found locally.", fontName, style, size);
 		}
-		if(f.noFont()){
+		if (f.noFont()) {
 			for (Font font : GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts()) {
 				if (font.getName().equalsIgnoreCase(fontName)) {
 					f.setFont(font);
@@ -76,7 +76,8 @@ public class PC_Fonts {
 			}
 		}
 		if (f.noFont() && canBeDefault) {
-			PC_Logger.severe("Font %s, %s, %s isn't existent in the system. Using Default Font instead.", fontName, style, size);
+			PC_Logger.severe("Font %s, %s, %s isn't existent in the system. Using Default Font instead.", fontName,
+					style, size);
 			PC_FontTexture ft = getDefaultFont();
 			if (ft != null)
 				f = new PC_FontTexture(ft);
@@ -86,7 +87,9 @@ public class PC_Fonts {
 			return null;
 		}
 		f.deriveFont(style, size);
-		PC_Logger.warning("Font %s, %s, %s has been derived and is "+(f.readyToUse()?"":"not ")+"ready to use.", fontName, style, size);
+		PC_Logger.warning(
+				"Font %s, %s, %s has been derived and is " + (f.readyToUse() ? "" : "not ") + "ready to use.",
+				fontName, style, size);
 		return f;
 	}
 
