@@ -47,17 +47,10 @@ public class PC_Fonts {
 			char[] customCharsArray, boolean canBeDefault) {
 		PC_FontTexture f = new PC_FontTexture(fontName.toLowerCase(), antiAliased, customCharsArray);
 		for (PC_FontTexture font : fonts) {
-			if (font != null && fontName.equalsIgnoreCase(font.getName())) {
-				Font fo = null;
-				if (!font.noFont() && (fo = font.getFont()).getSize() == (int) size) {
-					PC_Logger.warning("Font %s, %s, %s was already loaded.1", fontName, style, size);
-					return font;
-				}
-				if (fo != null) {
-					f.setFont(fo);
-					PC_Logger.warning("Font %s (, %s, %s) was already loaded.2", fontName, style, size);
-					break;
-				}
+			if (font != null && fontName.equalsIgnoreCase(font.getName()) && !font.noFont()) {
+				f.setFont(font.getFont());
+				PC_Logger.warning("Font %s (, %s, %s) was already loaded.2", fontName, style, size);
+				break;
 			}
 		}
 

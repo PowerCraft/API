@@ -132,9 +132,7 @@ public class PC_FontTexture extends AbstractTexture{
 		font = font.deriveFont(style, size);
 		isRendered=false;
 		this.fontID = PC_Fonts.addFont(this);
-		if(canBeRendered())
-			createTextures();
-			
+		PC_ClientUtils.mc().renderEngine.loadTexture(res, this);
 	}
 
 	public PC_CharData getCharData(char c) {
@@ -149,28 +147,30 @@ public class PC_FontTexture extends AbstractTexture{
 	
 	@Override
 	public void loadTexture(IResourceManager resourceManager) {
-		if (!noFont() || res==null)
-			return;
-		PC_Logger.warning("trying to read %s", res.toString());
-		InputStream inputstream = null;
-		try {
-			IResource resource = resourceManager.getResource(res);
-			inputstream = resource.getInputStream();
-			Font f = Font.createFont(Font.TRUETYPE_FONT, inputstream);
-			inputstream.close();
-			PC_Logger.warning("read %s", res.toString());
-			setFont(f);
-		} catch (Exception e) { // Do not use Java 1.7, use Java 1.6
-			this.font = null;
-			this.res = null;
-		} finally {
-			if (inputstream != null)
-				try {
-					inputstream.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+		if(noFont() && res!=null){
+			PC_Logger.warning("trying to read %s", res.toString());
+			InputStream inputstream = null;
+			try {
+				IResource resource = resourceManager.getResource(res);
+				inputstream = resource.getInputStream();
+				Font f = Font.createFont(Font.TRUETYPE_FONT, inputstream);
+				inputstream.close();
+				PC_Logger.warning("read %s", res.toString());
+				setFont(f);
+			} catch (Exception e) { // Do not use Java 1.7, use Java 1.6
+				this.font = null;
+				this.res = null;
+			} finally {
+				if (inputstream != null)
+					try {
+						inputstream.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+			}
 		}
+		if(canBeRendered())
+			createTextures();
 	}
 
 	public void createTextures(){
