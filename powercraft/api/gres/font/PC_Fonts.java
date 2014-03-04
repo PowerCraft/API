@@ -60,19 +60,11 @@ public class PC_Fonts {
 	private static PC_FontTexture getByName(String fontName, boolean antiAliased, int style, float size,
 			char[] customCharsArray, boolean canBeDefault) {
 		PC_FontTexture f = new PC_FontTexture(fontName.toLowerCase(), antiAliased, customCharsArray);
-		for (PC_FontTexture font : fonts) {
-			if (font != null && fontName.equalsIgnoreCase(font.getName())) {
-				Font fo = null;
-				if (font.isAntiAliased() == antiAliased && !font.noFont()
-						&& (fo = font.getFont()).getSize() == (int) size && fo.getStyle() == style) {
-					PC_Logger.warning("return nr.1");
-=======
 		for(PC_FontTexture font:fonts){
 			if(font!=null && fontName.equalsIgnoreCase(font.getName())){
 				Font fo=null;
 				if(font.isAntiAliased()==antiAliased && !font.noFont() && (fo=font.getFont()).getSize()==(int)size && fo.getStyle()==style){
 					PC_Logger.warning("Font %s was already loaded and is "+(f.readyToUse()?"":"not ")+"ready to use", fontName);
->>>>>>> 45bd7af2179bfbfa8351e623f4659a34712dfe75
 					return font;
 				}
 				if (fo != null) {
@@ -82,15 +74,6 @@ public class PC_Fonts {
 				}
 			}
 		}
-
-		if (f.noFont()) {
-			PC_Logger.warning("Font %s hasn't been loaded yet.", fontName);
-			f.setResourceLocation(PC_Utils.getResourceLocation(PC_Api.INSTANCE, "fonts/" + fontName + ".ttf"));
-			f.reloadFromFile();
-		}
-		if (f.noFont()) {
-			PC_Logger.warning("Font %s couldn't be found at the local files.", fontName);
-=======
 		
 		if(f.noFont()){
 			f.setResourceLocation(PC_Utils.getResourceLocation(PC_Api.INSTANCE, "fonts/"+fontName+".ttf"));
@@ -98,7 +81,6 @@ public class PC_Fonts {
 				PC_Logger.warning("Font %s was found locally and is "+(f.readyToUse()?"":"not ")+"ready to use", fontName);
 		}
 		if(f.noFont()){
->>>>>>> 45bd7af2179bfbfa8351e623f4659a34712dfe75
 			for (Font font : GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts()) {
 				if (font.getName().equalsIgnoreCase(fontName)) {
 					f.setFont(font);
@@ -115,12 +97,10 @@ public class PC_Fonts {
 		}
 		if (f.noFont()) {
 			PC_Logger.severe("Even the default font couldn't be found. Returning NULL");
-			PC_Logger.warning("return null (nr.2)");
 			return null;
 		}
 		f.deriveFont(style, size);
 		PC_Logger.warning("Font %s has been derived.", fontName);
-		PC_Logger.warning("return nr.3");
 		return create(f, customCharsArray);
 	}
 
