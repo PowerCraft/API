@@ -12,17 +12,17 @@ import powercraft.api.reflect.PC_Security;
 public class PC_Entities {
 
 	private static boolean done;
-	private static List<PC_EntityType> entities = new ArrayList<PC_EntityType>();
-	private static List<PC_EntityType> immutableEntities = new PC_ImmutableList<PC_EntityType>(entities);
+	private static List<PC_EntityType<?>> entities = new ArrayList<PC_EntityType<?>>();
+	private static List<PC_EntityType<?>> immutableEntities = new PC_ImmutableList<PC_EntityType<?>>(entities);
 	
-	public static void register(Class<? extends Entity> entity, int trackingRange, int updateFrequency, boolean sendsVelocityUpdates){
-		PC_EntityTypeImpl type = new PC_EntityTypeImpl(entity);
+	public static <E extends Entity & PC_IEntity>void register(Class<E> entity, int trackingRange, int updateFrequency, boolean sendsVelocityUpdates){
+		PC_EntityTypeImpl<E> type = new PC_EntityTypeImpl<E>(entity);
 		type.trackingRange = trackingRange;
 		type.updateFrequency = updateFrequency;
 		type.sendsVelocityUpdates = sendsVelocityUpdates;
 	}
 
-	static void addEntityType(PC_EntityType entityType) {
+	static void addEntityType(PC_EntityType<?> entityType) {
 		if(done){
 			PC_Logger.severe("A entity want to register while startup is done");
 		}else{
@@ -31,7 +31,7 @@ public class PC_Entities {
 		}
 	}
 	
-	public static List<PC_EntityType> getEntities(){
+	public static List<PC_EntityType<?>> getEntities(){
 		return immutableEntities;
 	}
 
@@ -39,7 +39,7 @@ public class PC_Entities {
 		PC_Security.allowedCaller("PC_Entities.construct()", PC_Api.class);
 		if(!done){
 			done = true;
-			for(PC_EntityType entity:entities){
+			for(PC_EntityType<?> entity:entities){
 				PC_Logger.info("CONSTRUCT: %s", entity);
 				entity.construct();
 			}

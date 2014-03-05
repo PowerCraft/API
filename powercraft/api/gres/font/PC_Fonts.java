@@ -32,10 +32,11 @@ public class PC_Fonts {
 		PC_FontTexture texture = fontTextures.get(font);
 		if(texture==null){
 			fontTextures.put(font, texture = new PC_FontTexture(font, true, customCharsArray));
+			PC_ClientUtils.mc().renderEngine.loadTexture(texture.getResourceLocation(), texture);
 		}else{
-			texture.addCustomChars(customCharsArray);
+			if(texture.addCustomChars(customCharsArray))
+				PC_ClientUtils.mc().renderEngine.loadTexture(texture.getResourceLocation(), texture);
 		}
-		PC_ClientUtils.mc().renderEngine.loadTexture(texture.getResourceLocation(), texture);
 		return texture;
 	}
 	
@@ -46,8 +47,8 @@ public class PC_Fonts {
 			PC_ClientUtils.mc().renderEngine.loadTexture(location, ft);
 			return ft;
 		}else if(texture instanceof PC_FontTexture){
-			((PC_FontTexture)texture).addCustomChars(customCharsArray);
-			PC_ClientUtils.mc().renderEngine.loadTexture(location, texture);
+			if(((PC_FontTexture)texture).addCustomChars(customCharsArray))
+				PC_ClientUtils.mc().renderEngine.loadTexture(location, texture);
 			return (PC_FontTexture)texture;
 		}
 		return null;

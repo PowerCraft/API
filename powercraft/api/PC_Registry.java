@@ -2,10 +2,14 @@ package powercraft.api;
 
 import javax.management.InstanceAlreadyExistsException;
 
+import net.minecraft.entity.Entity;
+import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import powercraft.api.PC_ResourceReloadListener.PC_IResourceReloadListener;
 import powercraft.api.PC_TickHandler.PC_IBaseTickHandler;
 import powercraft.api.block.PC_TileEntity;
+import powercraft.api.entity.PC_EntityType;
+import powercraft.api.entity.PC_IEntity;
 import powercraft.api.network.PC_Packet;
 import powercraft.api.network.PC_PacketHandler;
 
@@ -39,6 +43,15 @@ public class PC_Registry {
 	
 	public static void registerPacket(Class<? extends PC_Packet> packet){
 		PC_PacketHandler.registerPacket(packet);
+	}
+
+	public static <E extends Entity & PC_IEntity>void registerEntity(Class<? extends Entity> entity, String name, int entityTypeID, PC_Module module, int trackingRange, int updateFrequency, boolean sendsVelocityUpdates, PC_EntityType<E> type) {
+		INSTANCE.iRegisterEntity(entity, name, entityTypeID, module, trackingRange, updateFrequency, sendsVelocityUpdates, type);
+	}
+	
+	@SuppressWarnings({ "static-method", "unused" })
+	<E extends Entity & PC_IEntity>void iRegisterEntity(Class<? extends Entity> entity, String name, int entityTypeID, PC_Module module, int trackingRange, int updateFrequency, boolean sendsVelocityUpdates, PC_EntityType<E> type){
+		EntityRegistry.registerModEntity(entity, name, entityTypeID, module, trackingRange, updateFrequency, sendsVelocityUpdates);
 	}
 	
 }

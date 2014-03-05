@@ -3,16 +3,21 @@ package powercraft.api;
 import javax.management.InstanceAlreadyExistsException;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.Entity;
 import powercraft.api.block.PC_AbstractBlockBase;
 import powercraft.api.block.PC_ItemBlock;
 import powercraft.api.block.PC_TileEntity;
+import powercraft.api.entity.PC_EntityType;
+import powercraft.api.entity.PC_IEntity;
 import powercraft.api.item.PC_Item;
 import powercraft.api.multiblock.PC_MultiblockItem;
 import powercraft.api.multiblock.PC_Multiblocks;
 import powercraft.api.reflect.PC_Security;
+import powercraft.api.renderer.PC_EntityRenderer;
 import powercraft.api.renderer.PC_ITileEntityRenderer;
 import powercraft.api.renderer.PC_TileEntitySpecialRenderer;
 import cpw.mods.fml.client.registry.ClientRegistry;
+import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -54,6 +59,17 @@ public final class PC_ClientRegistry extends PC_Registry {
 	public static PC_IconRegistry getIconRegistry(PC_IconRegistry iconRegister, PC_MultiblockItem multiblockItem) {
 		PC_Security.allowedCaller("PC_IconRegistryImpl(PC_IconRegistry, PC_MultiblockItem)", PC_Multiblocks.class);
 		return new PC_IconRegistryImpl(((PC_IconRegistryImpl)iconRegister).iconRegister, multiblockItem.getModule(), multiblockItem.getTextureFolderName());
+	}
+
+	public static PC_IconRegistry getIconRegistry(IIconRegister iconRegister, PC_EntityType<?> type) {
+		PC_Security.allowedCaller("PC_IconRegistryImpl(PC_IconRegistry, PC_EntityType)", PC_EntityRenderer.class);
+		return new PC_IconRegistryImpl(iconRegister, type.getModule(), type.getTextureFolderName());
+	}
+	
+	@Override
+	<E extends Entity & PC_IEntity>void iRegisterEntity(Class<? extends Entity> entity, String name, int entityTypeID, PC_Module module, int trackingRange, int updateFrequency, boolean sendsVelocityUpdates, PC_EntityType<E> type){
+		super.iRegisterEntity(entity, name, entityTypeID, module, trackingRange, updateFrequency, sendsVelocityUpdates, type);
+		RenderingRegistry.registerEntityRenderingHandler(entity, new PC_EntityRenderer<E>(type));
 	}
 	
 }

@@ -22,7 +22,7 @@ public final class PC_ResourceReloadListener {
 	
 	private PC_ResourceReloadListener(){}
 
-	protected static void onResourceReload(){
+	static void onResourceReload(){
 		for(PC_IResourceReloadListener listener:listeners){
 			listener.onResourceReload();
 		}
@@ -39,7 +39,7 @@ public final class PC_ResourceReloadListener {
 		public static final PC_ResourceListener INSTANCE = new PC_ResourceListener();
 		
 		@Override
-		public void onResourceManagerReload(IResourceManager var1) {
+		public void onResourceManagerReload(IResourceManager resourceManager) {
 			onResourceReload();
 		}
 		

@@ -17,7 +17,9 @@ import javax.tools.DiagnosticListener;
 import miniscript.MiniScriptLang;
 import net.minecraft.item.Item;
 import powercraft.api.PC_Api;
+import powercraft.api.PC_Lang;
 import powercraft.api.gres.autoadd.PC_StringWithInfo;
+import powercraft.api.gres.font.PC_Formatter;
 import powercraft.api.reflect.PC_Security;
 
 public final class PC_Miniscript {
@@ -46,6 +48,7 @@ public final class PC_Miniscript {
 		defaultReplacementList.clear();
 		defaultReplacementWorldList.clear();
 		Iterator<?> i = Item.itemRegistry.iterator();
+		String fontBoldConsolasStart = PC_Formatter.color(0, 0, 0);
 		while(i.hasNext()){
 			Object obj = i.next();
 			int id = Item.itemRegistry.getIDForObject(obj);
@@ -58,7 +61,11 @@ public final class PC_Miniscript {
 			String n = "Item."+mod+"."+item;
 			defaultReplacementWorldList.add(n);
 			defaultReplacements.put(n.toLowerCase(), Integer.valueOf(id));
-			defaultReplacementList.add(new PC_StringWithInfo(n, "Const: "+id));
+			String[] info = new String[3];
+			info[0] = fontBoldConsolasStart+"Item:"+PC_Formatter.reset()+" "+item;
+			info[1] = fontBoldConsolasStart+"Mod:"+PC_Formatter.reset()+" "+mod;
+			info[2] = fontBoldConsolasStart+"Name:"+PC_Formatter.reset()+" "+PC_Lang.translate(((Item)obj).getUnlocalizedName()+".name");
+			defaultReplacementList.add(new PC_StringWithInfo(n, "Const: "+id, info));
 		}
 	}
 	

@@ -27,13 +27,40 @@ public class PC_WeaselHighlighting {
 		highlighting.addOperatorHighlight(PC_GresHighlighting.msp(true, "!", "~"), "");
 		highlighting.addOperatorHighlight(PC_GresHighlighting.msp(true, "(", ")"), "");
 		highlighting.addOperatorHighlight(PC_GresHighlighting.msp(true, "{", "}"), "");
+		highlighting.addWordHighlight(PC_GresHighlighting.msp(true, CONST), PC_Formatter.color(149, 0, 85)+PC_Formatter.font(PC_Fonts.create(PC_FontRenderer.getFont("Consolas", Font.BOLD, 24), null)));
+		highlighting.addWordHighlight(PC_GresHighlighting.msp(true, PRIMITIVES), PC_Formatter.color(149, 0, 85)+PC_Formatter.font(PC_Fonts.create(PC_FontRenderer.getFont("Consolas", Font.BOLD, 24), null)));
+		highlighting.addWordHighlight(PC_GresHighlighting.msp(true, CLASSES), PC_Formatter.color(149, 0, 85)+PC_Formatter.font(PC_Fonts.create(PC_FontRenderer.getFont("Consolas", Font.BOLD, 24), null)));
+		highlighting.addWordHighlight(PC_GresHighlighting.msp(true, HEADER), PC_Formatter.color(149, 0, 85)+PC_Formatter.font(PC_Fonts.create(PC_FontRenderer.getFont("Consolas", Font.BOLD, 24), null)));
+		highlighting.addWordHighlight(PC_GresHighlighting.msp(true, MODIFIER), PC_Formatter.color(149, 0, 85)+PC_Formatter.font(PC_Fonts.create(PC_FontRenderer.getFont("Consolas", Font.BOLD, 24), null)));
+		highlighting.addWordHighlight(PC_GresHighlighting.msp(true, PARENTING), PC_Formatter.color(149, 0, 85)+PC_Formatter.font(PC_Fonts.create(PC_FontRenderer.getFont("Consolas", Font.BOLD, 24), null)));
+		highlighting.addWordHighlight(PC_GresHighlighting.msp(true, CONDITIONS), PC_Formatter.color(149, 0, 85)+PC_Formatter.font(PC_Fonts.create(PC_FontRenderer.getFont("Consolas", Font.BOLD, 24), null)));
+		highlighting.addWordHighlight(PC_GresHighlighting.msp(true, SWITCH), PC_Formatter.color(149, 0, 85)+PC_Formatter.font(PC_Fonts.create(PC_FontRenderer.getFont("Consolas", Font.BOLD, 24), null)));
+		highlighting.addWordHighlight(PC_GresHighlighting.msp(true, BREAKS), PC_Formatter.color(149, 0, 85)+PC_Formatter.font(PC_Fonts.create(PC_FontRenderer.getFont("Consolas", Font.BOLD, 24), null)));
+		highlighting.addWordHighlight(PC_GresHighlighting.msp(true, TRY), PC_Formatter.color(149, 0, 85)+PC_Formatter.font(PC_Fonts.create(PC_FontRenderer.getFont("Consolas", Font.BOLD, 24), null)));
+		highlighting.addWordHighlight(PC_GresHighlighting.msp(true, OPERATORS), PC_Formatter.color(149, 0, 85)+PC_Formatter.font(PC_Fonts.create(PC_FontRenderer.getFont("Consolas", Font.BOLD, 24), null)));
+		highlighting.addWordHighlight(PC_GresHighlighting.msp(true, EXTRENDS), PC_Formatter.color(149, 0, 85)+PC_Formatter.font(PC_Fonts.create(PC_FontRenderer.getFont("Consolas", Font.BOLD, 24), null)));
+		highlighting.addWordHighlight(PC_GresHighlighting.msp(true, OTHERS), PC_Formatter.color(149, 0, 85)+PC_Formatter.font(PC_Fonts.create(PC_FontRenderer.getFont("Consolas", Font.BOLD, 24), null)));
 		highlighting.addBlockHighlight(PC_GresHighlighting.msp(true, "//"), null, null, false, PC_Formatter.color(122, 122, 122), INNER);
 		highlighting.addBlockHighlight(PC_GresHighlighting.msp(true, "/*"), null, PC_GresHighlighting.msp(true, "*/"), true, PC_Formatter.color(122, 122, 122), INNER);
 		highlighting.addBlockHighlight(PC_GresHighlighting.msp(true, "/**"), null, PC_GresHighlighting.msp(true, "*/"), true, PC_Formatter.color(122, 122, 255), INNER);
-		highlighting.addBlockHighlight(PC_GresHighlighting.msp(true, "\""), PC_GresHighlighting.msp(true, "\\"), PC_GresHighlighting.msp(true, "\""), true, PC_Formatter.color(255, 122, 122));
-		highlighting.addBlockHighlight(PC_GresHighlighting.msp(true, "'"), PC_GresHighlighting.msp(true, "\\"), PC_GresHighlighting.msp(true, "'"), true, PC_Formatter.color(255, 122, 122));
+		highlighting.addBlockHighlight(PC_GresHighlighting.msp(true, "\""), PC_GresHighlighting.msp(true, "\\"), PC_GresHighlighting.msp(true, "\""), false, PC_Formatter.color(255, 122, 122));
+		highlighting.addBlockHighlight(PC_GresHighlighting.msp(true, "'"), PC_GresHighlighting.msp(true, "\\"), PC_GresHighlighting.msp(true, "'"), false, PC_Formatter.color(255, 122, 122));
 		return highlighting;
 	}
+	
+	public static final String[] CONST = {"true", "false", "null"};
+	public static final String[] PRIMITIVES = {"bool", "boolean", "byte", "char", "short", "int", "long", "float", "double", "void"};
+	public static final String[] CLASSES = {"class", "enum", "interface", "@interface"};
+	public static final String[] HEADER = {"package", "import"};
+	public static final String[] MODIFIER = {"public", "private", "protected", "final", "abstract", "native", "static", "synchronized", "throws"};
+	public static final String[] PARENTING = {"this", "super"};
+	public static final String[] CONDITIONS = {"for", "while", "do", "if", "else"};
+	public static final String[] SWITCH = {"switch", "case", "default"};
+	public static final String[] BREAKS = {"return", "break", "continue", "throw"};
+	public static final String[] TRY = {"try", "catch", "finally"};
+	public static final String[] OPERATORS = {"and", "or", "xor", "bitand", "bitor", "mod", "not", "bitnot", "pow", "instanceof"};
+	public static final String[] EXTRENDS = {"extends", "implements"};
+	public static final String[] OTHERS = {"new", "asm", "assert"};
 	
 	public static PC_AutoAdd makeAutoAdd(){
 		return new AutoAdd();
@@ -53,6 +80,16 @@ public class PC_WeaselHighlighting {
 			}else if(add.toAdd.equals("(")){
 				add.toAdd = "()";
 				add.cursorPos = 1;
+			}else if(add.toAdd.equals("\"")){
+				if(add.pos==0 || add.documentLine.getText().charAt(add.pos-1)!='\\'){
+					add.toAdd = "\"\"";
+					add.cursorPos = 1;
+				}
+			}else if(add.toAdd.equals("'")){
+				if(add.pos==0 || add.documentLine.getText().charAt(add.pos-1)!='\\'){
+					add.toAdd = "''";
+					add.cursorPos = 1;
+				}
 			}else if(add.toAdd.equals("\t")){
 				if(add.documentLine.prev!=null){
 					String text = add.documentLine.getText();
@@ -102,23 +139,23 @@ public class PC_WeaselHighlighting {
 					}
 					int diff = size-oSize;
 					if(diff>0){
-						add.pos = 0;
+						add.cursorPos = 0;
 						add.toAdd="";
 						while(diff>3){
 							diff-=4;
 							add.toAdd += "\t";
-							add.pos++;
+							add.cursorPos++;
 						}
 						while(diff>0){
 							diff--;
 							add.toAdd += " ";
-							add.pos++;
+							add.cursorPos++;
 						}
-						String s = text.substring(add.cursorPos);
+						String s = text.substring(add.pos);
 						for(int i=0; i<s.length(); i++){
 							char c = s.charAt(i);
 							if(c==' '|| c=='\t'){
-								add.pos++;
+								add.cursorPos++;
 							}else{
 								break;
 							}
@@ -127,7 +164,7 @@ public class PC_WeaselHighlighting {
 				}
 			}else if(add.toAdd.equals("\n")){
 				String text = add.documentLine.getText();
-				String ll = text.substring(0, add.cursorPos);
+				String ll = text.substring(0, add.pos);
 				String start = "";
 				for(int i=0; i<text.length(); i++){
 					char c = text.charAt(i);
@@ -139,7 +176,7 @@ public class PC_WeaselHighlighting {
 				}
 				add.toAdd += start;
 				if(ll.endsWith("{")){
-					add.pos = 2+start.length();
+					add.cursorPos = 2+start.length();
 					add.toAdd += "\t\n"+start+"}";
 				}
 			}

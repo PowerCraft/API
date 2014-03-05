@@ -710,7 +710,6 @@ public class PC_TileEntity extends TileEntity {
 	}
 
 	@SuppressWarnings("hiding")
-	@SideOnly(Side.CLIENT)
 	public final void onClientMessageCheck(EntityPlayer player, NBTTagCompound nbtTagCompound, long session, boolean intern) {
 		Session pSession = sessions.get(player);
 		if(pSession!=null && pSession.dimension == this.worldObj.getWorldInfo().getVanillaDimension() && pSession.x == this.xCoord && pSession.y == this.yCoord && pSession.z == this.zCoord && pSession.session == session){

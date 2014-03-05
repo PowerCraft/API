@@ -86,6 +86,7 @@ public class PC_FontRenderer {
 	}
 	
 	private static void drawStringInt(String text, float x, float y, PC_FontTexture texture, int color, boolean shadow, float scale){
+		float s = scale;
 		PC_FontTexture activeTexture = texture;
 		PC_ClientUtils.mc().renderEngine.bindTexture(activeTexture.getResourceLocation());
 		Tessellator tessellator = Tessellator.instance;
@@ -118,6 +119,17 @@ public class PC_FontRenderer {
 					int font = text.charAt(++i);
 					activeTexture = PC_Fonts.get(font);
 					tessellator.draw();
+					size = activeTexture.getTextureSize();
+					PC_ClientUtils.mc().renderEngine.bindTexture(activeTexture.getResourceLocation());
+					tessellator.startDrawingQuads();
+				}else if(c==PC_Formatter.SCALE_SEQ){
+					int sc = text.charAt(++i);
+					s = 1.0f/sc;
+				}else if(c==PC_Formatter.SCALE_SEQ){
+					int font = text.charAt(++i);
+					activeTexture = PC_Fonts.get(font);
+					tessellator.draw();
+					size = activeTexture.getTextureSize();
 					PC_ClientUtils.mc().renderEngine.bindTexture(activeTexture.getResourceLocation());
 					tessellator.startDrawingQuads();
 				}else if(c==PC_Formatter.ERROR_SEQ){
@@ -129,6 +141,8 @@ public class PC_FontRenderer {
 			    	blue = ccolor >> 8 & 255;
 			        green = ccolor & 255;
 					activeTexture = texture;
+					size = activeTexture.getTextureSize();
+					s = scale;
 					tessellator.draw();
 					PC_ClientUtils.mc().renderEngine.bindTexture(activeTexture.getResourceLocation());
 					tessellator.startDrawingQuads();
@@ -141,24 +155,24 @@ public class PC_FontRenderer {
 					float tw = data.width/size;
 					float th = data.height/size;
 					tessellator.setColorRGBA(red, green, blue, alpha);
-					tessellator.addVertexWithUV(nx, y+data.height*scale, 0, tx, ty+th);
-					tessellator.addVertexWithUV(nx+data.width*scale, y+data.height*scale, 0, tx+tw, ty+th);
-					tessellator.addVertexWithUV(nx+data.width*scale, y, 0, tx+tw, ty);
+					tessellator.addVertexWithUV(nx, y+data.height*s, 0, tx, ty+th);
+					tessellator.addVertexWithUV(nx+data.width*s, y+data.height*s, 0, tx+tw, ty+th);
+					tessellator.addVertexWithUV(nx+data.width*s, y, 0, tx+tw, ty);
 					tessellator.addVertexWithUV(nx, y, 0, tx, ty);
 					if(error){
 						tessellator.draw();
 						GL11.glDisable(GL11.GL_TEXTURE_2D);
 						tessellator.startDrawingQuads();
 						tessellator.setColorRGBA(255, 0, 0, alpha);
-						tessellator.addVertex(nx, y+data.height*scale, 0);
-						tessellator.addVertex(nx+data.width*scale, y+data.height*scale, 0);
-						tessellator.addVertex(nx+data.width*scale, y+data.height*scale-1, 0);
-						tessellator.addVertex(nx, y+data.height*scale-1, 0);
+						tessellator.addVertex(nx, y+data.height*s, 0);
+						tessellator.addVertex(nx+data.width*s, y+data.height*s, 0);
+						tessellator.addVertex(nx+data.width*s, y+data.height*s-1, 0);
+						tessellator.addVertex(nx, y+data.height*s-1, 0);
 						tessellator.draw();
 						GL11.glEnable(GL11.GL_TEXTURE_2D);
 						tessellator.startDrawingQuads();
 					}
-					nx += data.width*scale;
+					nx += data.width*s;
 				}
 			}
 		}

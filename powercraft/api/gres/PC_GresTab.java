@@ -62,33 +62,19 @@ public class PC_GresTab extends PC_GresContainer {
 		super.removeAll();
 	}
 	
-	private PC_Vec2I calcFrameSize(){
-		return this.frame.getLocation().add(this.frame.getSize());
-	}
-	
-	private PC_Vec2I addFrameSize(PC_Vec2I vec){
-		PC_Vec2I vecS = calcFrameSize();
-		PC_Vec2I nvec = new PC_Vec2I(vec);
-		if(nvec.x>=0)
-			nvec.x += vecS.x;
-		if(nvec.y>=0)
-			nvec.y += vecS.y;
-		return nvec;
-	}
-	
 	@Override
 	protected PC_Vec2I calculateMinSize() {
-		return addFrameSize(this.children.size()>0?this.children.get(0).getMinSize():new PC_Vec2I(10, 10));
+		return this.children.size()>0?this.children.get(0).getMinSize():new PC_Vec2I(10, 10);
 	}
 
 	@Override
 	protected PC_Vec2I calculateMaxSize() {
-		return addFrameSize(this.children.size()>0?this.children.get(0).getMaxSize():new PC_Vec2I(-1, -1));
+		return this.children.size()>0?this.children.get(0).getMaxSize():new PC_Vec2I(-1, -1);
 	}
 
 	@Override
 	protected PC_Vec2I calculatePrefSize() {
-		return addFrameSize(this.children.size()>0?this.children.get(0).getPrefSize():new PC_Vec2I(-1, -1));
+		return this.children.size()>0?this.children.get(0).getPrefSize():new PC_Vec2I(-1, -1);
 	}
 
 	@SuppressWarnings("hiding")
@@ -252,7 +238,8 @@ public class PC_GresTab extends PC_GresContainer {
 	@Override
 	protected boolean handleMouseButtonUp(PC_Vec2I mouse, int buttons, int eventButton, PC_GresHistory history) {
 		if(!this.move){
-			moveToTop(this.mouseOverTab.child);
+			if(this.mouseOverTab!=null)
+				moveToTop(this.mouseOverTab.child);
 			return super.handleMouseButtonUp(mouse, buttons, eventButton, history);
 		}
 		this.move = false;
@@ -273,6 +260,40 @@ public class PC_GresTab extends PC_GresContainer {
 			event.consume();
 	}
 
+	public String getVisibleTabName(){
+		if(this.children.isEmpty())
+			return null;
+		PC_GresComponent visibleTab = this.children.get(0);
+		for(Tab tab:this.tabs){
+			if(tab.child==visibleTab){
+				return tab.tab;
+			}
+		}
+		return null;
+	}
+	
+	public PC_GresComponent getVisibleTab(){
+		return this.children.size()>0?this.children.get(0):null;
+	}
+	
+	public PC_GresComponent getTab(String name) {
+		for(Tab tab:this.tabs){
+			if(tab.tab.equals(name)){
+				return tab.child;
+			}
+		}
+		return null;
+	}
+	
+	public String getTabName(PC_GresComponent component) {
+		for(Tab tab:this.tabs){
+			if(tab.child == component){
+				return tab.tab;
+			}
+		}
+		return null;
+	}
+	
 	private static class Tab{
 		public String tab;
 		public PC_GresComponent child;

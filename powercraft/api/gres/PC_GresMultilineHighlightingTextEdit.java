@@ -65,7 +65,7 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 		this.autoComplete = autoComplete;
 		this.document = new PC_GresDocument(text, highlighting, this.docHandler = new DocHandler(), autoComplete==null?null:autoComplete.getInfoCollector());
 	}
-
+	
 	@Override
 	protected PC_Vec2I calculateMinSize() {
 		return new PC_Vec2I(300, 200);

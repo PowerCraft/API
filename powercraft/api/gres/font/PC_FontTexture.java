@@ -45,7 +45,8 @@ public class PC_FontTexture extends AbstractTexture {
 	private PC_CharData[] charArray = new PC_CharData[256];
 	private Map<Character, PC_CharData> customChars = new HashMap<Character, PC_CharData>();
 	private int fontID;
-
+	private int style;
+	
 	PC_FontTexture(Font font, boolean antiAlias, char[] customCharsArray) {
 		this.font = font;
 		this.location = new ResourceLocation("PowerCraft", "*" + font.getFontName());
@@ -90,6 +91,7 @@ public class PC_FontTexture extends AbstractTexture {
 				inputstream = resource.getInputStream();
 				this.font = Font.createFont(Font.TRUETYPE_FONT, inputstream);
 				this.font = this.font.deriveFont(8.0f);
+				this.font = this.font.deriveFont(this.style);
 				inputstream.close();
 			} catch (Exception e) { // Do not use Java 1.7, use Java 1.6
 				throw new RuntimeException(e); // Should we create a runtime Error and crash report?
@@ -245,23 +247,28 @@ public class PC_FontTexture extends AbstractTexture {
 	}
 
 	@SuppressWarnings("hiding")
-	public void addCustomChars(char[] customCharsArray) {
+	public boolean addCustomChars(char[] customCharsArray) {
 		if (customCharsArray != null) {
 			List<Character> customCharsList = new ArrayList<Character>();
-			for (int i = 0; i < customCharsArray.length; i++){
-				Character c = Character.valueOf(customCharsArray[i]);
-				if (!customCharsList.contains(c))
-					customCharsList.add(c);
-			}
 			for (int i = 0; i < this.customCharsArray.length; i++){
 				Character c = Character.valueOf(this.customCharsArray[i]);
 				if (!customCharsList.contains(c))
 					customCharsList.add(c);
 			}
+			boolean changed = false;
+			for (int i = 0; i < customCharsArray.length; i++){
+				Character c = Character.valueOf(customCharsArray[i]);
+				if (!customCharsList.contains(c)){
+					customCharsList.add(c);
+					changed = true;
+				}
+			}
 			this.customCharsArray = new char[customCharsList.size()];
 			for (int i = 0; i < this.customCharsArray.length; i++)
 				this.customCharsArray[i] = customCharsList.get(i).charValue();
+			return changed;
 		}
+		return false;
 	}
 
 }

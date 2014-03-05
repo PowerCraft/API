@@ -64,7 +64,7 @@ class PC_GresScrollAreaContainer extends PC_GresContainer {
 	}
 	
 	@Override
-	protected PC_Vec2I getRealLocation() {
+	public PC_Vec2I getRealLocation() {
 		return this.rect.getLocation().add(this.scrollArea.getRealLocation());
 	}
 	
@@ -74,12 +74,12 @@ class PC_GresScrollAreaContainer extends PC_GresContainer {
 	}
 	
 	@Override
-	protected void moveToTop(){
+	public void moveToTop(){
 		this.scrollArea.moveToTop();
 	}
 	
 	@Override
-	protected void moveToBottom(){
+	public void moveToBottom(){
 		this.scrollArea.moveToBottom();
 	}
 

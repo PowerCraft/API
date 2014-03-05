@@ -351,14 +351,15 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 
 	public void setFocus(PC_GresComponent focusedComponent) {
 		if(this.focusedComponent != focusedComponent){
-			if(this.focusedComponent!=null){
-				this.focusedComponent.onFocusLost(focusedComponent, this.history);
-			}
 			PC_GresComponent oldFocusedComponent = this.focusedComponent;
 			this.focusedComponent = focusedComponent;
+			if(oldFocusedComponent!=null){
+				oldFocusedComponent.onFocusLost(focusedComponent, this.history);
+			}
 			if(focusedComponent!=null){
 				focusedComponent.onFocusGot(oldFocusedComponent, this.history);
 			}
+			onFocusChaned(oldFocusedComponent, focusedComponent);
 		}
 	}
 
@@ -589,6 +590,10 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 	
 	public PC_GresHistory getHistory(){
 		return this.history;
+	}
+
+	public void onAdded(PC_GresComponent component) {
+		component.onScaleChanged(this.scale);
 	}
 	
 }

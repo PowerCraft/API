@@ -3,6 +3,7 @@ package powercraft.api.entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import powercraft.api.gres.PC_GresBaseWithInventory;
+import powercraft.api.renderer.PC_EntityRenderer;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -34,5 +35,11 @@ public interface PC_IEntity {
 	public void sendProgressBarUpdates();
 
 	public int getEntityId();
+	
+	@SideOnly(Side.CLIENT)
+	public String getEntityTextureName(PC_EntityRenderer<?> renderer);
+	
+	@SideOnly(Side.CLIENT)
+	public void doRender(PC_EntityRenderer<?> renderer, double x, double y, double z, float rotYaw, float timeStamp);
 	
 }

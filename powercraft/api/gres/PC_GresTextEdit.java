@@ -102,7 +102,7 @@ public class PC_GresTextEdit extends PC_GresComponent {
 		drawString(t, 2 - this.scroll, 6, false);
 
 		if (this.focus && this.cursorCounter / 6 % 2 == 0) {
-			PC_Vec2I max = fontRenderer.getStringSize(t);
+			PC_Vec2I max = fontRenderer.getStringSize(t.isEmpty()?" ":t);
 			PC_Vec2I size = fontRenderer.getStringSize(t.substring(0, this.mouseSelectEnd));
 			PC_GresRenderer.drawVerticalLine(size.x + 2, 6,
 					6 + max.y, this.fontColors[0]|0xff000000);

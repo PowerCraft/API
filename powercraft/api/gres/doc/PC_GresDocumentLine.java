@@ -36,17 +36,18 @@ public class PC_GresDocumentLine {
 		this.line = "";
 		Object lastInfo = null;
 		List<BlockHighlight> blockHighlight = null;
+		PC_GresHighlighting blockHighlighting = highlighting;
 		if(this.prev!=null&&this.prev.endsWithBlockHightlight!=null){
-			blockHighlight = this.prev.endsWithBlockHightlight;
+			blockHighlight = new ArrayList<BlockHighlight>(this.prev.endsWithBlockHightlight);
 		}
 		if(blockHighlight!=null){
 			this.line += blockHighlight.get(0).getHighlightingString();
+			blockHighlighting = blockHighlight.get(0).getHighlighting();
 		}else{
 			blockHighlight = new ArrayList<BlockHighlight>();
 		}
 		int wordStart = 0;
 		int wordLength = 0;
-		PC_GresHighlighting blockHighlighting = highlighting;
 		for(int i=0; i<oldLine.length();){
 			if(!blockHighlight.isEmpty()){
 				IMultiplePossibilities o = blockHighlight.get(0).getEscapeString();
@@ -64,6 +65,12 @@ public class PC_GresDocumentLine {
 				if(s!=null){
 					int length = s.comesNowIn(oldLine, i, lastInfo);
 					if(length>0){
+						String reset = PC_Formatter.reset();
+						if(!blockHighlight.isEmpty()){
+							reset += blockHighlight.get(0).getHighlightingString();
+						}
+						lastInfo = makeWordHighlighted(oldLine, wordStart, wordLength, reset, blockHighlighting, lastInfo);
+						wordLength = 0;
 						this.line += oldLine.substring(i, i+length);
 						i += length;
 						blockHighlight.remove(0);
@@ -143,7 +150,6 @@ public class PC_GresDocumentLine {
 		}
 		makeWordHighlighted(oldLine, wordStart, wordLength, "", blockHighlighting, lastInfo);
 		wordLength = 0;
-		this.endsWithBlockHightlight = null;
 		for(int i=0; i<blockHighlight.size(); i++){
 			if(!blockHighlight.get(i).isMultiline()){
 				while(blockHighlight.size()>i)
@@ -183,9 +189,11 @@ public class PC_GresDocumentLine {
 		}
 		if(this.endsWithBlockHightlight==null?blockHighlight.isEmpty():this.endsWithBlockHightlight.equals(blockHighlight))
 			return false;
-		this.endsWithBlockHightlight = null;
-		if(!blockHighlight.isEmpty())
+		if(blockHighlight.isEmpty()){
+			this.endsWithBlockHightlight = null;
+		}else{
 			this.endsWithBlockHightlight = blockHighlight;
+		}
 		return true;
 	}
 	

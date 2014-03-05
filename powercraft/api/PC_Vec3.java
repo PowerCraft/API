@@ -19,6 +19,13 @@ public class PC_Vec3 {
 		this.y = y;
 		this.z = z;
 	}
+	
+	public PC_Vec3(PC_Vec3 vec) {
+
+		this.x = vec.x;
+		this.y = vec.y;
+		this.z = vec.z;
+	}
 
 
 	@Override
@@ -41,7 +48,7 @@ public class PC_Vec3 {
 	@Override
 	public String toString() {
 
-		return "Vec3I[" + this.x + ", " + this.y + ", " + this.z + "]";
+		return "Vec3[" + this.x + ", " + this.y + ", " + this.z + "]";
 	}
 
 

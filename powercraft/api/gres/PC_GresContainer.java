@@ -4,6 +4,7 @@ package powercraft.api.gres;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import net.minecraft.inventory.Slot;
 
@@ -11,6 +12,7 @@ import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import powercraft.api.PC_ImmutableList;
 import powercraft.api.PC_RectI;
 import powercraft.api.PC_Vec2I;
 import powercraft.api.gres.history.PC_GresHistory;
@@ -21,7 +23,7 @@ import powercraft.api.gres.layout.PC_IGresLayout;
 @SideOnly(Side.CLIENT)
 public abstract class PC_GresContainer extends PC_GresComponent {
 
-	protected final List<PC_GresComponent> children = new ArrayList<PC_GresComponent>();
+	protected final List<PC_GresComponent> children = new CopyOnWriteArrayList<PC_GresComponent>();
 	protected final List<PC_GresComponent> layoutChildOrder = new ArrayList<PC_GresComponent>();
 	
 	private PC_IGresLayout layout;
@@ -41,6 +43,10 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 		super(text);
 	}
 
+	public List<PC_GresComponent> getChildren(){
+		return new PC_ImmutableList<PC_GresComponent>(this.children);
+	}
+	
 	public List<PC_GresComponent> getLayoutChildOrder(){
 		return this.layoutChildOrder;
 	}
@@ -373,6 +379,25 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 		for (PC_GresComponent child : this.children) {
 			child.onScaleChanged(newScale);
 		}
+	}
+	
+	@Override
+	protected void onFocusChaned(PC_GresComponent oldFocus, PC_GresComponent newFocus){
+		for (PC_GresComponent child : this.children) {
+			child.onFocusChaned(oldFocus, newFocus);
+		}
+	}
+	
+	@Override
+	public boolean hasFocusOrChild(){
+		if(this.focus)
+			return true;
+		for(PC_GresComponent child:this.children){
+			if(child.hasFocusOrChild()){
+				return true;
+			}
+		}
+		return false;
 	}
 	
 }

@@ -9,11 +9,12 @@ public class PC_Formatter {
 	public static char START_SEQ = 65535;
 	public static char COLOR_SEQ = 0;
 	public static char FONT_SEQ = 1;
-	public static char ERROR_SEQ = 2;
-	public static char ERRORSTOP_SEQ = 3;
-	public static char RESET_SEQ = 4;
+	public static final char SCALE_SEQ = 2;
+	public static char ERROR_SEQ = 3;
+	public static char ERRORSTOP_SEQ =4;
+	public static char RESET_SEQ = 5;
 	
-	public static byte data[] = {3, 1, 0, 0, 0};
+	public static byte data[] = {3, 1, 1, 0, 0, 0};
 	
 	public static String reset(){
 		return ""+START_SEQ+RESET_SEQ;
@@ -25,6 +26,10 @@ public class PC_Formatter {
 	
 	public static String font(PC_FontTexture font){
 		return ""+START_SEQ+FONT_SEQ+(char)font.getFontID();
+	}
+	
+	public static String scale(int scale){
+		return ""+START_SEQ+SCALE_SEQ+(char)scale;
 	}
 	
 	public static String error(){

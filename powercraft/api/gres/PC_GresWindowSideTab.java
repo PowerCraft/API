@@ -92,7 +92,7 @@ public class PC_GresWindowSideTab extends PC_GresContainer {
 	}
 	
 	@Override
-	protected PC_Vec2I getRealLocation() {
+	public PC_Vec2I getRealLocation() {
 		if (this.parent == null) {
 			return this.rect.getLocation();
 		} 

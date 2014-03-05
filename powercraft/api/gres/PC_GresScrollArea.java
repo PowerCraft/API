@@ -302,6 +302,16 @@ public class PC_GresScrollArea extends PC_GresComponent {
 		this.mouseOver = false;
 	}
 	
+	@Override
+	public boolean hasFocusOrChild(){
+		if(this.focus)
+			return true;
+		return this.container.hasFocusOrChild();
+	}
 	
+	@Override
+	protected void onFocusChaned(PC_GresComponent oldFocus, PC_GresComponent newFocus){
+		this.container.onFocusChaned(oldFocus, newFocus);
+	}
 	
 }

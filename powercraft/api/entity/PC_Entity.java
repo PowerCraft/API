@@ -30,6 +30,7 @@ import powercraft.api.network.packet.PC_PacketEntitySync;
 import powercraft.api.network.packet.PC_PacketPasswordRequest2;
 import powercraft.api.reflect.PC_Processor;
 import powercraft.api.reflect.PC_Reflection;
+import powercraft.api.renderer.PC_EntityRenderer;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -366,4 +367,10 @@ public abstract class PC_Entity extends Entity implements PC_IEntity {
 		//
 	}
 
+	@Override
+	@SideOnly(Side.CLIENT)
+	public String getEntityTextureName(PC_EntityRenderer<?> renderer) {
+		return "texture";
+	}
+	
 }

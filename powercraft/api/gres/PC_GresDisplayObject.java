@@ -103,7 +103,7 @@ public class PC_GresDisplayObject implements PC_IGresEventListener {
 			PC_GresRenderer.drawTerrainIcon(x, y, width, height, (IIcon)d);
 		}else if(d instanceof ItemStack){
 			int nx = x + width/2-8;
-			int ny = y - height/2-8;
+			int ny = y + height/2-8;
 			PC_GresRenderer.drawItemStack(nx, ny, (ItemStack)d, null);
 		}else if(d instanceof PC_GresTexture){
 			((PC_GresTexture)d).draw(x, y, width, height, 0);

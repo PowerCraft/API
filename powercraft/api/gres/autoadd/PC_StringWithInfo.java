@@ -4,14 +4,14 @@ public class PC_StringWithInfo implements Comparable<PC_StringWithInfo>{
 
 	private String string;
 	private String tooltip;
-	private String info;
+	private String[] info;
 	
 	public PC_StringWithInfo(String string, String tooltip) {
 		this.string = string;
 		this.tooltip = tooltip;
 	}
 	
-	public PC_StringWithInfo(String string, String tooltip, String info) {
+	public PC_StringWithInfo(String string, String tooltip, String[] info) {
 		this.string = string;
 		this.tooltip = tooltip;
 		this.info = info;
@@ -34,7 +34,7 @@ public class PC_StringWithInfo implements Comparable<PC_StringWithInfo>{
 		return this.tooltip;
 	}
 	
-	public String getInfo() {
+	public String[] getInfo() {
 		return this.info;
 	}
 	

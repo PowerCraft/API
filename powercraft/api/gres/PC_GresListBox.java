@@ -1,5 +1,6 @@
 package powercraft.api.gres;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.lwjgl.input.Keyboard;
@@ -32,9 +33,15 @@ public class PC_GresListBox extends PC_GresComponent {
 	private int mouseOverElement=-1;
 	
 	public PC_GresListBox(List<String> elements){
-		this.elements = elements;
+		this.elements = new ArrayList<String>(elements);
 		calcMaxSizeX();
 		this.alignH = PC_GresAlign.H.LEFT;
+	}
+	
+	public void setElements(List<String> elements){
+		this.elements = new ArrayList<String>(elements);
+		calcMaxSizeX();
+		notifyChange();
 	}
 	
 	@Override
@@ -270,6 +277,17 @@ public class PC_GresListBox extends PC_GresComponent {
 			return true;
 		this.selected = this.mouseOverElement = getElementUnderMouse(mouse.y);
 		return true;
+	}
+	
+	
+	
+	@Override
+	protected boolean handleMouseButtonUp(PC_Vec2I mouse, int buttons, int eventButton, PC_GresHistory history) {
+		if(selectBar!=-1 || overBar!=-1){
+			this.mouseDown = false;
+			return true;
+		}
+		return super.handleMouseButtonUp(mouse, buttons, eventButton, history);
 	}
 
 	@Override

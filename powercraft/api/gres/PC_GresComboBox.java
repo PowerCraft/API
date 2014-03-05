@@ -3,17 +3,18 @@ package powercraft.api.gres;
 import java.util.ArrayList;
 import java.util.List;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import powercraft.api.PC_RectI;
 import powercraft.api.PC_Vec2I;
 import powercraft.api.gres.PC_GresAlign.Fill;
 import powercraft.api.gres.events.PC_GresEvent;
 import powercraft.api.gres.events.PC_GresFocusLostEvent;
 import powercraft.api.gres.events.PC_GresMouseButtonEvent;
+import powercraft.api.gres.events.PC_GresMouseEvent;
 import powercraft.api.gres.events.PC_IGresEventListener;
 import powercraft.api.gres.history.PC_GresHistory;
 import powercraft.api.gres.layout.PC_GresLayoutVertical;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class PC_GresComboBox extends PC_GresComponent {
@@ -31,6 +32,12 @@ public class PC_GresComboBox extends PC_GresComponent {
 	
 	public PC_GresComboBox(){
 		this.items = new ArrayList<String>();
+	}
+	
+	public void setItems(List<String> items, int select){
+		this.items = new ArrayList<String>(items);
+		setText(items.get(select));
+		notifyChange();
 	}
 	
 	@Override
@@ -73,21 +80,12 @@ public class PC_GresComboBox extends PC_GresComponent {
 			this.frame = new PC_GresComboBoxFrame(this);
 			this.frame.setLayout(new PC_GresLayoutVertical());
 			ComboBoxEventListener cbel = new ComboBoxEventListener();
-			PC_GresScrollArea sa;
-			this.frame.add(sa = new PC_GresScrollArea());
-			sa.setFill(Fill.BOTH);
-			sa.addEventListener(cbel);
-			sa.setMinSize(new PC_Vec2I(this.rect.width, 50));
-			sa.setSize(new PC_Vec2I(this.rect.width, 50));
-			PC_GresContainer c = sa.getContainer();
-			c.addEventListener(cbel);
-			c.setLayout(new PC_GresLayoutVertical());
-			for(String item:this.items){
-				PC_GresButton b = new PC_GresButton(item);
-				b.setFill(Fill.BOTH);
-				b.addEventListener(cbel);
-				c.add(b);
-			}
+			PC_GresListBox lb;
+			this.frame.add(lb = new PC_GresListBox(this.items));
+			lb.setFill(Fill.BOTH);
+			lb.addEventListener(cbel);
+			lb.setMinSize(new PC_Vec2I(this.rect.width, 50));
+			lb.setSize(new PC_Vec2I(this.rect.width, 50));
 			this.frame.addEventListener(cbel);
 			this.frame.setMinSize(new PC_Vec2I(this.rect.width, 50));
 			this.frame.setSize(new PC_Vec2I(this.rect.width, 50));
@@ -102,6 +100,12 @@ public class PC_GresComboBox extends PC_GresComponent {
 	@Override
 	protected boolean handleMouseButtonUp(PC_Vec2I mouse, int buttons,int eventButton, PC_GresHistory history) {
 		return true;
+	}
+	
+	protected boolean onMouseButtonClick(PC_Vec2I mouse, int buttons,int eventButton, PC_GresHistory history) {
+		PC_GresMouseEvent event = new PC_GresMouseButtonEvent(this, mouse, buttons, eventButton, false, PC_GresMouseButtonEvent.Event.CLICK, history);
+		fireEvent(event);
+		return event.isConsumed();
 	}
 	
 	@Override
@@ -144,8 +148,12 @@ public class PC_GresComboBox extends PC_GresComponent {
 			}else if(event instanceof PC_GresMouseButtonEvent){
 				PC_GresMouseButtonEvent ev = (PC_GresMouseButtonEvent) event;
 				if(ev.getEvent()==PC_GresMouseButtonEvent.Event.CLICK){
-					if(ev.getComponent() instanceof PC_GresButton){
-						setText(ev.getComponent().getText());
+					if(ev.getComponent() instanceof PC_GresListBox){
+						String item = ((PC_GresListBox)ev.getComponent()).getSelected();
+						if(item!=null){
+							setText(item);
+							onMouseButtonClick(ev.getMouse(), ev.getButtonState(), ev.getEventButton(), ev.getHistory());
+						}
 						if(!this.handleClosing){
 							this.handleClosing = true;
 							closeDropDown();

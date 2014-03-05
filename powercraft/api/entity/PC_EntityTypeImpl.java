@@ -2,16 +2,16 @@ package powercraft.api.entity;
 
 import net.minecraft.entity.Entity;
 
-final class PC_EntityTypeImpl extends PC_EntityType {
+final class PC_EntityTypeImpl<E extends Entity & PC_IEntity> extends PC_EntityType<E> {
 	
-	private final Class<? extends Entity> entity;
+	private final Class<E> entity;
 	
-	public PC_EntityTypeImpl(Class<? extends Entity> entity){
+	public PC_EntityTypeImpl(Class<E> entity){
 		this.entity = entity;
 	}
 	
 	@Override
-	public Class<? extends Entity> getEntity(){
+	public Class<E> getEntity(){
 		return this.entity;
 	}
 	

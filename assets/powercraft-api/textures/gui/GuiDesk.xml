@@ -43,6 +43,8 @@
 		<Subtexture name="V6" size="1, 1" frame="0, 0, 0, 0" loc_active="91, 50" loc_mouseDown="91, 50" loc_mouseOver="91, 50" loc_disabled="91, 50"></Subtexture>
 		<Subtexture name="NULL" size="1, 1" frame="0, 0, 0, 0" loc_active="250, 250" loc_mouseDown="250, 250" loc_mouseOver="250, 250" loc_disabled="250, 250"></Subtexture>
 		<Subtexture name="ListElement" size="28, 12" frame="1, 1, 1, 1" loc_active="230, 240" loc_mouseDown="137, 40" loc_mouseOver="137, 28" loc_disabled="230, 240"></Subtexture>
+		<Subtexture name="InfoFrame" size="20, 20" frame="1, 1, 1, 1" loc_active="0, 73" loc_mouseDown="0, 73" loc_mouseOver="0, 73" loc_disabled="0, 73"></Subtexture>
+		<Subtexture name="DialogBoxBackground" size="1, 1" frame="0, 0, 0, 0" loc_active="0, 44" loc_mouseDown="0, 44" loc_mouseOver="0, 44" loc_disabled="0, 44"></Subtexture>
 	</Texture>
 	<Texture textureName="Images.png">
 		<Subtexture name="I_ON" size="16, 16" frame="16, 16, 0, 0" loc_active="0, 0" loc_mouseDown="0, 0" loc_mouseOver="0, 0" loc_disabled="0, 0"></Subtexture>

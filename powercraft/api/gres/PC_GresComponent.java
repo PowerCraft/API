@@ -4,13 +4,11 @@ package powercraft.api.gres;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.inventory.Slot;
 
 import org.lwjgl.opengl.GL11;
 
-import powercraft.api.PC_ClientUtils;
 import powercraft.api.PC_Debug;
 import powercraft.api.PC_RectI;
 import powercraft.api.PC_Vec2I;
@@ -18,8 +16,11 @@ import powercraft.api.gres.events.PC_GresEvent;
 import powercraft.api.gres.events.PC_GresFocusGotEvent;
 import powercraft.api.gres.events.PC_GresFocusLostEvent;
 import powercraft.api.gres.events.PC_GresKeyEvent;
+import powercraft.api.gres.events.PC_GresKeyEventResult;
 import powercraft.api.gres.events.PC_GresMouseButtonEvent;
+import powercraft.api.gres.events.PC_GresMouseButtonEventResult;
 import powercraft.api.gres.events.PC_GresMouseEvent;
+import powercraft.api.gres.events.PC_GresMouseEventResult;
 import powercraft.api.gres.events.PC_GresMouseMoveEvent;
 import powercraft.api.gres.events.PC_GresMouseWheelEvent;
 import powercraft.api.gres.events.PC_GresTooltipGetEvent;
@@ -106,11 +107,15 @@ public abstract class PC_GresComponent {
 				this.parent = null;
 				this.parentVisible = true;
 				this.parentEnabled = true;
+				notifyChange();
 			}
 		} else if (parent.isChild(this)) {
 			this.parent = parent;
 			this.parentVisible = parent.isRecursiveVisible();
 			this.parentEnabled = parent.isRecursiveEnabled();
+			if(getGuiHandler()!=null)
+				getGuiHandler().onAdded(this);
+			notifyChange();
 		}
 	}
 
@@ -227,10 +232,13 @@ public abstract class PC_GresComponent {
 	}
 
 
-	public void putInRect(int x, int y, int width, int height) {
-
+	public void putInRect(int x, int y, int w, int h) {
+		int width = w;
+		int height = h;
 		//if (width > maxSize.x && maxSize.x >= 0) width = maxSize.x;
 		//if (height > maxSize.y && maxSize.y >= 0) height = maxSize.y;
+		if (width < this.minSize.x && this.minSize.x >= 0) width = this.minSize.x;
+		if (height < this.minSize.y && this.minSize.y >= 0) height = this.minSize.y;
 		boolean needUpdate = false;
 		if (this.fill == PC_GresAlign.Fill.BOTH || this.fill == PC_GresAlign.Fill.HORIZONTAL) {
 			needUpdate |= this.rect.x != x;
@@ -420,6 +428,10 @@ public abstract class PC_GresComponent {
 		
 	}
 
+	public boolean hasFocusOrChild(){
+		return this.focus;
+	}
+	
 	public void takeFocus(){
 		
 		PC_GresGuiHandler guiHandler = getGuiHandler();
@@ -504,10 +516,13 @@ public abstract class PC_GresComponent {
 
 		PC_GresKeyEvent event = new PC_GresKeyEvent(this, key, keyCode, repeat, history);
 		fireEvent(event);
+		boolean result = true;
 		if (!event.isConsumed()) {
-			return handleKeyTyped(event.getKey(), event.getKeyCode(), repeat, history);
+			result = handleKeyTyped(key, keyCode, repeat, history);
 		}
-		return true;
+		PC_GresKeyEventResult postEvent = new PC_GresKeyEventResult(this, key, keyCode, repeat, result, history);
+		fireEvent(postEvent);
+		return postEvent.getResult();
 	}
 
 
@@ -577,10 +592,13 @@ public abstract class PC_GresComponent {
 
 		PC_GresMouseEvent event = new PC_GresMouseButtonEvent(this, mouse, buttons, eventButton, doubleClick, PC_GresMouseButtonEvent.Event.DOWN, history);
 		fireEvent(event);
+		boolean result = true;
 		if (!event.isConsumed()) {
-			return handleMouseButtonDown(mouse, buttons, eventButton, doubleClick, history);
+			result = handleMouseButtonDown(mouse, buttons, eventButton, doubleClick, history);
 		}
-		return true;
+		PC_GresMouseEventResult ev = new PC_GresMouseButtonEventResult(this, mouse, buttons, eventButton, false, PC_GresMouseButtonEvent.Event.DOWN, result, history);
+		fireEvent(ev);
+		return ev.getResult();
 	}
 
 
@@ -595,10 +613,13 @@ public abstract class PC_GresComponent {
 
 		PC_GresMouseEvent event = new PC_GresMouseButtonEvent(this, mouse, buttons, eventButton, false, PC_GresMouseButtonEvent.Event.UP, history);
 		fireEvent(event);
+		boolean result = true;
 		if (!event.isConsumed()) {
-			return handleMouseButtonUp(mouse, buttons, eventButton, history);
+			result = handleMouseButtonUp(mouse, buttons, eventButton, history);
 		}
-		return true;
+		PC_GresMouseEventResult ev = new PC_GresMouseButtonEventResult(this, mouse, buttons, eventButton, false, PC_GresMouseButtonEvent.Event.UP, result, history);
+		fireEvent(ev);
+		return ev.getResult();
 	}
 
 
@@ -613,6 +634,9 @@ public abstract class PC_GresComponent {
 			}else{
 				consumed = true;
 			}
+			PC_GresMouseEventResult ev = new PC_GresMouseButtonEventResult(this, mouse, buttons, eventButton, false, PC_GresMouseButtonEvent.Event.CLICK, consumed, history);
+			fireEvent(ev);
+			consumed = ev.getResult();
 		}
 		this.mouseDown = false;
 		return consumed;
@@ -652,6 +676,7 @@ public abstract class PC_GresComponent {
 
 	protected void handleFocusLost(PC_GresHistory history) {
 		this.focus = false;
+		this.mouseDown = false;
 	}
 	
 	protected void onFocusGot(PC_GresComponent oldFocusedComponent, PC_GresHistory history) {
@@ -705,7 +730,7 @@ public abstract class PC_GresComponent {
 	}
 
 
-	protected PC_Vec2I getRealLocation() {
+	public PC_Vec2I getRealLocation() {
 
 		if (this.parent == null) {
 			return this.rect.getLocation();
@@ -852,19 +877,23 @@ public abstract class PC_GresComponent {
 		GL11.glEnable(GL11.GL_BLEND);
 	}
 
-	protected void moveToTop(){
+	public void moveToTop(){
 		if(this.parent!=null){
 			this.parent.moveToTop(this);
 		}
 	}
 	
-	protected void moveToBottom(){
+	public void moveToBottom(){
 		if(this.parent!=null){
 			this.parent.moveToBottom(this);
 		}
 	}
 	
 	protected void onScaleChanged(int newScale){
+		//
+	}
+	
+	protected void onFocusChaned(PC_GresComponent oldFocus, PC_GresComponent newFocus){
 		//
 	}
 	

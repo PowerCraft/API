@@ -112,7 +112,7 @@ public class PC_MiniscriptHighlighting {
 		
 		AutoComplete(List<PC_StringWithInfo> words){
 			for(String asm:MINISCRIPT_ASM){
-				this.asmInstructions.add(new PC_StringWithInfo(asm, PC_Lang.translate("miniscript.tooltip."+asm.toLowerCase()), PC_Lang.translate("miniscript.desk."+asm.toLowerCase())));
+				this.asmInstructions.add(new PC_StringWithInfo(asm, PC_Lang.translate("miniscript.tooltip."+asm.toLowerCase()), PC_Lang.translate("miniscript.desk."+asm.toLowerCase()).split("\n")));
 			}
 			for(int i=0; i<31; i++){
 				this.registers.add(new PC_StringWithInfo("r"+i, "Register Nr "+i));
