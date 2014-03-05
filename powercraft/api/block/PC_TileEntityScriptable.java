@@ -2,8 +2,6 @@ package powercraft.api.block;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import javax.script.CompiledScript;
 import javax.script.ScriptException;
@@ -66,8 +64,9 @@ public abstract class PC_TileEntityScriptable extends PC_TileEntity {
 		if(this.worldObj==null?PC_Utils.isClient():this.worldObj.isRemote)
 			return;
 		DiagnosticCollector<Void> diagnostic = new DiagnosticCollector<Void>();
+		int entryVectorCount = getEntryVectors()==null?0:getEntryVectors().length;
 		try{
-			this.script = PC_Miniscript.compile(source, diagnostic, getReplacements(), getEntryVectors());
+			this.script = PC_Miniscript.compile(source, diagnostic, getReplacements(), entryVectorCount);
 		}catch(ScriptException e) {
 			this.diagnostic = diagnostic;
 		}
