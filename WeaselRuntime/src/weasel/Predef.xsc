@@ -1,0 +1,11 @@
+package weasel;
+
+public final class Predef{
+	
+	private Predef(){}
+	
+	public static void sleep(int ticks){
+		Thread.sleep(ticks*50L);
+	}
+	
+}

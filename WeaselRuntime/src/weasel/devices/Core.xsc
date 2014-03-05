@@ -1,0 +1,32 @@
+package weasel.devices;
+
+import weasel.Predef;
+
+public final class Core{
+
+	private Core(){}
+
+	public static final int TYPE = 1;
+	
+	public static native int getRedstoneValueUnsafe(int address, int side);
+	
+	public static int getRedstoneValue(int address, int side){
+		int value = getRedstoneValueUnsafe(address, side);
+		while(value==-1){
+			Predef.sleep(1);
+			value = getRedstoneValueUnsafe(address, side);
+		}
+		return value;
+	}
+	
+	public static native bool setRedstoneValueUnsafe(int address, int side, int value);
+	
+	public static void setRedstoneValue(int address, int side, int value){
+		bool state = setRedstoneValueUnsafe(address, side, value);
+		while(!state){
+			Predef.sleep(1);
+			state = setRedstoneValueUnsafe(address, side, value);
+		}
+	}
+	
+}

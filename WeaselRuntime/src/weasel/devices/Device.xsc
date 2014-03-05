@@ -1,0 +1,28 @@
+package weasel.devices;
+
+import weasel.Predef;
+
+public final class Device{
+
+	private Device(){}
+
+	public static native int getTypeUnsafe(int address);
+	
+	public static int getType(int address){
+		int type = getTypeUnsafe(address);
+		while(type==0){
+			Predef.sleep(1);
+			type = getTypeUnsafe(address);
+		}
+		return type;
+	}
+	
+	public static native bool isDevicePresent(int address);
+	
+	public static void waitForDevice(int address){
+		while(!isDevicePresent(address)){
+			Predef.sleep(1);
+		}
+	}
+	
+}
