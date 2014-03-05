@@ -82,16 +82,18 @@ public final class PC_Miniscript {
 		return nName;
 	}
 	
-	public static CompiledScript compile(String script, DiagnosticListener<Void> diagnosticListener, HashMap<String, Integer> replacements) throws ScriptException{
+	public static CompiledScript compile(String script, DiagnosticListener<Void> diagnosticListener, HashMap<String, Integer> replacements, String[] entryVectors) throws ScriptException{
 		scriptEngine.getContext().setAttribute(MiniScriptLang.COMPILER_DIAGNOSTICLISTENER, diagnosticListener, ScriptContext.ENGINE_SCOPE);
 		HashMap<String, Integer> r = new HashMap<String, Integer>(defaultReplacements);
 		r.putAll(replacements);
 		scriptEngine.getContext().setAttribute(MiniScriptLang.COMPILER_REPLACEMENTS, r, ScriptContext.ENGINE_SCOPE);
+		scriptEngine.getContext().setAttribute(MiniScriptLang.COMPILER_START_VECTORS, entryVectors, ScriptContext.ENGINE_SCOPE);
 		return ((Compilable)scriptEngine).compile(script);
 	}
 	
-	public static void invoke(CompiledScript script, int[] ext) throws ScriptException{
+	public static void invoke(CompiledScript script, int[] ext, int entryIndex) throws ScriptException{
 		scriptEngine.getContext().setAttribute(MiniScriptLang.BINDING_EXT, ext, ScriptContext.ENGINE_SCOPE);
+		scriptEngine.getContext().setAttribute(MiniScriptLang.BINDING_START_VECTOR, entryIndex, ScriptContext.ENGINE_SCOPE);
 		script.eval(scriptEngine.getContext());
 	}
 	
