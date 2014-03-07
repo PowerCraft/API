@@ -176,9 +176,12 @@ public class PC_Utils {
 		return side;
 	}
 
+	public static int getRotation(Entity entity) {
+		return PC_MathHelper.floor_double(entity.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
+	}
+
 	public static int getRotationMetadata(int metadata, Entity entity) {
-		int rot = PC_MathHelper.floor_double(entity.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
-		return (rot << 2) | (metadata & 3);
+		return (getRotation(entity) << 2) | (metadata & 3);
 	}
 
 	public static AxisAlignedBB rotateAABB(IBlockAccess world, int x, int y, int z, AxisAlignedBB box) {
