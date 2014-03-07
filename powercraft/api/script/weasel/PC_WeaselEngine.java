@@ -9,4 +9,6 @@ public interface PC_WeaselEngine {
 	
 	public byte[] save();
 	
+	public void onEvent(PC_IWeaselEvent event);
+	
 }

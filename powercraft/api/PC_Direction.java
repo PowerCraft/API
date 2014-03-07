@@ -44,6 +44,8 @@ public enum PC_Direction {
     	{SOUTH, NORTH, DOWN, UP, WEST, EAST, UNKNOWN},
     	{DOWN, UP, NORTH, SOUTH, WEST, EAST, UNKNOWN},
     };
+    
+    public static final PC_Direction[] fromRotationY = {NORTH, EAST, SOUTH, WEST};
 
     private PC_Direction(int x, int y, int z) {
         this.offsetX = x;
@@ -62,6 +64,10 @@ public enum PC_Direction {
 
     public static PC_Direction fromSide(ForgeDirection side) {
 		return fromSide(side.ordinal());
+	}
+    
+    public static PC_Direction fromRotationY(int rotation) {
+		return fromRotationY[rotation];
 	}
     
     public PC_Direction getOpposite(){

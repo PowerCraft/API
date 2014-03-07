@@ -54,6 +54,7 @@ public abstract class PC_TileEntityScriptable extends PC_TileEntity {
 	public void setSource(String source){
 		this.diagnostic = null;
 		this.script = null;
+		this.e = null;
 		if(source==null || source.trim().isEmpty()){
 			this.source = null;
 			return;
@@ -63,12 +64,15 @@ public abstract class PC_TileEntityScriptable extends PC_TileEntity {
 		this.source = source;
 		if(this.worldObj==null?PC_Utils.isClient():this.worldObj.isRemote)
 			return;
-		DiagnosticCollector<Void> diagnostic = new DiagnosticCollector<Void>();
+		diagnostic = new DiagnosticCollector<Void>();
 		int entryVectorCount = getEntryVectors()==null?0:getEntryVectors().length;
 		try{
 			this.script = PC_Miniscript.compile(source, diagnostic, getReplacements(), entryVectorCount);
 		}catch(ScriptException e) {
-			this.diagnostic = diagnostic;
+			this.e = e;
+		}
+		if(diagnostic.getDiagnostics().isEmpty()){
+			diagnostic = null;
 		}
 	}
 	

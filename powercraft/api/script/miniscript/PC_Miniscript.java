@@ -61,10 +61,11 @@ public final class PC_Miniscript {
 			String n = "Item."+mod+"."+item;
 			defaultReplacementWorldList.add(n);
 			defaultReplacements.put(n.toLowerCase(), Integer.valueOf(id));
-			String[] info = new String[3];
-			info[0] = fontBoldConsolasStart+"Item:"+PC_Formatter.reset()+" "+item;
-			info[1] = fontBoldConsolasStart+"Mod:"+PC_Formatter.reset()+" "+mod;
-			info[2] = fontBoldConsolasStart+"Name:"+PC_Formatter.reset()+" "+PC_Lang.translate(((Item)obj).getUnlocalizedName()+".name");
+			String[] info = new String[4];
+			info[0] = fontBoldConsolasStart+"Additional Data:"+PC_Formatter.reset();
+			info[1] = fontBoldConsolasStart+"\tItem:"+PC_Formatter.reset()+" "+item+":"+id;
+			info[2] = fontBoldConsolasStart+"\tMod:"+PC_Formatter.reset()+" "+mod;
+			info[3] = fontBoldConsolasStart+"\tName:"+PC_Formatter.reset()+" "+PC_Lang.translate(((Item)obj).getUnlocalizedName()+".name");
 			defaultReplacementList.add(new PC_StringWithInfo(n, "Const: "+id, info));
 		}
 	}

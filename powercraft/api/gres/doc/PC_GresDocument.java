@@ -1,6 +1,9 @@
 package powercraft.api.gres.doc;
 
+import javax.tools.Diagnostic.Kind;
+
 import powercraft.api.PC_Vec2I;
+import powercraft.api.gres.doc.PC_GresDocumentLine.Message;
 import powercraft.api.gres.font.PC_Formatter;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -40,10 +43,10 @@ public class PC_GresDocument {
 		}
 	}
 	
-	private static String[] subArray(String[] array, int start, int end, String[] array2, int start2, int end2){
+	private static Message[] subArray(Message[] array, int start, int end, Message[] array2, int start2, int end2){
 		int size = end-start;
 		int size2 = end2-start2;
-		String[] result = new String[size+size2];
+		Message[] result = new Message[size+size2];
 		for(int i=0; i<size; i++){
 			result[i] = array[i+start];
 		}
@@ -83,11 +86,11 @@ public class PC_GresDocument {
 			if(line.errors!=null && line2.errors!=null){
 				line.errors = subArray(line.errors, 0, selects[0].x, line2.errors, selects[1].x, text2.length());
 			}else if(line.errors!=null){
-				String[] errors = line.errors;
-				line.errors = new String[text.length()];
+				Message[] errors = line.errors;
+				line.errors = new Message[text.length()];
 				System.arraycopy(errors, 0, line.errors, 0, selects[0].x);
 			}else if(line2.errors!=null){
-				line.errors = new String[text.length()];
+				line.errors = new Message[text.length()];
 				System.arraycopy(line2.errors, selects[1].x, line.errors, 0, text2.length()-selects[1].x);
 			}
 			line.setText(text);
@@ -101,10 +104,10 @@ public class PC_GresDocument {
 		recalcHighlights(line, 1);
 	}
 	
-	private static String[] concat(String[] array, int start, int end, int s, String[] array2, int start2, int end2){
+	private static Message[] concat(Message[] array, int start, int end, int s, Message[] array2, int start2, int end2){
 		int size = end-start;
 		int size2 = end2-start2;
-		String[] result = new String[size+size2+s];
+		Message[] result = new Message[size+size2+s];
 		for(int i=0; i<size; i++){
 			result[i] = array[i+start];
 		}
@@ -130,9 +133,9 @@ public class PC_GresDocument {
 		}else{
 			this.lines += inserts.length-1;
 			onLineChange(line);
-			String[] errors = line.errors;
+			Message[] errors = line.errors;
 			if(errors!=null){
-				line.errors = new String[pos.x+inserts[0].length()];
+				line.errors = new Message[pos.x+inserts[0].length()];
 				System.arraycopy(errors, 0, line.errors, 0, pos.x);
 			}
 			line.setText(start+inserts[0]);
@@ -148,7 +151,7 @@ public class PC_GresDocument {
 			}
 			PC_GresDocumentLine newLine = new PC_GresDocumentLine(inserts[inserts.length-1]+end);
 			if(errors!=null){
-				newLine.errors = new String[inserts[inserts.length-1].length()+end.length()];
+				newLine.errors = new Message[inserts[inserts.length-1].length()+end.length()];
 				System.arraycopy(errors, 0, newLine.errors, inserts[inserts.length-1].length(), end.length());
 			}
 			onLineChanged(newLine);
@@ -278,21 +281,21 @@ public class PC_GresDocument {
 		return this.infoCollector;
 	}
 
-	public void addError(PC_Vec2I start, PC_Vec2I end, String message) {
+	public void addError(PC_Vec2I start, PC_Vec2I end, Kind kind, String message) {
 		PC_Vec2I sorted[] = sort(start, end);
 		PC_GresDocumentLine line = getLine(sorted[0].y);
 		if(sorted[0].y == sorted[1].y){
-			line.addError(sorted[0].x, sorted[1].x, message);
+			line.addError(sorted[0].x, sorted[1].x, kind, message);
 			recalcHighlights(line, 1);
 		}else{
 			PC_GresDocumentLine sline = line;
-			line.addError(sorted[0].x, -1, message);
+			line.addError(sorted[0].x, -1, kind, message);
 			line = line.next;
 			for(int i=sorted[0].y+1; i<sorted[1].y; i++){
-				line.addError(0, -1, message);
+				line.addError(0, -1, kind, message);
 				line = line.next;
 			}
-			line.addError(0, sorted[1].x, message);
+			line.addError(0, sorted[1].x, kind, message);
 			recalcHighlights(sline, sorted[1].y-sorted[0].y+1);
 		}
 	}

@@ -7,6 +7,7 @@ import java.util.List;
 
 import powercraft.api.grid.PC_Grid;
 import powercraft.api.grid.PC_IGridFactory;
+import powercraft.api.script.weasel.PC_IWeaselEvent;
 
 public class PC_WeaselGrid extends PC_Grid<PC_WeaselGrid, PC_IWeaselGridTile, PC_WeaselNode, PC_WeaselEdge> {
 
@@ -29,7 +30,7 @@ public class PC_WeaselGrid extends PC_Grid<PC_WeaselGrid, PC_IWeaselGridTile, PC
 	private HashMap<Integer, PC_IWeaselGridTileAddressable> addressTiles = new HashMap<Integer, PC_IWeaselGridTileAddressable>();
 	
 	PC_WeaselGrid(PC_IWeaselGridTile tile){
-		super(tile);
+		addTile(tile);
 	}
 	
 	PC_WeaselGrid(){
@@ -152,6 +153,12 @@ public class PC_WeaselGrid extends PC_Grid<PC_WeaselGrid, PC_IWeaselGridTile, PC
 			return;
 		removeAddressTile(tile, oldAddress);
 		addAddressTile(tile);
+	}
+
+	public void sendEvent(PC_IWeaselEvent event) {
+		for(PC_IWeaselGridTileAddressable tile:addressTiles.values()){
+			tile.onEvent(event);
+		}
 	}
 	
 }

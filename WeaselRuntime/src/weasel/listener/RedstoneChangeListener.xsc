@@ -1,0 +1,7 @@
+package weasel.listener;
+
+public abstract class RedstoneChangeListener{
+
+	public abstract void onRedstoneChanged(int address, int side, int value);
+
+}

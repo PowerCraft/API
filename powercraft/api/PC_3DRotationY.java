@@ -15,7 +15,7 @@ public class PC_3DRotationY implements PC_3DRotation {
 	}
 	
 	public PC_3DRotationY(Entity entity){
-		this.rotation = PC_Utils.getRotationMetadata(0, entity)>>2;
+		this.rotation = PC_Utils.getRotation(entity);
 	}
 	
 	@SuppressWarnings("unused")

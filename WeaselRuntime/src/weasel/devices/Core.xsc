@@ -1,16 +1,33 @@
 package weasel.devices;
 
 import weasel.Predef;
+import weasel.listener.RedstoneChangeListener;
 
-public final class Core{
-
-	private Core(){}
+public class Core:Device{
 
 	public static final int TYPE = 1;
 	
+	private static RedstoneChangeListener listener;
+	
+	public Core(int address):Device(address){}
+	
+	private static void redstoneChangeInterruptEntryPoint(int address, int side, int value){
+		if(listener!=null){
+			listener.onRedstoneChanged(address, side, value);
+		}
+	}
+	
+	public static void setRedstoneChangeListener(RedstoneChangeListener listener){
+		Core.listener = listener;
+	}
+	
 	public static native int getRedstoneValueUnsafe(int address, int side);
 	
-	public static int getRedstoneValue(int address, int side){
+	public int getRedstoneValueUnsafe(int side){
+		return getRedstoneValueUnsafe(address, side);
+	}
+	
+	public int getRedstoneValue(int side){
 		int value = getRedstoneValueUnsafe(address, side);
 		while(value==-1){
 			Predef.sleep(1);
@@ -21,7 +38,11 @@ public final class Core{
 	
 	public static native bool setRedstoneValueUnsafe(int address, int side, int value);
 	
-	public static void setRedstoneValue(int address, int side, int value){
+	public bool setRedstoneValueUnsafe(int side, int value){
+		return setRedstoneValueUnsafe(address, side, value);
+	}
+	
+	public void setRedstoneValue(int side, int value){
 		bool state = setRedstoneValueUnsafe(address, side, value);
 		while(!state){
 			Predef.sleep(1);

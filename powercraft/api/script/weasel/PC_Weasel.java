@@ -20,16 +20,16 @@ public final class PC_Weasel {
 		return weaselModule.createClassSave();
 	}
 	
-	public static PC_WeaselEngine createEngine(PC_WeaselClassSave classSave, int memSize){
+	public static PC_WeaselEngine createEngine(PC_WeaselClassSave classSave, int memSize, PC_IWeaselNativeHandler handler){
 		if(weaselModule==null)
 			return null;
-		return weaselModule.createEngine(classSave, memSize);
+		return weaselModule.createEngine(classSave, memSize, handler);
 	}
 	
-	public static PC_WeaselEngine loadEngine(PC_WeaselClassSave classSave, byte[] data){
+	public static PC_WeaselEngine loadEngine(PC_WeaselClassSave classSave, byte[] data, PC_IWeaselNativeHandler handler){
 		if(weaselModule==null)
 			return null;
-		return weaselModule.loadEngine(classSave, data);
+		return weaselModule.loadEngine(classSave, data, handler);
 	}
 	
 	private PC_Weasel(){

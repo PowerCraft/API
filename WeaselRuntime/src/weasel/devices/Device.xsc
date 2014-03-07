@@ -2,13 +2,21 @@ package weasel.devices;
 
 import weasel.Predef;
 
-public final class Device{
+public class Device{
 
-	private Device(){}
+	protected final int address;
+
+	protected Device(int address){
+		this.address;
+	}
 
 	public static native int getTypeUnsafe(int address);
 	
-	public static int getType(int address){
+	public int getTypeUnsafe(){
+		return getTypeUnsafe(address);
+	}
+	
+	public int getType(){
 		int type = getTypeUnsafe(address);
 		while(type==0){
 			Predef.sleep(1);
@@ -19,7 +27,11 @@ public final class Device{
 	
 	public static native bool isDevicePresent(int address);
 	
-	public static void waitForDevice(int address){
+	public bool isDevicePresent(){
+		return isDevicePresent(address);
+	}
+	
+	public void waitForDevice(){
 		while(!isDevicePresent(address)){
 			Predef.sleep(1);
 		}

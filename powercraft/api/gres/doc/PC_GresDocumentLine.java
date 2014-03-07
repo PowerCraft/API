@@ -3,6 +3,8 @@ package powercraft.api.gres.doc;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.tools.Diagnostic.Kind;
+
 import powercraft.api.gres.doc.PC_GresHighlighting.BlockHighlight;
 import powercraft.api.gres.doc.PC_GresHighlighting.Highlight;
 import powercraft.api.gres.doc.PC_GresHighlighting.IMultiplePossibilities;
@@ -20,7 +22,7 @@ public class PC_GresDocumentLine {
 	public PC_GresDocumentLine prev;
 	public Object renderInfo;
 	public Object collectorInfo;
-	public String[] errors;
+	public Message[] errors;
 	
 	public PC_GresDocumentLine(String text) {
 		this.line = text;
@@ -178,7 +180,7 @@ public class PC_GresDocumentLine {
 							error = false;
 							this.line += PC_Formatter.errorStop();
 						}else if(!error && this.errors[j]!=null){
-							this.line += PC_Formatter.error();
+							this.line += PC_Formatter.error(this.errors[j].getRed(), this.errors[j].getGreen(), this.errors[j].getBlue());
 							error = true;
 						}
 						this.line += c;
@@ -228,7 +230,7 @@ public class PC_GresDocumentLine {
 
 	public void checkErrors(){
 		if(this.errors!=null){
-			for(String error:this.errors){
+			for(Message error:this.errors){
 				if(error!=null)
 					return;
 			}
@@ -236,16 +238,41 @@ public class PC_GresDocumentLine {
 		}
 	}
 	
-	public void addError(int sx, int ex, String message) {
+	public void addError(int sx, int ex, Kind kind, String message) {
 		if(this.errors==null){
-			this.errors = new String[getText().length()];
+			this.errors = new Message[getText().length()];
 		}
 		int exx = ex;
 		if(exx==-1){
 			exx = this.errors.length;
 		}
 		for(int i=sx; i<exx; i++){
-			this.errors[i] = message;
+			this.errors[i] = new Message(kind, message);
+		}
+	}
+	
+	public static class Message{
+		
+		Kind kind;
+		String message;
+		
+		public Message(Kind kind, String message) {
+			this.kind = kind;
+			this.message = message;
+		}
+		
+		public int getRed(){
+			return kind==Kind.ERROR || kind==Kind.WARNING?255:0;
+		}
+		public int getGreen(){
+			return kind==Kind.WARNING?255:0;
+		}
+		public int getBlue(){
+			return 0;
+		}
+
+		public String getMessage() {
+			return message;
 		}
 	}
 	

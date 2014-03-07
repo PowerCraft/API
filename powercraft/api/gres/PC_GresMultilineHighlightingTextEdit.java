@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.tools.Diagnostic;
+import javax.tools.Diagnostic.Kind;
 
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ChatAllowedCharacters;
@@ -20,6 +21,7 @@ import powercraft.api.gres.autoadd.PC_StringAdd;
 import powercraft.api.gres.doc.PC_GresDocRenderHandler;
 import powercraft.api.gres.doc.PC_GresDocument;
 import powercraft.api.gres.doc.PC_GresDocumentLine;
+import powercraft.api.gres.doc.PC_GresDocumentLine.Message;
 import powercraft.api.gres.doc.PC_GresHighlighting;
 import powercraft.api.gres.events.PC_GresMouseWheelEvent;
 import powercraft.api.gres.font.PC_FontRenderer;
@@ -973,13 +975,14 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 		for(Diagnostic<? extends Void> diagnostic:diagnostics){
 			long line = diagnostic.getLineNumber()-1;
 			String message = diagnostic.getMessage(Locale.US);
+			Kind kind = diagnostic.getKind();
 			long startPos = diagnostic.getStartPosition();
 			long endPos = diagnostic.getEndPosition();
 			if(startPos==Diagnostic.NOPOS || endPos==Diagnostic.NOPOS){
 				int x = this.document.getLine((int)line).getText().length();
-				this.document.addError(new PC_Vec2I(0, (int)line), new PC_Vec2I(x, (int)line), message);
+				this.document.addError(new PC_Vec2I(0, (int)line), new PC_Vec2I(x, (int)line), kind, message);
 			}else{
-				this.document.addError(this.document.getPosFrom(startPos), this.document.getPosFrom(endPos), message);
+				this.document.addError(this.document.getPosFrom(startPos), this.document.getPosFrom(endPos), kind, message);
 			}
 		}
 	}
@@ -1030,11 +1033,11 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 		PC_GresDocumentLine line = this.document.getLine(pos.y);
 		if(line.errors==null)
 			return null;
-		String s = line.errors[pos.x];
+		Message s = line.errors[pos.x];
 		if(s==null)
 			return null;
 		List<String> list = new ArrayList<String>();
-		String sl[] = s.split("\n");
+		String sl[] = s.getMessage().split("\n");
 		for(String ss:sl){
 			ss = ss.trim();
 			if(!ss.isEmpty()){

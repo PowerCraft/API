@@ -197,7 +197,7 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 	
 	@Override
 	public final int isProvidingStrongPower(IBlockAccess world, int x, int y, int z, int side) {
-		return getRedstonePowerValue(world, x, y, z, PC_Utils.getSidePosition(world, x, y, z, PC_Direction.DOWN), PC_Utils.getSideRotation(world, x, y, z, PC_Direction.DOWN, side));
+		return getRedstonePowerValue(world, x, y, z, PC_Utils.getSidePosition(world, x, y, z, side), -1);
 	}
 
 	@SuppressWarnings("unused")
