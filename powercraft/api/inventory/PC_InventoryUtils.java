@@ -22,6 +22,8 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import powercraft.api.PC_Direction;
 import powercraft.api.PC_Utils;
+import powercraft.api.PC_Vec3;
+import powercraft.api.PC_Vec3I;
 import powercraft.api.item.PC_Item;
 
 public class PC_InventoryUtils {
@@ -86,7 +88,7 @@ public class PC_InventoryUtils {
 	}
 
 	public static ItemStack tryToStore(World world, int x, int y, int z, PC_Direction to, ItemStack itemstack) {
-		IInventory inventory = getBlockInventoryAt(world, x, y, z);
+		IInventory inventory = getInventoryAt(world, x, y, z);
 		if(inventory!=null){
 			if(storeItemStackToInventoryFrom(inventory, itemstack, to))
 				return null;
@@ -150,6 +152,10 @@ public class PC_InventoryUtils {
 		}
 
 		return getEntityInventoryAt(world, x, y, z);
+	}
+	
+	public static IInventory getInventoryAt(World world, PC_Vec3I pos) {
+		return getInventoryAt(world, pos.x, pos.y, pos.z);
 	}
 	
 	public static int[] getInvIndexesForSide(IInventory inv, PC_Direction side){
@@ -556,27 +562,27 @@ public class PC_InventoryUtils {
 		}
 	}
 	
-	/*public static int useFuel(IInventory inv, World world, PC_VecI pos) {
+	public static int useFuel(IInventory inv, World world, PC_Vec3 pos) {
 		return useFuel(inv, (int[])null, world, pos);
 	}
 	
-	public static int useFuel(IInventory inv, PC_Direction side, World world, PC_VecI pos) {
+	public static int useFuel(IInventory inv, PC_Direction side, World world, PC_Vec3 pos) {
 		return useFuel(inv, getInvIndexesForSide(inv, side), world, pos);
 	}
 	
-	public static int useFuel(IInventory inv, int[] indexes, World world, PC_VecI pos) {
+	public static int useFuel(IInventory inv, int[] indexes, World world, PC_Vec3 pos) {
 		if(indexes==null){
 			int size = inv.getSizeInventory();
 			for (int i = 0; i < size; i++) {
 				ItemStack is = inv.getStackInSlot(i);
-				int fuel = PC_RecipeRegistry.getFuelValue(is);
+				int fuel = PC_Utils.getBurnTime(is);
 				if (fuel > 0) {
 					inv.decrStackSize(i, 1);
-					ItemStack container = PC_Utils.getContainerItemStack(is);
+					ItemStack container = is.getItem().getContainerItem(is);
 					if (container != null) {
 						storeItemStackToInventoryFrom(inv, container, indexes);
 						if (container.stackSize > 0) {
-							PC_Utils.dropItemStack(world, pos, container);
+							PC_Utils.spawnItem(world, pos, container);
 						}
 					}
 					return fuel;
@@ -586,14 +592,14 @@ public class PC_InventoryUtils {
 			for (int j = 0; j < indexes.length; j++) {
 				int i=indexes[j];
 				ItemStack is = inv.getStackInSlot(i);
-				int fuel = PC_RecipeRegistry.getFuelValue(is);
+				int fuel = PC_Utils.getBurnTime(is);
 				if (fuel > 0) {
 					inv.decrStackSize(i, 1);
-					ItemStack container = PC_Utils.getContainerItemStack(is);
+					ItemStack container = is.getItem().getContainerItem(is);
 					if (container != null) {
 						storeItemStackToInventoryFrom(inv, container, indexes);
 						if (container.stackSize > 0) {
-							PC_Utils.dropItemStack(world, pos, container);
+							PC_Utils.spawnItem(world, pos, container);
 						}
 					}
 					return fuel;
@@ -601,6 +607,6 @@ public class PC_InventoryUtils {
 			}
 		}
 		return 0;
-	}*/
+	}
 	
 }

@@ -173,7 +173,7 @@ public final class PC_BlockMultiblock extends PC_BlockTileEntity implements PC_I
 		PC_MultiblockIndex selectionIndex = playerSelection.get(player);
 		if (selectionIndex==null) return false;
 		List<ItemStack> drops = tem.removeMultiblockTileEntity(selectionIndex);
-		if (drops != null && !PC_Utils.isCreativ(player)) {
+		if (drops != null && !PC_Utils.isCreative(player)) {
 			PC_Utils.spawnItems(world, x, y, z, drops);
 		}
 		playerSelection.remove(player);
@@ -221,7 +221,7 @@ public final class PC_BlockMultiblock extends PC_BlockTileEntity implements PC_I
 		private static void resetClientDigging(int x, int y, int z, int side){
 			if(PC_Reflection.getValue(PlayerControllerMP.class, PC_ClientUtils.mc().playerController, 9, boolean.class)){
 				PC_ClientUtils.mc().playerController.resetBlockRemoving();
-				if(!PC_Utils.isCreativ(PC_ClientUtils.mc().thePlayer)){
+				if(!PC_Utils.isCreative(PC_ClientUtils.mc().thePlayer)){
 					PC_ClientUtils.mc().playerController.clickBlock(x, y, z, side);
 				}
 			}

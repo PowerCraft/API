@@ -4,6 +4,7 @@ import javax.management.InstanceAlreadyExistsException;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
+import net.minecraft.world.World;
 import powercraft.api.block.PC_AbstractBlockBase;
 import powercraft.api.block.PC_ItemBlock;
 import powercraft.api.block.PC_TileEntity;
@@ -70,6 +71,14 @@ public final class PC_ClientRegistry extends PC_Registry {
 	<E extends Entity & PC_IEntity>void iRegisterEntity(Class<? extends Entity> entity, String name, int entityTypeID, PC_Module module, int trackingRange, int updateFrequency, boolean sendsVelocityUpdates, PC_EntityType<E> type){
 		super.iRegisterEntity(entity, name, entityTypeID, module, trackingRange, updateFrequency, sendsVelocityUpdates, type);
 		RenderingRegistry.registerEntityRenderingHandler(entity, new PC_EntityRenderer<E>(type));
+	}
+	
+	@Override
+	void iPlaySound(double x, double y, double z, String sound, float soundVolume, float pitch) {
+		World world = PC_ClientUtils.mc().theWorld;
+		if (world != null && PC_ClientUtils.mc().renderViewEntity != null) {
+			world.playSound(x, y, z, sound, soundVolume, pitch, false);
+		}
 	}
 	
 }

@@ -7,6 +7,8 @@ import javax.management.InstanceAlreadyExistsException;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
+import net.minecraft.client.particle.EntityFX;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.WorldSettings.GameType;
 import powercraft.api.reflect.PC_Reflection;
@@ -91,6 +93,11 @@ public final class PC_ClientUtils extends PC_Utils {
 	@Override
 	EntityPlayer iGetClientPlayer() {
 		return mc().thePlayer;
+	}
+	
+	@Override
+	boolean iIsEntityFX(Entity entity) {
+		return entity instanceof EntityFX;
 	}
 	
 }

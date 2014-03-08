@@ -4,10 +4,13 @@ import java.io.File;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+
 import javax.management.InstanceAlreadyExistsException;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -100,6 +103,26 @@ public class PC_Utils {
 		return setBlock(world, x, y, z, block, 0);
 	}
 
+	public static boolean setBlock(World world, PC_Vec3I pos, Block block, int metadata, int flag) {
+		return setBlock(world, pos.x, pos.y, pos.z, block, metadata, flag);
+	}
+
+	public static boolean setBlock(World world, PC_Vec3I pos, Block block, int metadata) {
+		return setBlock(world, pos, block, metadata, BLOCK_NOTIFY | BLOCK_UPDATE);
+	}
+
+	public static boolean setBlock(World world, PC_Vec3I pos, Block block) {
+		return setBlock(world, pos, block, 0);
+	}
+	
+	public static boolean setAir(World world, int x, int y, int z) {
+		return setBlock(world, x, y, z, Blocks.air);
+	}
+	
+	public static boolean setAir(World world, PC_Vec3I pos) {
+		return setBlock(world, pos, Blocks.air);
+	}
+	
 	public static int getMetadata(IBlockAccess world, int x, int y, int z) {
 		return world.getBlockMetadata(x, y, z);
 	}
@@ -116,6 +139,14 @@ public class PC_Utils {
 		return world.setBlockMetadataWithNotify(x, y, z, metadata, flag);
 	}
 
+	public static boolean setMetadata(World world, PC_Vec3I pos, int metadata) {
+		return setMetadata(world, pos.x, pos.y, pos.z, metadata, BLOCK_NOTIFY | BLOCK_UPDATE);
+	}
+
+	public static boolean setMetadata(World world, PC_Vec3I pos, int metadata, int flag) {
+		return setMetadata(world, pos.x, pos.y, pos.z, metadata, flag);
+	}
+	
 	public static Item getItem(ItemStack itemStack) {
 		return itemStack.getItem();
 	}
@@ -286,6 +317,10 @@ public class PC_Utils {
 		}
 	}
 
+	public static void spawnItem(World world, PC_Vec3 pos, ItemStack itemStack) {
+		spawnItem(world, pos.x, pos.y, pos.z, itemStack);
+	}
+	
 	public static void spawnItems(World world, double x, double y, double z, List<ItemStack> itemStacks) {
 		if (!world.isRemote && world.getGameRules().getGameRuleBooleanValue("doTileDrops") && itemStacks != null) {
 			for (ItemStack itemStack : itemStacks) {
@@ -294,6 +329,10 @@ public class PC_Utils {
 				}
 			}
 		}
+	}
+	
+	public static void spawnItems(World world, PC_Vec3 pos, List<ItemStack> itemStack) {
+		spawnItems(world, pos.x, pos.y, pos.z, itemStack);
 	}
 
 	private static void spawnItemChecked(World world, double x, double y, double z, ItemStack itemStack) {
@@ -336,7 +375,7 @@ public class PC_Utils {
 		return INSTANCE.iGetGameTypeFor(player);
 	}
 
-	public static boolean isCreativ(EntityPlayer entityPlayer) {
+	public static boolean isCreative(EntityPlayer entityPlayer) {
 		return getGameTypeFor(entityPlayer).isCreative();
 	}
 
@@ -425,6 +464,11 @@ public class PC_Utils {
 		if (mz > 0) {
 			return PC_Direction.SOUTH;
 		}
+		if(mz==0){
+			if(entity instanceof EntityLivingBase){
+				return PC_Direction.fromRotationY(getRotation(entity)).getOpposite();
+			}
+		}
 		return PC_Direction.NORTH;
 	}
 
@@ -499,4 +543,12 @@ public class PC_Utils {
 		return allInOne.divide(notNullNumber).roundToInt();
 	}
 
+	public static boolean isEntityFX(Entity entity) {
+		return INSTANCE.iIsEntityFX(entity);
+	}
+
+	boolean iIsEntityFX(Entity entity) {
+		return false;
+	}
+	
 }

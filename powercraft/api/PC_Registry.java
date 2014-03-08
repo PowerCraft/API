@@ -54,4 +54,12 @@ public class PC_Registry {
 		EntityRegistry.registerModEntity(entity, name, entityTypeID, module, trackingRange, updateFrequency, sendsVelocityUpdates);
 	}
 	
+	static void playSound(double x, double y, double z, String sound, float soundVolume, float pitch) {
+		INSTANCE.iPlaySound(x, y, z, sound, soundVolume, pitch);
+	}
+	
+	void iPlaySound(double x, double y, double z, String sound, float soundVolume, float pitch) {
+		
+	}
+	
 }

@@ -11,6 +11,8 @@ import powercraft.api.reflect.PC_Processor.Result;
 
 public final class PC_Reflection {
 
+	private static boolean thrownSecurityExceptionBefore;
+	
 	private static interface PC_ICallerGetter {
 		
 		public Class<?> getCallerClass(int num);
@@ -49,6 +51,8 @@ public final class PC_Reflection {
 			if (stackTraceElements.length > 3 + num) {
 				try {
 					return Class.forName(stackTraceElements[3 + num].getClassName());
+				} catch(SecurityException se){
+					onSecurityException(se);
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
 				}
@@ -66,7 +70,7 @@ public final class PC_Reflection {
 		PC_ICallerGetter cGetter;
 		try{
 			cGetter = new PC_CallerGetterSecMan();
-		}catch(Throwable e){
+		} catch(Throwable e){
 			cGetter = new PC_CallerGetterFallback();
 		}
 		callerGetter = cGetter;
@@ -123,11 +127,12 @@ public final class PC_Reflection {
 
 	@SuppressWarnings("unchecked")
 	public static <T> T getValue(Class<?> clazz, Object object, int index, Class<?> type) {
-
-		Field field = findNearestBestField(clazz, index, type);
-		field.setAccessible(true);
 		try {
+			Field field = findNearestBestField(clazz, index, type);
+			field.setAccessible(true);
 			return (T) field.get(object);
+		} catch(SecurityException se){
+			onSecurityException(se);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -140,6 +145,8 @@ public final class PC_Reflection {
 			Field field = findNearestBestField(clazz, index, type);
 			field.setAccessible(true);
 			field.set(object, value);
+		} catch(SecurityException se){
+			onSecurityException(se);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -164,13 +171,24 @@ public final class PC_Reflection {
 				field_modifiers.setInt(field, modifier);
 			}
 
+		} catch(SecurityException se){
+			onSecurityException(se);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	public static Field[] getDeclaredFields(Class<?> c){
-		return c.getDeclaredFields();
+		try{
+			return c.getDeclaredFields();
+		} catch(SecurityException se){
+			onSecurityException(se);
+			try{
+				return c.getFields();
+			} catch(SecurityException se2){
+				return new Field[0];
+			}
+		}
 	}
 	
 	public static Object processFields(Object obj, PC_Processor processor){
@@ -190,15 +208,24 @@ public final class PC_Reflection {
 					if(results.containsKey(Result.STOP)){
 						return results.get(Result.STOP);
 					}
-				}catch(IllegalAccessException e){
+				} catch(SecurityException se){
+					onSecurityException(se);
+				} catch(IllegalAccessException e){
 					PC_Logger.severe("Cannot access field %s.%s", c, field);
-				}catch(IllegalArgumentException e){
+				} catch(IllegalArgumentException e){
 					PC_Logger.severe("Wrong arguments for field %s.%s", c, field);
 				}
 			}
 			c = c.getSuperclass();
 		}
 		return null;
+	}
+	
+	private static void onSecurityException(SecurityException e){
+		if(!thrownSecurityExceptionBefore){
+			PC_Logger.warning("PowerCraft has no permission for reflection");
+			thrownSecurityExceptionBefore = true;
+		}
 	}
 	
 	private PC_Reflection() {
