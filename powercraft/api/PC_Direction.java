@@ -67,7 +67,7 @@ public enum PC_Direction {
 	}
     
     public static PC_Direction fromRotationY(int rotation) {
-		return fromRotationY[rotation];
+		return fromRotationY[((rotation%4)+4)%4];
 	}
     
     public PC_Direction getOpposite(){

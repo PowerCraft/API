@@ -33,7 +33,12 @@ public abstract class PC_TileEntityScriptable extends PC_TileEntity {
 	}
 	
 	@SuppressWarnings("static-method")
-	protected HashMap<String, Integer> getReplacements(){
+	protected HashMap<String, Integer> getConsts(){
+		return null;
+	}
+	
+	@SuppressWarnings("static-method")
+	protected HashMap<String, Integer> getPointers(){
 		return null;
 	}
 	
@@ -67,7 +72,10 @@ public abstract class PC_TileEntityScriptable extends PC_TileEntity {
 		diagnostic = new DiagnosticCollector<Void>();
 		int entryVectorCount = getEntryVectors()==null?0:getEntryVectors().length;
 		try{
-			this.script = PC_Miniscript.compile(source, diagnostic, getReplacements(), entryVectorCount);
+			HashMap<String, Integer> hm = new HashMap<String, Integer>();
+			hm.putAll(getConsts());
+			hm.putAll(getPointers());
+			this.script = PC_Miniscript.compile(source, diagnostic, hm, entryVectorCount);
 		}catch(ScriptException e) {
 			this.e = e;
 		}

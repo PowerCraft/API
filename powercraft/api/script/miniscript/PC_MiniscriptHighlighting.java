@@ -33,8 +33,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class PC_MiniscriptHighlighting {
 
-	public static PC_GresHighlighting makeHighlighting(Set<String> words){
-		List<String> wordList = new ArrayList<String>(words);
+	public static PC_GresHighlighting makeHighlighting(Set<String> consts, Set<String> pointers){
+		List<String> wordList = new ArrayList<String>(consts);
+		wordList.addAll(pointers);
 		wordList.addAll(PC_Miniscript.getDefaultReplacementWords());
 		PC_GresHighlighting highlighting = new PC_GresHighlighting();
 		PC_GresHighlighting INNER = new PC_GresHighlighting();
@@ -56,8 +57,8 @@ public class PC_MiniscriptHighlighting {
 		return highlighting;
 	}
 	
-	public static PC_AutoComplete makeAutoComplete(List<PC_StringWithInfo> words){
-		return new AutoComplete(words);
+	public static PC_AutoComplete makeAutoComplete(List<PC_StringWithInfo> consts, List<PC_StringWithInfo> pointers){
+		return new AutoComplete(consts, pointers);
 	}
 	
 	public static PC_AutoAdd makeAutoAdd(){
@@ -107,18 +108,20 @@ public class PC_MiniscriptHighlighting {
 		private InfoCollector infoCollector = new InfoCollector(this);
 		PC_SortedStringList labelNames = new PC_SortedStringList();
 		private PC_SortedStringList asmInstructions = new PC_SortedStringList();
-		private PC_SortedStringList words = new PC_SortedStringList();
 		private PC_SortedStringList registers = new PC_SortedStringList();
+		private PC_SortedStringList consts = new PC_SortedStringList();
+		private PC_SortedStringList pointers = new PC_SortedStringList();
 		
-		AutoComplete(List<PC_StringWithInfo> words){
+		AutoComplete(List<PC_StringWithInfo> consts, List<PC_StringWithInfo> pointers){
 			for(String asm:MINISCRIPT_ASM){
 				this.asmInstructions.add(new PC_StringWithInfo(asm, PC_Lang.translate("miniscript.tooltip."+asm.toLowerCase()), PC_Lang.translate("miniscript.desk."+asm.toLowerCase()).split("\n")));
 			}
 			for(int i=0; i<31; i++){
 				this.registers.add(new PC_StringWithInfo("r"+i, "Register Nr "+i));
 			}
-			this.words.addAll(words);
-			this.words.addAll(PC_Miniscript.getDefaultReplacements());
+			this.consts.addAll(consts);
+			this.pointers.addAll(pointers);
+			this.consts.addAll(PC_Miniscript.getDefaultReplacements());
 		}
 
 		@Override
@@ -170,8 +173,11 @@ public class PC_MiniscriptHighlighting {
 				case LABEL:
 					info.parts = new PC_StringListPart[]{new PC_StringListPart(this.labelNames)};
 					break;
+				case STACK:
+					info.parts = new PC_StringListPart[]{new PC_StringListPart(this.pointers), new PC_StringListPart(this.registers)};
+					break;
 				case WORD:
-					info.parts = new PC_StringListPart[]{new PC_StringListPart(this.words), new PC_StringListPart(this.registers)};
+					info.parts = new PC_StringListPart[]{new PC_StringListPart(this.consts), new PC_StringListPart(this.registers)};
 					break;
 				case REGISTERS:
 					info.parts = new PC_StringListPart[]{new PC_StringListPart(this.registers)};
@@ -199,6 +205,7 @@ public class PC_MiniscriptHighlighting {
 		enum Type{
 			INSTRUCTION("\\s*(?<part>[\\w\\.]*)"),
 			LABEL("\\s*(?:(?:jmp|jmpl|jeq|jne|jl|jle|jb|jbe)\\s+|switch.*(:?,\\s*.*:[\\w\\.]*\\s)*,\\s*.*:)(?<part>[\\w\\.]*)"),
+			STACK(".*\\[(?<part>[^\\]]*)"),
 			WORD("\\s*(?:ext|cmp|[^\\[,]*+)(?:[\\W&&[^;]]+(?<part>[\\w\\.]*))+"),
 			REGISTERS("\\s*\\w*(?:[\\W&&[^;]]+(?<part>[\\w\\.]*))+");
 			

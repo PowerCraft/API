@@ -156,5 +156,20 @@ public final class PC_Miniscript {
 	private PC_Miniscript(){
 		throw new InstantiationError();
 	}
+
+	public static String generateDefaultSource(String type, String[] vectors) {
+		String source = ";A MiniScript powered "+type;
+		if(vectors!=null && vectors.length>1){
+			for(String vector:vectors){
+				source += "\n\tjmp "+vector;
+			}
+			for(String vector:vectors){
+				source += "\n"+vector+":\n\t";
+				source += "\n\tjmp Exit";
+			}
+			source += "\nExit:";
+		}
+		return source;
+	}
 	
 }
