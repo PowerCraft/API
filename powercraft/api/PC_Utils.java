@@ -168,7 +168,7 @@ public class PC_Utils {
 	}
 
 	public static PC_Direction getSidePosition(IBlockAccess world, int x, int y, int z, ForgeDirection side) {
-		return getSidePosition(world, x, y, z, PC_Direction.fromSide(side));
+		return getSidePosition(world, x, y, z, PC_Direction.fromForgeDirection(side));
 	}
 
 	public static PC_Direction getSidePosition(IBlockAccess world, int x, int y, int z, int side) {

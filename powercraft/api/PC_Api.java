@@ -1,7 +1,9 @@
 package powercraft.api;
 
 
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import powercraft.api.block.PC_Blocks;
 import powercraft.api.energy.PC_EnergyGrid;
@@ -10,6 +12,9 @@ import powercraft.api.item.PC_Items;
 import powercraft.api.multiblock.PC_BlockMultiblock;
 import powercraft.api.multiblock.PC_Multiblocks;
 import powercraft.api.network.PC_PacketHandler;
+import powercraft.api.recipes.PC_3DRecipe.StructStart;
+import powercraft.api.recipes.PC_I3DRecipeHandler;
+import powercraft.api.recipes.PC_Recipes;
 import powercraft.api.script.miniscript.PC_Miniscript;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -67,6 +72,21 @@ public final class PC_Api extends PC_Module {
 		PC_Multiblocks.construct();
 		
 		MinecraftForge.EVENT_BUS.register(new PC_EventHandler());
+		
+		PC_Recipes.add3DRecipe(true, new PC_I3DRecipeHandler() {
+			   
+			   @Override
+			   public boolean foundStructAt(World world, StructStart structStart) {
+				   PC_Vec3I tmp;
+				   for(int i=0; i<4; i++){
+					   for(int j=0; j<4; j++){
+						   tmp=structStart.relative(j,0,i);
+						   PC_Utils.setBlock(world, tmp.x, tmp.y, tmp.z, i+j==2||i+j==3?Blocks.iron_block:Blocks.diamond_block);
+					   }
+				   }
+			    return true;
+			   }
+			  }, new String[]{"i  i", "    ", "    ", "i   "}, 'i', Blocks.torch);
 		
 	}
 

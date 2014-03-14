@@ -313,7 +313,7 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 
 	@Override
 	public final boolean rotateBlock(World world, int x, int y, int z, ForgeDirection axis) {
-		return PC_Utils.rotateBlock(world, x, y, z, PC_Direction.fromSide(axis));
+		return PC_Utils.rotateBlock(world, x, y, z, PC_Direction.fromForgeDirection(axis));
 	}
 
 	@Override
