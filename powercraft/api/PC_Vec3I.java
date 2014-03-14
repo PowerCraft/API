@@ -60,7 +60,7 @@ public class PC_Vec3I {
 		int tmpX=0, tmpY=0, tmpZ=0;
 		PC_Direction tmp;
 
-		PC_Direction[] sides = new PC_Direction[]{PC_Direction.DOWN, PC_Direction.NORTH, PC_Direction.EAST};
+		PC_Direction[] sides = {PC_Direction.DOWN, PC_Direction.NORTH, PC_Direction.EAST};
 		for(PC_Direction dir:sides){
 			tmp=dir.getRotation(pcDir, times);
 			if(dir==tmp||dir==tmp.getOpposite()){

@@ -82,16 +82,45 @@ public final class PC_Api extends PC_Module {
 			   @Override
 			   public boolean foundStructAt(World world, StructStart structStart) {
 				   PC_Vec3I tmp;
-				   for(int i=0; i<3; i++){
-					   for(int j=0; j<4; j++){
-						   tmp=structStart.relative(j,0,i);
-						   PC_Utils.setBlock(world, tmp.x, tmp.y, tmp.z, i+j==2||i+j==3?Blocks.iron_block:Blocks.diamond_block);
+				   for(int x=0; x<4;x++){
+					   for(int z=0; z<5; z++){
+						   tmp=structStart.relative(x,0,z);
+						   PC_Utils.setBlock(world, tmp.x, tmp.y, tmp.z, Blocks.stone);
 					   }
 				   }
-			    return true;
+				   return true;
 			   }
-			  }, new String[]{"i  i", "    ", "i   "}, 'i', Blocks.torch);
+			  }, new String[]{"i  i", "    ", "    ", "    ", "i  i"}, 'i', Blocks.stone, ' ', Blocks.air);
 		
+		PC_Recipes.add3DRecipe(true, new PC_I3DRecipeHandler() {
+			   
+			   @Override
+			   public boolean foundStructAt(World world, StructStart structStart) {
+				   PC_Vec3I tmp;
+				   for(int x=0; x<4;x++){
+					   for(int z=0; z<6; z++){
+						   tmp=structStart.relative(x,0,z);
+						   PC_Utils.setBlock(world, tmp.x, tmp.y, tmp.z, Blocks.stone);
+					   }
+				   }
+				   return true;
+			   }
+			  }, new String[]{"i  i", "    ", "    ", "    ", "    ", "i  i"}, 'i', Blocks.stone, ' ', Blocks.air);
+		
+		PC_Recipes.add3DRecipe(true, new PC_I3DRecipeHandler() {
+			   
+			   @Override
+			   public boolean foundStructAt(World world, StructStart structStart) {
+				   PC_Vec3I tmp;
+				   for(int x=0; x<4;x++){
+					   for(int z=0; z<7; z++){
+						   tmp=structStart.relative(x,0,z);
+						   PC_Utils.setBlock(world, tmp.x, tmp.y, tmp.z, Blocks.stone);
+					   }
+				   }
+				   return true;
+			   }
+			  }, new String[]{"i  i", "    ", "    ", "    ", "    ", "    ", "i  i"}, 'i', Blocks.stone, ' ', Blocks.air);
 	}
 
 
