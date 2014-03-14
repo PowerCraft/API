@@ -24,6 +24,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.IPlantable;
 import powercraft.api.PC_3DRotation;
+import powercraft.api.PC_BlockTemperatures;
 import powercraft.api.PC_Direction;
 import powercraft.api.PC_Registry;
 import powercraft.api.PC_Utils;
@@ -614,6 +615,15 @@ public abstract class PC_BlockTileEntity extends PC_AbstractBlockBase implements
 		tileEntity.updateContainingBlockInfo();
 		EntityPlayer player = PC_ItemBlock.playerStetting.get();
 		tileEntity.onAdded(player);
+	}
+	
+	@Override
+	public int getTemperature(World world, int x, int y, int z) {
+		PC_TileEntity te = PC_Utils.getTileEntity(world, x, y, z, PC_TileEntity.class);
+		if(te!=null){
+			return te.getTemperature();
+		}
+		return PC_BlockTemperatures.DEFAULT_TEMPERATURE;
 	}
 	
 }

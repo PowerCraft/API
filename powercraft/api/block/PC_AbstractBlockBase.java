@@ -22,6 +22,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.oredict.OreDictionary;
 import powercraft.api.PC_3DRotation;
 import powercraft.api.PC_Api;
+import powercraft.api.PC_BlockTemperatures;
 import powercraft.api.PC_ClientRegistry;
 import powercraft.api.PC_Direction;
 import powercraft.api.PC_IconRegistry;
@@ -386,6 +387,16 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 
 	public CreativeTabs[] getCreativeTabs() {
 		return this.creativeTabs;
+	}
+
+	@SuppressWarnings({ "static-method", "unused" })
+	public int getTemperature(World world, int x, int y, int z) {
+		return PC_BlockTemperatures.DEFAULT_TEMPERATURE;
+	}
+
+	@SuppressWarnings("static-method")
+	public int getTemperature() {
+		return PC_BlockTemperatures.DEFAULT_TEMPERATURE;
 	}
 	
 }

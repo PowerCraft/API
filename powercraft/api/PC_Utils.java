@@ -27,6 +27,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSettings.GameType;
+import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.util.ForgeDirection;
 import powercraft.api.block.PC_AbstractBlockBase;
 import powercraft.api.block.PC_Block;
@@ -589,4 +590,12 @@ public class PC_Utils {
 		return world.provider.dimensionId;
 	}
 	
+    public static int getTemperature(World world, int x, int y, int z){
+    	return PC_BlockTemperatures.getTemperature(world, x, y, z);
+    }
+    
+    public static BiomeGenBase getBiome(World world, int x, int z){
+    	return world.getBiomeGenForCoords(x, z);
+    }
+    
 }

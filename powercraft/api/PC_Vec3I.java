@@ -51,7 +51,6 @@ public class PC_Vec3I {
 		return new PC_Vec3I(this.x+x, this.y+y, this.z+z);
 	}
 	
-	@SuppressWarnings("hiding")
 	public PC_Vec3I offset(PC_Vec3I other) {
 		return new PC_Vec3I(this.x+other.x, this.y+other.y, this.z+other.z);
 	}
@@ -65,18 +64,18 @@ public class PC_Vec3I {
 		for(PC_Direction dir:sides){
 			tmp=dir.getRotation(pcDir, times);
 			if(dir==tmp||dir==tmp.getOpposite()){
-				tmpX+=tmp.offsetX*(dir.offsetX*x);
-				tmpY+=tmp.offsetY*(dir.offsetY*y);
-				tmpZ+=tmp.offsetZ*(dir.offsetZ*z);
+				tmpX+=tmp.offsetX*(dir.offsetX*this.x);
+				tmpY+=tmp.offsetY*(dir.offsetY*this.y);
+				tmpZ+=tmp.offsetZ*(dir.offsetZ*this.z);
 			}else{
-				tmpX+=tmp.offsetX*(dir.offsetX*x+dir.offsetY*y+dir.offsetZ*z);
-				tmpY+=tmp.offsetY*(dir.offsetX*x+dir.offsetY*y+dir.offsetZ*z);
-				tmpZ+=tmp.offsetZ*(dir.offsetX*x+dir.offsetY*y+dir.offsetZ*z);
+				tmpX+=tmp.offsetX*(dir.offsetX*this.x+dir.offsetY*this.y+dir.offsetZ*this.z);
+				tmpY+=tmp.offsetY*(dir.offsetX*this.x+dir.offsetY*this.y+dir.offsetZ*this.z);
+				tmpZ+=tmp.offsetZ*(dir.offsetX*this.x+dir.offsetY*this.y+dir.offsetZ*this.z);
 			}
 		}
-		x=tmpX;
-		y=tmpY;
-		z=tmpZ;
+		this.x=tmpX;
+		this.y=tmpY;
+		this.z=tmpZ;
 		return this;
 	}
 

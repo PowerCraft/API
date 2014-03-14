@@ -26,13 +26,14 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.IPlantable;
 import powercraft.api.PC_3DRotation;
+import powercraft.api.PC_BlockTemperatures;
 import powercraft.api.PC_ClientUtils;
 import powercraft.api.PC_Direction;
 import powercraft.api.PC_Field;
+import powercraft.api.PC_Field.Flag;
 import powercraft.api.PC_Logger;
 import powercraft.api.PC_NBTTagHandler;
 import powercraft.api.PC_Utils;
-import powercraft.api.PC_Field.Flag;
 import powercraft.api.gres.PC_Gres;
 import powercraft.api.gres.PC_GresBaseWithInventory;
 import powercraft.api.gres.PC_IGresGui;
@@ -795,6 +796,11 @@ public class PC_TileEntity extends TileEntity {
 		if(this instanceof PC_IGridHolder){
 			((PC_IGridHolder)this).removeFromGrid();
 		}
+	}
+
+	@SuppressWarnings("static-method")
+	public int getTemperature() {
+		return PC_BlockTemperatures.DEFAULT_TEMPERATURE;
 	}
 	
 }
