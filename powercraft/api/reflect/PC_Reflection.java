@@ -221,6 +221,20 @@ public final class PC_Reflection {
 		return null;
 	}
 	
+	public static <T> T newInstance(Class<T> c) {
+		try {
+			return c.newInstance();
+		} catch (SecurityException e){
+			onSecurityException(e);
+		} catch (InstantiationException e) {
+			PC_Logger.severe("Error while constructing %s", c);
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			PC_Logger.severe("Cannot access constructor %s", c);
+		}
+		return null;
+	}
+	
 	@SuppressWarnings("unused")
 	static void onSecurityException(SecurityException e){
 		if(!thrownSecurityExceptionBefore){

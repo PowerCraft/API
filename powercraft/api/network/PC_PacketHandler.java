@@ -15,6 +15,7 @@ import java.util.List;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.Packet;
+import net.minecraft.world.World;
 import powercraft.api.PC_Api;
 import powercraft.api.PC_Logger;
 import powercraft.api.PC_Side;
@@ -216,6 +217,13 @@ public final class PC_PacketHandler extends SimpleChannelInboundHandler<PC_Packe
 		checkServer(packet);
 		channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.ALLAROUNDPOINT);
         channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(new TargetPoint(dimension, x, y, z, range));
+        channels.get(Side.SERVER).writeAndFlush(packet).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
+	}
+	
+	public static void sendToAllAround(PC_Packet packet, World world, double x, double y, double z, double range){
+		checkServer(packet);
+		channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.ALLAROUNDPOINT);
+        channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(new TargetPoint(PC_Utils.getDimensionID(world), x, y, z, range));
         channels.get(Side.SERVER).writeAndFlush(packet).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
 	}
 

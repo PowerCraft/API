@@ -49,7 +49,7 @@ public abstract class PC_Entity extends Entity implements PC_IEntity {
 
 		Session(PC_Entity entity) {
 			this.session = sessionRand.nextLong();
-			this.dimension = entity.worldObj.getWorldInfo().getVanillaDimension();
+			this.dimension = PC_Utils.getDimensionID(entity.worldObj);
 			this.entityID = entity.getEntityId();
 		}
 
@@ -158,8 +158,7 @@ public abstract class PC_Entity extends Entity implements PC_IEntity {
 					nbtTagCompound, this.session));
 		} else {
 			PC_PacketHandler.sendToAllAround(new PC_PacketEntityMessageSTC(
-					this, nbtTagCompound), this.worldObj.getWorldInfo()
-					.getVanillaDimension(), this.posX, this.posY, this.posZ, 32);
+					this, nbtTagCompound), this.worldObj, this.posX, this.posY, this.posZ, 32);
 		}
 	}
 
@@ -176,8 +175,7 @@ public abstract class PC_Entity extends Entity implements PC_IEntity {
 			NBTTagCompound nbtTagCompound, long session) {
 		Session pSession = sessions.get(player);
 		if (pSession != null
-				&& pSession.dimension == this.worldObj.getWorldInfo()
-						.getVanillaDimension()
+				&& pSession.dimension == PC_Utils.getDimensionID(this.worldObj)
 				&& pSession.entityID == getEntityId()
 				&& pSession.session == session) {
 			onMessage(player, nbtTagCompound);
@@ -316,8 +314,7 @@ public abstract class PC_Entity extends Entity implements PC_IEntity {
 		super.onUpdate();
 		if (!isClient() && this.sync) {
 			PC_PacketHandler
-					.sendToAllAround(getSyncPacket(), this.worldObj.getWorldInfo()
-							.getVanillaDimension(), this.posX, this.posY, this.posZ, 32);
+					.sendToAllAround(getSyncPacket(), this.worldObj, this.posX, this.posY, this.posZ, 32);
 			this.sync = false;
 		}
 	}

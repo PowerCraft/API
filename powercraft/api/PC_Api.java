@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import powercraft.api.block.PC_Blocks;
+import powercraft.api.dimension.PC_Dimensions;
 import powercraft.api.energy.PC_EnergyGrid;
 import powercraft.api.gres.PC_Gres;
 import powercraft.api.item.PC_Items;
@@ -59,6 +60,8 @@ public final class PC_Api extends PC_Module {
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 
+		PC_Modules.construct();
+		
 		PC_PacketHandler.register();
 		PC_TickHandler.register();
 		PC_ForgeHandler.register();
@@ -70,6 +73,7 @@ public final class PC_Api extends PC_Module {
 		PC_Blocks.construct();
 		PC_Items.construct();
 		PC_Multiblocks.construct();
+		PC_Dimensions.construct();
 		
 		MinecraftForge.EVENT_BUS.register(new PC_EventHandler());
 		
@@ -78,7 +82,7 @@ public final class PC_Api extends PC_Module {
 			   @Override
 			   public boolean foundStructAt(World world, StructStart structStart) {
 				   PC_Vec3I tmp;
-				   for(int i=0; i<4; i++){
+				   for(int i=0; i<3; i++){
 					   for(int j=0; j<4; j++){
 						   tmp=structStart.relative(j,0,i);
 						   PC_Utils.setBlock(world, tmp.x, tmp.y, tmp.z, i+j==2||i+j==3?Blocks.iron_block:Blocks.diamond_block);
@@ -86,7 +90,7 @@ public final class PC_Api extends PC_Module {
 				   }
 			    return true;
 			   }
-			  }, new String[]{"i  i", "    ", "    ", "i   "}, 'i', Blocks.torch);
+			  }, new String[]{"i  i", "    ", "i   "}, 'i', Blocks.torch);
 		
 	}
 

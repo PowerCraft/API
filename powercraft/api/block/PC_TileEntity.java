@@ -69,7 +69,7 @@ public class PC_TileEntity extends TileEntity {
 		
 		Session(PC_TileEntity tileEntity){
 			this.session = sessionRand.nextLong();
-			this.dimension = tileEntity.getWorldObj().getWorldInfo().getVanillaDimension();
+			this.dimension = PC_Utils.getDimensionID(tileEntity.getWorldObj());
 			this.x = tileEntity.xCoord;
 			this.y = tileEntity.yCoord;
 			this.z = tileEntity.zCoord;
@@ -197,7 +197,7 @@ public class PC_TileEntity extends TileEntity {
 		}
 		onTick();
 		if (!isClient() && this.sync) {
-			PC_PacketHandler.sendToAllAround(getSyncPacket(), this.worldObj.getWorldInfo().getVanillaDimension(), this.xCoord, this.yCoord, this.zCoord, 32);
+			PC_PacketHandler.sendToAllAround(getSyncPacket(), this.worldObj, this.xCoord, this.yCoord, this.zCoord, 32);
 			this.sync = false;
 		}
 	}
@@ -712,7 +712,7 @@ public class PC_TileEntity extends TileEntity {
 	@SuppressWarnings("hiding")
 	public final void onClientMessageCheck(EntityPlayer player, NBTTagCompound nbtTagCompound, long session, boolean intern) {
 		Session pSession = sessions.get(player);
-		if(pSession!=null && pSession.dimension == this.worldObj.getWorldInfo().getVanillaDimension() && pSession.x == this.xCoord && pSession.y == this.yCoord && pSession.z == this.zCoord && pSession.session == session){
+		if(pSession!=null && pSession.dimension == PC_Utils.getDimensionID(this.worldObj) && pSession.x == this.xCoord && pSession.y == this.yCoord && pSession.z == this.zCoord && pSession.session == session){
 			if(intern){
 				onInternMessage(player, nbtTagCompound);
 			}else{
@@ -748,7 +748,7 @@ public class PC_TileEntity extends TileEntity {
 		if(isClient()){
 			PC_PacketHandler.sendToServer(new PC_PacketTileEntityMessageCTS(this, nbtTagCompound, this.session));
 		}else{
-			PC_PacketHandler.sendToAllAround(new PC_PacketTileEntityMessageSTC(this, nbtTagCompound), this.worldObj.getWorldInfo().getVanillaDimension(), this.xCoord, this.yCoord, this.zCoord, 32);
+			PC_PacketHandler.sendToAllAround(new PC_PacketTileEntityMessageSTC(this, nbtTagCompound), this.worldObj, this.xCoord, this.yCoord, this.zCoord, 32);
 		}
 	}
 	

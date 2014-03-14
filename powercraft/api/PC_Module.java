@@ -23,6 +23,7 @@ public abstract class PC_Module implements PC_IResourceReloadListener {
 	private final Configuration config;
 
 	public PC_Module() {
+		PC_Modules.addModule(this);
 		this.creativeTab = new PC_CreativeTab(Loader.instance().activeModContainer().getName(), this);
 		this.mod = PC_Utils.getActiveMod();
 		ModMetadata metadata = getMetadata();

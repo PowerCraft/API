@@ -14,9 +14,9 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import powercraft.api.PC_Direction;
 import powercraft.api.PC_Field;
+import powercraft.api.PC_Field.Flag;
 import powercraft.api.PC_INBT;
 import powercraft.api.PC_NBTTagHandler;
-import powercraft.api.PC_Field.Flag;
 import powercraft.api.network.PC_Packet;
 import powercraft.api.network.PC_PacketHandler;
 import powercraft.api.network.packet.PC_PacketMultiblockObjectSync;
@@ -192,7 +192,7 @@ public abstract class PC_MultiblockObject implements PC_INBT{
 
 	public void updateObject() {
 		if (!isClient() && this.sync) {
-			PC_PacketHandler.sendToAllAround(getSyncPacket(), getWorld().getWorldInfo().getVanillaDimension(), this.multiblock.xCoord, this.multiblock.yCoord, this.multiblock.zCoord, 32);
+			PC_PacketHandler.sendToAllAround(getSyncPacket(), getWorld(), this.multiblock.xCoord, this.multiblock.yCoord, this.multiblock.zCoord, 32);
 			this.sync = false;
 		}
 	}

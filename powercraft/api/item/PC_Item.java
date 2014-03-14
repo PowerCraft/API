@@ -12,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.client.IItemRenderer.ItemRendererHelper;
+import net.minecraftforge.oredict.OreDictionary;
 import powercraft.api.PC_Api;
 import powercraft.api.PC_ClientRegistry;
 import powercraft.api.PC_IconRegistry;
@@ -47,6 +48,11 @@ public abstract class PC_Item extends Item implements PC_IItem{
 	public String getTextureFolderName() {
 		return getClass().getSimpleName().replaceAll("PC.*_(Item)?", "");
 	}
+
+	@SuppressWarnings("static-method")
+	public String[] getOreNames(){
+		return null;
+	}
 	
 	@Override
 	public Item setCreativeTab(CreativeTabs creativeTab) {
@@ -73,6 +79,12 @@ public abstract class PC_Item extends Item implements PC_IItem{
 		PC_Module module = getModule();
 		setUnlocalizedName(getRegisterName());
 		GameRegistry.registerItem(this, getRegisterName(), module.getModId());
+		String[] oreNames = getOreNames();
+		if(oreNames!=null){
+			for(String oreName:oreNames){
+				OreDictionary.registerOre(oreName, this);
+			}
+		}
 		this.constructed = true;
 		if(this.creativeTabs.length>0)
 			setCreativeTab(this.creativeTabs[0]);

@@ -585,4 +585,8 @@ public class PC_Utils {
 		file.delete();
 	}
 	
+	public static int getDimensionID(World world){
+		return world.provider.dimensionId;
+	}
+	
 }

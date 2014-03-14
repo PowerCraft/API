@@ -19,6 +19,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.oredict.OreDictionary;
 import powercraft.api.PC_3DRotation;
 import powercraft.api.PC_Api;
 import powercraft.api.PC_ClientRegistry;
@@ -69,6 +70,11 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 		return (PC_Module)this.module.getMod();
 	}
 	
+	@SuppressWarnings("static-method")
+	public String[] getOreNames(){
+		return null;
+	}
+	
 	@Override
 	public Block setCreativeTab(CreativeTabs creativeTab) {
 		if(creativeTab==null){
@@ -97,6 +103,12 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 			itemBlockConstructorData = new Object[0];
 		setBlockName(getRegisterName());
 		GameRegistry.registerBlock(this, getItemBlock(), getRegisterName(), module.getModId(), itemBlockConstructorData);
+		String[] oreNames = getOreNames();
+		if(oreNames!=null){
+			for(String oreName:oreNames){
+				OreDictionary.registerOre(oreName, this);
+			}
+		}
 		this.constructed = true;
 		if(this.creativeTabs.length>0)
 			setCreativeTab(this.creativeTabs[0]);
