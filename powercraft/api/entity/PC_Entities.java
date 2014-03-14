@@ -26,7 +26,7 @@ public class PC_Entities {
 		if(done){
 			PC_Logger.severe("A entity want to register while startup is done");
 		}else{
-			PC_Logger.info("ADD: %s", entityType);
+			PC_Logger.info("Entity-ADD: %s", entityType);
 			entities.add(entityType);
 		}
 	}

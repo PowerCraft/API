@@ -11,8 +11,6 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferByte;
 import java.awt.image.DataBufferInt;
-import java.io.IOException;
-import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
@@ -21,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.client.renderer.texture.AbstractTexture;
-import net.minecraft.client.resources.IResource;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 
@@ -34,33 +31,19 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class PC_FontTexture extends AbstractTexture {
 
-	private Font font;
-	private boolean hasLocation;
 	private ResourceLocation location;
-	private boolean antiAlias;
-	private int fontSize;
 	private int fontHeight;
 	private int textureSize;
 	private char[] customCharsArray = new char[0];
 	private PC_CharData[] charArray = new PC_CharData[256];
 	private Map<Character, PC_CharData> customChars = new HashMap<Character, PC_CharData>();
 	private int fontID;
-	private int style;
-	
-	PC_FontTexture(Font font, boolean antiAlias, char[] customCharsArray) {
-		this.font = font;
-		this.location = new ResourceLocation("PowerCraft", "*" + font.getFontName());
-		this.antiAlias = antiAlias;
-		addCustomChars(customCharsArray);
-		this.fontID = PC_Fonts.addFont(this);
-	}
+	private PC_FontData fd;
 
-	PC_FontTexture(ResourceLocation location, boolean antiAlias, char[] customCharsArray) {
-		this.location = location;
-		this.hasLocation = true;
-		this.antiAlias = antiAlias;
-		addCustomChars(customCharsArray);
+	public PC_FontTexture(PC_FontData fd) {
 		this.fontID = PC_Fonts.addFont(this);
+		this.location = new ResourceLocation("PowerCraft", "*font" + this.fontID);
+		this.fd = fd;
 	}
 
 	public int getFontID() {
@@ -84,27 +67,7 @@ public class PC_FontTexture extends AbstractTexture {
 	@Override
 	public void loadTexture(IResourceManager resourceManager) {
 		deleteGlTexture();
-		if (this.hasLocation) {
-			InputStream inputstream = null;
-			try {
-				IResource resource = resourceManager.getResource(this.location);
-				inputstream = resource.getInputStream();
-				this.font = Font.createFont(Font.TRUETYPE_FONT, inputstream);
-				this.font = this.font.deriveFont(8.0f);
-				this.font = this.font.deriveFont(this.style);
-				inputstream.close();
-			} catch (Exception e) { // Do not use Java 1.7, use Java 1.6
-				throw new RuntimeException(e); // Should we create a runtime Error and crash report?
-			} finally {
-				if (inputstream != null)
-					try {
-						inputstream.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-			}
-		}
-		System.out.println("LOAD Font:"+resourceManager+"=>"+this.font);
+		Font font = PC_Fonts.getFontOrLoad(this.fd);
 		this.textureSize = 256;
 		int lastTextureSize = 0;
 		BufferedImage imgTemp = new BufferedImage(this.textureSize, this.textureSize,
@@ -123,7 +86,7 @@ public class PC_FontTexture extends AbstractTexture {
 			// get 0-255 characters and then custom characters
 			char ch = (i < 256) ? (char) i : this.customCharsArray[i - 256];
 
-			BufferedImage fontImage = getFontImage(ch);
+			BufferedImage fontImage = getFontImage(ch, font);
 
 			PC_CharData newIntObject = new PC_CharData();
 
@@ -210,33 +173,30 @@ public class PC_FontTexture extends AbstractTexture {
 				GL11.GL_UNSIGNED_BYTE, byteBuffer);
 	}
 
-	private BufferedImage getFontImage(char ch) {
+	private BufferedImage getFontImage(char ch, Font font) {
 		BufferedImage tempfontImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 		Graphics g = tempfontImage.getGraphics();
-		if (this.antiAlias == true && g instanceof Graphics2D)
+		if (this.fd.antiAlias == true && g instanceof Graphics2D)
 			((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 					RenderingHints.VALUE_ANTIALIAS_ON);
-		g.setFont(this.font);
+		g.setFont(font);
 		FontMetrics fontMetrics = g.getFontMetrics();
 		Rectangle2D r = fontMetrics.getStringBounds(ch=='\t'?"    ":"" + ch, g);
 
 		int charwidth = (int) r.getWidth();
-		if (charwidth <= 0)
-			charwidth = 7;
 		int charheight = (int) r.getHeight();
-		if (charheight <= 0)
-			charheight = this.fontSize;
-
+		if(charwidth<=0)
+			charwidth=1;
 		// Create another image holding the character we are creating
 		BufferedImage fontImage;
 		fontImage = new BufferedImage(charwidth, charheight, BufferedImage.TYPE_INT_ARGB);
 		Graphics gt = fontImage.getGraphics();
-		if (this.antiAlias == true && gt instanceof Graphics2D)
+		if (this.fd.antiAlias == true && gt instanceof Graphics2D)
 			((Graphics2D) gt).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 					RenderingHints.VALUE_ANTIALIAS_ON);
 		gt.setColor(new Color(0, 0, 0, 1));
 		gt.fillRect(0, 0, charwidth, charheight);
-		gt.setFont(this.font);
+		gt.setFont(font);
 		gt.setColor(Color.WHITE);
 		int charx = 0;
 		int chary = 0;

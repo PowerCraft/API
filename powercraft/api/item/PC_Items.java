@@ -18,7 +18,7 @@ public final class PC_Items {
 		if(done){
 			PC_Logger.severe("A item want to register while startup is done");
 		}else{
-			PC_Logger.info("ADD: %s", item);
+			PC_Logger.info("Item-ADD: %s", item);
 			items.add(item);
 		}
 	}

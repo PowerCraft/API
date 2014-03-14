@@ -24,7 +24,6 @@ import powercraft.api.gres.doc.PC_GresDocumentLine;
 import powercraft.api.gres.doc.PC_GresHighlighting;
 import powercraft.api.gres.doc.PC_GresHighlighting.IMultiplePossibilities;
 import powercraft.api.gres.doc.PC_GresHighlighting.MultipleRegexPossibilities;
-import powercraft.api.gres.font.PC_FontRenderer;
 import powercraft.api.gres.font.PC_Fonts;
 import powercraft.api.gres.font.PC_Formatter;
 import cpw.mods.fml.relauncher.Side;
@@ -39,8 +38,8 @@ public class PC_MiniscriptHighlighting {
 		wordList.addAll(PC_Miniscript.getDefaultReplacementWords());
 		PC_GresHighlighting highlighting = new PC_GresHighlighting();
 		PC_GresHighlighting INNER = new PC_GresHighlighting();
-		INNER.addWordHighlight(PC_GresHighlighting.msp(false, "miniscript"), PC_Formatter.color(84, 217, 255)+PC_Formatter.font(PC_Fonts.create(PC_FontRenderer.getFont("Consolas", Font.ITALIC, 24), null)));
-		INNER.addWordHighlight(PC_GresHighlighting.msp(true, "TODO"), PC_Formatter.color(84, 217, 255)+PC_Formatter.font(PC_Fonts.create(PC_FontRenderer.getFont("Consolas", Font.BOLD, 24), null)));
+		INNER.addWordHighlight(PC_GresHighlighting.msp(false, "miniscript"), PC_Formatter.color(84, 217, 255)+PC_Formatter.font(PC_Fonts.getFontByName("Consolas", 24, Font.ITALIC)));
+		INNER.addWordHighlight(PC_GresHighlighting.msp(true, "TODO"), PC_Formatter.color(84, 217, 255)+PC_Formatter.font(PC_Fonts.getFontByName("Consolas", 24, Font.BOLD)));
 		highlighting.addOperatorHighlight(PC_GresHighlighting.msp(true, "+", "-", "*"), "");
 		highlighting.addOperatorHighlight(PC_GresHighlighting.msp(true, "[", "]"), "");
 		highlighting.addOperatorHighlight(PC_GresHighlighting.msp(true, ","), "");
@@ -50,10 +49,10 @@ public class PC_MiniscriptHighlighting {
 		highlighting.addBlockHighlight(PC_GresHighlighting.msp(true, ";"), null, null, false, PC_Formatter.color(122, 122, 122), INNER);
 		highlighting.addSpecialHighlight(new LabelHighlight(), PC_Formatter.color(100, 240, 135));
 		highlighting.addWordHighlight(new JumperHightlights(), PC_Formatter.color(100, 135, 240));
-		highlighting.addWordHighlight(PC_GresHighlighting.msp(false, MINISCRIPT_ASM), PC_Formatter.color(149, 0, 85)+PC_Formatter.font(PC_Fonts.create(PC_FontRenderer.getFont("Consolas", Font.BOLD, 24), null)));
+		highlighting.addWordHighlight(PC_GresHighlighting.msp(false, MINISCRIPT_ASM), PC_Formatter.color(149, 0, 85)+PC_Formatter.font(PC_Fonts.getFontByName("Consolas", 24, Font.BOLD)));
 		highlighting.addWordHighlight(new MultipleRegexPossibilities(REGISTER_REGEX), PC_Formatter.color(255, 113, 113));
 		highlighting.addWordHighlight(new WordHighlight1(eh, wordList), PC_Formatter.color(255, 144, 48));
-		highlighting.addWordHighlight(new WordHighlight2(eh, wordList), PC_Formatter.color(50, 71, 255)+PC_Formatter.font(PC_Fonts.create(PC_FontRenderer.getFont("Consolas", Font.ITALIC, 24), null)));
+		highlighting.addWordHighlight(new WordHighlight2(eh, wordList), PC_Formatter.color(50, 71, 255)+PC_Formatter.font(PC_Fonts.getFontByName("Consolas", 24, Font.ITALIC)));
 		return highlighting;
 	}
 	

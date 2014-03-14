@@ -575,5 +575,14 @@ public class PC_Utils {
 	boolean iIsEntityFX(Entity entity) {
 		return false;
 	}
+
+	public static void deleteDirectoryOrFile(File file) {
+		if(file.isDirectory()){
+			for(File c:file.listFiles()){
+				deleteDirectoryOrFile(c);
+			}
+		}
+		file.delete();
+	}
 	
 }

@@ -1,6 +1,10 @@
 package powercraft.api.script.miniscript;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -25,6 +29,7 @@ import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.item.Item;
 import powercraft.api.PC_Api;
 import powercraft.api.PC_Lang;
+import powercraft.api.PC_Logger;
 import powercraft.api.PC_Utils;
 import powercraft.api.gres.autoadd.PC_StringWithInfo;
 import powercraft.api.gres.font.PC_Formatter;
@@ -175,7 +180,50 @@ public final class PC_Miniscript {
 	}
 	
 	public static void saveAs(String name, String source){
-		File file = PC_Utils.getPowerCraftFile("MiniScriptFiles", name+".txt");
+		if(PC_Utils.isClient()){
+			File file = PC_Utils.getPowerCraftFile("code/miniscript", name+".txt");
+			try {
+				FileWriter fw = new FileWriter(file, false);
+				fw.write(source);
+				fw.close();
+			} catch (IOException e) {
+				PC_Logger.throwing("PC_Miniscipt", "saveAs(String, String)", e);
+			}
+		}
+	}
+	
+	public static boolean exists(String name){
+		if(PC_Utils.isClient()){
+			return PC_Utils.getPowerCraftFile("code/miniscript", name+".txt").exists();
+		}
+		return true;
+	}
+	
+	public static String loadFrom(String name){
+		if(PC_Utils.isClient()){
+			File file = PC_Utils.getPowerCraftFile("code/miniscript", name+".txt");
+			if(!file.exists())
+				return "";
+			String source = null;
+			String line;
+			try {
+				BufferedReader br = new BufferedReader(new FileReader(file));
+				while((line=br.readLine())!=null){
+					if(source==null){
+						source += line;
+					}else{
+						source += "\n"+line;
+					}
+				}
+				br.close();
+			} catch (IOException e) {
+				PC_Logger.throwing("PC_Miniscipt", "loadFrom(String)", e);
+			}
+			if(source==null)
+				return "";
+			return source;
+		}
+		return "";
 	}
 	
 }

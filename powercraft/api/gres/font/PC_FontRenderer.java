@@ -1,7 +1,5 @@
 package powercraft.api.gres.font;
 
-import java.awt.Font;
-import java.awt.GraphicsEnvironment;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -360,30 +358,6 @@ public class PC_FontRenderer {
 		}
 		list.add(text.substring(start));
 		return list;
-	}
-	
-	public static boolean isSupported(String fontname) {
-		Font font[] = getFonts();
-		for (int i = font.length - 1; i >= 0; i--) {
-			if (font[i].getName().equalsIgnoreCase(fontname))
-				return true;
-		}
-		return false;
-	}
-
-	public static Font[] getFonts() {
-		return GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts();
-	}
-
-	public static Font getFont(String fontname, int style, float size) {
-		Font result = null;
-		for (Font font : getFonts()) {
-			if (font.getName().equalsIgnoreCase(fontname)) {
-				result = font.deriveFont(style, size);
-				break;
-			}
-		}
-		return result;
 	}
 	
 }

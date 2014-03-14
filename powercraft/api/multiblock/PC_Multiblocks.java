@@ -44,7 +44,7 @@ public final class PC_Multiblocks {
 		if(done){
 			PC_Logger.severe("A Multiblock want to register while startup is done");
 		}else{
-			PC_Logger.info("ADD: %s", multiblockItem);
+			PC_Logger.info("Multiblock-ADD: %s", multiblockItem);
 			multiblockItems.add(multiblockItem);
 			itemMapper.put(multiblockItem, multiblockObjectClass);
 			itemMapperRev.put(multiblockObjectClass, multiblockItem);

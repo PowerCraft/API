@@ -27,6 +27,7 @@ import powercraft.api.gres.events.PC_GresTooltipGetEvent;
 import powercraft.api.gres.events.PC_IGresEventListener;
 import powercraft.api.gres.events.PC_IGresEventListenerEx;
 import powercraft.api.gres.font.PC_FontRenderer;
+import powercraft.api.gres.font.PC_FontTexture;
 import powercraft.api.gres.font.PC_Fonts;
 import powercraft.api.gres.history.PC_GresHistory;
 import cpw.mods.fml.relauncher.Side;
@@ -75,7 +76,7 @@ public abstract class PC_GresComponent {
 
 	protected boolean mouseDown;
 
-	protected static PC_FontRenderer fontRenderer = new PC_FontRenderer(PC_Fonts.getStandardFont());
+	protected static PC_FontRenderer fontRenderer = new PC_FontRenderer(PC_Fonts.getFontByName("Default"));
 
 	protected final int fontColors[] = { 4210752, 4210752, 4210752, 4210752 };
 

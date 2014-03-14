@@ -18,7 +18,7 @@ public final class PC_Blocks {
 		if(done){
 			PC_Logger.severe("A block want to register while startup is done");
 		}else{
-			PC_Logger.info("ADD: %s", block);
+			PC_Logger.info("Block-ADD: %s", block);
 			blocks.add(block);
 		}
 	}
