@@ -1,9 +1,6 @@
 package powercraft.api.gres.font;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
 public final class PC_Formatter {
 
 	public static final char START_SEQ = 65535;

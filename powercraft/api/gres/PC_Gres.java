@@ -49,7 +49,7 @@ public class PC_Gres {
 	
 	private static TreeMap<String, PC_IGresGuiOpenHandler> guiOpenHandlers = new TreeMap<String, PC_IGresGuiOpenHandler>();
 	@SideOnly(Side.CLIENT)
-	private static TreeMap<String, PC_GresTexture> textures = new TreeMap<String, PC_GresTexture>();
+	private static TreeMap<String, PC_GresTexture> textures;
 	@SideOnly(Side.CLIENT)
 	private static boolean loaded;
 
@@ -216,6 +216,7 @@ public class PC_Gres {
 	public static void loadTextures() {
 		if(loaded)
 			return;
+		textures = new TreeMap<String, PC_GresTexture>();
 		loaded=true;
 		final String states[] = { "loc_active", "loc_mouseOver", "loc_mouseDown", "loc_disabled" };
 		IResourceManager resourceManager = PC_ClientUtils.mc().getResourceManager();

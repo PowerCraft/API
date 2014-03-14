@@ -573,6 +573,7 @@ public abstract class PC_BlockTileEntity extends PC_AbstractBlockBase implements
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, int modelId, RenderBlocks renderer) {
 		PC_TileEntity te = PC_Utils.getTileEntity(world, x, y, z, PC_TileEntity.class);
 		if(te!=null){
