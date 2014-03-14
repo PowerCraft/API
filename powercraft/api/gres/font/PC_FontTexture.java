@@ -206,9 +206,8 @@ public class PC_FontTexture extends AbstractTexture {
 
 	}
 
-	@SuppressWarnings("hiding")
-	public boolean addCustomChars(char[] customCharsArray) {
-		if (customCharsArray != null) {
+	public boolean addCustomChars(char[] pCustomCharsArray) {
+		if (pCustomCharsArray != null) {
 			List<Character> customCharsList = new ArrayList<Character>();
 			for (int i = 0; i < this.customCharsArray.length; i++){
 				Character c = Character.valueOf(this.customCharsArray[i]);
@@ -216,8 +215,8 @@ public class PC_FontTexture extends AbstractTexture {
 					customCharsList.add(c);
 			}
 			boolean changed = false;
-			for (int i = 0; i < customCharsArray.length; i++){
-				Character c = Character.valueOf(customCharsArray[i]);
+			for (int i = 0; i < pCustomCharsArray.length; i++){
+				Character c = Character.valueOf(pCustomCharsArray[i]);
 				if (!customCharsList.contains(c)){
 					customCharsList.add(c);
 					changed = true;
