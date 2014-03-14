@@ -24,7 +24,7 @@ public class PC_GresMultilineLabel extends PC_GresComponent {
 	@Override
 	protected PC_Vec2I calculatePrefSize() {
 		autoFormat();
-		return fontRenderer.getStringSize(breaked);
+		return fontRenderer.getStringSize(this.breaked);
 	}
 	
 	@Override
@@ -38,12 +38,12 @@ public class PC_GresMultilineLabel extends PC_GresComponent {
 		if(maxX==-1){
 			maxX = 100;
 		}
-		breaked = fontRenderer.warpStringToWidthBl(text, maxX, false);
+		this.breaked = fontRenderer.warpStringToWidthBl(this.text, maxX, false);
 	}
 
 	@Override
 	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp) {
-		drawString(breaked, 0, 0, false);
+		drawString(this.breaked, 0, 0, false);
 	}
 
 }

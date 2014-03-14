@@ -1,5 +1,6 @@
 package powercraft.api.script.miniscript;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -24,6 +25,7 @@ import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.item.Item;
 import powercraft.api.PC_Api;
 import powercraft.api.PC_Lang;
+import powercraft.api.PC_Utils;
 import powercraft.api.gres.autoadd.PC_StringWithInfo;
 import powercraft.api.gres.font.PC_Formatter;
 import powercraft.api.reflect.PC_Security;
@@ -61,10 +63,10 @@ public final class PC_Miniscript {
 	}
 	
 	private static void loadDefaultConstReplacements(){
-		defaultReplacements.put("true", -1);
+		defaultReplacements.put("true", Integer.valueOf(-1));
 		defaultReplacementList.add(new PC_StringWithInfo("true", "Const: -1"));
 		defaultReplacementWorldList.add("true");
-		defaultReplacements.put("false", 0);
+		defaultReplacements.put("false", Integer.valueOf(0));
 		defaultReplacementList.add(new PC_StringWithInfo("false", "Const: 0"));
 		defaultReplacementWorldList.add("false");
 	}
@@ -101,7 +103,7 @@ public final class PC_Miniscript {
 		for(Entry<Integer, Class<? extends Entity>> e: (Set<Entry<Integer, Class<? extends Entity>>>)EntityList.IDtoClassMapping.entrySet()){
 			Class<? extends Entity> entity = e.getValue();
 			if(EntityCreature.class.isAssignableFrom(entity) || EntitySlime.class.isAssignableFrom(entity)){
-				int id = e.getKey();
+				int id = e.getKey().intValue();
 				String name = EntityList.getStringFromID(id);
 				EntityRegistration entityRegistration = EntityRegistry.instance().lookupModSpawn(entity, false);
 				String mod;
@@ -170,6 +172,10 @@ public final class PC_Miniscript {
 			source += "\nExit:";
 		}
 		return source;
+	}
+	
+	public static void saveAs(String name, String source){
+		File file = PC_Utils.getPowerCraftFile("MiniScriptFiles", name+".txt");
 	}
 	
 }

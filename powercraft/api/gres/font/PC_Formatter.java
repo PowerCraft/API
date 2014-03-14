@@ -65,7 +65,7 @@ public final class PC_Formatter {
 				if(c==ERROR_SEQ){
 					i+=3;
 				}else if(c== ERRORSTOP_SEQ){
-					
+					//
 				}else{
 					unFormatted += ca[i-1];
 					unFormatted += c;

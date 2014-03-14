@@ -156,7 +156,7 @@ public class PC_WeaselGrid extends PC_Grid<PC_WeaselGrid, PC_IWeaselGridTile, PC
 	}
 
 	public void sendEvent(PC_IWeaselEvent event) {
-		for(PC_IWeaselGridTileAddressable tile:addressTiles.values()){
+		for(PC_IWeaselGridTileAddressable tile:this.addressTiles.values()){
 			tile.onEvent(event);
 		}
 	}

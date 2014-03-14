@@ -58,8 +58,9 @@ public class PC_Registry {
 		INSTANCE.iPlaySound(x, y, z, sound, soundVolume, pitch);
 	}
 	
+	@SuppressWarnings("unused")
 	void iPlaySound(double x, double y, double z, String sound, float soundVolume, float pitch) {
-		
+		//
 	}
 	
 }

@@ -90,12 +90,12 @@ public class PC_FontRenderer {
 	
 	public static void drawString(String text, float x, float y, PC_FontTexture texture, int color, boolean shadow, float scale){
 		if(shadow){
-			drawStringInt(text, x+1, y+1, texture, color, true, scale, false);
+			drawStringInt(text, x+1, y+1, texture, color, true, scale);
 		}
-		drawStringInt(text, x, y, texture, color, false, scale, false);
+		drawStringInt(text, x, y, texture, color, false, scale);
 	}
 	
-	private static void drawStringInt(String text, float x, float y, PC_FontTexture texture, int color, boolean shadow, float scale, boolean multiline){
+	private static void drawStringInt(String text, float x, float y, PC_FontTexture texture, int color, boolean shadow, float scale){
 		float s = scale;
 		PC_FontTexture activeTexture = texture;
 		PC_ClientUtils.mc().renderEngine.bindTexture(activeTexture.getResourceLocation());
@@ -120,6 +120,7 @@ public class PC_FontRenderer {
         int errorGreen = 0;
 		boolean error = false;
 		float nx = x;
+		float ny = y;
 		int maxY = -1;
 		for(int i=0; i<text.length(); i++){
 			char c = text.charAt(i);
@@ -167,9 +168,9 @@ public class PC_FontRenderer {
 			}else{
 				if(c=='\n'){
 					if(maxY==-1){
-						y += activeTexture.getCharData(' ').height;
+						ny += activeTexture.getCharData(' ').height;
 					}else{
-						y += maxY;
+						ny += maxY;
 					}
 					maxY = -1;
 				}else{
@@ -183,19 +184,19 @@ public class PC_FontRenderer {
 						float tw = data.width/size;
 						float th = data.height/size;
 						tessellator.setColorRGBA(red, green, blue, alpha);
-						tessellator.addVertexWithUV(nx, y+data.height*s, 0, tx, ty+th);
-						tessellator.addVertexWithUV(nx+data.width*s, y+data.height*s, 0, tx+tw, ty+th);
-						tessellator.addVertexWithUV(nx+data.width*s, y, 0, tx+tw, ty);
-						tessellator.addVertexWithUV(nx, y, 0, tx, ty);
+						tessellator.addVertexWithUV(nx, ny+data.height*s, 0, tx, ty+th);
+						tessellator.addVertexWithUV(nx+data.width*s, ny+data.height*s, 0, tx+tw, ty+th);
+						tessellator.addVertexWithUV(nx+data.width*s, ny, 0, tx+tw, ty);
+						tessellator.addVertexWithUV(nx, ny, 0, tx, ty);
 						if(error){
 							tessellator.draw();
 							GL11.glDisable(GL11.GL_TEXTURE_2D);
 							tessellator.startDrawingQuads();
 							tessellator.setColorRGBA(errorRed, errorGreen, errorBlue, alpha);
-							tessellator.addVertex(nx, y+data.height*s, 0);
-							tessellator.addVertex(nx+data.width*s, y+data.height*s, 0);
-							tessellator.addVertex(nx+data.width*s, y+data.height*s-1, 0);
-							tessellator.addVertex(nx, y+data.height*s-1, 0);
+							tessellator.addVertex(nx, ny+data.height*s, 0);
+							tessellator.addVertex(nx+data.width*s, ny+data.height*s, 0);
+							tessellator.addVertex(nx+data.width*s, ny+data.height*s-1, 0);
+							tessellator.addVertex(nx, ny+data.height*s-1, 0);
 							tessellator.draw();
 							GL11.glEnable(GL11.GL_TEXTURE_2D);
 							tessellator.startDrawingQuads();
@@ -340,7 +341,7 @@ public class PC_FontRenderer {
 					isWhite = c=='\n' || c=='\r' || c=='\t' || c==' ';
 					sizeAtBest = isWhite?sizeX:prevSize;
 				}
-				if(sizeX>width || c=='\n'){
+				if(sizeX*scale>width || c=='\n'){
 					if(bestSplit==-1 && wordSplit){
 						if(start+1<i){
 							list.add(text.substring(start, i));

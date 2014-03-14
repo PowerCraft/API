@@ -472,8 +472,32 @@ public class PC_Utils {
 		return PC_Direction.NORTH;
 	}
 
-	public static NBTTagCompound getNBTTagOf(Entity entity) {
-		NBTTagCompound tag = entity.getEntityData();
+	public static NBTTagCompound getNBTTagOf(Object obj) {
+		NBTTagCompound tag;
+		if(obj instanceof Entity){
+			tag = ((Entity)obj).getEntityData();
+		}else if(obj instanceof ItemStack){
+			tag = ((ItemStack)obj).getTagCompound();
+		}else{
+			return null;
+		}
+		if(tag==null || !tag.hasKey("PowerCraft"))
+			return null;
+		return tag.getCompoundTag("PowerCraft");
+	}
+	
+	public static NBTTagCompound getWritableNBTTagOf(Object obj) {
+		NBTTagCompound tag;
+		if(obj instanceof Entity){
+			tag = ((Entity)obj).getEntityData();
+		}else if(obj instanceof ItemStack){
+			tag = ((ItemStack)obj).getTagCompound();
+			if(tag==null){
+				((ItemStack)obj).setTagCompound(tag = new NBTTagCompound());
+			}
+		}else{
+			return null;
+		}
 		if (tag.hasKey("PowerCraft")) {
 			return tag.getCompoundTag("PowerCraft");
 		}
@@ -481,7 +505,7 @@ public class PC_Utils {
 		tag.setTag("PowerCraft", pctag);
 		return pctag;
 	}
-
+	
 	public static EntityPlayer getClientPlayer() {
 		return INSTANCE.iGetClientPlayer();
 	}
@@ -547,6 +571,7 @@ public class PC_Utils {
 		return INSTANCE.iIsEntityFX(entity);
 	}
 
+	@SuppressWarnings({ "static-method", "unused" })
 	boolean iIsEntityFX(Entity entity) {
 		return false;
 	}

@@ -49,10 +49,10 @@ public class PC_Vec4I {
 	}
 
 	public void add(PC_Vec4I vec) throws NullPointerException {
-		x += vec.x;
-		y += vec.y;
-		z += vec.z;
-		w += vec.w;
+		this.x += vec.x;
+		this.y += vec.y;
+		this.z += vec.z;
+		this.w += vec.w;
 	}
 
 	public static PC_Vec4I sum(PC_Vec4I... vec) {
@@ -60,18 +60,18 @@ public class PC_Vec4I {
 		for (PC_Vec4I cvec : vec) {
 			try {
 				result.add(cvec);
-			} catch (NullPointerException e) {
+			} catch (NullPointerException e) {//
 			}
 		}
 		return result;
 	}
 
 	public PC_Vec4 divide(double divident) {
-		return new PC_Vec4(x / divident, y / divident, z / divident, w / divident);
+		return new PC_Vec4(this.x / divident, this.y / divident, this.z / divident, this.w / divident);
 	}
 
 	public boolean isZero() {
-		return x == 0 && y == 0 && z == 0 && w == 0;
+		return this.x == 0 && this.y == 0 && this.z == 0 && this.w == 0;
 	}
 
 }

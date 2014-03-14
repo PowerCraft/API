@@ -262,17 +262,20 @@ public class PC_GresDocumentLine {
 		}
 		
 		public int getRed(){
-			return kind==Kind.ERROR || kind==Kind.WARNING?255:0;
+			return this.kind==Kind.ERROR || this.kind==Kind.WARNING?255:0;
 		}
+		
 		public int getGreen(){
-			return kind==Kind.WARNING?255:0;
+			return this.kind==Kind.WARNING?255:0;
 		}
+		
+		@SuppressWarnings("static-method")
 		public int getBlue(){
 			return 0;
 		}
 
 		public String getMessage() {
-			return message;
+			return this.message;
 		}
 	}
 	

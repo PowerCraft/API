@@ -69,18 +69,18 @@ public abstract class PC_TileEntityScriptable extends PC_TileEntity {
 		this.source = source;
 		if(this.worldObj==null?PC_Utils.isClient():this.worldObj.isRemote)
 			return;
-		diagnostic = new DiagnosticCollector<Void>();
+		this.diagnostic = new DiagnosticCollector<Void>();
 		int entryVectorCount = getEntryVectors()==null?0:getEntryVectors().length;
 		try{
 			HashMap<String, Integer> hm = new HashMap<String, Integer>();
 			hm.putAll(getConsts());
 			hm.putAll(getPointers());
-			this.script = PC_Miniscript.compile(source, diagnostic, hm, entryVectorCount);
+			this.script = PC_Miniscript.compile(source, this.diagnostic, hm, entryVectorCount);
 		}catch(ScriptException e) {
 			this.e = e;
 		}
-		if(diagnostic.getDiagnostics().isEmpty()){
-			diagnostic = null;
+		if(this.diagnostic.getDiagnostics().isEmpty()){
+			this.diagnostic = null;
 		}
 	}
 	

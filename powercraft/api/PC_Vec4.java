@@ -49,7 +49,7 @@ public class PC_Vec4 {
 	}
 
 	public PC_Vec4I roundToInt() {
-		return new PC_Vec4I((int) Math.round(x), (int) Math.round(y), (int) Math.round(z), (int) Math.round(w));
+		return new PC_Vec4I((int) Math.round(this.x), (int) Math.round(this.y), (int) Math.round(this.z), (int) Math.round(this.w));
 	}
 
 }
