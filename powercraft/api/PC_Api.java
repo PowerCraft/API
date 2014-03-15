@@ -76,51 +76,6 @@ public final class PC_Api extends PC_Module {
 		PC_Dimensions.construct();
 		
 		MinecraftForge.EVENT_BUS.register(new PC_EventHandler());
-		
-		PC_Recipes.add3DRecipe(true, new PC_I3DRecipeHandler() {
-			   
-			   @Override
-			   public boolean foundStructAt(World world, StructStart structStart) {
-				   PC_Vec3I tmp;
-				   for(int x=0; x<4;x++){
-					   for(int z=0; z<5; z++){
-						   tmp=structStart.relative(x,0,z);
-						   PC_Utils.setBlock(world, tmp.x, tmp.y, tmp.z, Blocks.stone);
-					   }
-				   }
-				   return true;
-			   }
-			  }, new String[]{"i  i", "    ", "    ", "    ", "i  i"}, 'i', Blocks.stone, ' ', Blocks.air);
-		
-		PC_Recipes.add3DRecipe(true, new PC_I3DRecipeHandler() {
-			   
-			   @Override
-			   public boolean foundStructAt(World world, StructStart structStart) {
-				   PC_Vec3I tmp;
-				   for(int x=0; x<4;x++){
-					   for(int z=0; z<6; z++){
-						   tmp=structStart.relative(x,0,z);
-						   PC_Utils.setBlock(world, tmp.x, tmp.y, tmp.z, Blocks.stone);
-					   }
-				   }
-				   return true;
-			   }
-			  }, new String[]{"i  i", "    ", "    ", "    ", "    ", "i  i"}, 'i', Blocks.stone, ' ', Blocks.air);
-		
-		PC_Recipes.add3DRecipe(true, new PC_I3DRecipeHandler() {
-			   
-			   @Override
-			   public boolean foundStructAt(World world, StructStart structStart) {
-				   PC_Vec3I tmp;
-				   for(int x=0; x<4;x++){
-					   for(int z=0; z<7; z++){
-						   tmp=structStart.relative(x,0,z);
-						   PC_Utils.setBlock(world, tmp.x, tmp.y, tmp.z, Blocks.stone);
-					   }
-				   }
-				   return true;
-			   }
-			  }, new String[]{"i  i", "    ", "    ", "    ", "    ", "    ", "i  i"}, 'i', Blocks.stone, ' ', Blocks.air);
 	}
 
 
