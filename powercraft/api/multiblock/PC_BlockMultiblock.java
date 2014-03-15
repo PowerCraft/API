@@ -164,8 +164,11 @@ public final class PC_BlockMultiblock extends PC_BlockTileEntity implements PC_I
 	
 	@Override
 	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z) {
-		if(world.isRemote)
+		if(world.isRemote){
+			if(PC_Utils.mcs()==null || PC_Utils.mcs().isServerStopped())
+				playerSelection.remove(player);
 			return false;
+		}
 		PC_TileEntityMultiblock tem = PC_Utils.getTileEntity(world, x, y, z, PC_TileEntityMultiblock.class);
 		if(tem==null){
 			return super.removedByPlayer(world, player, x, y, z);
