@@ -285,11 +285,10 @@ public class PC_Utils {
 		return null;
 	}
 
-	public static boolean canPlaceEntityOnSide(World world, int x, int y, int z, PC_Direction side, Block block,
-			Entity entity, ItemStack itemStack) {
+	public static boolean canPlaceEntityOnSide(World world, int x, int y, int z, PC_Direction side, Block block, Entity entity, ItemStack itemStack) {
 		Block block1 = PC_Utils.getBlock(world, x, y, z);
 		AxisAlignedBB box = null;
-		if (block instanceof PC_AbstractBlockBase) {
+		if (block instanceof PC_AbstractBlockBase && entity!=null) {
 			if (((PC_AbstractBlockBase) block).canRotate()) {
 				box = ((PC_AbstractBlockBase) block).getMainCollisionBoundingBoxPre(world, x, y, z);
 				if (box != null) {

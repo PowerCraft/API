@@ -11,6 +11,8 @@ import net.minecraftforge.client.IItemRenderer;
 
 import org.lwjgl.opengl.GL11;
 
+import powercraft.api.PC_3DRotation;
+import powercraft.api.PC_Direction;
 import powercraft.api.block.PC_AbstractBlockBase;
 import powercraft.api.item.PC_Item;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
@@ -79,7 +81,15 @@ public class PC_Renderer implements ISimpleBlockRenderingHandler, IItemRenderer 
 	@Override
 	public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer) {
 		if(block instanceof PC_AbstractBlockBase){
-			return ((PC_AbstractBlockBase)block).renderWorldBlock(world, x, y, z, modelId, renderer);
+			if(((PC_AbstractBlockBase) block).canRotate(world, x, y, z)){
+				PC_3DRotation rotation = ((PC_AbstractBlockBase) block).getRotation(world, x, y, z);
+				if(rotation!=null){
+					setupRotation(renderer, rotation);
+				}
+			}
+			boolean ret = ((PC_AbstractBlockBase)block).renderWorldBlock(world, x, y, z, modelId, renderer);
+			resetRotation(renderer);
+			return ret;
 		}
 		return false;
 	}
@@ -140,6 +150,22 @@ public class PC_Renderer implements ISimpleBlockRenderingHandler, IItemRenderer 
 	public static boolean renderBlockInWorld(IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer){
 		renderer.renderStandardBlock(block, x, y, z);
 		return true;
+	}
+	
+	private static int MAPPING_TOP[] = {3, 2, 0, 1};
+	
+	public static void setupRotation(RenderBlocks renderer, PC_3DRotation rotation){
+		int rot = rotation.getSideRotation(PC_Direction.UP);
+		renderer.uvRotateTop = MAPPING_TOP[rot];
+	}
+	
+	public static void resetRotation(RenderBlocks renderer){
+		renderer.uvRotateBottom = 0;
+		renderer.uvRotateTop = 0;
+		renderer.uvRotateNorth = 0;
+		renderer.uvRotateSouth = 0;
+		renderer.uvRotateWest = 0;
+		renderer.uvRotateEast = 0;
 	}
 	
 	@SuppressWarnings("unused")
