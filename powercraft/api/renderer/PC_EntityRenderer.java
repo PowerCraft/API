@@ -1,5 +1,7 @@
 package powercraft.api.renderer;
 
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
@@ -20,7 +22,10 @@ public class PC_EntityRenderer<E extends Entity & PC_IEntity> extends Render {
 	
 	@Override
 	public void doRender(Entity entity, double x, double y, double z, float rotYaw, float timeStamp) {
+		GL11.glPushMatrix();
+        GL11.glTranslatef((float)x, (float)y, (float)z);
 		this.type.doRender(this, this.type.getEntity().cast(entity), x, y, z, rotYaw, timeStamp);
+		GL11.glPopMatrix();
 	}
 	
 	@Override

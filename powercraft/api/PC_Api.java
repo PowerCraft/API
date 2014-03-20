@@ -1,21 +1,17 @@
 package powercraft.api;
 
 
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import powercraft.api.block.PC_Blocks;
 import powercraft.api.dimension.PC_Dimensions;
 import powercraft.api.energy.PC_EnergyGrid;
+import powercraft.api.entity.PC_Entities;
 import powercraft.api.gres.PC_Gres;
 import powercraft.api.item.PC_Items;
 import powercraft.api.multiblock.PC_BlockMultiblock;
 import powercraft.api.multiblock.PC_Multiblocks;
 import powercraft.api.network.PC_PacketHandler;
-import powercraft.api.recipes.PC_3DRecipe.StructStart;
-import powercraft.api.recipes.PC_I3DRecipeHandler;
-import powercraft.api.recipes.PC_Recipes;
 import powercraft.api.script.miniscript.PC_Miniscript;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -74,6 +70,7 @@ public final class PC_Api extends PC_Module {
 		PC_Items.construct();
 		PC_Multiblocks.construct();
 		PC_Dimensions.construct();
+		PC_Entities.construct();
 		
 		MinecraftForge.EVENT_BUS.register(new PC_EventHandler());
 	}

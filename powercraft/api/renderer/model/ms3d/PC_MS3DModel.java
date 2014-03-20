@@ -4,6 +4,8 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.client.resources.IResourceManager;
@@ -12,6 +14,7 @@ import net.minecraft.util.ResourceLocation;
 import powercraft.api.PC_ClientUtils;
 import powercraft.api.PC_Matrix;
 import powercraft.api.PC_Module;
+import powercraft.api.PC_ResourceReloadListener;
 import powercraft.api.PC_Utils;
 import powercraft.api.PC_ResourceReloadListener.PC_IResourceReloadListener;
 import powercraft.api.PC_Vec2;
@@ -56,6 +59,8 @@ public class PC_MS3DModel extends PC_Model implements PC_IResourceReloadListener
 		this.module = module;
 		this.modelName = name;
 		this.resourceLocation = PC_Utils.getResourceLocation(module, "models/"+name+".ms3d");
+		PC_ResourceReloadListener.registerResourceReloadListener(this);
+		onResourceReload();
 	}
 
 	public int getVersion(){
@@ -350,17 +355,29 @@ public class PC_MS3DModel extends PC_Model implements PC_IResourceReloadListener
 	@SuppressWarnings("hiding")
 	private void renderGroup(int groupID, PC_Matrix[] matrixes){
 		PC_MS3DGroup group = this.groups[groupID];
-		PC_MS3DMaterial material = this.materials[group.getMaterialIndex()];
-		String texture = material.getTexture();
+		PC_MS3DMaterial material;
+		String texture;
+		if(group.getMaterialIndex()==-1){
+			material = null;
+			texture = "default";
+		}else{
+			material = this.materials[group.getMaterialIndex()];
+			texture = material.getTexture();
+		}
 		ResourceLocation resourceLocation = PC_Utils.getResourceLocation(this.module, "textures/model/"+this.modelName+"/"+texture+".png");
 		PC_ClientUtils.mc().renderEngine.bindTexture(resourceLocation);
 		int[] triangles = group.getTriangleIndices();
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		GL11.glColor3f(1.0f, 1.0f, 1.0f);
+		Tessellator.instance.startDrawing(GL11.GL_TRIANGLES);
 		for(int i=0; i<triangles.length; i++){
 			PC_MS3DTriangle triangle = this.triangles[triangles[i]];
 			for(int j=0; j<3; j++){
 				renderVertex(triangle.getVertexIndex(j), triangle.getTextureCoord(j), triangle.getVertexNormal(j), matrixes);
 			}
 		}
+		Tessellator.instance.draw();
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
 	}
 	
 	private void renderVertex(int vertexID, PC_Vec2 textureCoord, PC_Vec3 normal, PC_Matrix[] matrixes){

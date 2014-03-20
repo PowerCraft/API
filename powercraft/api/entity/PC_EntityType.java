@@ -6,6 +6,7 @@ import powercraft.api.PC_Module;
 import powercraft.api.PC_Registry;
 import powercraft.api.PC_Utils;
 import powercraft.api.renderer.PC_EntityRenderer;
+import powercraft.api.renderer.model.PC_Model;
 import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -25,6 +26,8 @@ public abstract class PC_EntityType<E extends Entity & PC_IEntity> {
 	public int updateFrequency;
 	
 	public boolean sendsVelocityUpdates;
+	
+	protected PC_Model model;
 	
 	public PC_EntityType(){
 		PC_Entities.addEntityType(this);
@@ -46,6 +49,8 @@ public abstract class PC_EntityType<E extends Entity & PC_IEntity> {
 		PC_Module module = getModule();
 		this.entityTypeID = EntityRegistry.findGlobalUniqueEntityId();
 		PC_Registry.registerEntity(getEntity(), module.getName()+":"+getRegisterName(), this.entityTypeID, module, this.trackingRange, this.updateFrequency, this.sendsVelocityUpdates, this);
+		if(PC_Utils.isClient())
+			this.model = PC_Model.loadModel(module, getTextureFolderName(), "ms3d");
 		this.constructed = true;
 	}
 
@@ -71,6 +76,10 @@ public abstract class PC_EntityType<E extends Entity & PC_IEntity> {
 	@SideOnly(Side.CLIENT)
 	public void doRender(PC_EntityRenderer<E> renderer, E entity, double x, double y, double z, float rotYaw, float timeStamp) {
 		entity.doRender(renderer, x, y, z, rotYaw, timeStamp);
+	}
+	
+	public PC_Model getModel(){
+		return this.model;
 	}
 	
 }

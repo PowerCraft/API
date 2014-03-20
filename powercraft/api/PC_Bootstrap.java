@@ -22,6 +22,7 @@ final class PC_Bootstrap {
 			throw new RuntimeException("Failed to initialize PowerCraft");
 		}
 		PC_Logger.init(PC_Utils.getPowerCraftFile(null, PC_Module.POWERCRAFT+".log"));
+		PC_Debug.setup();
 		loaded = true;
 	}
 
