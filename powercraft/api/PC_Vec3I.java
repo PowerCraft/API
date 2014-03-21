@@ -62,7 +62,7 @@ public class PC_Vec3I {
 
 		PC_Direction[] sides = {PC_Direction.DOWN, PC_Direction.NORTH, PC_Direction.EAST};
 		for(PC_Direction dir:sides){
-			tmp=dir.getRotation(pcDir, times);
+			tmp=dir.rotate(pcDir, times);
 			if(dir==tmp||dir==tmp.getOpposite()){
 				tmpX+=tmp.offsetX*(dir.offsetX*this.x);
 				tmpY+=tmp.offsetY*(dir.offsetY*this.y);
@@ -73,11 +73,7 @@ public class PC_Vec3I {
 				tmpZ+=tmp.offsetZ*(dir.offsetX*this.x+dir.offsetY*this.y+dir.offsetZ*this.z);
 			}
 		}
-		this.x=tmpX;
-		this.y=tmpY;
-		this.z=tmpZ;
-		return this;
+		return new PC_Vec3I(tmpX, tmpY, tmpZ);
 	}
-
 
 }

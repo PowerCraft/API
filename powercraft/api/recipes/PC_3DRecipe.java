@@ -238,14 +238,23 @@ public class PC_3DRecipe {
 		
 		public PC_Vec3I relative(int x, int y, int z){
 			int times=0;
-			if(this.dir==PC_Direction.EAST)
+			switch(dir){
+			case EAST:
 				times=0;
-			else if(this.dir==PC_Direction.NORTH)
+				break;
+			case NORTH:
 				times=1;
-			else if(this.dir==PC_Direction.WEST)
-				times=2;
-			else if(this.dir==PC_Direction.SOUTH)
+				break;
+			case SOUTH:
 				times=3;
+				break;
+			case WEST:
+				times=2;
+				break;
+			default:
+				return null;
+			
+			}
 			return this.pos.offset(new PC_Vec3I(x, y, z).rotate(PC_Direction.DOWN, times));
 		}
 	}

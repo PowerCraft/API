@@ -59,7 +59,7 @@ public enum PC_Direction {
         {
             return VALID_DIRECTIONS[id];
         }
-        return UNKNOWN;
+        return null;
     }
     
     public static PC_Direction fromRotationY(int rotation) {
@@ -70,26 +70,22 @@ public enum PC_Direction {
         return OPPOSITES[ordinal()];
     }
 
-    public PC_Direction getRotation(PC_Direction axis){
+    public PC_Direction rotateOnce(PC_Direction axis){
     	return ROTATION_MATRIX[axis.ordinal()][ordinal()];
     }
-    
-    public PC_Direction getRotationRightHand(PC_Direction axis){
-    	return getRotation(axis.getOpposite());
-    }
 
-	public PC_Direction getRotation(PC_Direction axis, int times) {
+	public PC_Direction rotate(PC_Direction axis, int times) {
 		if(this==axis||this.getOpposite()==axis) return this;
 		int ttimes = ((times %4) +4) %4;
 		if(ttimes==0)
 			return this;
 		else if(ttimes==1)
-			return getRotation(axis);
+			return rotateOnce(axis);
 		else if(ttimes==2)
 			return getOpposite();
 		else if(ttimes==3)
-			return getRotation(axis.getOpposite());
-		return UNKNOWN;
+			return rotateOnce(axis.getOpposite());
+		return null;
 	}
 
     public static PC_Direction fromForgeDirection(ForgeDirection side) {
