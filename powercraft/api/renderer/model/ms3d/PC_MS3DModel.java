@@ -367,7 +367,6 @@ public class PC_MS3DModel extends PC_Model implements PC_IResourceReloadListener
 		ResourceLocation resourceLocation = PC_Utils.getResourceLocation(this.module, "textures/models/"+this.modelName+"/"+texture+".png");
 		PC_ClientUtils.mc().renderEngine.bindTexture(resourceLocation);
 		int[] triangles = group.getTriangleIndices();
-		//GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glColor3f(1.0f, 1.0f, 1.0f);
 		Tessellator.instance.startDrawing(GL11.GL_TRIANGLES);
 		for(int i=0; i<triangles.length; i++){
@@ -377,7 +376,6 @@ public class PC_MS3DModel extends PC_Model implements PC_IResourceReloadListener
 			}
 		}
 		Tessellator.instance.draw();
-		//GL11.glEnable(GL11.GL_TEXTURE_2D);
 	}
 	
 	private void renderVertex(int vertexID, PC_Vec2 textureCoord, PC_Vec3 normal, PC_Matrix[] matrixes){

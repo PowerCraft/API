@@ -14,7 +14,7 @@ public class PC_Debug {
 	/**
 	 * Debug on/off
 	 */
-	public static final boolean DEBUG = true;
+	public static final boolean DEBUG = false;
 	
 	/**
 	 * if on the string will be printed, else not
