@@ -4,9 +4,7 @@ import java.io.File;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
-
 import javax.management.InstanceAlreadyExistsException;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -115,15 +113,15 @@ public class PC_Utils {
 	public static boolean setBlock(World world, PC_Vec3I pos, Block block) {
 		return setBlock(world, pos, block, 0);
 	}
-	
+
 	public static boolean setAir(World world, int x, int y, int z) {
 		return setBlock(world, x, y, z, Blocks.air);
 	}
-	
+
 	public static boolean setAir(World world, PC_Vec3I pos) {
 		return setBlock(world, pos, Blocks.air);
 	}
-	
+
 	public static int getMetadata(IBlockAccess world, int x, int y, int z) {
 		return world.getBlockMetadata(x, y, z);
 	}
@@ -147,7 +145,7 @@ public class PC_Utils {
 	public static boolean setMetadata(World world, PC_Vec3I pos, int metadata, int flag) {
 		return setMetadata(world, pos.x, pos.y, pos.z, metadata, flag);
 	}
-	
+
 	public static Item getItem(ItemStack itemStack) {
 		return itemStack.getItem();
 	}
@@ -285,10 +283,11 @@ public class PC_Utils {
 		return null;
 	}
 
-	public static boolean canPlaceEntityOnSide(World world, int x, int y, int z, PC_Direction side, Block block, Entity entity, ItemStack itemStack) {
+	public static boolean canPlaceEntityOnSide(World world, int x, int y, int z, PC_Direction side, Block block,
+			Entity entity, ItemStack itemStack) {
 		Block block1 = PC_Utils.getBlock(world, x, y, z);
 		AxisAlignedBB box = null;
-		if (block instanceof PC_AbstractBlockBase && entity!=null) {
+		if (block instanceof PC_AbstractBlockBase && entity != null) {
 			if (((PC_AbstractBlockBase) block).canRotate()) {
 				box = ((PC_AbstractBlockBase) block).getMainCollisionBoundingBoxPre(world, x, y, z);
 				if (box != null) {
@@ -320,7 +319,7 @@ public class PC_Utils {
 	public static void spawnItem(World world, PC_Vec3 pos, ItemStack itemStack) {
 		spawnItem(world, pos.x, pos.y, pos.z, itemStack);
 	}
-	
+
 	public static void spawnItems(World world, double x, double y, double z, List<ItemStack> itemStacks) {
 		if (!world.isRemote && world.getGameRules().getGameRuleBooleanValue("doTileDrops") && itemStacks != null) {
 			for (ItemStack itemStack : itemStacks) {
@@ -330,7 +329,7 @@ public class PC_Utils {
 			}
 		}
 	}
-	
+
 	public static void spawnItems(World world, PC_Vec3 pos, List<ItemStack> itemStack) {
 		spawnItems(world, pos.x, pos.y, pos.z, itemStack);
 	}
@@ -464,8 +463,8 @@ public class PC_Utils {
 		if (mz > 0) {
 			return PC_Direction.SOUTH;
 		}
-		if(mz==0){
-			if(entity instanceof EntityLivingBase){
+		if (mz == 0) {
+			if (entity instanceof EntityLivingBase) {
 				return PC_Direction.fromRotationY(getRotation(entity)).getOpposite();
 			}
 		}
@@ -474,28 +473,28 @@ public class PC_Utils {
 
 	public static NBTTagCompound getNBTTagOf(Object obj) {
 		NBTTagCompound tag;
-		if(obj instanceof Entity){
-			tag = ((Entity)obj).getEntityData();
-		}else if(obj instanceof ItemStack){
-			tag = ((ItemStack)obj).getTagCompound();
-		}else{
+		if (obj instanceof Entity) {
+			tag = ((Entity) obj).getEntityData();
+		} else if (obj instanceof ItemStack) {
+			tag = ((ItemStack) obj).getTagCompound();
+		} else {
 			return null;
 		}
-		if(tag==null || !tag.hasKey("PowerCraft"))
+		if (tag == null || !tag.hasKey("PowerCraft"))
 			return null;
 		return tag.getCompoundTag("PowerCraft");
 	}
-	
+
 	public static NBTTagCompound getWritableNBTTagOf(Object obj) {
 		NBTTagCompound tag;
-		if(obj instanceof Entity){
-			tag = ((Entity)obj).getEntityData();
-		}else if(obj instanceof ItemStack){
-			tag = ((ItemStack)obj).getTagCompound();
-			if(tag==null){
-				((ItemStack)obj).setTagCompound(tag = new NBTTagCompound());
+		if (obj instanceof Entity) {
+			tag = ((Entity) obj).getEntityData();
+		} else if (obj instanceof ItemStack) {
+			tag = ((ItemStack) obj).getTagCompound();
+			if (tag == null) {
+				((ItemStack) obj).setTagCompound(tag = new NBTTagCompound());
 			}
-		}else{
+		} else {
 			return null;
 		}
 		if (tag.hasKey("PowerCraft")) {
@@ -505,7 +504,7 @@ public class PC_Utils {
 		tag.setTag("PowerCraft", pctag);
 		return pctag;
 	}
-	
+
 	public static EntityPlayer getClientPlayer() {
 		return INSTANCE.iGetClientPlayer();
 	}
@@ -577,24 +576,34 @@ public class PC_Utils {
 	}
 
 	public static void deleteDirectoryOrFile(File file) {
-		if(file.isDirectory()){
-			for(File c:file.listFiles()){
+		if (file.isDirectory()) {
+			for (File c : file.listFiles()) {
 				deleteDirectoryOrFile(c);
 			}
 		}
 		file.delete();
 	}
-	
-	public static int getDimensionID(World world){
+
+	public static int getDimensionID(World world) {
 		return world.provider.dimensionId;
 	}
-	
-    public static int getTemperature(World world, int x, int y, int z){
-    	return PC_BlockTemperatures.getTemperature(world, x, y, z);
-    }
-    
-    public static BiomeGenBase getBiome(World world, int x, int z){
-    	return world.getBiomeGenForCoords(x, z);
-    }
-    
+
+	public static int getTemperature(World world, int x, int y, int z) {
+		return PC_BlockTemperatures.getTemperature(world, x, y, z);
+	}
+
+	public static BiomeGenBase getBiome(World world, int x, int z) {
+		return world.getBiomeGenForCoords(x, z);
+	}
+
+	public static void setArrayContentsToNull(Object[] array) {
+		for (int i = 0; i < array.length; i++) {
+			array[i] = null;
+		}
+	}
+
+	public static void setCollectionContentsToNull(java.util.SortedSet<?> array) {
+		setArrayContentsToNull(array.toArray());
+	}
+
 }
