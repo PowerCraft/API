@@ -24,6 +24,7 @@ public class PC_EntityRenderer<E extends Entity & PC_IEntity> extends Render {
 	public void doRender(Entity entity, double x, double y, double z, float rotYaw, float timeStamp) {
 		GL11.glPushMatrix();
         GL11.glTranslatef((float)x, (float)y, (float)z);
+        GL11.glRotatef(180f-rotYaw, 0, 1, 0);
 		this.type.doRender(this, this.type.getEntity().cast(entity), x, y, z, rotYaw, timeStamp);
 		GL11.glPopMatrix();
 	}

@@ -9,7 +9,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import powercraft.api.PC_Api;
 import powercraft.api.PC_Direction;
 import powercraft.api.PC_Field;
 import powercraft.api.PC_Field.Flag;
@@ -19,6 +18,7 @@ import powercraft.api.multiblock.PC_BlockMultiblock;
 import powercraft.api.multiblock.PC_MultiblockIndex;
 import powercraft.api.multiblock.PC_MultiblockObject;
 import powercraft.api.multiblock.PC_TileEntityMultiblock;
+import powercraft.core.PCco_Core;
 
 public abstract class PC_MultiblockObjectCable extends PC_MultiblockObject implements PC_IGridHolder {
 
@@ -167,7 +167,7 @@ public abstract class PC_MultiblockObjectCable extends PC_MultiblockObject imple
 	@Override
 	public void onNeighborBlockChange(Block neighbor) {
 
-		List<ItemStack> drops = checkConnections(neighbor==PC_Api.MULTIBLOCK);
+		List<ItemStack> drops = checkConnections(neighbor==PCco_Core.MULTIBLOCK);
 		if (drops != null) this.multiblock.drop(drops);
 	}
 

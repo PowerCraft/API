@@ -13,6 +13,7 @@ import powercraft.api.multiblock.PC_BlockMultiblock;
 import powercraft.api.multiblock.PC_Multiblocks;
 import powercraft.api.network.PC_PacketHandler;
 import powercraft.api.script.miniscript.PC_Miniscript;
+import powercraft.core.PCco_Core;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.InstanceFactory;
@@ -28,20 +29,18 @@ import cpw.mods.fml.common.event.FMLServerAboutToStartEvent;
  * @author XOR
  *
  */
-@Mod(modid = PC_Api.NAME, name = PC_Api.NAME, version = PC_Api.VERSION/*, dependencies=PC_Api.DEPENDENCIES*/)
+@Mod(modid = PC_Api.NAME, name = PC_Api.NAME, version = PC_Api.VERSION, dependencies=PC_Api.DEPENDENCIES)
 public final class PC_Api extends PC_Module {
 	
 	public static final String NAME = POWERCRAFT+"-Api";
 	public static final String VERSION = "1.7.2";
-	//public static final String DEPENDENCIES = "required-before:"+PCco_ModuleCore.NAME+"@"+PCco_ModuleCore.VERSION;
+	public static final String DEPENDENCIES = "required-before:"+PCco_Core.NAME+"@"+PCco_Core.VERSION;
 	
 	static{
 		PC_Bootstrap.prepare();
 	}
 	
 	public static final PC_Api INSTANCE = new PC_Api();
-	
-	public static final PC_BlockMultiblock MULTIBLOCK = PC_Multiblocks.getMultiblock();
 	
 	@InstanceFactory
 	public static PC_Api factory(){

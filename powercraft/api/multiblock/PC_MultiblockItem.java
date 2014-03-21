@@ -13,6 +13,7 @@ import powercraft.api.PC_IconRegistry;
 import powercraft.api.PC_Logger;
 import powercraft.api.PC_Utils;
 import powercraft.api.item.PC_Item;
+import powercraft.core.PCco_Core;
 
 public abstract class PC_MultiblockItem extends PC_Item {
 
@@ -107,7 +108,7 @@ public abstract class PC_MultiblockItem extends PC_Item {
 			break;
 		}
 		if (block == null || replaceAble) {
-			world.setBlock(nx, ny, nz, PC_Api.MULTIBLOCK);
+			world.setBlock(nx, ny, nz, PCco_Core.MULTIBLOCK);
 			block = PC_Utils.getBlock(world, nx, ny, nz);
 		}
 		if (block instanceof PC_BlockMultiblock) {

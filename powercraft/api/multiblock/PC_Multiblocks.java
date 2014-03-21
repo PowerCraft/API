@@ -14,6 +14,7 @@ import powercraft.api.network.packet.PC_PacketMultiblockObjectSync;
 import powercraft.api.network.packet.PC_PacketSelectMultiblockTile;
 import powercraft.api.network.packet.PC_PacketSelectMultiblockTile2;
 import powercraft.api.reflect.PC_Security;
+import powercraft.core.PCco_Core;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -33,11 +34,11 @@ public final class PC_Multiblocks {
 	}
 	
 	public static PC_BlockMultiblock getMultiblock(){
-		if(PC_Api.MULTIBLOCK==null){
-			PC_Security.allowedCaller("PC_Multiblocks.getMultiblock()", PC_Api.class);
+		if(PCco_Core.MULTIBLOCK==null){
+			PC_Security.allowedCaller("PC_Multiblocks.getMultiblock()", PCco_Core.class);
 			return new PC_BlockMultiblock();
 		}
-		return PC_Api.MULTIBLOCK;
+		return PCco_Core.MULTIBLOCK;
 	}
 	
 	static void addMultiblock(PC_MultiblockItem multiblockItem, Class<? extends PC_MultiblockObject> multiblockObjectClass) {
