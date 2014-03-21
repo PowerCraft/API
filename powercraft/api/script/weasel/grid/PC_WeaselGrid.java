@@ -39,6 +39,8 @@ public class PC_WeaselGrid extends PC_Grid<PC_WeaselGrid, PC_IWeaselGridTile, PC
 	
 	private void addAddressTile(PC_IWeaselGridTileAddressable tile){
 		int address = tile.getAddress();
+		if(address==0)
+			return;
 		Integer a = Integer.valueOf(address);
 		PC_IWeaselGridTileAddressable oTile = this.addressTiles.get(a);
 		if(oTile==tile)
@@ -56,6 +58,8 @@ public class PC_WeaselGrid extends PC_Grid<PC_WeaselGrid, PC_IWeaselGridTile, PC
 	}
 	
 	private void removeAddressTile(PC_IWeaselGridTileAddressable tile, int address){
+		if(address==0)
+			return;
 		Integer a = Integer.valueOf(address);
 		if(this.addressTiles.get(a)==tile){
 			this.addressTiles.remove(a);
@@ -144,7 +148,9 @@ public class PC_WeaselGrid extends PC_Grid<PC_WeaselGrid, PC_IWeaselGridTile, PC
 		return new PC_WeaselGrid();
 	}
 	
-	public PC_IWeaselGridTileAddressable getTileByAddress(int address){
+	public PC_IWeaselGridTileAddressable getTileByAddress(PC_IWeaselGridTileAddressable caller, int address){
+		if(address==0)
+			return caller;
 		return this.addressTiles.get(Integer.valueOf(address));
 	}
 	
