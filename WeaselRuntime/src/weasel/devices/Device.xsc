@@ -7,7 +7,7 @@ public class Device{
 	protected final int address;
 
 	protected Device(int address){
-		this.address;
+		this.address = address;
 	}
 
 	public static native int getTypeUnsafe(int address);
