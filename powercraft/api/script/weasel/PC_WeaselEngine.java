@@ -11,4 +11,6 @@ public interface PC_WeaselEngine {
 	
 	public void onEvent(PC_IWeaselEvent event);
 	
+	public void registerNativeClass(Class<?> c);
+	
 }

@@ -8,6 +8,8 @@ import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
@@ -327,6 +329,39 @@ public final class PC_NBTTagHandler {
 		}
 		PC_Logger.severe("Can't load an unknown object");
 		return null;
+	}
+	
+	/**
+	 * loads a map from a nbttag
+	 * @param nbtTagCompound the nbttag
+	 * @param name the key
+	 * @param map the map
+	 * @param ce the expected key class
+	 * @param c the expected value class
+	 * @return the object
+	 */
+	public static <T extends Map<E, F>, E, F> T loadMapFromNBT(NBTTagCompound nbtTagCompound, String name, T map, Class<E> ce, Class<F> cf, Flag flag){
+		NBTBase base = nbtTagCompound.getTag(name);
+		if(base==null)
+			return null;
+		map.clear();
+		NBTTagList list = (NBTTagList)base;
+		for(int i=0; i<list.tagCount(); i++){
+			NBTTagCompound com = list.getCompoundTagAt(i);
+			map.put(loadFromNBT(com, "key", ce, flag), loadFromNBT(com, "value", cf, flag));
+		}
+		return map;
+	}
+	
+	public static <T extends Map<?, ?>> void saveMapToNBT(NBTTagCompound nbtTagCompound, String name, T map, Flag flag){
+		NBTTagList list = new NBTTagList();
+		for(Entry<?, ?> e:map.entrySet()){
+			NBTTagCompound com = new NBTTagCompound();
+			saveToNBT(com, "key", e.getKey(), flag);
+			saveToNBT(com, "value", e.getValue(), flag);
+			list.appendTag(com);
+		}
+		nbtTagCompound.setTag(name, list);
 	}
 	
 	private PC_NBTTagHandler() {

@@ -1,0 +1,56 @@
+package weasel.miner;
+
+import weasel.Predef;
+
+public class Miner{
+	
+	private static final void checkState(){
+		if(!operationFinished())
+			throw new AlreadyWorkingException();
+	}
+	
+	public static final native bool operationFinished();
+	
+	public static void waitForOperationFinished(){
+		while(!operationFinished()){
+			Predef.sleep(1);
+		}
+	}
+	
+	private static final native void digForward();
+	
+	public static void digForward(bool waitForFinish){
+		checkState();
+		digForward();
+		if(waitForFinish){
+			waitForOperationFinished();
+		}
+	}
+
+	private static final native void moveForward(int steps);
+	
+	public static void moveForward(int steps, bool waitForFinish){
+		checkState();
+		moveForward(steps);
+		if(waitForFinish){
+			waitForOperationFinished();
+		}
+	}
+	
+	private static final native void rotate(int dir);
+	
+	public static void rotate(int dir, bool waitForFinish){
+		checkState();
+		rotate(dir);
+		if(waitForFinish){
+			waitForOperationFinished();
+		}
+	}
+	
+	
+	
+	public static native bool isMiningEnabled();
+	
+	public static native bool setMining(bool state);
+	
+}

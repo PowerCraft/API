@@ -31,13 +31,13 @@ public final class PC_Weasel {
 		return weaselModule.createClassSave(createDefault);
 	}
 	
-	public static PC_WeaselEngine createEngine(PC_WeaselClassSave classSave, int memSize, PC_IWeaselNativeHandler handler){
+	public static PC_WeaselEngine createEngine(PC_WeaselClassSave classSave, int memSize, Object handler){
 		if(weaselModule==null)
 			return null;
 		return weaselModule.createEngine(classSave, memSize, handler);
 	}
 	
-	public static PC_WeaselEngine loadEngine(PC_WeaselClassSave classSave, byte[] data, PC_IWeaselNativeHandler handler){
+	public static PC_WeaselEngine loadEngine(PC_WeaselClassSave classSave, byte[] data, Object handler){
 		if(weaselModule==null)
 			return null;
 		return weaselModule.loadEngine(classSave, data, handler);
