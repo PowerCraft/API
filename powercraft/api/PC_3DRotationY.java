@@ -25,12 +25,12 @@ public class PC_3DRotationY implements PC_3DRotation {
 	
 	@Override
 	public PC_Direction getSidePosition(PC_Direction side) {
-		return side.getRotation(PC_Direction.UP, this.rotation);
+		return side.rotate(PC_Direction.UP, this.rotation);
 	}
 	
 	@Override
 	public PC_Direction getSidePositionInv(PC_Direction side) {
-		return side.getRotation(PC_Direction.DOWN, this.rotation);
+		return side.rotate(PC_Direction.DOWN, this.rotation);
 	}
 
 	@Override
