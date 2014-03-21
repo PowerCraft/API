@@ -2,14 +2,12 @@ package powercraft.api;
 
 
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.MinecraftForge;
 import powercraft.api.block.PC_Blocks;
 import powercraft.api.dimension.PC_Dimensions;
 import powercraft.api.energy.PC_EnergyGrid;
 import powercraft.api.entity.PC_Entities;
 import powercraft.api.gres.PC_Gres;
 import powercraft.api.item.PC_Items;
-import powercraft.api.multiblock.PC_BlockMultiblock;
 import powercraft.api.multiblock.PC_Multiblocks;
 import powercraft.api.network.PC_PacketHandler;
 import powercraft.api.script.miniscript.PC_Miniscript;
@@ -70,8 +68,6 @@ public final class PC_Api extends PC_Module {
 		PC_Multiblocks.construct();
 		PC_Dimensions.construct();
 		PC_Entities.construct();
-		
-		MinecraftForge.EVENT_BUS.register(new PC_EventHandler());
 	}
 
 

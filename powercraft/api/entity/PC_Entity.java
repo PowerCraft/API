@@ -119,7 +119,7 @@ public abstract class PC_Entity extends Entity implements PC_IEntity {
 	}
 
 	@Override
-	protected final void readEntityFromNBT(NBTTagCompound tag) {
+	protected void readEntityFromNBT(NBTTagCompound tag) {
 		readFromNBT(tag, Flag.SAVE);
 		if (tag.hasKey("owner")) {
 			this.owner = tag.getString("owner");
@@ -130,7 +130,7 @@ public abstract class PC_Entity extends Entity implements PC_IEntity {
 	}
 
 	@Override
-	protected final void writeEntityToNBT(NBTTagCompound tag) {
+	protected void writeEntityToNBT(NBTTagCompound tag) {
 		writeToNBT(tag, Flag.SAVE);
 		if (this.owner != null) {
 			tag.setString("owner", this.owner);
@@ -319,6 +319,10 @@ public abstract class PC_Entity extends Entity implements PC_IEntity {
 		}
 	}
 
+	public void sync(){
+		this.sync = true;
+	}
+	
 	public void sendProgressBarUpdate(int key, int value) {
 		List<PC_GresBaseWithInventory> list = containers.get(this);
 		if (list == null)

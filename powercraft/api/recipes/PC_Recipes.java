@@ -13,7 +13,6 @@ import cpw.mods.fml.common.registry.GameRegistry;
 public class PC_Recipes {
 	
 	private static List<PC_3DRecipe> recipes3d = new ArrayList<PC_3DRecipe>();
-	private static List<PC_3DRecipe> recipes3dAutoDo = new ArrayList<PC_3DRecipe>();
 	
 	public static void addShapedRecipe(ItemStack out, Object...params){
 		GameRegistry.addShapedRecipe(out, params);
@@ -39,22 +38,9 @@ public class PC_Recipes {
 		}
 	}
 	
-	public static void add3DRecipe(boolean auto, PC_I3DRecipeHandler obj, Object...o){
+	public static void add3DRecipe(PC_I3DRecipeHandler obj, Object...o){
 		PC_3DRecipe recipe3d = new PC_3DRecipe(obj, o);
 		recipes3d.add(recipe3d);
-		if(auto){
-			recipes3dAutoDo.add(recipe3d);
-		}
-	}
-
-	public static boolean tryToDo3DRecipeAuto(World world, int x, int y, int z) {
-		PC_Vec3I pos = new PC_Vec3I(x, y, z);
-		for(PC_3DRecipe recipe3d:recipes3dAutoDo){
-			if(recipe3d.isStruct(world, pos)){
-				return true;
-			}
-		}
-		return false;
 	}
 	
 	public static boolean tryToDo3DRecipe(World world, int x, int y, int z) {
