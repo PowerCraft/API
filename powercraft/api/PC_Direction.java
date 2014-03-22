@@ -142,5 +142,13 @@ public enum PC_Direction {
 	public ForgeDirection toForgeDirection() {
 		return ForgeDirection.getOrientation(ordinal());
 	}
+	
+	public int timesToRotate(PC_Direction from, PC_Direction to, PC_Direction axis){
+		if(from==to) return 0;
+		if(from.rotateOnce(axis)==to) return 1;
+		if(from.getOpposite().rotateOnce(axis)==to) return -1;
+		if(from.rotate(axis, 2)==to) return 2;
+		throw new RuntimeException("You can't rotate from "+from+" to "+to+" via "+axis+"-axis!!");
+	}
 
 }
