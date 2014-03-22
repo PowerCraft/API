@@ -66,10 +66,17 @@ public class PC_GresInventory extends PC_GresComponent {
 	public PC_GresInventory setSlots(Slot[] slot, int start) {
 
 		int pos = start;
-		for(int x=0; x<this.slots.length; x++){
-			for(int y=0; y<this.slots[x].length; y++){
-				this.slots[x][y] = slot[pos++];
+		boolean next = true;
+		int y = 0;
+		while(next){
+			next = false;
+			for(int x=0; x<this.slots.length; x++){
+				if(this.slots[x].length>y){
+					next = true;
+					this.slots[x][y] = slot[pos++];
+				}
 			}
+			y++;
 		}
 		
 		return this;
