@@ -37,19 +37,22 @@ public abstract class PC_Item extends Item implements PC_IItem{
 		this.module = PC_Utils.getActiveMod();
 	}
 	
+	@Override
 	public final PC_Module getModule() {
 		return (PC_Module)this.module.getMod();
 	}
 
+	@Override
 	public String getRegisterName() {
 		return getClass().getSimpleName();
 	}
 	
+	@Override
 	public String getTextureFolderName() {
 		return getClass().getSimpleName().replaceAll("PC.*_(Item)?", "");
 	}
 
-	@SuppressWarnings("static-method")
+	@Override
 	public String[] getOreNames(){
 		return null;
 	}
@@ -74,8 +77,9 @@ public abstract class PC_Item extends Item implements PC_IItem{
 		return this;
 	}
 	
+	@Override
 	@SuppressWarnings("hiding")
-	final void construct() {
+	public final void construct() {
 		PC_Module module = getModule();
 		setUnlocalizedName(getRegisterName());
 		GameRegistry.registerItem(this, getRegisterName(), module.getModId());

@@ -11,10 +11,10 @@ import powercraft.api.reflect.PC_Security;
 public final class PC_Items {
 
 	private static boolean done;
-	private static List<PC_Item> items = new ArrayList<PC_Item>();
-	private static List<PC_Item> immutableItems = new PC_ImmutableList<PC_Item>(items);
+	private static List<PC_IItem> items = new ArrayList<PC_IItem>();
+	private static List<PC_IItem> immutableItems = new PC_ImmutableList<PC_IItem>(items);
 	
-	static void addItem(PC_Item item) {
+	static void addItem(PC_IItem item) {
 		if(done){
 			PC_Logger.severe("A item want to register while startup is done");
 		}else{
@@ -23,7 +23,7 @@ public final class PC_Items {
 		}
 	}
 	
-	public static List<PC_Item> getItems(){
+	public static List<PC_IItem> getItems(){
 		return immutableItems;
 	}
 	
@@ -31,7 +31,7 @@ public final class PC_Items {
 		PC_Security.allowedCaller("PC_Blocks.construct()", PC_Api.class);
 		if(!done){
 			done = true;
-			for(PC_Item item:items){
+			for(PC_IItem item:items){
 				PC_Logger.info("CONSTRUCT: %s", item);
 				item.construct();
 			}

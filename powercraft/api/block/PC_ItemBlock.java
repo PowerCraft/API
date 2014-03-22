@@ -13,6 +13,7 @@ import net.minecraft.world.World;
 import powercraft.api.PC_ClientRegistry;
 import powercraft.api.PC_Direction;
 import powercraft.api.PC_IconRegistry;
+import powercraft.api.PC_Module;
 import powercraft.api.PC_Utils;
 import powercraft.api.item.PC_IItem;
 import cpw.mods.fml.relauncher.Side;
@@ -110,6 +111,31 @@ public class PC_ItemBlock extends ItemBlock implements PC_IItem {
 	@SuppressWarnings("unused")
 	public void registerIcons(PC_IconRegistry iconRegistry){
 		//
+	}
+
+	@Override
+	public void construct() {
+		//
+	}
+
+	@Override
+	public PC_Module getModule() {
+		return ((PC_AbstractBlockBase)this.field_150939_a).getModule();
+	}
+
+	@Override
+	public String getRegisterName() {
+		return ((PC_AbstractBlockBase)this.field_150939_a).getRegisterName();
+	}
+
+	@Override
+	public String getTextureFolderName() {
+		return ((PC_AbstractBlockBase)this.field_150939_a).getTextureFolderName();
+	}
+
+	@Override
+	public String[] getOreNames() {
+		return ((PC_AbstractBlockBase)this.field_150939_a).getOreNames();
 	}
 
 }
