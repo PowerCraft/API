@@ -87,6 +87,53 @@ public enum PC_Direction {
 			return rotateOnce(axis.getOpposite());
 		return null;
 	}
+	
+	public static PC_Direction fromCoordinatesAndAxis(double x, double  y, double z, PC_Direction axis){
+		switch(axis){
+		case DOWN:
+		case UP:
+			return y/UP.offsetY<0?DOWN:UP;
+		case NORTH:
+		case SOUTH:
+			return z/SOUTH.offsetZ<0?NORTH:SOUTH;
+		case WEST:
+		case EAST:
+			return x/EAST.offsetX<0?WEST:EAST;
+		default:
+			return null;
+		}
+	}
+	
+	public static PC_Direction directionFacing(double entityYaw, double entityPitch, PC_Direction axis){
+		double yaw = (((entityYaw%360)+360)%360)-180;
+		double pitch = ((((entityPitch+90)%180)+180)%180)-90;
+		if(axis==null){
+			if(pitch>45)
+				return UP;
+			if(pitch<-45)
+				return DOWN;
+			if(yaw>=0-45 && yaw<0+45)
+				return SOUTH;
+			if(yaw>=90-45 && yaw<90+45)
+				return WEST;
+			if(yaw>=-90-45 && yaw<-90+45)
+				return EAST;
+			return NORTH;
+		}
+		switch(axis){
+		case DOWN:
+		case UP:
+			return pitch<0?DOWN:UP;
+		case NORTH:
+		case SOUTH:
+			return yaw>=90&&yaw<-90?NORTH:SOUTH;
+		case WEST:
+		case EAST:
+			return yaw>=0&&yaw<=180?WEST:EAST;
+		default:
+			return null;
+		}
+	}
 
     public static PC_Direction fromForgeDirection(ForgeDirection side) {
 		return fromSide(side.ordinal());
