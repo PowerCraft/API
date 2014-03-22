@@ -109,10 +109,10 @@ public class Miner{
 	}
 	
 	public bool isMiningEnabled(){
-		isMiningEnabled(address);
+		return isMiningEnabled(address);
 	}
 	
 	public bool setMining(bool enabled){
-		setMining(address, enabled);
+		return setMining(address, enabled);
 	}
 }
