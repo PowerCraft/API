@@ -238,8 +238,10 @@ public class PC_GresTab extends PC_GresContainer {
 	@Override
 	protected boolean handleMouseButtonUp(PC_Vec2I mouse, int buttons, int eventButton, PC_GresHistory history) {
 		if(!this.move){
-			if(this.mouseOverTab!=null)
+			if(this.mouseOverTab!=null){
 				moveToTop(this.mouseOverTab.child);
+				notifyChange();
+			}
 			return super.handleMouseButtonUp(mouse, buttons, eventButton, history);
 		}
 		this.move = false;

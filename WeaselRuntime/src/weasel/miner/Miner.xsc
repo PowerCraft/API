@@ -28,6 +28,30 @@ public class Miner{
 			waitForOperationFinished(address);
 		}
 	}
+	private static final native void digUpward(int address);
+	public static void digUpward(int address, bool waitForFinish){
+		ensureReadiness(address);
+		digUpward(address);
+		if(waitForFinish){
+			waitForOperationFinished(address);
+		}
+	}
+	private static final native void digDownward(int address);
+	public static void digDownward(int address, bool waitForFinish){
+		ensureReadiness(address);
+		digDownward(address);
+		if(waitForFinish){
+			waitForOperationFinished(address);
+		}
+	}
+	private static final native void setBlock(int address, int invPlace, int x, int y, int z);
+	public static void setBlock(int address, int invPlace, int x, int y, int z, bool waitForFinish){
+		ensureReadiness(address);
+		setBlock(address, invPlace, x, y, z);
+		if(waitForFinish){
+			waitForOperationFinished(address);
+		}
+	}
 	private static final native void moveForward(int address, int steps);
 	public static void moveForward(int address, int steps, bool waitForFinish){
 		ensureReadiness(address);
