@@ -238,7 +238,7 @@ public class PC_3DRecipe {
 		
 		public PC_Vec3I relative(int x, int y, int z){
 			int times=0;
-			switch(dir){
+			switch(this.dir){
 			case EAST:
 				times=0;
 				break;

@@ -246,7 +246,7 @@ public class PC_GresDocumentLine {
 		if(exx==-1){
 			exx = this.errors.length;
 		}
-		for(int i=sx; i<exx; i++){
+		for(int i=sx; i<=exx; i++){
 			this.errors[i] = new Message(kind, message);
 		}
 	}

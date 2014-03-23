@@ -7,7 +7,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import powercraft.api.PC_Api;
 import powercraft.api.PC_Direction;
 import powercraft.api.PC_IconRegistry;
 import powercraft.api.PC_Logger;

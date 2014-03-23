@@ -143,7 +143,7 @@ public enum PC_Direction {
 		return ForgeDirection.getOrientation(ordinal());
 	}
 	
-	public int timesToRotate(PC_Direction from, PC_Direction to, PC_Direction axis){
+	public static int timesToRotate(PC_Direction from, PC_Direction to, PC_Direction axis){
 		if(from==to) return 0;
 		if(from.rotateOnce(axis)==to) return 1;
 		if(from.getOpposite().rotateOnce(axis)==to) return -1;

@@ -308,11 +308,12 @@ public class PC_GresDocument {
 		long p = pos;
 		while(line!=null){
 			int l = line.getText().length();
-			if(l>p){
-				p -= l;
+			if(l<=p){
+				p -= l+1;
 			}else{
 				return new PC_Vec2I((int)p, lineNum);
 			}
+			line = line.next;
 			lineNum++;
 		}
 		return null;

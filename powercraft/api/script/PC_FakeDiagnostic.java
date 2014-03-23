@@ -4,16 +4,36 @@ import java.util.Locale;
 
 import javax.tools.Diagnostic;
 
+import powercraft.api.PC_NBTTagHandler;
+import powercraft.api.PC_Field.Flag;
 import net.minecraft.nbt.NBTTagCompound;
 
-public class PC_FakeDiagnostic implements Diagnostic<Void> {
+public class PC_FakeDiagnostic implements Diagnostic<String> {
+	
+	public static final PC_DiagnosticTranslater DEFAULT_TRANSLATER = new PC_DiagnosticTranslater(){
 
-	public static NBTTagCompound toCompound(Diagnostic<? extends Void> diagnostic){
+		@Override
+		public String translate(String message, String[] args, Locale locale) {
+			return message;
+		}
+		
+	};
+	
+	public static NBTTagCompound toCompound(Diagnostic<?> diagnostic){
 		long line = diagnostic.getLineNumber();
-		String message = diagnostic.getMessage(Locale.US);
+		String message;
+		String[] args;
+		if(diagnostic instanceof PC_FakeDiagnostic){
+			message = ((PC_FakeDiagnostic)diagnostic).message;
+			args = ((PC_FakeDiagnostic)diagnostic).args;
+		}else{
+			message = diagnostic.getMessage(Locale.US);
+			args = null;
+		}
 		long columnNumber = diagnostic.getColumnNumber();
 		long endPos = diagnostic.getEndPosition();
 		long pos = diagnostic.getPosition();
+		Object source = diagnostic.getSource();
 		long startPos = diagnostic.getStartPosition();
 		Kind kind = diagnostic.getKind();
 		NBTTagCompound compound = new NBTTagCompound();
@@ -21,12 +41,15 @@ public class PC_FakeDiagnostic implements Diagnostic<Void> {
 			compound.setLong("line", diagnostic.getLineNumber());
 		if(message!=null)
 			compound.setString("message", message);
+		PC_NBTTagHandler.saveToNBT(compound, "args", args, Flag.SYNC);
 		if(columnNumber!=NOPOS)
 			compound.setLong("columnNumber", columnNumber);
 		if(endPos!=NOPOS)
 			compound.setLong("endPos", endPos);
 		if(pos!=NOPOS)
 			compound.setLong("pos", pos);
+		if(source instanceof String)
+			compound.setString("source", (String)source);
 		if(startPos!=NOPOS)
 			compound.setLong("startPos", startPos);
 		if(kind!=null)
@@ -34,25 +57,46 @@ public class PC_FakeDiagnostic implements Diagnostic<Void> {
 		return compound;
 	}
 	
-	public static PC_FakeDiagnostic fromCompound(NBTTagCompound compound) {
-		return new PC_FakeDiagnostic(compound);
+	public static PC_FakeDiagnostic fromCompound(NBTTagCompound compound, PC_DiagnosticTranslater translater) {
+		return new PC_FakeDiagnostic(compound, translater);
 	}
 	
+	public static PC_FakeDiagnostic fromCompound(NBTTagCompound compound) {
+		return new PC_FakeDiagnostic(compound, DEFAULT_TRANSLATER);
+	}
+	
+	private PC_DiagnosticTranslater translater;
 	private long line;
 	private String message;
+	private String[] args;
 	private long columnNumber;
 	private long endPos;
 	private long pos;
+	private String source;
 	private long startPos;
 	private Kind kind;
 	
-	private PC_FakeDiagnostic(NBTTagCompound compound){
+	public PC_FakeDiagnostic(long line, String message, String[] args, long columnNumber, long endPos, long pos, String source, long startPos, Kind kind, PC_DiagnosticTranslater translater) {
+		this.line = line;
+		this.message = message;
+		this.args = args;
+		this.columnNumber = columnNumber;
+		this.endPos = endPos;
+		this.pos = pos;
+		this.source = source;
+		this.startPos = startPos;
+		this.kind = kind;
+		this.translater = translater;
+	}
+
+	private PC_FakeDiagnostic(NBTTagCompound compound, PC_DiagnosticTranslater translater){
 		if(compound.hasKey("line"))
 			this.line = compound.getLong("line");
 		else
 			this.line = NOPOS;
 		if(compound.hasKey("message"))
 			this.message = compound.getString("message");
+		this.args = PC_NBTTagHandler.loadFromNBT(compound, "args", String[].class, Flag.SYNC);
 		if(compound.hasKey("columnNumber"))
 			this.columnNumber = compound.getLong("columnNumber");
 		else
@@ -65,12 +109,15 @@ public class PC_FakeDiagnostic implements Diagnostic<Void> {
 			this.pos = compound.getLong("pos");
 		else
 			this.pos = NOPOS;
+		if(compound.hasKey("source"))
+			this.source = compound.getString("source");
 		if(compound.hasKey("startPos"))
 			this.startPos = compound.getLong("startPos");
 		else
 			this.startPos = NOPOS;
 		if(compound.hasKey("kind"))
 			this.kind = Kind.values()[compound.getInteger("kind")];
+		this.translater = translater;
 	}
 	
 	@Override
@@ -100,7 +147,7 @@ public class PC_FakeDiagnostic implements Diagnostic<Void> {
 
 	@Override
 	public String getMessage(Locale locale) {
-		return this.message;
+		return this.translater.translate(this.message, this.args, locale);
 	}
 
 	@Override
@@ -109,8 +156,8 @@ public class PC_FakeDiagnostic implements Diagnostic<Void> {
 	}
 
 	@Override
-	public Void getSource() {
-		return null;
+	public String getSource() {
+		return this.source;
 	}
 
 	@Override

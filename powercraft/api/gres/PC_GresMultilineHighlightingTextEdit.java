@@ -971,14 +971,16 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 		
 	}
 
-	public void setErrors(List<Diagnostic<? extends Void>> diagnostics) {
-		for(Diagnostic<? extends Void> diagnostic:diagnostics){
+	public void setErrors(List<Diagnostic<?>> diagnostics) {
+		for(Diagnostic<?> diagnostic:diagnostics){
 			long line = diagnostic.getLineNumber()-1;
 			String message = diagnostic.getMessage(Locale.US);
 			Kind kind = diagnostic.getKind();
 			long startPos = diagnostic.getStartPosition();
 			long endPos = diagnostic.getEndPosition();
 			if(startPos==Diagnostic.NOPOS || endPos==Diagnostic.NOPOS){
+				if(line==-1)
+					continue;
 				int x = this.document.getLine((int)line).getText().length();
 				this.document.addError(new PC_Vec2I(0, (int)line), new PC_Vec2I(x, (int)line), kind, message);
 			}else{
