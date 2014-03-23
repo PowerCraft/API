@@ -269,9 +269,8 @@ public class PC_GresDocumentLine {
 			return this.kind==Kind.WARNING?255:0;
 		}
 		
-		@SuppressWarnings("static-method")
 		public int getBlue(){
-			return 0;
+			return this.kind==Kind.NOTE?255:0;
 		}
 
 		public String getMessage() {
