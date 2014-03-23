@@ -1,0 +1,11 @@
+package weasel;
+
+final class Intern{
+	
+	private Intern(){}
+	
+	public static String t2s(Throwable e){
+		return e.toString();
+	}
+	
+}

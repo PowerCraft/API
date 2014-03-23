@@ -1,5 +1,6 @@
 package powercraft.api.script.weasel;
 
+import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.List;
 
@@ -10,7 +11,7 @@ import powercraft.api.PC_INBT;
 
 
 
-public interface PC_WeaselClassSave extends PC_INBT {
+public interface PC_WeaselContainer extends PC_INBT {
 	
 	public PC_WeaselSourceClass addClass(String name);
 	
@@ -25,5 +26,17 @@ public interface PC_WeaselClassSave extends PC_INBT {
 	public List<Diagnostic<String>> getDiagnostics();
 	
 	public void saveDiagnosticsToNBT(NBTTagCompound tagCompound);
+	
+	public void run(int numInstructions, int numBlocks);
+	
+	public void callMain(String className, String methodName, Object...params) throws NoSuchMethodException;
+	
+	public void onEvent(PC_IWeaselEvent event);
+	
+	public void registerNativeClass(Class<?> c);
+	
+	public void setErrorOutput(PrintStream errorStream);
+	
+	public void setHandler(Object handler);
 	
 }
