@@ -11,7 +11,7 @@ public class Miner{
 	}
 	
 	private static final void ensureReadiness(int address){
-		if(operationFinished(address)==1)
+		if(operationFinished(address)>0)
 			throw new AlreadyWorkingException();
 	}
 	private void ensureReadiness(){
@@ -21,7 +21,7 @@ public class Miner{
 	public static final native int operationFinished(int address);
 	public static bool waitForOperationFinished(int address){
 		int i;
-		while((i=operationFinished(address))==1){
+		while((i=operationFinished(address))>0){
 			Predef.sleep(1);
 		}
 		return i==0;
