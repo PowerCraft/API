@@ -14,6 +14,10 @@ public class Miner{
 		if(operationFinished(address)==1)
 			throw new AlreadyWorkingException();
 	}
+	private void ensureReadiness(){
+		ensureReadiness(address);
+	}
+	
 	public static final native int operationFinished(int address);
 	public static bool waitForOperationFinished(int address){
 		int i;
@@ -22,6 +26,10 @@ public class Miner{
 		}
 		return i==0;
 	}
+	public bool waitForOperationFinished(){
+		return waitForOperationFinished(address);
+	}
+	
 	private static final native void digForward(int address);
 	public static bool digForward(int address, bool waitForFinish){
 		ensureReadiness(address);
@@ -31,6 +39,10 @@ public class Miner{
 		}
 		return false;
 	}
+	public bool digForward(bool waitForFinish){
+		return digForward(address, waitForFinish);
+	}
+	
 	private static final native void digUpward(int address);
 	public static bool digUpward(int address, bool waitForFinish){
 		ensureReadiness(address);
@@ -40,6 +52,10 @@ public class Miner{
 		}
 		return false;
 	}
+	public bool digUpward(bool waitForFinish){
+		return digUpward(address, waitForFinish);
+	}
+	
 	private static final native void digDownward(int address);
 	public static bool digDownward(int address, bool waitForFinish){
 		ensureReadiness(address);
@@ -49,6 +65,10 @@ public class Miner{
 		}
 		return false;
 	}
+	public bool digDownward(bool waitForFinish){
+		return digDownward(address, waitForFinish);
+	}
+	
 	private static final native void placeBlock(int address, int invPlace, int x, int y, int z);
 	public static bool placeBlock(int address, int invPlace, int x, int y, int z, bool waitForFinish){
 		ensureReadiness(address);
@@ -58,6 +78,10 @@ public class Miner{
 		}
 		return false;
 	}
+	public bool placeBlock(int invPlace, int x, int y, int z, bool waitForFinish){
+		return placeBlock(address, invPlace, x, y, z, waitForFinish);
+	}
+	
 	private static final native void moveForward(int address, int steps);
 	public static bool moveForward(int address, int steps, bool waitForFinish){
 		ensureReadiness(address);
@@ -67,6 +91,10 @@ public class Miner{
 		}
 		return false;
 	}
+	public bool moveForward(int steps, bool waitForFinish){
+		return moveForward(address, steps, waitForFinish);
+	}
+	
 	private static final native void rotate(int address, int dir);
 	public static bool rotate(int address, int dir, bool waitForFinish){
 		ensureReadiness(address);
@@ -76,42 +104,16 @@ public class Miner{
 		}
 		return false;
 	}
-	public static native bool isMiningEnabled(int address);
-	public static native bool setMining(int address, bool state);
-	
-	
-	
-	
-	
-	
-	private void ensureReadiness(){
-		ensureReadiness(address);
-	}
-	
-	public bool waitForOperationFinished(){
-		return waitForOperationFinished(address);
-	}
-	
-	public bool digForward(bool waitForFinish){
-		return digForward(address, waitForFinish);
-	}
-	
-	public bool placeBlock(int invPlace, int x, int y, int z, bool waitForFinish){
-		return placeBlock(address, invPlace, x, y, z, waitForFinish);
-	}
-	
-	public bool moveForward(int steps, bool waitForFinish){
-		return moveForward(address, steps, waitForFinish);
-	}
-	
 	public bool rotate(int dir, bool waitForFinish){
 		return rotate(address, dir, waitForFinish)
 	}
 	
+	public static native bool isMiningEnabled(int address);
 	public bool isMiningEnabled(){
 		return isMiningEnabled(address);
 	}
 	
+	public static native bool setMining(int address, bool state);
 	public bool setMining(bool enabled){
 		return setMining(address, enabled);
 	}

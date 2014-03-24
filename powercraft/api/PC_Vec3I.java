@@ -75,5 +75,9 @@ public class PC_Vec3I {
 		}
 		return new PC_Vec3I(tmpX, tmpY, tmpZ);
 	}
+	
+	public PC_Vec3I mirror(PC_Direction pcDir){
+		return new PC_Vec3I(pcDir.offsetX==0?x:-x, pcDir.offsetY==0?y:-y, pcDir.offsetZ==0?z:-z);
+	}
 
 }
