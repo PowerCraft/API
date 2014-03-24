@@ -494,7 +494,21 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 						.isKeyDown(Keyboard.KEY_LCONTROL)) {
 					this.mouseSelectEnd = new PC_Vec2I();
 				}else{
-					this.mouseSelectEnd.x = 0;
+					int first = 0;
+					String text = this.document.getLine(this.mouseSelectEnd.y).getText();
+					for(int i=0; i<text.length(); i++){
+						char c = text.charAt(i);
+						if(c==' ' || c=='\t'){
+							first++;
+						}else{
+							break;
+						}
+					}
+					if(first==text.length() || first==this.mouseSelectEnd.x){
+						this.mouseSelectEnd.x = 0;
+					}else{
+						this.mouseSelectEnd.x = first;
+					}
 				}
 				if (!(Keyboard.isKeyDown(Keyboard.KEY_RSHIFT) || Keyboard
 						.isKeyDown(Keyboard.KEY_LSHIFT))) {
@@ -509,7 +523,22 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 						.isKeyDown(Keyboard.KEY_LCONTROL)) {
 					this.mouseSelectEnd = this.document.getLastPos();
 				}else{
-					this.mouseSelectEnd.x = this.document.getLine(this.mouseSelectEnd.y).getText().length();
+					int last = 0;
+					String text = this.document.getLine(this.mouseSelectEnd.y).getText();
+					last = text.length();
+					for(int i=last-1; i>=0; i--){
+						char c = text.charAt(i);
+						if(c==' ' || c=='\t'){
+							last--;
+						}else{
+							break;
+						}
+					}
+					if(last==0 || last==this.mouseSelectEnd.x){
+						this.mouseSelectEnd.x = text.length();
+					}else{
+						this.mouseSelectEnd.x = last;
+					}
 				}
 				if (!(Keyboard.isKeyDown(Keyboard.KEY_RSHIFT) || Keyboard
 						.isKeyDown(Keyboard.KEY_LSHIFT))) {
@@ -606,9 +635,9 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 				addKey(key, history);
 				break;
 			case Keyboard.KEY_TAB:
-			{
+			{				
 				int last = this.document.getLine(this.mouseSelectEnd.y).getText().length();
-				if(Keyboard.isKeyDown(Keyboard.KEY_RSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || this.mouseSelectEnd.y!=this.mouseSelectStart.y || (this.mouseSelectEnd.x==0 && this.mouseSelectStart.x==last) || (this.mouseSelectEnd.x==last && this.mouseSelectStart.x==0)){
+				if(Keyboard.isKeyDown(Keyboard.KEY_RSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || this.mouseSelectEnd.y!=this.mouseSelectStart.y || (this.mouseSelectEnd.x==0 && this.mouseSelectStart.x==last && this.mouseSelectStart.x!=0) || (this.mouseSelectEnd.x==last && this.mouseSelectEnd.x!=0 && this.mouseSelectStart.x==0)){
 					int sy = this.mouseSelectEnd.y;
 					int ey = this.mouseSelectStart.y;
 					boolean swap = sy>ey;

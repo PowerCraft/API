@@ -26,6 +26,7 @@ import powercraft.api.gres.PC_GresMultilineHighlightingTextEdit;
 import powercraft.api.gres.PC_GresNeedFocusFrame;
 import powercraft.api.gres.PC_GresTab;
 import powercraft.api.gres.autoadd.PC_AutoAdd;
+import powercraft.api.gres.autoadd.PC_AutoComplete;
 import powercraft.api.gres.dialog.PC_GresDialogInput;
 import powercraft.api.gres.dialog.PC_GresDialogInput.EventInput;
 import powercraft.api.gres.dialog.PC_GresDialogInput.EventInputChanged;
@@ -50,6 +51,7 @@ public class PC_WeaselGresEdit extends PC_GresGroupContainer implements PC_IGres
 	private PC_FontTexture fontTexture = PC_Fonts.getFontByName("Consolas", 24, 0);
 	private PC_GresHighlighting highlighting = PC_WeaselHighlighting.makeHighlighting();
 	private PC_AutoAdd autoAdd = PC_WeaselHighlighting.makeAutoAdd();
+	private PC_AutoComplete autoComplete = PC_WeaselHighlighting.makeAutoComplete();
 	
 	PC_GresTab tab;
 	
@@ -72,7 +74,7 @@ public class PC_WeaselGresEdit extends PC_GresGroupContainer implements PC_IGres
 			sources.put("Main", "/* TODO Report this bug!\n * I'm sorry but the source is lost :(\n * Or at least if you save...\n */");
 		}
 		for(Entry<String, String> e:sources.entrySet()){
-			this.sources.put(e.getKey(), new PC_GresMultilineHighlightingTextEdit(this.fontTexture, this.highlighting, this.autoAdd, null, e.getValue()));
+			this.sources.put(e.getKey(), new PC_GresMultilineHighlightingTextEdit(this.fontTexture, this.highlighting, this.autoAdd, this.autoComplete, e.getValue()));
 		}
 		this.remove = new ArrayList<String>(this.sources.keySet());
 		List<String> list = new ArrayList<String>(this.sources.keySet());
