@@ -411,7 +411,7 @@ public class PC_WeaselGresEdit extends PC_GresGroupContainer implements PC_IGres
 					NBTTagList list = (NBTTagList) tagCompound.getTag(key);
 					List<Diagnostic<?>> diagnostics = new ArrayList<Diagnostic<?>>();
 					for(int i=0; i<list.tagCount(); i++){
-						diagnostics.add(PC_FakeDiagnostic.fromCompound(list.getCompoundTagAt(i)));
+						diagnostics.add(PC_FakeDiagnostic.fromCompound(list.getCompoundTagAt(i), PC_Weasel.DIAGNOSTIC_TRANSLATER));
 					}
 					edit.setErrors(diagnostics);
 				}

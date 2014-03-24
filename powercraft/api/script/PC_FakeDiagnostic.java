@@ -1,6 +1,8 @@
 package powercraft.api.script;
 
+import java.util.Arrays;
 import java.util.Locale;
+import java.util.concurrent.Callable;
 
 import javax.tools.Diagnostic;
 
@@ -26,6 +28,21 @@ public class PC_FakeDiagnostic implements Diagnostic<String> {
 		if(diagnostic instanceof PC_FakeDiagnostic){
 			message = ((PC_FakeDiagnostic)diagnostic).message;
 			args = ((PC_FakeDiagnostic)diagnostic).args;
+		}else if(diagnostic instanceof Callable){
+			try{
+				Object obj = ((Callable<?>) diagnostic).call();
+				if(obj instanceof String[]){
+					String[] s = (String[])obj;
+					message = s[0];
+					args = Arrays.copyOfRange(s, 1, s.length);
+				}else{
+					message = diagnostic.getMessage(Locale.US);
+					args = null;
+				}
+			}catch(Exception e){
+				message = diagnostic.getMessage(Locale.US);
+				args = null;
+			}
 		}else{
 			message = diagnostic.getMessage(Locale.US);
 			args = null;

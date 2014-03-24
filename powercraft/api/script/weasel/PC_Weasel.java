@@ -5,14 +5,26 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map.Entry;
 
+import powercraft.api.PC_Lang;
 import powercraft.api.PC_Logger;
 import powercraft.api.PC_Utils;
+import powercraft.api.script.PC_DiagnosticTranslater;
 
 
 public final class PC_Weasel {
+	
+	public static final PC_DiagnosticTranslater DIAGNOSTIC_TRANSLATER = new PC_DiagnosticTranslater() {
+		
+		@Override
+		public String translate(String message, String[] args, Locale locale) {
+			return PC_Lang.translate("powercraft.weasel."+message, Arrays.copyOf(args, args.length, Object[].class));
+		}
+	};
 	
 	private static PC_WeaselModule weaselModule;
 	

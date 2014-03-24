@@ -6,10 +6,12 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -34,11 +36,20 @@ import powercraft.api.PC_Utils;
 import powercraft.api.gres.autoadd.PC_StringWithInfo;
 import powercraft.api.gres.font.PC_Formatter;
 import powercraft.api.reflect.PC_Security;
+import powercraft.api.script.PC_DiagnosticTranslater;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.EntityRegistry.EntityRegistration;
 
 public final class PC_Miniscript {
 
+	public static final PC_DiagnosticTranslater DIAGNOSTIC_TRANSLATER = new PC_DiagnosticTranslater() {
+		
+		@Override
+		public String translate(String message, String[] args, Locale locale) {
+			return PC_Lang.translate("powercraft.miniscript."+message, Arrays.copyOf(args, args.length, Object[].class));
+		}
+	};
+	
 	private static ScriptEngine scriptEngine;
 	private static HashMap<String, Integer> defaultReplacements = new HashMap<String, Integer>();
 	private static List<PC_StringWithInfo> defaultReplacementList = new ArrayList<PC_StringWithInfo>();
