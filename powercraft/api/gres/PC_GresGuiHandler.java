@@ -285,7 +285,7 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 		if (this.mc.thePlayer.inventory.getItemStack() == null && this.slotOver != null){
 	    	for (int j = 0; j < 9; ++j){
 	    		if (keyCode == 2 + j){
-	    			sentMouseClickToServer(this.slotOver.slotNumber, j, 2);
+	    			sendMouseClickToServer(this.slotOver.slotNumber, j, 2);
 	                return true;
 	            }
 	        }
@@ -456,8 +456,8 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 			boolean flag = this.lastSlotOver == this.slotOver && this.lastSlotOver!=null && doubleClick && this.lastClickButton == eventButton;
 			this.lastSlotOver = this.slotOver;
 			if (this.slotOver!=null && this.slotOver.getHasStack() && eventButton == this.mc.gameSettings.keyBindPickBlock.getKeyCode() + 100){
-				sentMouseClickToServer(this.slotOver.slotNumber, eventButton, 3);
-            }else if(this.slotOver!=null && this.slotOver.getHasStack() && getMouseItemStack()==null){
+				sendMouseClickToServer(this.slotOver.slotNumber, eventButton, 3);
+            }else if(this.slotOver!=null && this.slotOver.getHasStack()/* && getMouseItemStack()==null*/){
 				this.slotClickButton = eventButton;
 				if(this.mc.gameSettings.touchscreen){
 					onSlotClicked();
@@ -471,7 +471,7 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 					this.selectedSlots.clear();
 					inventoryMouseMove(mouse, buttons);
 				}else if(this.mouseOverComponent==this){
-					sentMouseClickToServer(-999, eventButton, 0);
+					sendMouseClickToServer(-999, eventButton, 0);
 				}
 			}
 		}
@@ -479,19 +479,17 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 	
 	private void onSlotClicked(){
 		if(GuiScreen.isShiftKeyDown()){
-			sentMouseClickToServer(this.slotOver.slotNumber, this.slotClickButton, 1);
+			sendMouseClickToServer(this.slotOver.slotNumber, this.slotClickButton, 1);
 		}else{
-			sentMouseClickToServer(this.slotOver.slotNumber, this.slotClickButton, 0);
+			sendMouseClickToServer(this.slotOver.slotNumber, this.slotClickButton, 0);
 		}
 	}
 	
 	@SuppressWarnings("unused")
 	private void inventoryMouseUp(PC_Vec2I mouse, int buttons, int eventButton){
-		if(this.slotClickButton==eventButton && getMouseItemStack()==null){
-			if(this.slotOver==null)
-				return;
+		if(this.slotClickButton==eventButton && this.slotOver!=null && this.slotOver.getHasStack()){
 			onSlotClicked();
-		}else if(getMouseItemStack()!=null){
+		}else if(getMouseItemStack()!=null && this.slotOver!=null){
 			onSlotFill();
 			this.selectedSlots.clear();
 		}
@@ -504,16 +502,16 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 	private void onSlotFill(){
 		if(this.takeAll){
 			this.takeAll = false;
-			sentMouseClickToServer(this.lastSlotOver.slotNumber, this.slotClickButton, 6);
+			sendMouseClickToServer(this.lastSlotOver.slotNumber, this.slotClickButton, 6);
 		}else{
 			if(this.selectedSlots.size()==1){
-				sentMouseClickToServer(this.selectedSlots.get(0).slotNumber, this.slotClickButton, 0);
+				sendMouseClickToServer(this.selectedSlots.get(0).slotNumber, this.slotClickButton, 0);
 			}else if(this.selectedSlots.size()>0){
-				sentMouseClickToServer(-999, Container.func_94534_d(0, this.slotClickButton), 5);
+				sendMouseClickToServer(-999, Container.func_94534_d(0, this.slotClickButton), 5);
 				for(Slot slot:this.selectedSlots){
-		            sentMouseClickToServer(slot.slotNumber, Container.func_94534_d(1, this.slotClickButton), 5);
+		            sendMouseClickToServer(slot.slotNumber, Container.func_94534_d(1, this.slotClickButton), 5);
 				}
-				sentMouseClickToServer(-999, Container.func_94534_d(2, this.slotClickButton), 5);
+				sendMouseClickToServer(-999, Container.func_94534_d(2, this.slotClickButton), 5);
 			}
 		}
 	}
@@ -532,7 +530,7 @@ public class PC_GresGuiHandler extends PC_GresContainer {
         }
     }
 	
-	private void sentMouseClickToServer(int slotNumber, int mouseButton, int transfer){
+	private void sendMouseClickToServer(int slotNumber, int mouseButton, int transfer){
 		if(this.gui instanceof PC_GresBaseWithInventory){
 			this.mc.playerController.windowClick(((PC_GresBaseWithInventory)this.gui).windowId, slotNumber, mouseButton, transfer, this.mc.thePlayer);
 		}
