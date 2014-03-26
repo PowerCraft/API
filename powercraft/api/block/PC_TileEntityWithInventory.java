@@ -97,7 +97,7 @@ public class PC_TileEntityWithInventory extends PC_TileEntity implements PC_ISid
 	public void moveOrStore(int i, ItemStack itemstack){
 		ItemStack itemStack2 = itemstack;
 		int[] sides = getAppliedSides(i);
-			if(sides!=null){
+		if(sides!=null){
 			List<PC_Direction> sideList = new ArrayList<PC_Direction>(sides.length);
 			for(int j=0; j<sides.length; j++){
 				sideList.add(PC_Direction.fromSide(sides[j]));
