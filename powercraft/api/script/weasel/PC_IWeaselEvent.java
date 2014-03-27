@@ -8,6 +8,6 @@ public interface PC_IWeaselEvent {
 	
 	public String getEntryMethod();
 	
-	public long[] getParams();
+	public Object[] getParams();
 	
 }

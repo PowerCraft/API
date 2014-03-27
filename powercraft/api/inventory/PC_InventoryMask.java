@@ -89,6 +89,10 @@ public class PC_InventoryMask implements PC_IInventory {
 		return PC_Utils.getSidePositionInv(tileEntity.getWorldObj(), tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, side).ordinal();
 	}
 	
+	public int globalToLocalIndex(int slotPos){
+		return slotPos-inventoryStart;
+	}
+	
 	
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side) {

@@ -1,7 +1,16 @@
-public class Inventory{
-	
-}
+package weasel.inventory;
 
-public class ItemStack{
+public class Inventory{
+
+	private int address;
+	public Inventory(int address){
+		this.address = address;
+	}
+	
+	public static native bool swapStacks(int address, String subInventoryFrom, int offsetFrom, String subInventoryTo, int offsetTo);
+	
+	public bool swapStacks(String subInventoryFrom, int offsetFrom, String subInventoryTo, int offsetTo){
+		return swapStacks(address, subInventoryFrom, offsetFrom, subInventoryTo, offsetTo);
+	}
 	
 }
