@@ -1,13 +1,26 @@
 package weasel.miner;
 
 import weasel.Predef;
+import weasel.inventory.Inventory;
+import weasel.listener.InventoryListener;
 
 public class Miner{
 	
 	protected final int address;
+	private static InventoryListener invListener;
 	
 	public Miner(int address){
 		this.address = address;
+	}
+	
+	private static void inventorySlotEmptyInterruptEntryPoint(int address, String inventory, int slot){
+		if(invListener!=null){
+			invListener.onSlotEmpty(address, inventory, slot);
+		}
+	}
+	
+	public static void setInventoryListener(InventoryListener listener){
+		Miner.invListener = listener;
 	}
 	
 	private static final void ensureReadiness(int address){
@@ -116,5 +129,12 @@ public class Miner{
 	public static native bool setMining(int address, bool state);
 	public bool setMining(bool enabled){
 		return setMining(address, enabled);
+	}
+	
+	public static Inventory getInventory(int address){
+		return new Inventory(address);
+	}
+	public Inventory getInventory(){
+		return new Inventory(address);
 	}
 }

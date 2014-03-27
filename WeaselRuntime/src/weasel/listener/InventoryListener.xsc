@@ -1,0 +1,5 @@
+package weasel.listener;
+
+public abstract class InventoryListener{
+	public abstract void onSlotEmpty(int address, String inventory, int slot);
+}

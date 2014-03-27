@@ -1,0 +1,7 @@
+package weasel.type;
+
+public class ItemStack{
+	Item item;
+	int stacksize;
+	int metadata;
+}
