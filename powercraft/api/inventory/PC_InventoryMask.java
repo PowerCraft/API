@@ -154,7 +154,7 @@ public class PC_InventoryMask implements PC_IInventory {
 
 	@Override
 	public String getInventoryName() {
-		return inventoryName;
+		return inventoryName==null?"":inventoryName;
 	}
 
 	@Override

@@ -59,8 +59,8 @@ public class PC_InventoryMaskRedirecting extends PC_InventoryMask{
 
 	@Override
 	public String getInventoryName() {
-		String tmp="";
-		if(inventory!=null){
+		String tmp=super.getInventoryName();
+		if(inventoryName==null && inventory!=null){
 			tmp = inventory.getInventoryName();
 		}
 		return tmp;

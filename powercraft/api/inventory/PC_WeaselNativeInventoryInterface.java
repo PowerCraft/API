@@ -14,11 +14,13 @@ public class PC_WeaselNativeInventoryInterface {
 	
 	@XNativeMethod
 	public static boolean swapStacks(@XParamSpecial(XParamTypes.USERDATA)PC_IWeaselInventory inv, int address, String inventoryFrom, int offsetFrom, String inventoryTo, int offsetTo){
+		System.out.println("entered");
 		IInventory[] inventories = inv.getInventories(address);
 		int[] from, to;
 		IInventory src, target;
 		from = findInventoryForSlot(inventories, inventoryFrom, offsetFrom);
 		to = findInventoryForSlot(inventories, inventoryTo, offsetTo);
+		System.out.println("going to check for invalid id");
 		if(from[INDEX_INVENTORY]==-1 || from[OFFSET_INVENTORY]==-1 || to[INDEX_INVENTORY]==-1 || to[OFFSET_INVENTORY]==-1)
 			return false;
 		src = inventories[from[INDEX_INVENTORY]];
@@ -26,12 +28,19 @@ public class PC_WeaselNativeInventoryInterface {
 		ItemStack src1, src2;
 		src1 = src.getStackInSlot(from[OFFSET_INVENTORY]);
 		src2 = target.getStackInSlot(to[OFFSET_INVENTORY]);
-		
+		System.out.println("src1:" + src1 + ", src2:" + src2);
 		if((src2!=null && !src.isItemValidForSlot(from[OFFSET_INVENTORY], src2)) || (src1!=null && !target.isItemValidForSlot(to[OFFSET_INVENTORY], src1)))
 			return false;
+		System.out.println("behind last check");
 		
+		src.setInventorySlotContents(from[OFFSET_INVENTORY], src2);
+		target.setInventorySlotContents(to[OFFSET_INVENTORY], src1);
+		
+		/*
 		if(src2!=null) src.setInventorySlotContents(from[OFFSET_INVENTORY], src2);
 		if(src1!=null) target.setInventorySlotContents(to[OFFSET_INVENTORY], src1);
+		*/
+		System.out.println("ALL WORKED!!!");
 		return true;
 	}
 	
