@@ -1,5 +1,0 @@
-package weasel.type;
-
-public class Item{
-	String name;
-}

@@ -1,7 +1,27 @@
 package weasel.type;
 
-public class ItemStack{
-	Item item;
-	int stacksize;
-	int metadata;
+public final class ItemStack{
+	private String itemName;
+	private int stackSize;
+	private int itemDamage;
+	
+	public String getItemName(){
+		return itemName;
+	}
+	
+	public int getStackSize(){
+		return stackSize;
+	}
+	
+	public int getItemDamage(){
+		return itemDamage;
+	}
+	
+	/*public boolean equals(Object other){
+		if(!(other instanceof ItemStack)){
+			return false;
+		}
+		ItemStack is = (ItemStack) other;
+		return this.itemName===is.itemName && this.itemDamage==is.itemDamage;
+	}*/
 }

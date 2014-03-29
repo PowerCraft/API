@@ -42,4 +42,6 @@ public interface PC_WeaselContainer extends PC_INBT {
 	
 	public Map<Object, Object> createInstance(String className);
 	
+	public Map<Object, Object> createObject(String className, Object... params);
+	
 }

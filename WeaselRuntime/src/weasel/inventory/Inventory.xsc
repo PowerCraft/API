@@ -1,5 +1,7 @@
 package weasel.inventory;
 
+import weasel.type.ItemStack;
+
 public class Inventory{
 
 	private int address;
@@ -7,10 +9,27 @@ public class Inventory{
 		this.address = address;
 	}
 	
-	public static native bool swapStacks(int address, String subInventoryFrom, int offsetFrom, String subInventoryTo, int offsetTo);
+	public static native bool swapStacks(int address, String subInventoryTo, int offsetTo, String subInventoryFrom, int offsetFrom);
 	
-	public bool swapStacks(String subInventoryFrom, int offsetFrom, String subInventoryTo, int offsetTo){
-		return swapStacks(address, subInventoryFrom, offsetFrom, subInventoryTo, offsetTo);
+	public bool swapStacks(String subInventoryTo, int offsetTo, String subInventoryFrom, int offsetFrom){
+		return swapStacks(address, subInventoryTo, offsetTo, subInventoryFrom, offsetFrom);
 	}
 	
+	public static native ItemStack getItemStackAt(int address, String subInventory, int offset);
+	
+	public ItemStack getItemStackAt(String subInventory, int offset){
+		return getItemStackAt(address, subInventory, offset);
+	}
+	
+	public static native int findSlotContainingItem(int address, String inventory, ItemStack item);
+	
+	public int findSlotContainingItem(String inventory, ItemStack item){
+		return findSlotContainingItem(address, inventory, item);
+	}
+	
+	public static native boolean combineStacks(int address, String inventoryTarget, int offsetTarget, String inventoryFrom, int offsetFrom);
+		
+	public boolean combineStacks(String inventoryTarget, int offsetTarget, String inventoryFrom, int offsetFrom){
+		return combineStacks(address, inventoryTarget, offsetTarget, inventoryFrom, offsetFrom);
+	}
 }
