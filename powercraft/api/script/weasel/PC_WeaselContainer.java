@@ -40,6 +40,6 @@ public interface PC_WeaselContainer extends PC_INBT {
 	
 	public void setHandler(Object handler);
 	
-	public Map<Object, Object> createObject(String className);
+	public Map<Object, Object> createInstance(String className);
 	
 }
