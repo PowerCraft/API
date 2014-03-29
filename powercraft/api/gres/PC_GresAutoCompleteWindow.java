@@ -33,19 +33,8 @@ public class PC_GresAutoCompleteWindow extends PC_GresNeedFocusFrame{
 		if(display.display){
 			if(completeWindow==null){
 				int i = 0;
-				int spl = display.done.lastIndexOf('.')+1;
 				for(PC_StringListPart part:display.parts){
 					int s = part.size();
-					if(s>1){
-						String start = part.get(0).getString().substring(spl);
-						String end = part.get(s-1).getString().substring(spl);
-						int p1 = start.indexOf('.');
-						int p2 = end.indexOf('.');
-						if(p1!=-1 && p2!=-1){
-							if(start.substring(0, p1+1).equals(end.substring(0, p2+1)))
-								s=1;
-						}
-					}
 					i+=s;
 				}
 				if(i==1){
@@ -70,12 +59,12 @@ public class PC_GresAutoCompleteWindow extends PC_GresNeedFocusFrame{
 			if(completeWindow.textEdit != textEdit){
 				completeWindow.textEdit = textEdit;
 			}
-			int spl = display.done.lastIndexOf('.')+1;
-			String last = "";
+			//int spl = display.done.lastIndexOf('.')+1;
+			//String last = "";
 			List<PC_StringWithInfo> withInfos = new ArrayList<PC_StringWithInfo>();
 			for(PC_StringListPart part:display.parts){
 				for(PC_StringWithInfo s:part){
-					String t = s.getString().substring(spl);
+					/*String t = s.getString().substring(spl);
 					int p = t.indexOf('.');
 					if(p!=-1){
 						t = t.substring(0, p+1);
@@ -83,11 +72,13 @@ public class PC_GresAutoCompleteWindow extends PC_GresNeedFocusFrame{
 							continue;
 					}
 					last = t;
-					withInfos.add(new PC_StringWithInfo(last, s.getTooltip(), s.getInfo()));
+					withInfos.add(new PC_StringWithInfo(last, s.getTooltip(), s.getInfo()));*/
+					withInfos.add(new PC_StringWithInfo(s.getString(), s.getTooltip(), s.getInfo()));
 				}
 			}
 			completeWindow.setStringWithInfo(withInfos);
-			completeWindow.done = display.done.length()-spl;
+			//completeWindow.done = display.done.length()-spl;
+			completeWindow.done = display.done.length();
 			completeWindow.takeFocus();
 			textEdit.focus = true;
 			completeWindow.notifyChange();

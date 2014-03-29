@@ -13,13 +13,17 @@ public class PC_StringListPart implements List<PC_StringWithInfo> {
 	int end;
 	private String lastSearch;
 	
-	public PC_StringListPart(List<PC_StringWithInfo> sortedList){
+	public PC_StringListPart(PC_SortedStringList sortedList){
 		this.sortedList = sortedList;
 		this.end = sortedList.size();
 	}
 	
 	public void searchForAdd(String toAdd) {
-		searchFor(this.lastSearch+toAdd);
+		if(this.lastSearch==null){
+			searchFor(toAdd);
+		}else{
+			searchFor(this.lastSearch+toAdd);
+		}
 	}
 	
 	public void searchFor(String s){

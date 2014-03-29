@@ -52,7 +52,7 @@ public final class PC_Miniscript {
 	
 	private static ScriptEngine scriptEngine;
 	private static HashMap<String, Integer> defaultReplacements = new HashMap<String, Integer>();
-	private static List<PC_StringWithInfo> defaultReplacementList = new ArrayList<PC_StringWithInfo>();
+	private static HashMap<String, PC_StringWithInfo> defaultReplacementList = new HashMap<String, PC_StringWithInfo>();
 	private static List<String> defaultReplacementWorldList = new ArrayList<String>();
 	
 	public static void register(){
@@ -61,7 +61,7 @@ public final class PC_Miniscript {
 		scriptEngine.getContext().setAttribute(MiniScriptLang.COMPILER_BACKJUMPDISABLED, Boolean.TRUE, ScriptContext.ENGINE_SCOPE);
 	}
 	
-	public static List<PC_StringWithInfo> getDefaultReplacements(){
+	public static HashMap<String, PC_StringWithInfo> getDefaultReplacements(){
 		return defaultReplacementList;
 	}
 	
@@ -80,10 +80,10 @@ public final class PC_Miniscript {
 	
 	private static void loadDefaultConstReplacements(){
 		defaultReplacements.put("true", Integer.valueOf(-1));
-		defaultReplacementList.add(new PC_StringWithInfo("true", "Const: -1"));
+		defaultReplacementList.put("true", new PC_StringWithInfo("true", "Const: -1"));
 		defaultReplacementWorldList.add("true");
 		defaultReplacements.put("false", Integer.valueOf(0));
-		defaultReplacementList.add(new PC_StringWithInfo("false", "Const: 0"));
+		defaultReplacementList.put("false", new PC_StringWithInfo("false", "Const: 0"));
 		defaultReplacementWorldList.add("false");
 	}
 	
@@ -91,6 +91,7 @@ public final class PC_Miniscript {
 		Iterator<?> i = Item.itemRegistry.iterator();
 		String fontBoldConsolasStart = PC_Formatter.color(0, 0, 0);
 		String n;
+		defaultReplacementList.put("Item", new PC_StringWithInfo("Item", "All Items"));
 		while(i.hasNext()){
 			Object obj = i.next();
 			int id = Item.itemRegistry.getIDForObject(obj);
@@ -101,6 +102,8 @@ public final class PC_Miniscript {
 			mod = removeInvaliedChars(mod);
 			item = removeInvaliedChars(item);
 			n = "Item."+mod+"."+item;
+			if(!defaultReplacementList.containsKey("Item."+mod))
+				defaultReplacementList.put("Item."+mod, new PC_StringWithInfo(mod, "Mod: "+mod));
 			defaultReplacementWorldList.add(n);
 			defaultReplacements.put(n.toLowerCase(), Integer.valueOf(id));
 			String[] info = new String[4];
@@ -108,7 +111,7 @@ public final class PC_Miniscript {
 			info[1] = fontBoldConsolasStart+"\tItem:"+PC_Formatter.reset()+" "+item+":"+id;
 			info[2] = fontBoldConsolasStart+"\tMod:"+PC_Formatter.reset()+" "+mod;
 			info[3] = fontBoldConsolasStart+"\tName:"+PC_Formatter.reset()+" "+PC_Lang.translate(((Item)obj).getUnlocalizedName()+".name");
-			defaultReplacementList.add(new PC_StringWithInfo(n, "Const: "+id, info));
+			defaultReplacementList.put(n, new PC_StringWithInfo(item, "Const: "+id, info));
 		}
 	}
 	
@@ -116,6 +119,7 @@ public final class PC_Miniscript {
 	private static void loadDefaultMobReplacements(){
 		String fontBoldConsolasStart = PC_Formatter.color(0, 0, 0);
 		String n;
+		defaultReplacementList.put("Entity", new PC_StringWithInfo("Entity", "All Entities"));
 		for(Entry<Integer, Class<? extends Entity>> e: (Set<Entry<Integer, Class<? extends Entity>>>)EntityList.IDtoClassMapping.entrySet()){
 			Class<? extends Entity> entity = e.getValue();
 			if(EntityCreature.class.isAssignableFrom(entity) || EntitySlime.class.isAssignableFrom(entity)){
@@ -131,6 +135,8 @@ public final class PC_Miniscript {
 				mod = removeInvaliedChars(mod);
 				name = removeInvaliedChars(name);
 				n = "Entity."+mod+"."+name;
+				if(!defaultReplacementList.containsKey("Entity."+mod))
+					defaultReplacementList.put("Entity."+mod, new PC_StringWithInfo(mod, "Mod: "+mod));
 				defaultReplacementWorldList.add(n);
 				defaultReplacements.put(n.toLowerCase(), Integer.valueOf(id));
 				String[] info = new String[4];
@@ -138,7 +144,7 @@ public final class PC_Miniscript {
 				info[1] = fontBoldConsolasStart+"\tEntity:"+PC_Formatter.reset()+" "+name+":"+id;
 				info[2] = fontBoldConsolasStart+"\tMod:"+PC_Formatter.reset()+" "+mod;
 				info[3] = fontBoldConsolasStart+"\tName:"+PC_Formatter.reset()+" "+PC_Lang.translate("entity."+name+".name");
-				defaultReplacementList.add(new PC_StringWithInfo(n, "Const: "+id, info));
+				defaultReplacementList.put(n, new PC_StringWithInfo(name, "Const: "+id, info));
 			}
 		}
 	}

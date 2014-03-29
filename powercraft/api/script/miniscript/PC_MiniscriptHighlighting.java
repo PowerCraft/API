@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -56,7 +57,7 @@ public class PC_MiniscriptHighlighting {
 		return highlighting;
 	}
 	
-	public static PC_AutoComplete makeAutoComplete(List<PC_StringWithInfo> consts, List<PC_StringWithInfo> pointers){
+	public static PC_AutoComplete makeAutoComplete(HashMap<String, PC_StringWithInfo> consts, HashMap<String, PC_StringWithInfo> pointers){
 		return new AutoComplete(consts, pointers);
 	}
 	
@@ -108,24 +109,42 @@ public class PC_MiniscriptHighlighting {
 		PC_SortedStringList labelNames = new PC_SortedStringList();
 		private PC_SortedStringList asmInstructions = new PC_SortedStringList();
 		private PC_SortedStringList registers = new PC_SortedStringList();
-		private PC_SortedStringList consts = new PC_SortedStringList();
-		private PC_SortedStringList pointers = new PC_SortedStringList();
 		
-		AutoComplete(List<PC_StringWithInfo> consts, List<PC_StringWithInfo> pointers){
+		private HashMap<String, PC_SortedStringList> consts = new HashMap<String, PC_SortedStringList>();
+		private HashMap<String, PC_SortedStringList> pointers = new HashMap<String, PC_SortedStringList>();
+		
+		AutoComplete(HashMap<String, PC_StringWithInfo> consts, HashMap<String, PC_StringWithInfo> pointers){
 			for(String asm:MINISCRIPT_ASM){
 				this.asmInstructions.add(new PC_StringWithInfo(asm, PC_Lang.translate("miniscript.tooltip."+asm.toLowerCase()), PC_Lang.translate("miniscript.desk."+asm.toLowerCase()).split("\n")));
 			}
 			for(int i=0; i<31; i++){
 				this.registers.add(new PC_StringWithInfo("r"+i, "Register Nr "+i));
 			}
-			this.consts.addAll(consts);
-			this.pointers.addAll(pointers);
-			this.consts.addAll(PC_Miniscript.getDefaultReplacements());
+			addTo(this.consts, consts);
+			addTo(this.pointers, pointers);
+			addTo(this.consts, PC_Miniscript.getDefaultReplacements());
 		}
 
+		private static void addTo(HashMap<String, PC_SortedStringList> map, HashMap<String, PC_StringWithInfo> other){
+			for(Entry<String, PC_StringWithInfo> c:other.entrySet()){
+				String key = c.getKey();
+				int p = key.lastIndexOf('.');
+				if(p==-1){
+					key = "";
+				}else{
+					key = key.substring(0, p);
+				}
+				PC_SortedStringList list = map.get(key);
+				if(list==null){
+					map.put(key, list = new PC_SortedStringList());
+				}
+				list.add(c.getValue());
+			}
+		}
+		
 		@Override
 		public void onStringAdded(PC_GresComponent component, PC_GresDocument document, PC_GresDocumentLine line, String toAdd, int x, PC_AutoCompleteDisplay info) {
-			if(info.display){
+			if(info.display && !toAdd.equals(".")){
 				if(toAdd.matches("[\\w\\.]+")){
 					int num = 0;
 					for(PC_StringListPart part:info.parts){
@@ -159,37 +178,69 @@ public class PC_MiniscriptHighlighting {
 					break;
 				}
 			}
-			if(type==null){
+			if(type==null || start==null){
 				info.display = false;
 				return;
 			}
-			if(info.info!=type){
-				info.info = type;
+			String parts[] = start.split("\\.", -1);
+			String key = parts[parts.length-1].trim();
+			if(parts.length==1){
+				start = "";
+			}else{
+				start = parts[0].trim();
+				for(int i=1; i<parts.length-1; i++){
+					start += "."+parts[i].trim();
+				}
 				switch(type){
-				case INSTRUCTION:
-					info.parts = new PC_StringListPart[]{new PC_StringListPart(this.asmInstructions)};
-					break;
-				case LABEL:
-					info.parts = new PC_StringListPart[]{new PC_StringListPart(this.labelNames)};
-					break;
 				case STACK:
-					info.parts = new PC_StringListPart[]{new PC_StringListPart(this.pointers), new PC_StringListPart(this.registers)};
-					break;
 				case WORD:
-					info.parts = new PC_StringListPart[]{new PC_StringListPart(this.consts), new PC_StringListPart(this.registers)};
-					break;
-				case REGISTERS:
-					info.parts = new PC_StringListPart[]{new PC_StringListPart(this.registers)};
 					break;
 				default:
 					info.display = false;
 					return;
 				}
 			}
-			info.done = start;
+			info.info = type;
+			switch(type){
+			case INSTRUCTION:
+				info.parts = new PC_StringListPart[]{new PC_StringListPart(this.asmInstructions)};
+				break;
+			case LABEL:
+				info.parts = new PC_StringListPart[]{new PC_StringListPart(this.labelNames)};
+				break;
+			case STACK:
+				if(start.isEmpty()){
+					info.parts = new PC_StringListPart[]{new PC_StringListPart(this.pointers.get("")), new PC_StringListPart(this.registers)};
+				}else{
+					if(this.pointers.get(start)==null){
+						info.display = false;
+						return;
+					}
+					info.parts = new PC_StringListPart[]{new PC_StringListPart(this.pointers.get(start))};
+				}
+				break;
+			case WORD:
+				if(start.isEmpty()){
+					info.parts = new PC_StringListPart[]{new PC_StringListPart(this.consts.get("")), new PC_StringListPart(this.registers)};
+				}else{
+					if(this.consts.get(start)==null){
+						info.display = false;
+						return;
+					}
+					info.parts = new PC_StringListPart[]{new PC_StringListPart(this.consts.get(start))};
+				}
+				break;
+			case REGISTERS:
+				info.parts = new PC_StringListPart[]{new PC_StringListPart(this.registers)};
+				break;
+			default:
+				info.display = false;
+				return;
+			}
+			info.done = key;
 			int num = 0;
 			for(PC_StringListPart part:info.parts){
-				part.searchFor(start);
+				part.searchFor(key);
 				num += part.size();
 			}
 			if(num==0)
