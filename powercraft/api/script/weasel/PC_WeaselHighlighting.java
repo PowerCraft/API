@@ -7,12 +7,16 @@ import powercraft.api.gres.autoadd.PC_AutoAdd;
 import powercraft.api.gres.autoadd.PC_AutoComplete;
 import powercraft.api.gres.autoadd.PC_AutoCompleteDisplay;
 import powercraft.api.gres.autoadd.PC_StringAdd;
+import powercraft.api.gres.autoadd.PC_StringListPart;
 import powercraft.api.gres.doc.PC_GresDocInfoCollector;
 import powercraft.api.gres.doc.PC_GresDocument;
 import powercraft.api.gres.doc.PC_GresDocumentLine;
 import powercraft.api.gres.doc.PC_GresHighlighting;
 import powercraft.api.gres.font.PC_Fonts;
 import powercraft.api.gres.font.PC_Formatter;
+import powercraft.api.script.weasel.source.PC_WeaselSourceIterator;
+import powercraft.api.script.weasel.source.PC_WeaselToken;
+import powercraft.api.script.weasel.source.PC_WeaselTokenKind;
 
 public class PC_WeaselHighlighting {
 
@@ -50,6 +54,7 @@ public class PC_WeaselHighlighting {
 		highlighting.addBlockHighlight(PC_GresHighlighting.msp(true, "/**"), null, PC_GresHighlighting.msp(true, "*/"), true, PC_Formatter.color(122, 122, 255), INNER);
 		highlighting.addBlockHighlight(PC_GresHighlighting.msp(true, "\""), PC_GresHighlighting.msp(true, "\\"), PC_GresHighlighting.msp(true, "\""), false, PC_Formatter.color(255, 122, 122));
 		highlighting.addBlockHighlight(PC_GresHighlighting.msp(true, "'"), PC_GresHighlighting.msp(true, "\\"), PC_GresHighlighting.msp(true, "'"), false, PC_Formatter.color(255, 122, 122));
+		highlighting.addSpecialHighlight(PC_GresHighlighting.msp(true, "/**/"), PC_Formatter.color(122, 122, 122));
 		return highlighting;
 	}
 	
@@ -79,109 +84,182 @@ public class PC_WeaselHighlighting {
 
 		@Override
 		public void onCharAdded(PC_StringAdd add) {
-			if(add.toAdd.equals("[")){
-				add.toAdd = "[]";
-				add.cursorPos = 1;
-			}else if(add.toAdd.equals("]")){
-				if(!needClose('[', ']', add)){
-					add.toAdd = "";
-					add.cursorPos = 1;
-				}
-			}else if(add.toAdd.equals("(")){
-				add.toAdd = "()";
-				add.cursorPos = 1;
-			}else if(add.toAdd.equals(")")){
-				if(!needClose('(', ')', add)){
-					add.toAdd = "";
-					add.cursorPos = 1;
-				}
-			}else if(add.toAdd.equals("\"")){
-				if(add.pos==0 || add.documentLine.getText().charAt(add.pos-1)!='\\'){
-					add.toAdd = "\"\"";
-					add.cursorPos = 1;
-				}
-			}else if(add.toAdd.equals("'")){
-				if(add.pos==0 || add.documentLine.getText().charAt(add.pos-1)!='\\'){
-					add.toAdd = "''";
-					add.cursorPos = 1;
-				}
-			}else if(add.toAdd.equals("\t")){
-				if(add.documentLine.prev!=null){
-					String text = add.documentLine.getText();
-					String prev = add.documentLine.prev.getText();
-					int size = 0;
-					for(int i=0; i<prev.length(); i++){
-						char c = prev.charAt(i);
-						if(c==' '|| c=='\t'){
-							if(c==' ')
-								size++;
-							else
-								size+=4;
-						}else{
-							break;
+			if(add.toAdd.length()==1 && "[]()\"'\t\n".indexOf(add.toAdd.charAt(0))!=-1){
+				PC_WeaselSourceIterator iterator = new PC_WeaselSourceIterator(add.documentLine, add.pos);
+				int type = iterator.getTypeAtPos();
+				iterator.gotoInstructionStart();
+				if(type==0){
+					if(add.toAdd.equals("[")){
+						add.toAdd = "[]";
+						add.cursorPos = 1;
+					}else if(add.toAdd.equals("]")){
+						String text = add.documentLine.getText();
+						if(text.length()>add.pos && text.charAt(add.pos)==']' && !needClose(PC_WeaselTokenKind.LINDEX, PC_WeaselTokenKind.RINDEX, add, iterator)){
+							add.toAdd = "";
+							add.cursorPos = 1;
 						}
+					}else if(add.toAdd.equals("(")){
+						add.toAdd = "()";
+						add.cursorPos = 1;
+					}else if(add.toAdd.equals(")")){
+						String text = add.documentLine.getText();
+						if(text.length()>add.pos && text.charAt(add.pos)==')' && !needClose(PC_WeaselTokenKind.LGROUP, PC_WeaselTokenKind.RGROUP, add, iterator)){
+							add.toAdd = "";
+							add.cursorPos = 1;
+						}
+					}else if(add.toAdd.equals("\"")){
+						add.toAdd = "\"\"";
+						add.cursorPos = 1;
+					}else if(add.toAdd.equals("'")){
+						add.toAdd = "''";
+						add.cursorPos = 1;
+					}else if(add.toAdd.equals("\t")){
+						doTabs(add);
+					}else if(add.toAdd.equals("\n")){
+						doNewLine(add);
 					}
-					int oSize = 0;
-					int p = 0;
-					for(int i=0; i<text.length(); i++){
-						char c = text.charAt(i);
-						if(c==' '|| c=='\t'){
-							p++;
-							if(c==' ')
-								oSize++;
-							else
-								oSize+=4;
-						}else{
-							break;
-						}
-					}
-					
-					if(prev.trim().endsWith("{")){	
-						size+=4;
-					}
-					int diff = size-oSize;
-					if(p>add.pos || (p==add.pos && diff>0)){
-						add.cursorPos = 0;
-						add.toAdd="";
-						while(diff>3){
-							diff-=4;
-							add.toAdd += "\t";
-							add.cursorPos++;
-						}
-						while(diff>0){
-							diff--;
-							add.toAdd += " ";
-							add.cursorPos++;
-						}
-						for(int i=add.pos; i<text.length(); i++){
-							char c = text.charAt(i);
-							if(c==' '|| c=='\t'){
-								add.cursorPos++;
-							}else{
+				}else if(type==1){
+					if(add.toAdd.equals("\n")){
+						doTabCalc(add);
+						String tabs = add.toAdd;
+						add.toAdd += " * ";
+						PC_GresDocumentLine line = add.documentLine.next;
+						while(line!=null && ((LineInfo)line.collectorInfo).lineEndsWithComment){
+							if(line.getText().contains("/*")){
+								line = null;
 								break;
 							}
+							line = line.next;
 						}
+						if(line!=null){
+							String text = line.getText();
+							int i = text.indexOf("/*");
+							if(i!=-1){
+								int j = text.indexOf("*/");
+								if(i+1<j)
+									line = null;
+							}
+						}
+						if(line==null){
+							add.cursorPos = add.toAdd.length();
+							add.toAdd += tabs+" */";
+						}
+					}else if(add.toAdd.equals("\t")){
+						doTabs(add);
+					}
+				}else if(type==2){
+					if(add.toAdd.equals("\n")){
+						doTabCalc(add);
+						add.toAdd = "\"+"+add.toAdd+"\"";
+					}else if(add.toAdd.equals("\t")){
+						doTabs(add);
+					}
+				}else if(type==3){
+					if(add.toAdd.equals("\n")){
+						doTabCalc(add);
+					}else if(add.toAdd.equals("\t")){
+						doTabs(add);
+					}
+				}else if(type==4){
+					if(add.toAdd.equals("\n")){
+						doTabCalc(add);
+					}else if(add.toAdd.equals("\t")){
+						doTabs(add);
 					}
 				}
-			}else if(add.toAdd.equals("\n")){
+			}
+		}
+		
+		private static void doTabs(PC_StringAdd add){
+			if(add.documentLine.prev!=null){
 				String text = add.documentLine.getText();
-				String ll = text.substring(0, add.pos);
-				String start = "";
-				for(int i=0; i<text.length(); i++){
-					char c = text.charAt(i);
+				String prev = add.documentLine.prev.getText();
+				int size = 0;
+				for(int i=0; i<prev.length(); i++){
+					char c = prev.charAt(i);
 					if(c==' '|| c=='\t'){
-						start += c;
+						if(c==' ')
+							size++;
+						else
+							size+=4;
 					}else{
 						break;
 					}
 				}
-				add.toAdd += start;
-				if(ll.endsWith("{")){
-					add.cursorPos = 2+start.length();
-					add.toAdd += "\t";
-					if(needBlockClose(add)){
-						add.toAdd += "\n"+start+"}";
+				if(((LineInfo)add.documentLine.prev.collectorInfo).lineEndsWithComment && size>0){
+					size--;
+				}
+				int oSize = 0;
+				int p = 0;
+				for(int i=0; i<text.length(); i++){
+					char c = text.charAt(i);
+					if(c==' '|| c=='\t'){
+						p++;
+						if(c==' ')
+							oSize++;
+						else
+							oSize+=4;
+					}else{
+						break;
 					}
+				}
+				
+				if(prev.trim().endsWith("{") && !((LineInfo)add.documentLine.collectorInfo).lineEndsWithComment){	
+					size+=4;
+				}
+				int diff = size-oSize;
+				if(p>add.pos || (p==add.pos && diff>0)){
+					add.cursorPos = 0;
+					add.toAdd="";
+					while(diff>3){
+						diff-=4;
+						add.toAdd += "\t";
+						add.cursorPos++;
+					}
+					while(diff>0){
+						diff--;
+						add.toAdd += " ";
+						add.cursorPos++;
+					}
+					for(int i=add.pos; i<text.length(); i++){
+						char c = text.charAt(i);
+						if(c==' '|| c=='\t'){
+							add.cursorPos++;
+						}else{
+							break;
+						}
+					}
+				}
+			}
+		}
+		
+		private static void doTabCalc(PC_StringAdd add){
+			String text = add.documentLine.getText();
+			String start = "";
+			for(int i=0; i<text.length(); i++){
+				char c = text.charAt(i);
+				if(c==' '|| c=='\t'){
+					start += c;
+				}else{
+					break;
+				}
+			}
+			if(add.documentLine.prev!=null && ((LineInfo)add.documentLine.prev.collectorInfo).lineEndsWithComment && !start.isEmpty() && start.charAt(start.length()-1)==' '){
+				start = start.substring(0, start.length()-1);
+			}
+			add.toAdd += start;
+		}
+		
+		private static void doNewLine(PC_StringAdd add){
+			String text = add.documentLine.getText();
+			String ll = text.substring(0, add.pos);
+			doTabCalc(add);
+			if(ll.endsWith("{")){
+				add.cursorPos = 1+add.toAdd.length();
+				String tabs = add.toAdd;
+				add.toAdd += "\t";
+				if(needBlockClose(add)){
+					add.toAdd += tabs+"}";
 				}
 			}
 		}
@@ -204,87 +282,53 @@ public class PC_WeaselHighlighting {
 			return num>0;
 		}
 
-		private static boolean needClose(char open, char close, PC_StringAdd add){
-			String line = add.documentLine.getText();
-			if(line.length()==add.pos)
-				return true;
-			if(line.charAt(add.pos)==close){
-				int count = 0;
-				String l = line;
-				int i = add.pos-1;
-				PC_GresDocumentLine lin = add.documentLine;
-				int opened = 0;
-				while(true){
-					if(i==-1){
-						lin = lin.prev;
-						if(lin==null)
-							break;
-						l = lin.getText();
-						i=l.length()-1;
+		private static boolean needClose(PC_WeaselTokenKind open, PC_WeaselTokenKind close, PC_StringAdd add, PC_WeaselSourceIterator iterator){
+			boolean after = false;
+			int count = 0;
+			int opened = 0;
+			while(true){
+				PC_WeaselToken token = iterator.readNextToken();
+				if(!after){
+					after = !token.lineDesk.isAfter(add.documentLine, add.pos);
+				}
+				if(token.kind == open){
+					if(after){
+						opened++;
 					}else{
-						char c = l.charAt(i--);
-						if(c==';'){
-							break;
-						}else if(c=='{'){
-							break;
-						}else if(c=='}'){
-							break;
-						}else if(c==close){
-							opened++;
-						}else if(c==open){
-							if(opened>0){
-								opened--;
-							}else{
-								count++;
-							}
+						count++;
+					}
+				}else if(token.kind == close){
+					if(after && opened>0){
+						opened--;
+					}else{
+						count--;
+						if(count<0){
+							if(after)
+								break;
+							count = 0;
 						}
 					}
+				}else if(token.kind==PC_WeaselTokenKind.SEMICOLON){
+					if(after)
+						break;
+				}else if(token.kind==PC_WeaselTokenKind.EOF || token.kind==PC_WeaselTokenKind.UNKNOWN){
+					break;
 				}
-				l = line;
-				i = add.pos;
-				lin = add.documentLine;
-				opened = 0;
-				while(true){
-					if(i==l.length()){
-						lin = lin.next;
-						if(lin==null)
-							break;
-						l = lin.getText();
-						i=0;
-					}else{
-						char c = l.charAt(i++);
-						if(c==';'){
-							break;
-						}else if(c=='{'){
-							break;
-						}else if(c=='}'){
-							break;
-						}else if(c==open){
-							opened++;
-						}else if(c==close){
-							if(opened>0){
-								opened--;
-							}else{
-								count--;
-								if(count<0)
-									break;
-							}
-						}
-					}
-				}
-				return count<0;
 			}
-			return true;
+			return count>0;
 		}
 		
 	}
 	
-	private static class LineInfo{
+	public static class LineInfo{
 
 		int blocks;
 		
-		public LineInfo(int blocks) {
+		public boolean lineEndsWithComment;
+		
+		LineInfo(int blocks, boolean lineEndsWithComment) {
 			this.blocks = blocks;
+			this.lineEndsWithComment = lineEndsWithComment;
 		}
 		
 	}
@@ -301,14 +345,27 @@ public class PC_WeaselHighlighting {
 
 		@Override
 		public void onStringAdded(PC_GresComponent component, PC_GresDocument document, PC_GresDocumentLine line, String toAdd, int x, PC_AutoCompleteDisplay info) {
-			// TODO Auto-generated method stub
-			
+			if(info.display){
+				if(toAdd.matches("\\w+")){
+					int num = 0;
+					for(PC_StringListPart part:info.parts){
+						part.searchForAdd(toAdd);
+						num += part.size();
+					}
+					info.done += toAdd;
+					if(num==0)
+						info.display = false;
+				}else{
+					info.display = false;
+				}
+			}else if(toAdd.equals(".")){
+				makeComplete(component, document, line, x, info);
+			}
 		}
 
 		@Override
 		public void makeComplete(PC_GresComponent component, PC_GresDocument document, PC_GresDocumentLine line, int x, PC_AutoCompleteDisplay info) {
-			// TODO Auto-generated method stub
-			
+			PC_Weasel.makeComplete(component, document, line, x, info);
 		}
 
 		@Override
@@ -331,17 +388,67 @@ public class PC_WeaselHighlighting {
 
 		@Override
 		public void onLineChanged(PC_GresDocumentLine line) {
+			//
+		}
+
+		@Override
+		public boolean onLineRecalc(PC_GresDocumentLine line) {
 			String text = line.getText();
 			int blocks = 0;
+			int type = line.prev!=null && ((LineInfo)line.prev.collectorInfo).lineEndsWithComment?1:0;
 			for(int i=0; i<text.length(); i++){
 				char c= text.charAt(i);
-				if(c=='{'){
-					blocks++;
-				}else if(c=='}'){
-					blocks--;
+				if(type==1){
+					if(c=='*'){
+						if(i+1<text.length()){
+							c=text.charAt(i+1);
+							if(c=='/'){
+								type = 0;
+								i++;
+							}
+						}
+					}
+				}else if(type==2){
+					if(c=='\\'){
+						if(i+1<text.length()){
+							c = text.charAt(++i);
+						}
+					}else if(c=='"'){
+						type = 0;
+					}
+				}else if(type==3){
+					if(c=='\\'){
+						if(i+1<text.length()){
+							c = text.charAt(++i);
+						}
+					}else if(c=='\''){
+						type = 0;
+					}
+				}else{
+					if(c=='{'){
+						blocks++;
+					}else if(c=='}'){
+						blocks--;
+					}else if(c=='"'){
+						type = 2;
+					}else if(c=='\''){
+						type = 3;
+					}else if(c=='/'){
+						if(i+1<text.length()){
+							c=text.charAt(i+1);
+							if(c=='*'){
+								type = 1;
+								i++;
+							}else if(c=='/'){
+								break;
+							}
+						}
+					}
 				}
 			}
-			line.collectorInfo = new LineInfo(blocks);
+			boolean b = line.collectorInfo==null||((LineInfo)line.collectorInfo).lineEndsWithComment!=(type==1);
+			line.collectorInfo = new LineInfo(blocks, type==1);
+			return b;
 		}
 		
 	}

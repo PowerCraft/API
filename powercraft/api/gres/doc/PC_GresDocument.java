@@ -94,12 +94,12 @@ public class PC_GresDocument {
 				System.arraycopy(line2.errors, selects[1].x, line.errors, 0, text2.length()-selects[1].x);
 			}
 			line.setText(text);
-			onLineChanged(line);
 			line2 = line2.next;
 			line.next = line2;
 			if(line2!=null)
 				line2.prev = line;
 			this.lines -= selects[1].y - selects[0].y;
+			onLineChanged(line);
 		}
 		recalcHighlights(line, 1);
 	}
@@ -144,22 +144,22 @@ public class PC_GresDocument {
 			PC_GresDocumentLine actLine = line;
 			for(int i=1; i<inserts.length-1; i++){
 				PC_GresDocumentLine newLine = new PC_GresDocumentLine(inserts[i]);
-				onLineChanged(newLine);
 				actLine.next = newLine;
 				newLine.prev = actLine;
 				actLine = newLine;
+				onLineChanged(newLine);
 			}
 			PC_GresDocumentLine newLine = new PC_GresDocumentLine(inserts[inserts.length-1]+end);
 			if(errors!=null){
 				newLine.errors = new Message[inserts[inserts.length-1].length()+end.length()];
 				System.arraycopy(errors, 0, newLine.errors, inserts[inserts.length-1].length(), end.length());
 			}
-			onLineChanged(newLine);
 			actLine.next = newLine;
 			newLine.prev = actLine;
 			newLine.next = last;
 			if(last!=null)
 				last.prev = newLine;
+			onLineChanged(newLine);
 		}
 		recalcHighlights(line, inserts.length);
 	}
@@ -221,8 +221,18 @@ public class PC_GresDocument {
 			PC_GresDocumentLine l = line;
 			int n = num;
 			boolean again = false;
-			while((n>0 || again) && l!=null){
+			while((n>=0 || again) && l!=null){
 				again = l.recalcHighlighting(this.highlighting);
+				l = l.next;
+				n--;
+			}
+		}
+		if(this.infoCollector!=null){
+			PC_GresDocumentLine l = line;
+			int n = num;
+			boolean again = false;
+			while((n>=0 || again) && l!=null){
+				again = this.infoCollector.onLineRecalc(l);
 				l = l.next;
 				n--;
 			}

@@ -266,6 +266,11 @@ public class PC_MiniscriptHighlighting {
 				i++;
 			}
 		}
+
+		@Override
+		public boolean onLineRecalc(PC_GresDocumentLine l) {
+			return false;
+		}
 		
 	}
 	

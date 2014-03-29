@@ -10,9 +10,15 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map.Entry;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import powercraft.api.PC_Lang;
 import powercraft.api.PC_Logger;
 import powercraft.api.PC_Utils;
+import powercraft.api.gres.PC_GresComponent;
+import powercraft.api.gres.autoadd.PC_AutoCompleteDisplay;
+import powercraft.api.gres.doc.PC_GresDocument;
+import powercraft.api.gres.doc.PC_GresDocumentLine;
 import powercraft.api.script.PC_DiagnosticTranslater;
 
 
@@ -22,6 +28,9 @@ public final class PC_Weasel {
 		
 		@Override
 		public String translate(String message, String[] args, Locale locale) {
+			if(args==null){
+				return PC_Lang.translate("powercraft.weasel."+message);
+			}
 			return PC_Lang.translate("powercraft.weasel."+message, Arrays.copyOf(args, args.length, Object[].class));
 		}
 	};
@@ -123,6 +132,12 @@ public final class PC_Weasel {
 			PC_WeaselSourceClass sc = classSave.addClass(name);
 			sc.setSource(source);
 		}
+	}
+
+	@SideOnly(Side.CLIENT)
+	public static void makeComplete(PC_GresComponent component, PC_GresDocument document, PC_GresDocumentLine line, int x, PC_AutoCompleteDisplay info) {
+		if(weaselModule!=null)
+			weaselModule.makeComplete(component, document, line, x, info);
 	}
 	
 }
