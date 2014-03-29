@@ -339,5 +339,17 @@ public class PC_GresDocument {
 			line = line.next;
 		}
 	}
+
+	public int getLineNum(PC_GresDocumentLine line) {
+		PC_GresDocumentLine l = this.firstLine;
+		int n = 0;
+		while(l!=null){
+			if(l==line)
+				return n;
+			n++;
+			l = l.next;
+		}
+		return 0;
+	}
 	
 }

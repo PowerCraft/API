@@ -71,13 +71,18 @@ public class PC_WeaselGresEdit extends PC_GresGroupContainer implements PC_IGres
 	
 	private Object autoCompleteHelper;
 	
+	private PC_WeaselContainer container = PC_Weasel.createContainer("Prev", 0);
+	
 	public PC_WeaselGresEdit(HashMap<String, String> sources){
 		if(sources.isEmpty()){
 			sources.put("Main", "/* TODO Report this bug!\n * I'm sorry but the source is lost :(\n * Or at least if you save...\n */");
 		}
 		for(Entry<String, String> e:sources.entrySet()){
 			this.sources.put(e.getKey(), new PC_GresMultilineHighlightingTextEdit(this.fontTexture, this.highlighting, this.autoAdd, this.autoComplete, e.getValue()));
+			PC_WeaselSourceClass sourceClass = this.container.addClass(e.getKey());
+			sourceClass.setSource(e.getValue());
 		}
+		recompile();
 		this.remove = new ArrayList<String>(this.sources.keySet());
 		List<String> list = new ArrayList<String>(this.sources.keySet());
 		setLayout(new PC_GresLayoutVertical());
@@ -104,6 +109,10 @@ public class PC_WeaselGresEdit extends PC_GresGroupContainer implements PC_IGres
 		this.tab.setMinSize(new PC_Vec2I(300, 200).add(this.tab.getFrame().getSize()).add(this.tab.getFrame().getLocation()));
 		gc.add(this.tab);
 		add(gc);
+	}
+	
+	public PC_WeaselContainer getContainer(){
+		return this.container;
 	}
 	
 	@SuppressWarnings("hiding")
@@ -174,6 +183,14 @@ public class PC_WeaselGresEdit extends PC_GresGroupContainer implements PC_IGres
 						component.getGuiHandler().add(frame);
 						frame.takeFocus();
 					}
+				}
+			}
+		}else if(event instanceof PC_GresKeyEvent){
+			PC_GresComponent c = event.getComponent();
+			for(Entry<String, PC_GresMultilineHighlightingTextEdit> e:this.sources.entrySet()){
+				if(e.getValue()==c){
+					this.container.getClass(e.getKey()).setSource(c.getText());
+					recompile();
 				}
 			}
 		}
@@ -337,6 +354,9 @@ public class PC_WeaselGresEdit extends PC_GresGroupContainer implements PC_IGres
 		PC_GresMultilineHighlightingTextEdit component = new PC_GresMultilineHighlightingTextEdit(this.fontTexture, this.highlighting, this.autoAdd, this.autoComplete, source);
 		this.sources.put(name, component);
 		this.tab.add(name, component);
+		PC_WeaselSourceClass sc = this.container.addClass(name);
+		sc.setSource(this.sources.get(name).getText());
+		recompile();
 		component.moveToTop();
 		updateListBox();
 	}
@@ -345,6 +365,10 @@ public class PC_WeaselGresEdit extends PC_GresGroupContainer implements PC_IGres
 		if(name.equals(selected))
 			return;
 		this.sources.put(name, this.sources.remove(selected));
+		this.container.removeClass(selected);
+		PC_WeaselSourceClass sc = this.container.addClass(name);
+		sc.setSource(this.sources.get(name).getText());
+		recompile();
 		PC_GresComponent component = this.tab.getTab(selected);
 		if(component!=null){
 			this.tab.remove(component);
@@ -357,6 +381,7 @@ public class PC_WeaselGresEdit extends PC_GresGroupContainer implements PC_IGres
 	void removeClass(String selected){
 		if(this.sources.size()>1){
 			this.sources.remove(selected);
+			this.container.removeClass(selected);
 			PC_GresComponent tabComponent = this.tab.getTab(selected);
 			if(tabComponent!=null)
 				this.tab.remove(tabComponent);
@@ -364,6 +389,10 @@ public class PC_WeaselGresEdit extends PC_GresGroupContainer implements PC_IGres
 		}
 	}
 
+	private void recompile(){
+		this.container.compileMarked(new String[0], new String[0]);
+	}
+	
 	private void updateListBox(){
 		Set<String> s = this.sources.keySet();
 		String[] array = s.toArray(new String[s.size()]);
@@ -450,6 +479,15 @@ public class PC_WeaselGresEdit extends PC_GresGroupContainer implements PC_IGres
 	
 	public void setAutoCompleteHelper(Object autoCompleteHelper){
 		this.autoCompleteHelper = autoCompleteHelper;
+	}
+
+	public String getClassName(PC_GresComponent component) {
+		for(Entry<String, PC_GresMultilineHighlightingTextEdit> e:this.sources.entrySet()){
+			if(e.getValue()==component){
+				return e.getKey();
+			}
+		}
+		return null;
 	}
 	
 }
