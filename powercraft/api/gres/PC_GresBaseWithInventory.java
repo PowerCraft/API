@@ -698,5 +698,11 @@ public abstract class PC_GresBaseWithInventory extends Container implements PC_I
 
         return itemstack;
     }
+
+
+	@Override
+	public boolean canBeDragged(int i) {
+		return true;
+	}
 	
 }

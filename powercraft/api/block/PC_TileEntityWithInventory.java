@@ -303,5 +303,10 @@ public class PC_TileEntityWithInventory extends PC_TileEntity implements PC_ISid
 	public IIcon getFrontIcon() {
 		return ((PC_AbstractBlockBase)getBlockType()).getIcon(this.worldObj, this.xCoord, this.yCoord, this.zCoord, PC_Direction.NORTH);
 	}
+
+	@Override
+	public boolean canBeDragged(int i) {
+		return true;
+	}
 	
 }

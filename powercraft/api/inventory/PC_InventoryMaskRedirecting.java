@@ -18,8 +18,8 @@ import powercraft.api.block.PC_TileEntity;
 
 public class PC_InventoryMaskRedirecting extends PC_InventoryMask{
 	
-	public PC_InventoryMaskRedirecting(PC_TileEntity entity, IInventory inventory, int inventoryStart, int inventoryLastIndex, String inventoryName, PC_AccessType[] sides){
-		super(entity, inventory, inventoryStart, inventoryLastIndex, inventoryName, sides);
+	public PC_InventoryMaskRedirecting(PC_TileEntity entity, IInventory inventory, int inventoryStart, int inventoryLastIndex, String inventoryName, boolean isGhost, PC_AccessType[] sides){
+		super(entity, inventory, inventoryStart, inventoryLastIndex, inventoryName, isGhost, sides);
 	}
 	
 	
@@ -189,6 +189,18 @@ public class PC_InventoryMaskRedirecting extends PC_InventoryMask{
 		}
 		return tmp;
 	}
+
+
+	@Override
+	public boolean canBeDragged(int slotPos) {
+		boolean tmp=true;
+		if(inventory instanceof PC_IInventory){
+			tmp = ((PC_IInventory) inventory).canBeDragged(inventoryStart + slotPos);
+		}
+		return tmp;
+	}
+	
+	
 
 	/*
 	@Override

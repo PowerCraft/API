@@ -54,17 +54,19 @@ public class PC_InventoryMask implements PC_IInventory {
 	protected final int inventoryLength;
 	protected final String inventoryName;
 	protected final PC_AccessType[] sides;
+	protected final boolean isGhost;
 	
 	protected final IInventory inventory;
 	protected final PC_TileEntity tileEntity;
 	
-	public PC_InventoryMask(PC_TileEntity entity, IInventory inventory, int inventoryStart, int inventoryLastIndex, String inventoryName, PC_AccessType[] sides){
+	public PC_InventoryMask(PC_TileEntity entity, IInventory inventory, int inventoryStart, int inventoryLastIndex, String inventoryName, boolean isGhost, PC_AccessType[] sides){
 		this.tileEntity = entity;
 		this.inventory = inventory;
 		this.inventoryStart = inventoryStart;
 		this.inventoryLastIndex = inventoryLastIndex;
 		this.inventoryLength = inventoryLastIndex-inventoryStart+1;
 		this.inventoryName = inventoryName;
+		this.isGhost = isGhost;
 		
 		if(sides==null){
 			this.sides = sides;
@@ -242,6 +244,11 @@ public class PC_InventoryMask implements PC_IInventory {
 	protected void getWorldPos(){
 		world = tileEntity.getWorldObj();
 		pos = new PC_Vec3I(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
+	}
+
+	@Override
+	public boolean canBeDragged(int i) {
+		return !isGhost;
 	}
 
 
