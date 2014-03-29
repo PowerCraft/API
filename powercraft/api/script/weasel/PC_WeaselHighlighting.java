@@ -87,7 +87,7 @@ public class PC_WeaselHighlighting {
 			if(add.toAdd.length()==1 && "[]()\"'\t\n".indexOf(add.toAdd.charAt(0))!=-1){
 				PC_WeaselSourceIterator iterator = new PC_WeaselSourceIterator(add.documentLine, add.pos);
 				int type = iterator.getTypeAtPos();
-				iterator.gotoInstructionStart();
+				iterator.gotoInstructionStart(";");
 				if(type==0){
 					if(add.toAdd.equals("[")){
 						add.toAdd = "[]";

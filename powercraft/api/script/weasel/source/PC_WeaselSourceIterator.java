@@ -84,7 +84,7 @@ public class PC_WeaselSourceIterator {
 		return where;
 	}
 	
-	public void gotoInstructionStart(){
+	public void gotoInstructionStart(String starts){
 		PC_GresDocumentLine l = this.line;
 		while(true){
 			int where = 0;
@@ -139,7 +139,7 @@ public class PC_WeaselSourceIterator {
 						where=2;
 					}else if(c=='\''){
 						where=3;
-					}else if(c==';'){
+					}else if(starts.indexOf(c)!=-1){
 						best = i;
 					}
 				}
@@ -325,7 +325,6 @@ public class PC_WeaselSourceIterator {
 				scannChar();
 			}
 			if(this.scannChar=='/'){
-				scannChar();
 				this.comments.add(new PC_WeaselComment(PC_WeaselCommentType.MULTILINE, ""));
 			}else{
 				String comment = "";
@@ -451,17 +450,17 @@ public class PC_WeaselSourceIterator {
 	private void scannChar(){
 		this.prevline = this.line;
 		this.prevlinepos = this.pos;
-		if(this.lineString.length()>this.pos){
-			this.scannChar = this.lineString.charAt(this.pos++);
-		}else{
-			this.scannChar = 0;
-		}
 		if(this.lineString.length()<=this.pos && this.line.next!=null){
 			this.pos = 0;
 			do{
 				this.line = this.line.next;
 				this.lineString = this.line.getText();
 			}while(this.lineString.isEmpty() && this.line!=null);
+		}
+		if(this.lineString.length()>this.pos){
+			this.scannChar = this.lineString.charAt(this.pos++);
+		}else{
+			this.scannChar = 0;
 		}
 	}
 	

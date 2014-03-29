@@ -68,4 +68,17 @@ public class PC_WeaselLineDesk {
 		return true;
 	}
 	
+	public boolean isAfterStart(PC_GresDocumentLine line, int pos) {
+		if(this.startLine==line){
+			return this.startLinePos<=pos;
+		}
+		PC_GresDocumentLine l = line.next;
+		while(l!=null){
+			if(l==this.startLine)
+				return false;
+			l = l.next;
+		}
+		return true;
+	}
+	
 }
