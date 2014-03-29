@@ -135,9 +135,9 @@ public final class PC_Weasel {
 	}
 
 	@SideOnly(Side.CLIENT)
-	public static void makeComplete(PC_GresComponent component, PC_GresDocument document, PC_GresDocumentLine line, int x, PC_AutoCompleteDisplay info) {
+	public static void makeComplete(PC_GresComponent component, PC_GresDocument document, PC_GresDocumentLine line, int x, PC_AutoCompleteDisplay info, PC_WeaselGresEdit weaselGresEdit) {
 		if(weaselModule!=null)
-			weaselModule.makeComplete(component, document, line, x, info);
+			weaselModule.makeComplete(component, document, line, x, info, weaselGresEdit);
 	}
 	
 }

@@ -51,7 +51,7 @@ public class PC_WeaselGresEdit extends PC_GresGroupContainer implements PC_IGres
 	private PC_FontTexture fontTexture = PC_Fonts.getFontByName("Consolas", 24, 0);
 	private PC_GresHighlighting highlighting = PC_WeaselHighlighting.makeHighlighting();
 	private PC_AutoAdd autoAdd = PC_WeaselHighlighting.makeAutoAdd();
-	private PC_AutoComplete autoComplete = PC_WeaselHighlighting.makeAutoComplete();
+	private PC_AutoComplete autoComplete = PC_WeaselHighlighting.makeAutoComplete(this);
 	
 	PC_GresTab tab;
 	
@@ -68,6 +68,8 @@ public class PC_WeaselGresEdit extends PC_GresGroupContainer implements PC_IGres
 	private static final String[] LISTBOXELEMENTS = {"new", "rename", "delete"};
 	private static final String[] TABELEMENTS1 = {"close"};
 	private static final String[] TABELEMENTSMORE = {"close", "close others", "close all"};
+	
+	private Object vm;
 	
 	public PC_WeaselGresEdit(HashMap<String, String> sources){
 		if(sources.isEmpty()){
@@ -440,6 +442,14 @@ public class PC_WeaselGresEdit extends PC_GresGroupContainer implements PC_IGres
 			return this.sources;
 		}
 		
+	}
+
+	public Object getVM() {
+		return vm;
+	}
+	
+	public void setVM(Object vm){
+		this.vm = vm;
 	}
 	
 }

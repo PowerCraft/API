@@ -3,6 +3,7 @@ package powercraft.api.script.weasel;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.tools.Diagnostic;
 
@@ -38,5 +39,7 @@ public interface PC_WeaselContainer extends PC_INBT {
 	public void setErrorOutput(PrintStream errorStream);
 	
 	public void setHandler(Object handler);
+	
+	public Map<Object, Object> createObject(String className);
 	
 }

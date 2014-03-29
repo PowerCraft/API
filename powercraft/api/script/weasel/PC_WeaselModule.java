@@ -12,6 +12,6 @@ public interface PC_WeaselModule {
 	public PC_WeaselContainer createContainer(String deviceName, int memSize);
 
 	@SideOnly(Side.CLIENT)
-	public void makeComplete(PC_GresComponent component, PC_GresDocument document, PC_GresDocumentLine line, int x, PC_AutoCompleteDisplay info);
+	public void makeComplete(PC_GresComponent component, PC_GresDocument document, PC_GresDocumentLine line, int x, PC_AutoCompleteDisplay info, PC_WeaselGresEdit weaselGresEdit);
 
 }

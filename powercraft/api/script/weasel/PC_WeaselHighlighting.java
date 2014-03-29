@@ -333,14 +333,16 @@ public class PC_WeaselHighlighting {
 		
 	}
 	
-	public static PC_AutoComplete makeAutoComplete(){
-		return new AutoComplete();
+	public static PC_AutoComplete makeAutoComplete(PC_WeaselGresEdit weaselGresEdit){
+		return new AutoComplete(weaselGresEdit);
 	}
 	
 	private static class AutoComplete implements PC_AutoComplete{
 		
-		AutoComplete() {
-			
+		private PC_WeaselGresEdit weaselGresEdit;
+		
+		AutoComplete(PC_WeaselGresEdit weaselGresEdit) {
+			this.weaselGresEdit = weaselGresEdit;
 		}
 
 		@Override
@@ -365,7 +367,7 @@ public class PC_WeaselHighlighting {
 
 		@Override
 		public void makeComplete(PC_GresComponent component, PC_GresDocument document, PC_GresDocumentLine line, int x, PC_AutoCompleteDisplay info) {
-			PC_Weasel.makeComplete(component, document, line, x, info);
+			PC_Weasel.makeComplete(component, document, line, x, info, weaselGresEdit);
 		}
 
 		@Override
