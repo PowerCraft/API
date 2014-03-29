@@ -367,7 +367,7 @@ public class PC_WeaselHighlighting {
 
 		@Override
 		public void makeComplete(PC_GresComponent component, PC_GresDocument document, PC_GresDocumentLine line, int x, PC_AutoCompleteDisplay info) {
-			PC_Weasel.makeComplete(component, document, line, x, info, weaselGresEdit);
+			PC_Weasel.makeComplete(component, document, line, x, info, this.weaselGresEdit);
 		}
 
 		@Override

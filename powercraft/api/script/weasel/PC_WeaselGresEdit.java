@@ -69,7 +69,7 @@ public class PC_WeaselGresEdit extends PC_GresGroupContainer implements PC_IGres
 	private static final String[] TABELEMENTS1 = {"close"};
 	private static final String[] TABELEMENTSMORE = {"close", "close others", "close all"};
 	
-	private Object vm;
+	private Object autoCompleteHelper;
 	
 	public PC_WeaselGresEdit(HashMap<String, String> sources){
 		if(sources.isEmpty()){
@@ -444,12 +444,12 @@ public class PC_WeaselGresEdit extends PC_GresGroupContainer implements PC_IGres
 		
 	}
 
-	public Object getVM() {
-		return vm;
+	public Object getAutoCompleteHelper() {
+		return this.autoCompleteHelper;
 	}
 	
-	public void setVM(Object vm){
-		this.vm = vm;
+	public void setAutoCompleteHelper(Object autoCompleteHelper){
+		this.autoCompleteHelper = autoCompleteHelper;
 	}
 	
 }
