@@ -19,6 +19,33 @@ import powercraft.api.block.PC_TileEntity;
 public class PC_InventoryMaskRedirecting extends PC_InventoryMask{
 	
 	private IInventory inventory;
+	@Override
+	public ItemStack getStackInSlot(int slotPos) {
+		ItemStack tmp=null;
+		if(slotPos>inventoryLength-1) return tmp;
+		tmp = inventory.getStackInSlot(inventoryStart + slotPos);
+		return tmp;
+	}
+
+
+	@Override
+	public ItemStack decrStackSize(int slotPos, int amount) {
+		ItemStack tmp=null;
+		if(slotPos>inventoryLength-1) return tmp;
+		if(inventory!=null){
+			tmp = inventory.decrStackSize(inventoryStart + slotPos, amount);
+			markDirty();
+		}
+		return tmp;
+	}
+
+
+	@Override
+	public void setInventorySlotContents(int slotPos, ItemStack is) {
+		inventory.setInventorySlotContents(inventoryStart + slotPos, is);
+	}
+
+
 	public PC_InventoryMaskRedirecting(PC_TileEntity entity, IInventory inventory, int inventoryStart, int inventoryLastIndex, String inventoryName, boolean isGhost, PC_AccessType[] sides){
 		super(entity, null, inventoryStart, inventoryLastIndex, inventoryName, isGhost, sides);
 		this.inventory = inventory;
