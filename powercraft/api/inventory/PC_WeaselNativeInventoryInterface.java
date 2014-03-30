@@ -13,6 +13,7 @@ import powercraft.api.script.weasel.grid.PC_IWeaselGridTileAddressable;
 import xscript.runtime.nativemethod.XNativeClass;
 import xscript.runtime.nativemethod.XNativeClass.XNativeMethod;
 import xscript.runtime.nativemethod.XNativeClass.XParamSpecial;
+import xscript.runtime.nativemethod.XNativeClass.XType;
 import xscript.runtime.nativemethod.XNativeClass.XParamSpecial.XParamTypes;
 
 @XNativeClass("weasel.inventory.Inventory")
@@ -93,7 +94,7 @@ public class PC_WeaselNativeInventoryInterface {
 	}
 	
 	@XNativeMethod
-	public static int findSlotContainingItem(@XParamSpecial(XParamTypes.USERDATA)PC_IWeaselGridTileAddressable anyTile, int address, String inventory, Map<Object, Object> item){
+	public static int findSlotContainingItem(@XParamSpecial(XParamTypes.USERDATA)PC_IWeaselGridTileAddressable anyTile, int address, String inventory, @XType("weasel.type.ItemStack")Map<Object, Object> item){
 		PC_IWeaselGridTileAddressable targetTile = anyTile.getGrid().getTileByAddress(anyTile, address);
 		if(!(targetTile instanceof PC_IWeaselInventory)){
 			return -1;
@@ -106,7 +107,7 @@ public class PC_WeaselNativeInventoryInterface {
 	}
 	
 	@XNativeMethod
-	public static Map<Object, Object> getItemStackAt(@XParamSpecial(XParamTypes.VM)Invocable vm, @XParamSpecial(XParamTypes.USERDATA)PC_IWeaselGridTileAddressable anyTile, int address, String inventory, int offset){
+	public static @XType("weasel.type.ItemStack")Map<Object, Object> getItemStackAt(@XParamSpecial(XParamTypes.VM)Invocable vm, @XParamSpecial(XParamTypes.USERDATA)PC_IWeaselGridTileAddressable anyTile, int address, String inventory, int offset){
 		PC_IWeaselGridTileAddressable targetTile = anyTile.getGrid().getTileByAddress(anyTile, address);
 		if(!(targetTile instanceof PC_IWeaselInventory)){
 			return null;
