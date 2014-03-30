@@ -56,12 +56,12 @@ public class PC_InventoryMask implements PC_IInventory {
 	protected final PC_AccessType[] sides;
 	protected final boolean isGhost;
 	
-	protected final IInventory inventory;
+	protected final ItemStack[] inventoryContents;
 	protected final PC_TileEntity tileEntity;
 	
-	public PC_InventoryMask(PC_TileEntity entity, IInventory inventory, int inventoryStart, int inventoryLastIndex, String inventoryName, boolean isGhost, PC_AccessType[] sides){
+	public PC_InventoryMask(PC_TileEntity entity, ItemStack[] inventoryContents, int inventoryStart, int inventoryLastIndex, String inventoryName, boolean isGhost, PC_AccessType[] sides){
 		this.tileEntity = entity;
-		this.inventory = inventory;
+		this.inventoryContents = inventoryContents;
 		this.inventoryStart = inventoryStart;
 		this.inventoryLastIndex = inventoryLastIndex;
 		this.inventoryLength = inventoryLastIndex-inventoryStart+1;
@@ -120,9 +120,7 @@ public class PC_InventoryMask implements PC_IInventory {
 	public ItemStack getStackInSlot(int slotPos) {
 		ItemStack tmp=null;
 		if(slotPos>inventoryLength-1) return tmp;
-		if(inventory!=null){
-			tmp = inventory.getStackInSlot(inventoryStart + slotPos);
-		}
+		tmp = PC_InventoryUtils.getStackInSlot(inventoryContents, slotPos);
 		return tmp;
 	}
 
@@ -130,28 +128,36 @@ public class PC_InventoryMask implements PC_IInventory {
 	public ItemStack decrStackSize(int slotPos, int amount) {
 		ItemStack tmp=null;
 		if(slotPos>inventoryLength-1) return tmp;
-		if(inventory!=null){
-			tmp = inventory.decrStackSize(inventoryStart + slotPos, amount);
+		if(inventoryContents!=null){
+			tmp = PC_InventoryUtils.decreaseStackSize(inventoryContents, inventoryStart + slotPos, amount);
+			markDirty();
 		}
 		return tmp;
 	}
 
 	@Override
 	public ItemStack getStackInSlotOnClosing(int slotPos) {
-		ItemStack tmp=null;
-		if(slotPos>inventoryLength-1) return tmp;
-		if(inventory!=null){
-			tmp = inventory.getStackInSlotOnClosing(inventoryStart + slotPos);
-		}
-		return tmp;
+		if (this.inventoryContents[slotPos] != null) {
+			ItemStack itemstack = this.inventoryContents[slotPos];
+			this.inventoryContents[slotPos] = null;
+			return itemstack;
+		} 
+		return null;
 	}
 
 	@Override
-	public void setInventorySlotContents(int slotPos, ItemStack var2) {
-		if(slotPos>inventoryLength-1) return;
-		if(inventory!=null){
-			inventory.setInventorySlotContents(inventoryStart + slotPos, var2);
+	public void setInventorySlotContents(int slotPos, ItemStack is) {
+		if(is==null){
+			inventoryContents[slotPos] = null;
+		}else{
+			int max = Math.min(PC_InventoryUtils.getMaxStackSize(new IInventory[]{this}, new int[]{0, slotPos}, true), is.getMaxStackSize());
+			if(is.stackSize>max){
+				inventoryContents[slotPos] = is.splitStack(max);
+			}else{
+				this.inventoryContents[slotPos] = is;
+			}
 		}
+		markDirty();
 	}
 
 	@Override
@@ -161,7 +167,7 @@ public class PC_InventoryMask implements PC_IInventory {
 
 	@Override
 	public boolean hasCustomInventoryName() {
-		return inventoryName!=null && !inventoryName.isEmpty();
+		return true;
 	}
 
 	@Override
@@ -171,8 +177,7 @@ public class PC_InventoryMask implements PC_IInventory {
 
 	@Override
 	public void markDirty() {
-		if(tileEntity!=null)
-			markDirty();
+		//
 	}
 
 	@Override

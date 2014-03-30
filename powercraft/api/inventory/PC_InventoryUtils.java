@@ -609,4 +609,44 @@ public class PC_InventoryUtils {
 		return 0;
 	}
 	
+	public static ItemStack decreaseStackSize(ItemStack[] inventoryContents, int slot, int amount){
+		if (inventoryContents[slot] != null) {
+			ItemStack itemstack;
+			if (inventoryContents[slot].stackSize <= amount) {
+				itemstack = inventoryContents[slot];
+				inventoryContents[slot] = null;
+				return itemstack;
+			} 
+			itemstack = inventoryContents[slot].splitStack(amount);
+			if (inventoryContents[slot].stackSize == 0) {
+				inventoryContents[slot] = null;
+			}
+			return itemstack;
+		}
+		return null;
+	}
+	
+	public static ItemStack getStackInSlot(ItemStack[] inventoryContents, int slot){
+		ItemStack tmp=null;
+		if(inventoryContents.length<=slot) return tmp;
+		if(inventoryContents!=null){
+			tmp = inventoryContents[slot];
+		}
+		return tmp;
+	}
+	
+	private static final int INDEX_INVENTORY=0, OFFSET_INVENTORY=1;
+	
+	public static int getMaxStackSize(IInventory[] inventories, int[] pos, boolean ignoreCurrent){
+		int tmp;
+		ItemStack isTarget = inventories[pos[INDEX_INVENTORY]].getStackInSlot(pos[OFFSET_INVENTORY]);
+		if(inventories[pos[INDEX_INVENTORY]] instanceof PC_IInventory){
+			tmp=((PC_IInventory) inventories[pos[INDEX_INVENTORY]]).getSlotStackLimit(pos[OFFSET_INVENTORY]);
+		}else{
+			tmp=inventories[pos[INDEX_INVENTORY]].getInventoryStackLimit();
+		}
+		
+		return isTarget==null || ignoreCurrent?tmp:Math.min(isTarget.getMaxStackSize(), tmp);
+	}
+	
 }

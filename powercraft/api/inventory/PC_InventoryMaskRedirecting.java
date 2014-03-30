@@ -18,8 +18,10 @@ import powercraft.api.block.PC_TileEntity;
 
 public class PC_InventoryMaskRedirecting extends PC_InventoryMask{
 	
+	private IInventory inventory;
 	public PC_InventoryMaskRedirecting(PC_TileEntity entity, IInventory inventory, int inventoryStart, int inventoryLastIndex, String inventoryName, boolean isGhost, PC_AccessType[] sides){
-		super(entity, inventory, inventoryStart, inventoryLastIndex, inventoryName, isGhost, sides);
+		super(entity, null, inventoryStart, inventoryLastIndex, inventoryName, isGhost, sides);
+		this.inventory = inventory;
 	}
 	
 	
