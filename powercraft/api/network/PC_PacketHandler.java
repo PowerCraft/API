@@ -152,7 +152,7 @@ public final class PC_PacketHandler extends SimpleChannelInboundHandler<PC_Packe
 	static void sendPacketResolveTo(EntityPlayerMP player){
 		String[] packetClasses = new String[packets.length-1];
 		for(int i=0; i<packetClasses.length; i++){
-			packetClasses[i] = packets[i+1].getClass().getName();
+			packetClasses[i] = packets[i+1].getName();
 		}
 		sendTo(new PC_PacketPacketResolve(packetClasses), player);
 	}
