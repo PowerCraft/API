@@ -275,7 +275,11 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 			fireEvent(event);
 			if (!event.isConsumed()) {
 				if(!checkHotbarKeys(keyCode)){
-					tryActionOnKeyTyped(key, keyCode, repeat, this.history);
+					if(keyCode==Keyboard.KEY_ESCAPE){
+						close();
+					}else{
+						tryActionOnKeyTyped(key, keyCode, repeat, this.history);
+					}
 				}
 			}
 		}

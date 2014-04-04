@@ -6,6 +6,7 @@ import java.util.List;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -18,6 +19,8 @@ import powercraft.api.PC_ClientRegistry;
 import powercraft.api.PC_IconRegistry;
 import powercraft.api.PC_Module;
 import powercraft.api.PC_Utils;
+import powercraft.api.gres.PC_Gres;
+import powercraft.api.gres.PC_IGresGuiOpenHandler;
 import powercraft.api.inventory.PC_InventoryUtils;
 import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -141,6 +144,17 @@ public abstract class PC_Item extends Item implements PC_IItem{
 	@SideOnly(Side.CLIENT)
 	public void renderItem(ItemStack itemStack, ItemRenderType type, Object[] data) {
 		//
+	}
+
+	@Override
+	public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer entityPlayer) {
+		if(this instanceof PC_IGresGuiOpenHandler){
+			if(!world.isRemote){
+				PC_Gres.openGui(entityPlayer, this);
+			}
+			return itemStack;
+		}
+		return super.onItemRightClick(itemStack, world, entityPlayer);
 	}
 	
 }
