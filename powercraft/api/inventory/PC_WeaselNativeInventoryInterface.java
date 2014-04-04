@@ -168,15 +168,11 @@ public class PC_WeaselNativeInventoryInterface {
 	}
 	
 	private static int getMaxStackSize(IInventory inventory, int realPos, boolean ignoreCurrent){
-		int tmp;
 		ItemStack isTarget = inventory.getStackInSlot(realPos);
-		if(inventory instanceof PC_IInventory){
-			tmp=((PC_IInventory) inventory).getSlotStackLimit(pos[OFFSET_INVENTORY]);
-		}else{
-			tmp=inventory.getInventoryStackLimit();
+		if(isTarget==null || ignoreCurrent){
+			return PC_InventoryUtils.getSlotStackLimit(inventory, realPos);
 		}
-		
-		return isTarget==null || ignoreCurrent?tmp:Math.min(isTarget.getMaxStackSize(), tmp);
+		return PC_InventoryUtils.getMaxStackSize(isTarget, inventory, realPos);
 	}
 	
 	private static boolean canDragStack(IInventory[] inventories, int[] from){
@@ -193,19 +189,15 @@ public class PC_WeaselNativeInventoryInterface {
 			int max = getMaxStackSize(inventory, realPos, true);
 			if(target==null)
 				return max;
-			else
-				return -max;
-		}else{
-			if(target==null){
-				return inventory.isItemValidForSlot(realPos, stack)?Math.min(stack.getMaxStackSize(), getMaxStackSize(inventory, realPos, true)):0;
-			}else{
-				if(itemStacksEqual(stack, target)){
-					return getMaxStackSize(inventory, realPos, false)-target.stackSize;
-				}else{
-					return -Math.min(stack.getMaxStackSize(), getMaxStackSize(inventory, realPos, true));
-				}
-			}
+			return -max;
 		}
+		if(target==null){
+			return inventory.isItemValidForSlot(realPos, stack)?Math.min(stack.getMaxStackSize(), getMaxStackSize(inventory, realPos, true)):0;
+		}
+		if(itemStacksEqual(stack, target)){
+			return getMaxStackSize(inventory, realPos, false)-target.stackSize;
+		}
+		return -Math.min(stack.getMaxStackSize(), getMaxStackSize(inventory, realPos, true));
 	}
 	
 	//>0-> remaining place; =0->impossible or unnecessary; <0 ->like >0 but slot already filled with something else
