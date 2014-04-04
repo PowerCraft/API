@@ -5,16 +5,14 @@ import java.util.Map;
 import javax.script.Invocable;
 
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import powercraft.api.script.weasel.PC_IWeaselInventory;
 import powercraft.api.script.weasel.grid.PC_IWeaselGridTileAddressable;
 import xscript.runtime.nativemethod.XNativeClass;
 import xscript.runtime.nativemethod.XNativeClass.XNativeMethod;
 import xscript.runtime.nativemethod.XNativeClass.XParamSpecial;
-import xscript.runtime.nativemethod.XNativeClass.XType;
 import xscript.runtime.nativemethod.XNativeClass.XParamSpecial.XParamTypes;
+import xscript.runtime.nativemethod.XNativeClass.XType;
 
 @XNativeClass("weasel.inventory.Inventory")
 public class PC_WeaselNativeInventoryInterface {
@@ -96,10 +94,9 @@ public class PC_WeaselNativeInventoryInterface {
 	@XNativeMethod
 	public static int findSlotContainingItem(@XParamSpecial(XParamTypes.USERDATA)PC_IWeaselGridTileAddressable anyTile, int address, String inventory, @XType("weasel.type.ItemStack")Map<Object, Object> item){
 		PC_IWeaselGridTileAddressable targetTile = anyTile.getGrid().getTileByAddress(anyTile, address);
-		if(!(targetTile instanceof PC_IWeaselInventory)){
+		if(!(targetTile instanceof PC_IInventory && targetTile instanceof PC_IWeaselInventory)){
 			return -1;
 		}
-		IInventory[] inventories = ((PC_IWeaselInventory)targetTile).getInventories();
 		String itemName = (String)item.get("itemName");
 		int meta = ((Integer)item.get("itemDamage")).intValue();
 		
@@ -109,14 +106,12 @@ public class PC_WeaselNativeInventoryInterface {
 	@XNativeMethod
 	public static @XType("weasel.type.ItemStack")Map<Object, Object> getItemStackAt(@XParamSpecial(XParamTypes.VM)Invocable vm, @XParamSpecial(XParamTypes.USERDATA)PC_IWeaselGridTileAddressable anyTile, int address, String inventory, int offset){
 		PC_IWeaselGridTileAddressable targetTile = anyTile.getGrid().getTileByAddress(anyTile, address);
-		if(!(targetTile instanceof PC_IWeaselInventory)){
+		if(!(targetTile instanceof PC_IInventory && targetTile instanceof PC_IWeaselInventory))
 			return null;
-		}
-		IInventory[] inventories = ((PC_IWeaselInventory)targetTile).getInventories();
-		int pos[] = findInventoryForSlot(inventories, inventory, offset);
-		if(pos[INDEX_INVENTORY]==-1 || pos[OFFSET_INVENTORY]==-1)
+		int realSlot = ((PC_IWeaselInventory)targetTile).getRealSlot(inventory, offset);
+		if(realSlot==-1)
 			return null;
-		ItemStack is = inventories[pos[INDEX_INVENTORY]].getStackInSlot(pos[OFFSET_INVENTORY]);
+		ItemStack is = ((PC_IInventory)targetTile).getStackInSlot(realSlot);
 		if(is==null) return null;
 		Map<Object, Object> target;
 		try {
@@ -142,45 +137,14 @@ public class PC_WeaselNativeInventoryInterface {
 			return false;
 	}*/
 	
-	private static int[] findInventoryForSlot(IInventory[] inventories, String name, int offset) {
-		if(inventories==null || inventories.length==0 || offset<0) return new int[]{-1, -1};
-		if(inventories.length==1) return new int[]{0, offset>=inventories[0].getSizeInventory()?-1:offset};
-		IInventory inv;
-		int count=0, tmp=0;
-		for(int i=0; i<inventories.length; i++){
-			inv = inventories[i];
-			if(name.equalsIgnoreCase("global")){
-				if(inv instanceof PC_InventoryMask){
-					PC_InventoryMask mask = (PC_InventoryMask) inv;
-					if(offset>=mask.inventoryStart && offset<=mask.inventoryLastIndex){
-						return new int[]{i, offset-mask.inventoryStart};
-					}
-				}else{
-					if(offset>=count && offset<count+(tmp=inv.getSizeInventory())){
-						return new int[]{i, offset-count};
-					}else{
-						count+=tmp;
-					}
-				}
-			}else if(name.equalsIgnoreCase(inv.getInventoryName())){
-				return new int[]{i, offset>=inventories[i].getSizeInventory()?-1:offset};
-			}else{
-				continue;
-			}
-		}
-		return new int[]{-1, -1};
-	}
-	
-	private static int findItemSlot(IInventory[] inventories, String name, String itemName, int meta){
+	private static int findItemSlot(IInventory inventory, String name, String itemName, int meta){
 		Item itemWanted = (Item)Item.itemRegistry.getObject(itemName);
 		int overAllCount=-1;
 		ItemStack is;
 		if(name.equalsIgnoreCase("global")){
-			for(int i=0;i<inventories.length; i++){
-				for(int slot=0; slot<inventories[i].getSizeInventory(); slot++, overAllCount++){
-					if((is=inventories[i].getStackInSlot(slot))!=null && is.getItem()==itemWanted && (meta<0 || is.getItemDamage()==meta)){
-						return overAllCount;
-					}
+			for(int slot=0; slot<inventory.getSizeInventory(); slot++, overAllCount++){
+				if((is=inventory.getStackInSlot(slot))!=null && is.getItem()==itemWanted && (meta<0 || is.getItemDamage()==meta)){
+					return overAllCount;
 				}
 			}
 		}else{
