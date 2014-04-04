@@ -50,5 +50,14 @@ public class PC_GresCheckBox extends PC_GresComponent {
 		notifyChange();
 		return true;
 	}
+
+	@SuppressWarnings("hiding")
+	public void check(boolean state) {
+		this.state = state;
+	}
+	
+	public boolean isChecked() {
+		return this.state;
+	}
 	
 }

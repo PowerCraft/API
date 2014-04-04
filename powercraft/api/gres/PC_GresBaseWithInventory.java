@@ -21,6 +21,7 @@ import powercraft.api.entity.PC_Entity;
 import powercraft.api.gres.slot.PC_Slot;
 import powercraft.api.gres.slot.PC_SlotPhantom;
 import powercraft.api.inventory.PC_IInventory;
+import powercraft.api.inventory.PC_IInventorySizeOverrider;
 import powercraft.api.inventory.PC_InventoryUtils;
 
 
@@ -277,7 +278,7 @@ public abstract class PC_GresBaseWithInventory extends Container implements PC_I
 
 	@Override
 	public boolean canTakeStack(int i, EntityPlayer entityPlayer) {
-		return false;
+		return getSlot(i).canTakeStack(entityPlayer);
 	}
 
 
@@ -387,14 +388,11 @@ public abstract class PC_GresBaseWithInventory extends Container implements PC_I
                             int j1 = slot1.getHasStack() && !(slot1 instanceof PC_SlotPhantom) ? slot1.getStack().stackSize : 0;
                             func_94525_a(this.field_94537_h, this.field_94535_f, itemstack1, j1);
 
-                            if (itemstack1.stackSize > itemstack1.getMaxStackSize())
+                            int max = getMaxStackSize(itemstack1, slot1);
+                            
+                            if (itemstack1.stackSize > max)
                             {
-                                itemstack1.stackSize = itemstack1.getMaxStackSize();
-                            }
-
-                            if (itemstack1.stackSize > slot1.getSlotStackLimit())
-                            {
-                                itemstack1.stackSize = slot1.getSlotStackLimit();
+                                itemstack1.stackSize = max;
                             }
 
                             i1 -= itemstack1.stackSize - j1;
@@ -461,7 +459,7 @@ public abstract class PC_GresBaseWithInventory extends Container implements PC_I
 
                     slot2 = (Slot)this.inventorySlots.get(par1);
 
-                    if (slot2 != null && slot2.canTakeStack(par4EntityPlayer))
+                    if (slot2 != null && canTakeStack(par1, par4EntityPlayer))
                     {
                         itemstack3 = this.transferStackInSlot(par4EntityPlayer, par1);
 
@@ -523,7 +521,7 @@ public abstract class PC_GresBaseWithInventory extends Container implements PC_I
                                 }
                             }
                         }
-                        else if (slot2.canTakeStack(par4EntityPlayer))
+                        else if (canTakeStack(par1, par4EntityPlayer))
                         {
                             if (itemstack4 == null)
                             {
@@ -544,14 +542,10 @@ public abstract class PC_GresBaseWithInventory extends Container implements PC_I
                                 {
                                     i2 = par2 == 0 ? itemstack4.stackSize : 1;
 
-                                    if (i2 > slot2.getSlotStackLimit() - itemstack3.stackSize)
-                                    {
-                                        i2 = slot2.getSlotStackLimit() - itemstack3.stackSize;
-                                    }
-
-                                    if (i2 > itemstack4.getMaxStackSize() - itemstack3.stackSize)
-                                    {
-                                        i2 = itemstack4.getMaxStackSize() - itemstack3.stackSize;
+                                    int max = getMaxStackSize(itemstack4, slot2);
+                                    
+                                    if(i2 > max  - itemstack3.stackSize){
+                                    	i2 = max - itemstack3.stackSize;
                                     }
 
                                     itemstack4.splitStack(i2);
@@ -563,7 +557,7 @@ public abstract class PC_GresBaseWithInventory extends Container implements PC_I
 
                                     itemstack3.stackSize += i2;
                                 }
-                                else if (itemstack4.stackSize <= slot2.getSlotStackLimit())
+                                else if (itemstack4.stackSize <= slot2.getSlotStackLimit() && itemstack4.stackSize<itemstack4.getMaxStackSize())
                                 {
                                     slot2.putStack(itemstack4);
                                     inventoryplayer.setItemStack(itemstack3);
@@ -596,7 +590,7 @@ public abstract class PC_GresBaseWithInventory extends Container implements PC_I
             {
                 slot2 = (Slot)this.inventorySlots.get(par1);
 
-                if (slot2.canTakeStack(par4EntityPlayer))
+                if (canTakeStack(par1, par4EntityPlayer))
                 {
                     itemstack3 = inventoryplayer.getStackInSlot(par2);
                     boolean flag = itemstack3 == null || slot2.inventory == inventoryplayer && slot2.isItemValid(itemstack3);
@@ -652,7 +646,7 @@ public abstract class PC_GresBaseWithInventory extends Container implements PC_I
             {
                 slot2 = (Slot)this.inventorySlots.get(par1);
 
-                if (slot2 != null && slot2.getHasStack() && slot2.canTakeStack(par4EntityPlayer))
+                if (slot2 != null && slot2.getHasStack() && canTakeStack(par1, par4EntityPlayer))
                 {
                     itemstack3 = slot2.decrStackSize(par2 == 0 ? 1 : slot2.getStack().stackSize);
                     slot2.onPickupFromSlot(par4EntityPlayer, itemstack3);
@@ -664,7 +658,7 @@ public abstract class PC_GresBaseWithInventory extends Container implements PC_I
                 slot2 = (Slot)this.inventorySlots.get(par1);
                 itemstack3 = inventoryplayer.getItemStack();
 
-                if (itemstack3 != null && (slot2 == null || !slot2.getHasStack() || !slot2.canTakeStack(par4EntityPlayer)))
+                if (itemstack3 != null && (slot2 == null || !slot2.getHasStack() || !canTakeStack(par1, par4EntityPlayer)))
                 {
                     i1 = par2 == 0 ? 0 : this.inventorySlots.size() - 1;
                     i2 = par2 == 0 ? 1 : -1;
@@ -675,7 +669,7 @@ public abstract class PC_GresBaseWithInventory extends Container implements PC_I
                         {
                             Slot slot3 = (Slot)this.inventorySlots.get(j2);
 
-                            if (slot3.getHasStack() && func_94527_a(slot3, itemstack3, true) && slot3.canTakeStack(par4EntityPlayer) && this.func_94530_a(itemstack3, slot3) && (l1 != 0 || slot3.getStack().stackSize != slot3.getStack().getMaxStackSize()))
+                            if (slot3.getHasStack() && func_94527_a(slot3, itemstack3, true) && canTakeStack(j2, par4EntityPlayer) && this.func_94530_a(itemstack3, slot3) && (l1 != 0 || slot3.getStack().stackSize != slot3.getStack().getMaxStackSize()))
                             {
                                 int k1 = Math.min(itemstack3.getMaxStackSize() - itemstack3.stackSize, slot3.getStack().stackSize);
                                 ItemStack itemstack2 = slot3.decrStackSize(k1);
@@ -699,6 +693,15 @@ public abstract class PC_GresBaseWithInventory extends Container implements PC_I
         return itemstack;
     }
 
+	@SuppressWarnings("static-method")
+	public int getMaxStackSize(ItemStack itemStack, Slot slot){
+		if(slot.inventory instanceof PC_IInventorySizeOverrider){
+			return ((PC_IInventorySizeOverrider)slot.inventory).getMaxStackSize(itemStack, slot.getSlotIndex());
+		}
+		int maxStack = itemStack.getMaxStackSize();
+		int maxSlot = slot.getSlotStackLimit();
+		return maxStack>maxSlot?maxSlot:maxStack;
+	}
 
 	@Override
 	public boolean canBeDragged(int i) {
