@@ -16,53 +16,51 @@ import xscript.runtime.nativemethod.XNativeClass.XType;
 
 @XNativeClass("weasel.inventory.Inventory")
 public class PC_WeaselNativeInventoryInterface {
-	public static final int INDEX_INVENTORY=0, OFFSET_INVENTORY=1;
 	
 	@XNativeMethod
 	public static boolean swapStacks(@XParamSpecial(XParamTypes.USERDATA)PC_IWeaselGridTileAddressable anyTile, int address, String inventoryOne, int offsetOne, String inventoryTwo, int offsetTwo){
 		PC_IWeaselGridTileAddressable targetTile = anyTile.getGrid().getTileByAddress(anyTile, address);
-		if(!(targetTile instanceof PC_IWeaselInventory)){
+		if(!(targetTile instanceof IInventory && targetTile instanceof PC_IWeaselInventory)){
 			return false;
 		}
-		IInventory[] inventories = ((PC_IWeaselInventory)targetTile).getInventories();
-		int[] one, two;
-		one = findInventoryForSlot(inventories, inventoryOne, offsetOne);
-		two = findInventoryForSlot(inventories, inventoryTwo, offsetTwo);
-		if(one[INDEX_INVENTORY]==-1 || one[OFFSET_INVENTORY]==-1 || two[INDEX_INVENTORY]==-1 || two[OFFSET_INVENTORY]==-1)
-			return false;
+		PC_InventoryDescription one = ((PC_IWeaselInventory)targetTile).getInventory(inventoryOne);
+		PC_InventoryDescription two = ((PC_IWeaselInventory)targetTile).getInventory(inventoryTwo);
+
+		IInventory tmp = ((IInventory)targetTile);
 		
-		IInventory invOne = inventories[one[INDEX_INVENTORY]];
-		IInventory invTwo = inventories[two[INDEX_INVENTORY]];
-		ItemStack src1 = invOne.getStackInSlot(one[OFFSET_INVENTORY]);
-		ItemStack src2 = invTwo.getStackInSlot(two[OFFSET_INVENTORY]);
+		int realOffsetOne = one.offset(offsetOne);
+		int realOffsetTwo = two.offset(offsetTwo);
+		
+		ItemStack src1 = tmp.getStackInSlot(realOffsetOne);
+		ItemStack src2 = tmp.getStackInSlot(realOffsetTwo);
 		
 		boolean equalStacks;
 		
 		if(src1==null && src2==null || ((equalStacks=itemStacksEqual(src1, src2)) && src1.stackSize==src2.stackSize))
 			return true;
 		
-		int difFrom1To2 = canMoveStackTo(inventories, one, two);
-		int difFrom2To1 = canMoveStackTo(inventories, two, one);
+		int difFrom1To2 = canMoveStackTo(tmp, realOffsetOne, realOffsetTwo);
+		int difFrom2To1 = canMoveStackTo(tmp, realOffsetTwo, realOffsetOne);
 		
 		if(src1 == null){
-			combineStack(inventories, two, one, difFrom2To1);
+			combineStack(tmp, realOffsetTwo, realOffsetOne, difFrom2To1);
 			return true;
 		}else if(src2==null){
-			combineStack(inventories, one, two, difFrom1To2);
+			combineStack(tmp, realOffsetOne, realOffsetTwo, difFrom1To2);
 			return true;
 		}else{
 			if(equalStacks){
 				if(src1.stackSize>src2.stackSize){
-					combineStack(inventories, one, two, Math.min(difFrom1To2, src1.stackSize-src2.stackSize));
+					combineStack(tmp, realOffsetOne, realOffsetTwo, Math.min(difFrom1To2, src1.stackSize-src2.stackSize));
 					return true;
 				}else{
-					combineStack(inventories, two, one, Math.min(difFrom2To1, src2.stackSize-src1.stackSize));
+					combineStack(tmp, realOffsetTwo, realOffsetOne, Math.min(difFrom2To1, src2.stackSize-src1.stackSize));
 					return true;
 				}
 			}else{
 				if(Math.abs(difFrom2To1)>=src2.stackSize && Math.abs(difFrom1To2)>=src1.stackSize){
-					invOne.setInventorySlotContents(one[OFFSET_INVENTORY], src2);
-					invTwo.setInventorySlotContents(two[OFFSET_INVENTORY], src1);
+					tmp.setInventorySlotContents(realOffsetOne, src2);
+					tmp.setInventorySlotContents(realOffsetTwo, src1);
 					return true;
 				}else{
 					return false;
@@ -74,44 +72,40 @@ public class PC_WeaselNativeInventoryInterface {
 	@XNativeMethod
 	public static boolean combineStacks(@XParamSpecial(XParamTypes.USERDATA)PC_IWeaselGridTileAddressable anyTile, int address, String inventoryTarget, int offsetTarget, String inventoryFrom, int offsetFrom){
 		PC_IWeaselGridTileAddressable targetTile = anyTile.getGrid().getTileByAddress(anyTile, address);
-		if(!(targetTile instanceof PC_IWeaselInventory)){
+		if(!(targetTile instanceof IInventory && targetTile instanceof PC_IWeaselInventory)){
 			return false;
 		}
-		IInventory[] inventories = ((PC_IWeaselInventory)targetTile).getInventories();
-		int[] to, from;
-		to = findInventoryForSlot(inventories, inventoryTarget, offsetTarget);
-		from = findInventoryForSlot(inventories, inventoryFrom, offsetFrom);
-		if(from[INDEX_INVENTORY]==-1 || from[OFFSET_INVENTORY]==-1 || to[INDEX_INVENTORY]==-1 || to[OFFSET_INVENTORY]==-1)
-			return false;
-		
-		int difference = canMoveStackTo(inventories, from, to);
+		PC_InventoryDescription from = ((PC_IWeaselInventory)targetTile).getInventory(inventoryFrom);
+		PC_InventoryDescription to = ((PC_IWeaselInventory)targetTile).getInventory(inventoryTarget);
+		int difference = canMoveStackTo((IInventory)targetTile, from.offset(offsetFrom), to.offset(offsetTarget));
 		if(difference<=0)
 			return false;
-		combineStack(inventories, from, to, difference);
+		combineStack((IInventory)targetTile, from.offset(offsetFrom), to.offset(offsetTarget), difference);
 		return true;
 	}
 	
 	@XNativeMethod
 	public static int findSlotContainingItem(@XParamSpecial(XParamTypes.USERDATA)PC_IWeaselGridTileAddressable anyTile, int address, String inventory, @XType("weasel.type.ItemStack")Map<Object, Object> item){
 		PC_IWeaselGridTileAddressable targetTile = anyTile.getGrid().getTileByAddress(anyTile, address);
-		if(!(targetTile instanceof PC_IInventory && targetTile instanceof PC_IWeaselInventory)){
+		if(!(targetTile instanceof IInventory && targetTile instanceof PC_IWeaselInventory)){
 			return -1;
 		}
+		PC_InventoryDescription inv = ((PC_IWeaselInventory)targetTile).getInventory(inventory);
 		String itemName = (String)item.get("itemName");
 		int meta = ((Integer)item.get("itemDamage")).intValue();
 		
-		return findItemSlot(inventories, inventory, itemName, meta);
+		return findItemSlot((IInventory)targetTile, inv, itemName, meta);
 	}
 	
 	@XNativeMethod
 	public static @XType("weasel.type.ItemStack")Map<Object, Object> getItemStackAt(@XParamSpecial(XParamTypes.VM)Invocable vm, @XParamSpecial(XParamTypes.USERDATA)PC_IWeaselGridTileAddressable anyTile, int address, String inventory, int offset){
 		PC_IWeaselGridTileAddressable targetTile = anyTile.getGrid().getTileByAddress(anyTile, address);
-		if(!(targetTile instanceof PC_IInventory && targetTile instanceof PC_IWeaselInventory))
+		if(!(targetTile instanceof IInventory && targetTile instanceof PC_IWeaselInventory))
 			return null;
-		int realSlot = ((PC_IWeaselInventory)targetTile).getRealSlot(inventory, offset);
-		if(realSlot==-1)
+		PC_InventoryDescription inv = ((PC_IWeaselInventory)targetTile).getInventory(inventory);
+		if(inv==null)
 			return null;
-		ItemStack is = ((PC_IInventory)targetTile).getStackInSlot(realSlot);
+		ItemStack is = ((IInventory)targetTile).getStackInSlot(inv.offset(offset));
 		if(is==null) return null;
 		Map<Object, Object> target;
 		try {
@@ -137,27 +131,13 @@ public class PC_WeaselNativeInventoryInterface {
 			return false;
 	}*/
 	
-	private static int findItemSlot(IInventory inventory, String name, String itemName, int meta){
+	private static int findItemSlot(IInventory inventory, PC_InventoryDescription inv, String itemName, int meta){
 		Item itemWanted = (Item)Item.itemRegistry.getObject(itemName);
-		int overAllCount=-1;
 		ItemStack is;
-		if(name.equalsIgnoreCase("global")){
-			for(int slot=0; slot<inventory.getSizeInventory(); slot++, overAllCount++){
-				if((is=inventory.getStackInSlot(slot))!=null && is.getItem()==itemWanted && (meta<0 || is.getItemDamage()==meta)){
-					return overAllCount;
-				}
+		for(int slot=inv.firstIndex; slot<=inv.lastIndex; slot++){
+			if((is=inventory.getStackInSlot(slot))!=null && is.getItem()==itemWanted && (meta<0 || is.getItemDamage()==meta)){
+				return inv.globalToLocal(slot);
 			}
-		}else{
-			int pos[] = findInventoryForSlot(inventories, name, 0);
-			if(pos[INDEX_INVENTORY]==-1 || pos[OFFSET_INVENTORY]==-1)
-				return -1;
-			for(overAllCount=0; overAllCount<inventories[pos[INDEX_INVENTORY]].getSizeInventory(); overAllCount++){
-				if((is=inventories[pos[INDEX_INVENTORY]].getStackInSlot(overAllCount))!=null && is.getItem()==itemWanted && (meta<0 || is.getItemDamage()==meta)){
-					return overAllCount;
-				}
-			}
-			
-			
 		}
 		
 		return -1;
@@ -175,9 +155,9 @@ public class PC_WeaselNativeInventoryInterface {
 		return PC_InventoryUtils.getMaxStackSize(isTarget, inventory, realPos);
 	}
 	
-	private static boolean canDragStack(IInventory[] inventories, int[] from){
-		if(inventories[from[INDEX_INVENTORY]] instanceof PC_IInventory){
-			return ((PC_IInventory) inventories[from[INDEX_INVENTORY]]).canBeDragged(from[OFFSET_INVENTORY]);
+	private static boolean canDragStack(IInventory inventory, int realFrom){
+		if(inventory instanceof PC_IInventory){
+			return ((PC_IInventory) inventory).canBeDragged(realFrom);
 		}
 		return true;
 	}
@@ -201,19 +181,19 @@ public class PC_WeaselNativeInventoryInterface {
 	}
 	
 	//>0-> remaining place; =0->impossible or unnecessary; <0 ->like >0 but slot already filled with something else
-	private static int canMoveStackTo(IInventory[] inventories, int[] from, int[] to){
-		return canDragStack(inventories, from)?remainingPlace(inventories, to, inventories[from[INDEX_INVENTORY]].getStackInSlot(from[OFFSET_INVENTORY])):0;
+	private static int canMoveStackTo(IInventory inventory, int realFrom, int realTo){
+		return canDragStack(inventory, realFrom)?remainingPlace(inventory, realTo, inventory.getStackInSlot(realFrom)):0;
 	}
 	
 	private static ItemStack splitStack(ItemStack is, int stackSizeNew){
 		return is.splitStack(stackSizeNew);
 	}
 	
-	private static boolean combineStack(IInventory[] inventories, int[] from, int[] to, int amount){
+	private static boolean combineStack(IInventory inventory, int from, int to, int amount){
 		if(amount==0)
 			return true;
-		ItemStack src = inventories[from[INDEX_INVENTORY]].getStackInSlot(from[OFFSET_INVENTORY]);
-		ItemStack target = inventories[to[INDEX_INVENTORY]].getStackInSlot(to[OFFSET_INVENTORY]);
+		ItemStack src = inventory.getStackInSlot(from);
+		ItemStack target = inventory.getStackInSlot(to);
 		if(src==null)
 			return true;
 		if(target==null){
@@ -221,9 +201,9 @@ public class PC_WeaselNativeInventoryInterface {
 			if(amount<src.stackSize){
 				stack = splitStack(stack, amount);
 			}else{
-				inventories[from[INDEX_INVENTORY]].setInventorySlotContents(from[OFFSET_INVENTORY], null);
+				inventory.setInventorySlotContents(from, null);
 			}
-			inventories[to[INDEX_INVENTORY]].setInventorySlotContents(to[OFFSET_INVENTORY], stack);
+			inventory.setInventorySlotContents(to, stack);
 			return true;
 		}else{
 			if(!itemStacksEqual(src, target)){
@@ -235,7 +215,7 @@ public class PC_WeaselNativeInventoryInterface {
 			if(amount<src.stackSize){
 				src.stackSize-=amount;
 			}else{
-				inventories[from[INDEX_INVENTORY]].setInventorySlotContents(from[OFFSET_INVENTORY], null);
+				inventory.setInventorySlotContents(from, null);
 			}
 			return true;
 		}
