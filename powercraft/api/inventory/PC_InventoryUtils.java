@@ -30,10 +30,19 @@ public class PC_InventoryUtils {
 
 	public static void loadInventoryFromNBT(IInventory inventory, NBTTagCompound nbtTagCompound, String key) {
 
-		NBTTagList list = nbtTagCompound.getTagList(key, 10);
-		for (int i = 0; i < list.tagCount(); i++) {
-			NBTTagCompound nbtTagCompound2 = list.getCompoundTagAt(i);
-			inventory.setInventorySlotContents(nbtTagCompound2.getInteger("slot"), ItemStack.loadItemStackFromNBT(nbtTagCompound2));
+		if(inventory instanceof PC_IInventorySetNoMark){
+			PC_IInventorySetNoMark isnm = (PC_IInventorySetNoMark)inventory;
+			NBTTagList list = nbtTagCompound.getTagList(key, 10);
+			for (int i = 0; i < list.tagCount(); i++) {
+				NBTTagCompound nbtTagCompound2 = list.getCompoundTagAt(i);
+				isnm.setInventorySlotContentsNoMark(nbtTagCompound2.getInteger("slot"), ItemStack.loadItemStackFromNBT(nbtTagCompound2));
+			}
+		}else{
+			NBTTagList list = nbtTagCompound.getTagList(key, 10);
+			for (int i = 0; i < list.tagCount(); i++) {
+				NBTTagCompound nbtTagCompound2 = list.getCompoundTagAt(i);
+				inventory.setInventorySlotContents(nbtTagCompound2.getInteger("slot"), ItemStack.loadItemStackFromNBT(nbtTagCompound2));
+			}
 		}
 	}
 
