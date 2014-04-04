@@ -55,7 +55,7 @@ public class PC_ItemBlock extends ItemBlock implements PC_IItem {
         	return false;
         }
         if(PC_Utils.canPlaceEntityOnSide(world, nx, ny, nz, side, this.field_150939_a, player, itemStack)){
-        	int metadata = getMetadata(itemStack.getItemDamage());
+        	int metadata = getMetadata(world, itemStack);
         	metadata = this.field_150939_a.onBlockPlaced(world, nx, ny, nz, iside, hitX, hitY, hitZ, metadata);
         	if (this.field_150939_a instanceof PC_AbstractBlockBase) {
      			metadata = ((PC_AbstractBlockBase) this.field_150939_a).modifiyMetadataPreSet(world, nx, ny, nz, side, itemStack, player, hitX, hitY, hitZ, metadata);
@@ -76,6 +76,14 @@ public class PC_ItemBlock extends ItemBlock implements PC_IItem {
         return false;
 	}
 
+	public int getMetadata(World world, ItemStack itemStack) {
+		return getMetadata(itemStack);
+	}
+
+	public int getMetadata(ItemStack itemStack) {
+		return getMetadata(itemStack.getItemDamage());
+	}
+	
 	@Override
 	@SideOnly(Side.CLIENT)
     public boolean func_150936_a(World world, int x, int y, int z, int iside, EntityPlayer player, ItemStack itemStack){

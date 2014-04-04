@@ -22,6 +22,7 @@ final class PC_ForgeHandler implements IFuelHandler, IWorldGenerator {
 		PC_Security.allowedCaller("PC_FuelHandler.register()", PC_Api.class);
 		GameRegistry.registerFuelHandler(INSTANCE);
 		GameRegistry.registerWorldGenerator(INSTANCE, 0);
+		
 	}
 	
 	@Override
@@ -40,5 +41,6 @@ final class PC_ForgeHandler implements IFuelHandler, IWorldGenerator {
 		}
 		return 0;
 	}
-
+	
 }
+	
