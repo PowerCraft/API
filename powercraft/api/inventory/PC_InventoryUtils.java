@@ -217,7 +217,7 @@ public class PC_InventoryUtils {
 			for (int i = 0; i < size; i++) {
 				ItemStack slot = inv.getStackInSlot(i);
 				if (slot != null) {
-					if(slot.isItemEqual(itemstack) && slot.getMaxStackSize()>slot.stackSize && getSlotStackLimit(inv, i)>slot.stackSize){
+					if(slot.isItemEqual(itemstack) && getMaxStackSize(slot, inv, i)>slot.stackSize){
 						if(inv.isItemValidForSlot(i, itemstack))
 							return i;
 					}
@@ -228,7 +228,7 @@ public class PC_InventoryUtils {
 				int i=indexes[j];
 				ItemStack slot = inv.getStackInSlot(i);
 				if (slot != null) {
-					if(slot.isItemEqual(itemstack) && slot.getMaxStackSize()>slot.stackSize && getSlotStackLimit(inv, i)>slot.stackSize){
+					if(slot.isItemEqual(itemstack) && getMaxStackSize(slot, inv, i)>slot.stackSize){
 						if(inv.isItemValidForSlot(i, itemstack))
 							return i;
 					}
@@ -259,10 +259,7 @@ public class PC_InventoryUtils {
 	public static boolean storeItemStackToSlot(IInventory inv, ItemStack itemstack, int i){
 		ItemStack slot = inv.getStackInSlot(i);
 		if (slot == null) {
-			int store = getSlotStackLimit(inv, i);
-			if(store>itemstack.getMaxStackSize()){
-				store = itemstack.getMaxStackSize();
-			}
+			int store = getMaxStackSize(slot, inv, i);
 			if(store>itemstack.stackSize){
 				store = itemstack.stackSize;
 			}
@@ -271,10 +268,7 @@ public class PC_InventoryUtils {
 			itemstack.stackSize -= store;
 		}else{
 			if(slot.isItemEqual(itemstack)){
-				int store = getSlotStackLimit(inv, i);
-				if(store>slot.getMaxStackSize()){
-					store = slot.getMaxStackSize();
-				}
+				int store = getMaxStackSize(slot, inv, i);
 				store -= slot.stackSize;
 				if(store>0){
 					if(store>itemstack.stackSize){
@@ -303,15 +297,12 @@ public class PC_InventoryUtils {
 			int size = inv.getSizeInventory();
 			for (int i = 0; i < size; i++) {
 				ItemStack slot = inv.getStackInSlot(i);
-				int slotStackLimit = getSlotStackLimit(inv, i);
 				if(itemstack==null){
 					if (slot == null) {
-						space += slotStackLimit;
+						space += getSlotStackLimit(inv, i);
 					}
 				}else{
-					if(slotStackLimit>itemstack.getMaxStackSize()){
-						slotStackLimit = itemstack.getMaxStackSize();
-					}
+					int slotStackLimit = getMaxStackSize(slot, inv, i);
 					if (slot != null) {
 						if(slot.isItemEqual(itemstack) && slotStackLimit>slot.stackSize){
 							if(inv.isItemValidForSlot(i, itemstack)){
@@ -327,15 +318,12 @@ public class PC_InventoryUtils {
 			for (int j = 0; j < indexes.length; j++) {
 				int i=indexes[j];
 				ItemStack slot = inv.getStackInSlot(i);
-				int slotStackLimit = getSlotStackLimit(inv, i);
 				if(itemstack==null){
 					if (slot == null) {
-						space += slotStackLimit;
+						space += getSlotStackLimit(inv, i);
 					}
 				}else{
-					if(slotStackLimit>itemstack.getMaxStackSize()){
-						slotStackLimit = itemstack.getMaxStackSize();
-					}
+					int slotStackLimit = getMaxStackSize(slot, inv, i);
 					if (slot != null) {
 						if(slot.isItemEqual(itemstack) && slotStackLimit>slot.stackSize){
 							if(inv.isItemValidForSlot(i, itemstack)){
@@ -629,17 +617,13 @@ public class PC_InventoryUtils {
 		return inventoryContents[slot];
 	}
 	
-	private static final int INDEX_INVENTORY=0, OFFSET_INVENTORY=1;
-	
-	public static int getMaxStackSize(IInventory inv, int slot, boolean ignoreCurrent){
-		int tmp;
-		ItemStack isTarget = inv.getStackInSlot(slot);
-		if(inv instanceof PC_IInventory){
-			tmp=((PC_IInventory) inv).getSlotStackLimit(slot);
-		}else{
-			tmp=inv.getInventoryStackLimit();
+	public static int getMaxStackSize(ItemStack itemStack, IInventory inv, int i){
+		if(inv instanceof PC_IInventorySizeOverrider){
+			return ((PC_IInventorySizeOverrider)inv).getMaxStackSize(itemStack, i);
 		}
-		return isTarget==null || ignoreCurrent?tmp:Math.min(isTarget.getMaxStackSize(), tmp);
+		int maxStack = itemStack.getMaxStackSize();
+		int slotStack = getSlotStackLimit(inv, i);
+		return maxStack>slotStack?slotStack:maxStack;
 	}
 	
 }
