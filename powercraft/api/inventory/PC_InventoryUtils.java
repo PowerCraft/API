@@ -631,7 +631,7 @@ public class PC_InventoryUtils {
 	
 	private static final int INDEX_INVENTORY=0, OFFSET_INVENTORY=1;
 	
-	public static int getMaxStackSize(IInventory inv, int slot, int sizeMultiplier, boolean ignoreCurrent){
+	public static int getMaxStackSize(IInventory inv, int slot, boolean ignoreCurrent){
 		int tmp;
 		ItemStack isTarget = inv.getStackInSlot(slot);
 		if(inv instanceof PC_IInventory){
@@ -639,7 +639,7 @@ public class PC_InventoryUtils {
 		}else{
 			tmp=inv.getInventoryStackLimit();
 		}
-		return isTarget==null || ignoreCurrent?tmp:Math.min(sizeMultiplier*isTarget.getMaxStackSize(), tmp);
+		return isTarget==null || ignoreCurrent?tmp:Math.min(isTarget.getMaxStackSize(), tmp);
 	}
 	
 }
