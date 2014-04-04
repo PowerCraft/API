@@ -4,6 +4,11 @@ package powercraft.api.inventory;
 public class PC_InventoryDescription {
 	public final int firstIndex, lastIndex;
 	public final String inventoryName;
+	
+	public PC_InventoryDescription(int index, String name){
+		this(index, index, name);
+	}
+	
 	public PC_InventoryDescription(int start, int lastIndex, String name){
 		this.firstIndex=start;
 		this.lastIndex=lastIndex;

@@ -131,7 +131,7 @@ public class PC_WeaselNativeInventoryInterface {
 			return false;
 	}*/
 	
-	private static int findItemSlot(IInventory inventory, PC_InventoryDescription inv, String itemName, int meta){
+	public static int findItemSlot(IInventory inventory, PC_InventoryDescription inv, String itemName, int meta){
 		Item itemWanted = (Item)Item.itemRegistry.getObject(itemName);
 		ItemStack is;
 		for(int slot=inv.firstIndex; slot<=inv.lastIndex; slot++){
@@ -143,11 +143,11 @@ public class PC_WeaselNativeInventoryInterface {
 		return -1;
 	}
 	
-	private static boolean itemStacksEqual(ItemStack one, ItemStack two){
+	public static boolean itemStacksEqual(ItemStack one, ItemStack two){
 		return ItemStack.areItemStacksEqual(one, two) && ItemStack.areItemStackTagsEqual(one, two);
 	}
 	
-	private static int getMaxStackSize(IInventory inventory, int realPos, boolean ignoreCurrent){
+	public static int getMaxStackSize(IInventory inventory, int realPos, boolean ignoreCurrent){
 		ItemStack isTarget = inventory.getStackInSlot(realPos);
 		if(isTarget==null || ignoreCurrent){
 			return PC_InventoryUtils.getSlotStackLimit(inventory, realPos);
@@ -155,7 +155,7 @@ public class PC_WeaselNativeInventoryInterface {
 		return PC_InventoryUtils.getMaxStackSize(isTarget, inventory, realPos);
 	}
 	
-	private static boolean canDragStack(IInventory inventory, int realFrom){
+	public static boolean canDragStack(IInventory inventory, int realFrom){
 		if(inventory instanceof PC_IInventory){
 			return ((PC_IInventory) inventory).canBeDragged(realFrom);
 		}
@@ -163,7 +163,7 @@ public class PC_WeaselNativeInventoryInterface {
 	}
 	
 	//>0-> remaining place; =0->impossible or unnecessary; <0 ->like >0 but slot already filled with something else
-	private static int remainingPlace(IInventory inventory, int realPos, ItemStack stack){
+	public static int remainingPlace(IInventory inventory, int realPos, ItemStack stack){
 		ItemStack target = inventory.getStackInSlot(realPos);
 		if(stack==null){
 			int max = getMaxStackSize(inventory, realPos, true);
@@ -181,15 +181,15 @@ public class PC_WeaselNativeInventoryInterface {
 	}
 	
 	//>0-> remaining place; =0->impossible or unnecessary; <0 ->like >0 but slot already filled with something else
-	private static int canMoveStackTo(IInventory inventory, int realFrom, int realTo){
+	public static int canMoveStackTo(IInventory inventory, int realFrom, int realTo){
 		return canDragStack(inventory, realFrom)?remainingPlace(inventory, realTo, inventory.getStackInSlot(realFrom)):0;
 	}
 	
-	private static ItemStack splitStack(ItemStack is, int stackSizeNew){
+	public static ItemStack splitStack(ItemStack is, int stackSizeNew){
 		return is.splitStack(stackSizeNew);
 	}
 	
-	private static boolean combineStack(IInventory inventory, int from, int to, int amount){
+	public static boolean combineStack(IInventory inventory, int from, int to, int amount){
 		if(amount==0)
 			return true;
 		ItemStack src = inventory.getStackInSlot(from);
