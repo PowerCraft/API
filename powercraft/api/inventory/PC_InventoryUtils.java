@@ -609,4 +609,37 @@ public class PC_InventoryUtils {
 		return 0;
 	}
 	
+	public static ItemStack decreaseStackSize(ItemStack[] inventoryContents, int slot, int amount){
+		if (inventoryContents[slot] == null) return null;
+		ItemStack itemstack;
+		if (inventoryContents[slot].stackSize <= amount) {
+			itemstack = inventoryContents[slot];
+			inventoryContents[slot] = null;
+			return itemstack;
+		} 
+		itemstack = inventoryContents[slot].splitStack(amount);
+		if (inventoryContents[slot].stackSize == 0) {
+			inventoryContents[slot] = null;
+		}
+		return itemstack;
+	}
+	
+	public static ItemStack getStackInSlot(ItemStack[] inventoryContents, int slot){
+		if(inventoryContents==null || inventoryContents.length<=slot) return null;
+		return inventoryContents[slot];
+	}
+	
+	private static final int INDEX_INVENTORY=0, OFFSET_INVENTORY=1;
+	
+	public static int getMaxStackSize(IInventory inv, int slot, int sizeMultiplier, boolean ignoreCurrent){
+		int tmp;
+		ItemStack isTarget = inv.getStackInSlot(slot);
+		if(inv instanceof PC_IInventory){
+			tmp=((PC_IInventory) inv).getSlotStackLimit(slot);
+		}else{
+			tmp=inv.getInventoryStackLimit();
+		}
+		return isTarget==null || ignoreCurrent?tmp:Math.min(sizeMultiplier*isTarget.getMaxStackSize(), tmp);
+	}
+	
 }
