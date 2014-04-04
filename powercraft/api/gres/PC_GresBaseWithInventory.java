@@ -47,6 +47,8 @@ public abstract class PC_GresBaseWithInventory extends Container implements PC_I
 
 		this.inventory = inventory;
 
+		inventory.openInventory();
+		
 		if (inventory instanceof PC_TileEntity) {
 			((PC_TileEntity) inventory).openContainer(this);
 		}

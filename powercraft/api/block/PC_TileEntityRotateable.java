@@ -26,6 +26,7 @@ public abstract class PC_TileEntityRotateable extends PC_TileEntity {
 	@Override
 	public boolean set3DRotation(PC_3DRotation rotation) {
 		this.rotation = rotation;
+		sync();
 		return true;
 	}
 

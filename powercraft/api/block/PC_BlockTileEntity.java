@@ -612,9 +612,10 @@ public abstract class PC_BlockTileEntity extends PC_AbstractBlockBase implements
 	public void onBlockAdded(World world, int x, int y, int z) {
 		PC_TileEntity tileEntity = createNewTileEntity(world, PC_Utils.getMetadata(world, x, y, z));
 		tileEntity.validate();
+		EntityPlayer player = PC_ItemBlock.playerStetting.get();
+		tileEntity.onPreAdded(player);
 		world.setTileEntity(x, y, z, tileEntity);
 		tileEntity.updateContainingBlockInfo();
-		EntityPlayer player = PC_ItemBlock.playerStetting.get();
 		tileEntity.onAdded(player);
 	}
 	

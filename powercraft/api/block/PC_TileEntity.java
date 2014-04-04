@@ -6,6 +6,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Random;
 import java.util.WeakHashMap;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.renderer.RenderBlocks;
@@ -810,6 +811,11 @@ public class PC_TileEntity extends TileEntity {
 	@SuppressWarnings("static-method")
 	public int getTemperature() {
 		return PC_BlockTemperatures.DEFAULT_TEMPERATURE;
+	}
+
+	@SuppressWarnings("unused")
+	public void onPreAdded(EntityPlayer player) {
+		//
 	}
 
 }

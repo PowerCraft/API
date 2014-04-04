@@ -1,5 +1,7 @@
 package powercraft.api.renderer;
 
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -14,7 +16,12 @@ public final class PC_TileEntitySpecialRenderer extends TileEntitySpecialRendere
 	@Override
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float timeStamp) {
 		if(tileEntity instanceof PC_ITileEntityRenderer){
-			((PC_ITileEntityRenderer)tileEntity).renderTielEntityAt(this, x, y, z, timeStamp);
+			GL11.glPushMatrix();
+			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+			GL11.glTranslatef((float)x, (float)y, (float)z);
+			((PC_ITileEntityRenderer)tileEntity).renderTileEntityAt(this, x, y, z, timeStamp);
+			GL11.glPopMatrix();
+			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		}
 	}
 

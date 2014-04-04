@@ -76,6 +76,7 @@ public class PC_ItemBlock extends ItemBlock implements PC_IItem {
         return false;
 	}
 
+	@SuppressWarnings("unused")
 	public int getMetadata(World world, ItemStack itemStack) {
 		return getMetadata(itemStack);
 	}
