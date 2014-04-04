@@ -1,22 +1,21 @@
 package powercraft.api.inventory;
 
-import powercraft.traffic.entity.PCtf_EntityMiner.INVENTORIES;
 
 public class PC_InventoryDescription {
 	public final int firstIndex, lastIndex;
 	public final String inventoryName;
 	public PC_InventoryDescription(int start, int lastIndex, String name){
-		firstIndex=start;
+		this.firstIndex=start;
 		this.lastIndex=lastIndex;
-		inventoryName = name;
+		this.inventoryName = name;
 	}
 	
 	public int offset(int offset){
 		
-		return firstIndex+offset;
+		return this.firstIndex+offset;
 	}
 	
 	public int globalToLocal(int global){
-		return global-firstIndex;
+		return global-this.firstIndex;
 	}
 }
