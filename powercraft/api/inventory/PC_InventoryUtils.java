@@ -24,7 +24,7 @@ import powercraft.api.PC_Direction;
 import powercraft.api.PC_Utils;
 import powercraft.api.PC_Vec3;
 import powercraft.api.PC_Vec3I;
-import powercraft.api.item.PC_Item;
+import powercraft.api.item.PC_IItem;
 
 public class PC_InventoryUtils {
 
@@ -67,8 +67,8 @@ public class PC_InventoryUtils {
 			ItemStack itemStack = inventory.getStackInSlot(i);
 			if(itemStack!=null){
 				Item item = itemStack.getItem();
-				if(item instanceof PC_Item){
-					((PC_Item)item).onTick(itemStack, world, inventory, i);
+				if(item instanceof PC_IItem){
+					((PC_IItem)item).onTick(itemStack, world, inventory, i);
 				}
 			}
 		}
