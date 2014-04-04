@@ -167,13 +167,13 @@ public class PC_WeaselNativeInventoryInterface {
 		return ItemStack.areItemStacksEqual(one, two) && ItemStack.areItemStackTagsEqual(one, two);
 	}
 	
-	private static int getMaxStackSize(IInventory[] inventories, int[] pos, boolean ignoreCurrent){
+	private static int getMaxStackSize(IInventory inventory, int realPos, boolean ignoreCurrent){
 		int tmp;
-		ItemStack isTarget = inventories[pos[INDEX_INVENTORY]].getStackInSlot(pos[OFFSET_INVENTORY]);
-		if(inventories[pos[INDEX_INVENTORY]] instanceof PC_IInventory){
-			tmp=((PC_IInventory) inventories[pos[INDEX_INVENTORY]]).getSlotStackLimit(pos[OFFSET_INVENTORY]);
+		ItemStack isTarget = inventory.getStackInSlot(realPos);
+		if(inventory instanceof PC_IInventory){
+			tmp=((PC_IInventory) inventory).getSlotStackLimit(pos[OFFSET_INVENTORY]);
 		}else{
-			tmp=inventories[pos[INDEX_INVENTORY]].getInventoryStackLimit();
+			tmp=inventory.getInventoryStackLimit();
 		}
 		
 		return isTarget==null || ignoreCurrent?tmp:Math.min(isTarget.getMaxStackSize(), tmp);
@@ -187,22 +187,22 @@ public class PC_WeaselNativeInventoryInterface {
 	}
 	
 	//>0-> remaining place; =0->impossible or unnecessary; <0 ->like >0 but slot already filled with something else
-	private static int remainingPlace(IInventory[] inventories, int[] to, ItemStack stack){
-		ItemStack target = inventories[to[INDEX_INVENTORY]].getStackInSlot(to[OFFSET_INVENTORY]);
+	private static int remainingPlace(IInventory inventory, int realPos, ItemStack stack){
+		ItemStack target = inventory.getStackInSlot(realPos);
 		if(stack==null){
-			int max = getMaxStackSize(inventories, to, true);
+			int max = getMaxStackSize(inventory, realPos, true);
 			if(target==null)
 				return max;
 			else
 				return -max;
 		}else{
 			if(target==null){
-				return inventories[to[INDEX_INVENTORY]].isItemValidForSlot(to[OFFSET_INVENTORY], stack)?Math.min(stack.getMaxStackSize(), getMaxStackSize(inventories, to, true)):0;
+				return inventory.isItemValidForSlot(realPos, stack)?Math.min(stack.getMaxStackSize(), getMaxStackSize(inventory, realPos, true)):0;
 			}else{
 				if(itemStacksEqual(stack, target)){
-					return getMaxStackSize(inventories, to, false)-target.stackSize;
+					return getMaxStackSize(inventory, realPos, false)-target.stackSize;
 				}else{
-					return -Math.min(stack.getMaxStackSize(), getMaxStackSize(inventories, to, true));
+					return -Math.min(stack.getMaxStackSize(), getMaxStackSize(inventory, realPos, true));
 				}
 			}
 		}
