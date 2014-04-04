@@ -260,6 +260,9 @@ public class PC_InventoryUtils {
 		ItemStack slot = inv.getStackInSlot(i);
 		if (slot == null) {
 			int store = getMaxStackSize(itemstack, inv, i);
+			if(store>itemstack.stackSize){
+				store = itemstack.stackSize;
+			}
 			slot = itemstack.copy();
 			slot.stackSize = store;
 			itemstack.stackSize -= store;

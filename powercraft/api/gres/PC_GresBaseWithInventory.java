@@ -111,6 +111,7 @@ public abstract class PC_GresBaseWithInventory extends Container implements PC_I
 	public void onContainerClosed(EntityPlayer par1EntityPlayer) {
 
 		super.onContainerClosed(par1EntityPlayer);
+		closeInventory();
 		if (this.inventory instanceof PC_TileEntity) {
 			((PC_TileEntity) this.inventory).closeContainer(this);
 		}
@@ -557,7 +558,7 @@ public abstract class PC_GresBaseWithInventory extends Container implements PC_I
 
                                     itemstack3.stackSize += i2;
                                 }
-                                else if (itemstack4.stackSize <= slot2.getSlotStackLimit() && itemstack4.stackSize<itemstack4.getMaxStackSize())
+                                else if (itemstack4.stackSize <= slot2.getSlotStackLimit() && itemstack4.stackSize<=itemstack4.getMaxStackSize())
                                 {
                                     slot2.putStack(itemstack4);
                                     inventoryplayer.setItemStack(itemstack3);
