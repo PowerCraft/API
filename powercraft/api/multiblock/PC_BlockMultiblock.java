@@ -192,6 +192,8 @@ public final class PC_BlockMultiblock extends PC_BlockTileEntity implements PC_I
 		if(selectionIndex==null)
 			return AxisAlignedBB.getAABBPool().getAABB(0, 0, 0, 0, 0, 0);
 		PC_TileEntityMultiblock tem = PC_Utils.getTileEntity(world, x, y, z, PC_TileEntityMultiblock.class);
+		if(tem.getTile(selectionIndex)==null)
+			return AxisAlignedBB.getAABBPool().getAABB(0, 0, 0, 0, 0, 0);
 		return tem.getTile(selectionIndex).getSelectedBoundingBox();
 	}
 

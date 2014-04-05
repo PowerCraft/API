@@ -31,7 +31,6 @@ public abstract class PC_MultiblockObject implements PC_INBT{
 	protected PC_TileEntityMultiblock multiblock;
 	@PC_Field(flags={Flag.SAVE, Flag.SYNC})
 	protected int thickness;
-	protected NBTTagCompound tagCompound;
 	
 	public PC_MultiblockObject(NBTTagCompound tagCompound, Flag flag) {
 		readFromNBT(tagCompound, flag);
@@ -252,6 +251,12 @@ public abstract class PC_MultiblockObject implements PC_INBT{
 			}
 			
 		});
+		onLoadedFromNBT(flag);
+	}
+	
+	@SuppressWarnings("unused")
+	protected void onLoadedFromNBT(Flag flag){
+		//
 	}
 	
 	protected final void writeToNBT(final NBTTagCompound nbtTagCompound, final Flag flag){
