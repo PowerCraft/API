@@ -460,8 +460,10 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 			this.lastSlotOver = this.slotOver;
 			if (this.slotOver!=null && this.slotOver.getHasStack() && eventButton == this.mc.gameSettings.keyBindPickBlock.getKeyCode() + 100){
 				sendMouseClickToServer(this.slotOver.slotNumber, eventButton, 3);
-            }else if(this.slotOver!=null && this.slotOver.getHasStack()/* && getMouseItemStack()==null*/){
+            }else if(this.slotOver!=null && this.slotOver.getHasStack()){
+            	this.selectedSlots.clear();
 				this.slotClickButton = eventButton;
+				inventoryMouseMove(mouse, buttons);
 				if(this.mc.gameSettings.touchscreen){
 					onSlotClicked();
 					if(getMouseItemStack()!=null)
@@ -498,6 +500,7 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 		this.selectedSlots.clear();
 		this.takeAll = false;
 		this.slotClickButton = -1;
+		this.stackSize=-1;
 		if(getMouseItemStack()!=null)
 			this.stackSize = getMouseItemStack().stackSize;
 	}
