@@ -13,6 +13,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.InventoryLargeChest;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -633,6 +634,16 @@ public class PC_InventoryUtils {
 		int maxStack = itemStack.getMaxStackSize();
 		int slotStack = getSlotStackLimit(inv, i);
 		return maxStack>slotStack?slotStack:maxStack;
+	}
+
+
+	public static int getMaxStackSize(ItemStack itemStack, Slot slot) {
+		if(slot.inventory instanceof PC_IInventorySizeOverrider){
+			return ((PC_IInventorySizeOverrider)slot.inventory).getMaxStackSize(itemStack, slot.getSlotIndex());
+		}
+		int maxStack = itemStack.getMaxStackSize();
+		int maxSlot = slot.getSlotStackLimit();
+		return maxStack>maxSlot?maxSlot:maxStack;
 	}
 	
 }
