@@ -490,12 +490,12 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 	
 	@SuppressWarnings("unused")
 	private void inventoryMouseUp(PC_Vec2I mouse, int buttons, int eventButton){
-		if(this.slotClickButton==eventButton && this.slotOver!=null && this.slotOver.getHasStack()){
+		if(this.slotClickButton==eventButton && this.slotOver!=null && this.slotOver.getHasStack() && this.selectedSlots.size()<=1){
 			onSlotClicked();
-		}else if(getMouseItemStack()!=null && this.slotOver!=null){
+		}else if(getMouseItemStack()!=null){
 			onSlotFill();
-			this.selectedSlots.clear();
 		}
+		this.selectedSlots.clear();
 		this.takeAll = false;
 		this.slotClickButton = -1;
 		if(getMouseItemStack()!=null)

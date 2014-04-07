@@ -48,8 +48,11 @@ public class PC_Slot extends Slot {
 		return super.canTakeStack(entityPlayer);
 	}
 
-	@SuppressWarnings("static-method")
 	public boolean canDragIntoSlot() {
+		
+		if (this.inventory instanceof PC_IInventory) {
+			return ((PC_IInventory) this.inventory).canBeDragged(getSlotIndex());
+		}
 		return true;
 	}
 	
