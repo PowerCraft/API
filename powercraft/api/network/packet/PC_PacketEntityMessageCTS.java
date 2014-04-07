@@ -1,7 +1,7 @@
 package powercraft.api.network.packet;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.world.World;
@@ -27,7 +27,7 @@ public class PC_PacketEntityMessageCTS extends PC_PacketClientToServer {
 	}
 	
 	@Override
-	protected PC_Packet doAndReply(NetHandlerPlayServer iNetHandler, World world, EntityPlayer player) {
+	protected PC_Packet doAndReply(NetHandlerPlayServer iNetHandler, World world, EntityPlayerMP player) {
 		PC_IEntity entity = PC_Utils.getEntity(world, this.entityID, PC_IEntity.class);
 		if(entity!=null){
 			entity.onClientMessageCheck(player, this.nbtTagCompound, this.session);

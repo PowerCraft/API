@@ -9,6 +9,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -30,6 +31,9 @@ import powercraft.api.gres.history.PC_GresHistory;
 import powercraft.api.gres.layout.PC_IGresLayout;
 import powercraft.api.gres.slot.PC_Slot;
 import powercraft.api.gres.slot.PC_SlotPhantom;
+import powercraft.api.inventory.PC_InventoryUtils;
+import powercraft.api.network.PC_PacketHandler;
+import powercraft.api.network.packet.PC_PacketClickWindow;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -421,14 +425,9 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 				int size = slot.getHasStack()?slot.getStack().stackSize:0;
 				ItemStack is = itemStack.copy();
 				is.stackSize = size+calcCount();
-				if(is.stackSize>this.stackSize){
-					is.stackSize = this.stackSize;
-				}
-				if (is.stackSize+size > is.getMaxStackSize()) {
-					is.stackSize = is.getMaxStackSize()-size;
-                }
-                if (is.stackSize+size > slot.getSlotStackLimit()) {
-                	is.stackSize = slot.getSlotStackLimit()-size;
+				int max = PC_InventoryUtils.getMaxStackSize(is, slot);
+				if (is.stackSize > max) {
+					is.stackSize = max;
                 }
                 this.stackSize -= is.stackSize;
 			}
@@ -536,7 +535,10 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 	
 	private void sendMouseClickToServer(int slotNumber, int mouseButton, int transfer){
 		if(this.gui instanceof PC_GresBaseWithInventory){
-			this.mc.playerController.windowClick(((PC_GresBaseWithInventory)this.gui).windowId, slotNumber, mouseButton, transfer, this.mc.thePlayer);
+			EntityPlayer player = this.mc.thePlayer;
+			int transactionID = player.openContainer.getNextTransactionID(player.inventory);
+	        ItemStack itemstack = player.openContainer.slotClick(slotNumber, mouseButton, transfer, player);
+	        PC_PacketHandler.sendToServer(new PC_PacketClickWindow(((PC_GresBaseWithInventory)this.gui).windowId, slotNumber, mouseButton, transfer, transactionID, itemstack));
 		}
 	}
 	
@@ -552,14 +554,11 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 				itemStack = mouseItemStack.copy();
 				itemStack.stackSize = size+calcCount();
 				renderGray = true;
-				if (itemStack.stackSize > itemStack.getMaxStackSize()) {
-					text = ""+EnumChatFormatting.YELLOW + itemStack.getMaxStackSize();
-					itemStack.stackSize = itemStack.getMaxStackSize();
-                }
-                if (itemStack.stackSize > slot.getSlotStackLimit()) {
-                	text = ""+EnumChatFormatting.YELLOW + slot.getSlotStackLimit();
-                	itemStack.stackSize = slot.getSlotStackLimit();
-                }
+				int max = PC_InventoryUtils.getMaxStackSize(mouseItemStack, slot);
+				if (itemStack.stackSize > max){
+					text = ""+EnumChatFormatting.YELLOW + max;
+					itemStack.stackSize = max;
+				}
 			}else{
 				this.selectedSlots.remove(slot);
 			}

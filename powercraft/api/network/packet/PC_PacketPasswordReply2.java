@@ -1,7 +1,7 @@
 package powercraft.api.network.packet;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.world.World;
 import powercraft.api.PC_Utils;
@@ -24,7 +24,7 @@ public class PC_PacketPasswordReply2 extends PC_PacketClientToServer {
 	}
 	
 	@Override
-	protected PC_Packet doAndReply(NetHandlerPlayServer iNetHandler, World world, EntityPlayer player) {
+	protected PC_Packet doAndReply(NetHandlerPlayServer iNetHandler, World world, EntityPlayerMP player) {
 		PC_IEntity entity = PC_Utils.getEntity(world, this.entityID, PC_IEntity.class);
 		if(entity!=null){
 			if(!entity.guiOpenPasswordReply(player, this.password)){

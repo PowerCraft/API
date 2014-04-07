@@ -126,7 +126,7 @@ public final class PC_Reflection {
 
 
 	@SuppressWarnings("unchecked")
-	public static <T> T getValue(Class<?> clazz, Object object, int index, Class<?> type) {
+	public static <T> T getValue(Class<?> clazz, Object object, int index, Class<T> type) {
 		try {
 			Field field = findNearestBestField(clazz, index, type);
 			field.setAccessible(true);

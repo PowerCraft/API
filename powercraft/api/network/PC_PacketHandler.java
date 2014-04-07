@@ -20,6 +20,7 @@ import powercraft.api.PC_Api;
 import powercraft.api.PC_Logger;
 import powercraft.api.PC_Side;
 import powercraft.api.PC_Utils;
+import powercraft.api.network.packet.PC_PacketClickWindow;
 import powercraft.api.network.packet.PC_PacketEntityMessageCTS;
 import powercraft.api.network.packet.PC_PacketEntityMessageSTC;
 import powercraft.api.network.packet.PC_PacketEntitySync;
@@ -27,10 +28,12 @@ import powercraft.api.network.packet.PC_PacketPasswordReply;
 import powercraft.api.network.packet.PC_PacketPasswordReply2;
 import powercraft.api.network.packet.PC_PacketPasswordRequest;
 import powercraft.api.network.packet.PC_PacketPasswordRequest2;
+import powercraft.api.network.packet.PC_PacketSetSlot;
 import powercraft.api.network.packet.PC_PacketTileEntityMessageCTS;
 import powercraft.api.network.packet.PC_PacketTileEntityMessageIntCTS;
 import powercraft.api.network.packet.PC_PacketTileEntityMessageSTC;
 import powercraft.api.network.packet.PC_PacketTileEntitySync;
+import powercraft.api.network.packet.PC_PacketWindowItems;
 import powercraft.api.network.packet.PC_PacketWrongPassword;
 import powercraft.api.network.packet.PC_PacketWrongPassword2;
 import powercraft.api.reflect.PC_Security;
@@ -80,6 +83,9 @@ public final class PC_PacketHandler extends SimpleChannelInboundHandler<PC_Packe
 			PC_PacketHandler.registerPacket(PC_PacketEntityMessageCTS.class);
 			PC_PacketHandler.registerPacket(PC_PacketEntityMessageSTC.class);
 			PC_PacketHandler.registerPacket(PC_PacketEntitySync.class);
+			PC_PacketHandler.registerPacket(PC_PacketSetSlot.class);
+			PC_PacketHandler.registerPacket(PC_PacketWindowItems.class);
+			PC_PacketHandler.registerPacket(PC_PacketClickWindow.class);
 		}
 	}
 	

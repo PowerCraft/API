@@ -16,6 +16,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import powercraft.api.PC_Utils;
 import powercraft.api.block.PC_TileEntity;
 import powercraft.api.entity.PC_Entity;
 import powercraft.api.gres.slot.PC_Slot;
@@ -23,9 +24,16 @@ import powercraft.api.gres.slot.PC_SlotPhantom;
 import powercraft.api.inventory.PC_IInventory;
 import powercraft.api.inventory.PC_IInventorySizeOverrider;
 import powercraft.api.inventory.PC_InventoryUtils;
+import powercraft.api.network.PC_PacketHandler;
+import powercraft.api.network.packet.PC_PacketSetSlot;
+import powercraft.api.network.packet.PC_PacketWindowItems;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 
 public abstract class PC_GresBaseWithInventory extends Container implements PC_IInventory, PC_IInventorySizeOverrider {
+
+	public static boolean SETTING_OK;
 
 	protected final EntityPlayer player;
 
@@ -37,12 +45,14 @@ public abstract class PC_GresBaseWithInventory extends Container implements PC_I
 
 	protected Slot[] invSlots;
 
-	private int field_94535_f = -1;
-    private int field_94536_g;
-    private final Set<Slot> field_94537_h = new HashSet<Slot>();
+	private int dragType = -1;
+    private int dragState;
+    private final Set<Slot> dragSlots = new HashSet<Slot>();
 
 	public PC_GresBaseWithInventory(EntityPlayer player, IInventory inventory) {
 
+		SETTING_OK = PC_Utils.isServer();
+		
 		this.player = player;
 
 		this.inventory = inventory;
@@ -121,12 +131,23 @@ public abstract class PC_GresBaseWithInventory extends Container implements PC_I
 			((PC_Entity) this.inventory).closeContainer(this);
 		}
 	}
-
-
+	
+	@SuppressWarnings("unchecked")
 	@Override
 	public void addCraftingToCrafters(ICrafting crafting) {
 
-		super.addCraftingToCrafters(crafting);
+		if(crafting instanceof EntityPlayerMP){
+			if (this.crafters.contains(crafting)){
+	            throw new IllegalArgumentException("Listener already listening");
+	        }
+			this.crafters.add(crafting);
+			PC_PacketHandler.sendTo(new PC_PacketWindowItems(this.windowId, getInventory()), (EntityPlayerMP)crafting);
+			PC_PacketHandler.sendTo(new PC_PacketSetSlot(-1, -1, ((EntityPlayerMP)crafting).inventory.getItemStack()), (EntityPlayerMP)crafting);
+			crafting.sendContainerAndContentsToPlayer(this, this.getInventory());
+			this.detectAndSendChanges();
+		}else{
+			super.addCraftingToCrafters(crafting);
+		}
 		if (this.inventory instanceof PC_TileEntity) {
 			((PC_TileEntity) this.inventory).sendProgressBarUpdates();
 		}
@@ -134,6 +155,49 @@ public abstract class PC_GresBaseWithInventory extends Container implements PC_I
 			((PC_Entity) this.inventory).sendProgressBarUpdates();
 		}
 	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public void detectAndSendChanges(){
+        for (int i = 0; i < this.inventorySlots.size(); ++i){
+            ItemStack itemstack = ((Slot)this.inventorySlots.get(i)).getStack();
+            ItemStack itemstack1 = (ItemStack)this.inventoryItemStacks.get(i);
+
+            if (!ItemStack.areItemStacksEqual(itemstack1, itemstack)){
+                itemstack1 = itemstack == null ? null : itemstack.copy();
+                this.inventoryItemStacks.set(i, itemstack1);
+
+                for (int j = 0; j < this.crafters.size(); ++j){
+                	sendSlotContentsTo((ICrafting) this.crafters.get(j), i, itemstack1);
+                }
+            }
+        }
+    }
+	
+	private void sendSlotContentsTo(ICrafting crafting, int i, ItemStack itemstack){
+		if(crafting instanceof EntityPlayerMP){
+			if (!((EntityPlayerMP)crafting).isChangingQuantityOnly){
+				PC_PacketHandler.sendTo(new PC_PacketSetSlot(this.windowId, i, itemstack), (EntityPlayerMP)crafting);
+            }
+		}else{
+			crafting.sendSlotContents(this, i, itemstack);
+		}
+	}
+	
+	@Override
+	public void putStackInSlot(int slot, ItemStack itemStack){
+		if(SETTING_OK){
+			super.putStackInSlot(slot, itemStack);
+		}
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+	public void putStacksInSlots(ItemStack[] itemStacks){
+    	if(SETTING_OK){
+    		super.putStacksInSlots(itemStacks);
+    	}
+    }
 	
 	@Override
 	public boolean canDragIntoSlot(Slot slot){
@@ -308,14 +372,15 @@ public abstract class PC_GresBaseWithInventory extends Container implements PC_I
 		return null;
 	}
 	
-	public static boolean func_94527_a(Slot par0Slot, ItemStack par1ItemStack, boolean par2)
+	public static boolean func_94527_a(Slot slot, ItemStack itemStack, boolean par2)
     {
-        boolean flag1 = par0Slot == null || !par0Slot.getHasStack();
+        boolean flag1 = slot == null || !slot.getHasStack();
 
-        if (par0Slot != null && par0Slot.getHasStack() && par1ItemStack != null && (par0Slot instanceof PC_SlotPhantom || (par1ItemStack.isItemEqual(par0Slot.getStack()) && ItemStack.areItemStackTagsEqual(par0Slot.getStack(), par1ItemStack))))
+        if (slot != null && slot.getHasStack() && itemStack != null && (slot instanceof PC_SlotPhantom || (itemStack.isItemEqual(slot.getStack()) && ItemStack.areItemStackTagsEqual(slot.getStack(), itemStack))))
         {
-            int i = par2 ? 0 : par1ItemStack.stackSize;
-            flag1 |= par0Slot.getStack().stackSize + i <= par1ItemStack.getMaxStackSize();
+            int i = par2 ? 0 : itemStack.stackSize;
+            int max = PC_InventoryUtils.getMaxStackSize(itemStack, slot);
+            flag1 |= slot.getStack().stackSize + i <= max;
         }
 
         return flag1;
@@ -323,8 +388,8 @@ public abstract class PC_GresBaseWithInventory extends Container implements PC_I
 	
 	@Override
 	protected void func_94533_d(){
-        this.field_94536_g = 0;
-        this.field_94537_h.clear();
+        this.dragState = 0;
+        this.dragSlots.clear();
     }
 	
 	
@@ -339,10 +404,10 @@ public abstract class PC_GresBaseWithInventory extends Container implements PC_I
 
         if (par3 == 5)
         {
-            int l = this.field_94536_g;
-            this.field_94536_g = func_94532_c(par2);
+            int l = this.dragState;
+            this.dragState = func_94532_c(par2);
 
-            if ((l != 1 || this.field_94536_g != 2) && l != this.field_94536_g)
+            if ((l != 1 || this.dragState != 2) && l != this.dragState)
             {
                 this.func_94533_d();
             }
@@ -350,48 +415,48 @@ public abstract class PC_GresBaseWithInventory extends Container implements PC_I
             {
                 this.func_94533_d();
             }
-            else if (this.field_94536_g == 0)
+            else if (this.dragState == 0)
             {
-                this.field_94535_f = func_94529_b(par2);
+                this.dragType = func_94529_b(par2);
 
-                if (func_94528_d(this.field_94535_f))
+                if (func_94528_d(this.dragType))
                 {
-                    this.field_94536_g = 1;
-                    this.field_94537_h.clear();
+                    this.dragState = 1;
+                    this.dragSlots.clear();
                 }
                 else
                 {
                     this.func_94533_d();
                 }
             }
-            else if (this.field_94536_g == 1)
+            else if (this.dragState == 1)
             {
                 Slot slot = (Slot)this.inventorySlots.get(par1);
 
-                if (slot != null && func_94527_a(slot, inventoryplayer.getItemStack(), true) && slot.isItemValid(inventoryplayer.getItemStack()) && inventoryplayer.getItemStack().stackSize > this.field_94537_h.size() && this.canDragIntoSlot(slot))
+                if (slot != null && func_94527_a(slot, inventoryplayer.getItemStack(), true) && slot.isItemValid(inventoryplayer.getItemStack()) && inventoryplayer.getItemStack().stackSize > this.dragSlots.size() && this.canDragIntoSlot(slot))
                 {
-                    this.field_94537_h.add(slot);
+                    this.dragSlots.add(slot);
                 }
             }
-            else if (this.field_94536_g == 2)
+            else if (this.dragState == 2)
             {
-                if (!this.field_94537_h.isEmpty())
+                if (!this.dragSlots.isEmpty())
                 {
                     itemstack3 = inventoryplayer.getItemStack().copy();
                     i1 = inventoryplayer.getItemStack().stackSize;
-                    Iterator<Slot> iterator = this.field_94537_h.iterator();
+                    Iterator<Slot> iterator = this.dragSlots.iterator();
 
                     while (iterator.hasNext())
                     {
                         Slot slot1 = iterator.next();
 
-                        if (slot1 != null && func_94527_a(slot1, inventoryplayer.getItemStack(), true) && slot1.isItemValid(inventoryplayer.getItemStack()) && inventoryplayer.getItemStack().stackSize >= this.field_94537_h.size() && this.canDragIntoSlot(slot1))
+                        if (slot1 != null && func_94527_a(slot1, inventoryplayer.getItemStack(), true) && slot1.isItemValid(inventoryplayer.getItemStack()) && inventoryplayer.getItemStack().stackSize >= this.dragSlots.size() && this.canDragIntoSlot(slot1))
                         {
                             ItemStack itemstack1 = itemstack3.copy();
                             int j1 = slot1.getHasStack() && !(slot1 instanceof PC_SlotPhantom) ? slot1.getStack().stackSize : 0;
-                            func_94525_a(this.field_94537_h, this.field_94535_f, itemstack1, j1);
+                            func_94525_a(this.dragSlots, this.dragType, itemstack1, j1);
 
-                            int max = getMaxStackSize(itemstack1, slot1);
+                            int max = PC_InventoryUtils.getMaxStackSize(itemstack1, slot1);
                             
                             if (itemstack1.stackSize > max)
                             {
@@ -420,7 +485,7 @@ public abstract class PC_GresBaseWithInventory extends Container implements PC_I
                 this.func_94533_d();
             }
         }
-        else if (this.field_94536_g != 0)
+        else if (this.dragState != 0)
         {
             this.func_94533_d();
         }
@@ -548,7 +613,7 @@ public abstract class PC_GresBaseWithInventory extends Container implements PC_I
                                 {
                                     i2 = par2 == 0 ? itemstack4.stackSize : 1;
 
-                                    int max = getMaxStackSize(itemstack4, slot2);
+                                    int max = PC_InventoryUtils.getMaxStackSize(itemstack4, slot2);
                                     
                                     if(i2 > max  - itemstack3.stackSize){
                                     	i2 = max - itemstack3.stackSize;
@@ -698,20 +763,10 @@ public abstract class PC_GresBaseWithInventory extends Container implements PC_I
 
         return itemstack;
     }
-
-	@SuppressWarnings("static-method")
-	public int getMaxStackSize(ItemStack itemStack, Slot slot){
-		if(slot.inventory instanceof PC_IInventorySizeOverrider){
-			return ((PC_IInventorySizeOverrider)slot.inventory).getMaxStackSize(itemStack, slot.getSlotIndex());
-		}
-		int maxStack = itemStack.getMaxStackSize();
-		int maxSlot = slot.getSlotStackLimit();
-		return maxStack>maxSlot?maxSlot:maxStack;
-	}
 	
 	@Override
 	public int getMaxStackSize(ItemStack itemStack, int slot) {
-		return getMaxStackSize(itemStack, getSlot(slot));
+		return PC_InventoryUtils.getMaxStackSize(itemStack, getSlot(slot));
 	}
 
 	@Override

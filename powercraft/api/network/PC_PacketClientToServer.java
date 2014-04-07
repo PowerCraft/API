@@ -1,6 +1,6 @@
 package powercraft.api.network;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.world.World;
@@ -9,7 +9,7 @@ import powercraft.api.PC_Side;
 
 public abstract class PC_PacketClientToServer extends PC_Packet {
 
-	protected abstract PC_Packet doAndReply(NetHandlerPlayServer playServer, World world, EntityPlayer player);
+	protected abstract PC_Packet doAndReply(NetHandlerPlayServer playServer, World world, EntityPlayerMP player);
 	
 	@Override
 	protected PC_Packet doAndReply(PC_Side side, INetHandler iNetHandler) {
