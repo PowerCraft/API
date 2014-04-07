@@ -113,7 +113,6 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 		this.constructed = true;
 		if(this.creativeTabs.length>0)
 			setCreativeTab(this.creativeTabs[0]);
-		initRecipes();
 	}
 	
 	public void initRecipes(){

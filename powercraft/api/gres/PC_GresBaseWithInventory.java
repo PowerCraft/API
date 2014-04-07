@@ -25,7 +25,7 @@ import powercraft.api.inventory.PC_IInventorySizeOverrider;
 import powercraft.api.inventory.PC_InventoryUtils;
 
 
-public abstract class PC_GresBaseWithInventory extends Container implements PC_IInventory {
+public abstract class PC_GresBaseWithInventory extends Container implements PC_IInventory, PC_IInventorySizeOverrider {
 
 	protected final EntityPlayer player;
 
@@ -134,7 +134,7 @@ public abstract class PC_GresBaseWithInventory extends Container implements PC_I
 			((PC_Entity) this.inventory).sendProgressBarUpdates();
 		}
 	}
-
+	
 	@Override
 	public boolean canDragIntoSlot(Slot slot){
 		if(slot instanceof PC_Slot){
@@ -529,6 +529,9 @@ public abstract class PC_GresBaseWithInventory extends Container implements PC_I
                             if (itemstack4 == null)
                             {
                                 i2 = par2 == 0 ? itemstack3.stackSize : (itemstack3.stackSize + 1) / 2;
+                                if(i2>itemstack3.getMaxStackSize()){
+                                	i2 = itemstack3.getMaxStackSize();
+                                }
                                 itemstack5 = slot2.decrStackSize(i2);
                                 inventoryplayer.setItemStack(itemstack5);
 
@@ -704,6 +707,11 @@ public abstract class PC_GresBaseWithInventory extends Container implements PC_I
 		int maxStack = itemStack.getMaxStackSize();
 		int maxSlot = slot.getSlotStackLimit();
 		return maxStack>maxSlot?maxSlot:maxStack;
+	}
+	
+	@Override
+	public int getMaxStackSize(ItemStack itemStack, int slot) {
+		return getMaxStackSize(itemStack, getSlot(slot));
 	}
 
 	@Override

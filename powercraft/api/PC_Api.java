@@ -68,6 +68,9 @@ public final class PC_Api extends PC_Module {
 		PC_Multiblocks.construct();
 		PC_Dimensions.construct();
 		PC_Entities.construct();
+		
+		PC_Blocks.initRecipes();
+		PC_Items.initRecipes();
 	}
 
 

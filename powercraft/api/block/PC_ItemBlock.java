@@ -147,4 +147,9 @@ public class PC_ItemBlock extends ItemBlock implements PC_IItem {
 		return ((PC_AbstractBlockBase)this.field_150939_a).getOreNames();
 	}
 
+	@Override
+	public final void initRecipes() {
+		//
+	}
+
 }

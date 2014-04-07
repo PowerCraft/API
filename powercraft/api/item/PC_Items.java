@@ -10,12 +10,13 @@ import powercraft.api.reflect.PC_Security;
 
 public final class PC_Items {
 
-	private static boolean done;
+	private static boolean doneConstruct;
+	private static boolean doneRecipes;
 	private static List<PC_IItem> items = new ArrayList<PC_IItem>();
 	private static List<PC_IItem> immutableItems = new PC_ImmutableList<PC_IItem>(items);
 	
 	static void addItem(PC_IItem item) {
-		if(done){
+		if(doneConstruct){
 			PC_Logger.severe("A item want to register while startup is done");
 		}else{
 			PC_Logger.info("Item-ADD: %s", item);
@@ -28,12 +29,22 @@ public final class PC_Items {
 	}
 	
 	public static void construct(){
-		PC_Security.allowedCaller("PC_Blocks.construct()", PC_Api.class);
-		if(!done){
-			done = true;
+		PC_Security.allowedCaller("PC_Items.construct()", PC_Api.class);
+		if(!doneConstruct){
+			doneConstruct = true;
 			for(PC_IItem item:items){
 				PC_Logger.info("CONSTRUCT: %s", item);
 				item.construct();
+			}
+		}
+	}
+	
+	public static void initRecipes() {
+		PC_Security.allowedCaller("PC_Items.initRecipes()", PC_Api.class);
+		if(!doneRecipes && doneConstruct){
+			doneRecipes = true;
+			for(PC_IItem item:items){
+				item.initRecipes();
 			}
 		}
 	}

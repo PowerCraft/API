@@ -20,5 +20,7 @@ public interface PC_IItem {
 	public String getTextureFolderName();
 
 	public String[] getOreNames();
+
+	public void initRecipes();
 	
 }

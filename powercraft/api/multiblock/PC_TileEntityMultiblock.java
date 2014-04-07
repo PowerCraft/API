@@ -19,11 +19,12 @@ import powercraft.api.PC_NBTTagHandler;
 import powercraft.api.PC_Utils;
 import powercraft.api.block.PC_TileEntity;
 import powercraft.api.grid.PC_IGridSided;
+import powercraft.api.grid.PC_IGridSidedSide;
 import powercraft.api.grid.PC_IGridTile;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public final class PC_TileEntityMultiblock extends PC_TileEntity implements PC_IGridSided {
+public final class PC_TileEntityMultiblock extends PC_TileEntity implements PC_IGridSided, PC_IGridSidedSide {
 
 	@PC_Field(flags={Flag.SAVE, Flag.SYNC})
 	private PC_MultiblockObject tiles[] = new PC_MultiblockObject[27];
@@ -279,6 +280,11 @@ public final class PC_TileEntityMultiblock extends PC_TileEntity implements PC_I
 		}
 	}
 
+	public void drop(List<ItemStack> drops) {
+
+		PC_Utils.spawnItems(this.worldObj, this.xCoord, this.yCoord, this.zCoord, drops);
+	}
+
 	@Override
 	public <T extends PC_IGridTile<?, T, ?, ?>> T getTile(PC_Direction side, Class<T> tileClass) {
 		PC_MultiblockObject tile = this.tiles[0];
@@ -287,10 +293,14 @@ public final class PC_TileEntityMultiblock extends PC_TileEntity implements PC_I
 		}
 		return null;
 	}
-
-	public void drop(List<ItemStack> drops) {
-
-		PC_Utils.spawnItems(this.worldObj, this.xCoord, this.yCoord, this.zCoord, drops);
+	
+	@Override
+	public <T extends PC_IGridTile<?, T, ?, ?>> T getTile(PC_Direction dir, PC_Direction dir2, Class<T> tileClass) {
+		PC_MultiblockObject tile = this.tiles[PC_MultiblockIndex.getFromDir(dir).ordinal()];
+		if(tile!=null && tileClass.isAssignableFrom(tile.getClass())){
+			return tileClass.cast(tile);
+		}
+		return null;
 	}
 	
 }

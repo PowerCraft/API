@@ -2,6 +2,8 @@ package powercraft.api.network;
 
 import java.io.IOException;
 
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetHandler;
@@ -53,6 +55,37 @@ public abstract class PC_Packet {
 			PC_Logger.severe("Error while decompressing NBTTag");
 		}
 		return new NBTTagCompound();
+	}
+	
+	protected static void writeItemStackToBuf(ByteBuf buf, ItemStack itemStack) {
+		if(itemStack==null || itemStack.getItem()==null){
+			buf.writeInt(-1);
+		}else{
+			buf.writeInt(Item.getIdFromItem(itemStack.getItem()));
+			buf.writeInt(itemStack.stackSize);
+			buf.writeInt(itemStack.getItemDamage());
+			NBTTagCompound compound = itemStack.getTagCompound();
+			if(compound==null){
+				buf.writeBoolean(false);
+			}else{
+				buf.writeBoolean(true);
+				writeNBTToBuf(buf, compound);
+			}
+		}
+	}
+	
+	protected static ItemStack readItemStackFromBuf(ByteBuf buf) {
+		int id = buf.readInt();
+		if(id<0)
+			return null;
+		int count = buf.readInt();
+		int damage = buf.readInt();
+		boolean nbt = buf.readBoolean();
+		ItemStack itemStack = new ItemStack(Item.getItemById(id), count, damage);
+		if(nbt){
+			itemStack.setTagCompound(readNBTFromBuf(buf));
+		}
+		return itemStack;
 	}
 	
 }

@@ -180,5 +180,10 @@ public class PC_ItemArmor extends ItemArmor implements PC_IItem, ISpecialArmor {
 	public boolean isValidArmor(ItemStack stack, int armorType, Entity entity) {
 		return this.armorType==armorType;
 	}
+
+	@Override
+	public void initRecipes() {
+		//
+	}
 	
 }
