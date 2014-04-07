@@ -23,4 +23,25 @@ public class PC_InventoryDescription {
 	public int globalToLocal(int global){
 		return global-this.firstIndex;
 	}
+	
+	public boolean isInRange(int index, boolean globally){
+		if(globally)
+			return !(index<firstIndex || index>lastIndex);
+		return !(index<0 || index>globalToLocal(lastIndex));
+	}
+	
+	
+	public static PC_InventoryDescription byName(String name, PC_InventoryDescription... array){
+		for(PC_InventoryDescription desc:array){
+			if(name.equalsIgnoreCase(desc.inventoryName)) return desc;
+		}
+		return null;
+	}
+	
+	public static PC_InventoryDescription byIndex(int index, PC_InventoryDescription... array){
+		for(PC_InventoryDescription desc:array){
+			if(desc.isInRange(index, true)) return desc;
+		}
+		return null;
+	}
 }
