@@ -261,6 +261,7 @@ public final class PC_BlockMultiblock extends PC_BlockTileEntity implements PC_I
 		return super.renderWorldBlock(world, x, y, z, modelId, renderer);
 	}
 
+	@SuppressWarnings("unchecked")
 	@SideOnly(Side.CLIENT)
 	public static void drawBlockDamages(RenderBlocks renderer){
 		RenderGlobal renderGlobal = PC_ClientUtils.mc().renderGlobal;

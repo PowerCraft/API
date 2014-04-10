@@ -7,6 +7,7 @@ import javax.script.Invocable;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import powercraft.api.script.weasel.PC_WeaselInteraction;
 import powercraft.api.script.weasel.grid.PC_IWeaselGridTileAddressable;
 import xscript.runtime.nativemethod.XNativeClass;
 import xscript.runtime.nativemethod.XNativeClass.XNativeMethod;
@@ -109,7 +110,7 @@ public class PC_WeaselNativeInventoryInterface {
 		if(is==null) return null;
 		Map<Object, Object> target;
 		try {
-			target = (Map<Object, Object>) vm.invokeFunction("weasel.type.ItemStack");
+			target = PC_WeaselInteraction.newInstance(vm, "weasel.type.ItemStack");
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
