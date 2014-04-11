@@ -35,9 +35,7 @@ public class PC_WeaselNativeInventoryInterface {
 		ItemStack src1 = tmp.getStackInSlot(realOffsetOne);
 		ItemStack src2 = tmp.getStackInSlot(realOffsetTwo);
 		
-		boolean equalStacks;
-		
-		if(src1==null && src2==null || ((equalStacks=itemStacksEqual(src1, src2)) && src1.stackSize==src2.stackSize))
+		if(ItemStack.areItemStacksEqual(src1, src2))
 			return true;
 		
 		int difFrom1To2 = canMoveStackTo(tmp, realOffsetOne, realOffsetTwo);
@@ -50,23 +48,20 @@ public class PC_WeaselNativeInventoryInterface {
 			combineStack(tmp, realOffsetOne, realOffsetTwo, difFrom1To2);
 			return true;
 		}else{
-			if(equalStacks){
+			if(itemStacksEqual(src1, src2)){
 				if(src1.stackSize>src2.stackSize){
 					combineStack(tmp, realOffsetOne, realOffsetTwo, Math.min(difFrom1To2, src1.stackSize-src2.stackSize));
 					return true;
-				}else{
-					combineStack(tmp, realOffsetTwo, realOffsetOne, Math.min(difFrom2To1, src2.stackSize-src1.stackSize));
-					return true;
 				}
-			}else{
-				if(Math.abs(difFrom2To1)>=src2.stackSize && Math.abs(difFrom1To2)>=src1.stackSize){
-					tmp.setInventorySlotContents(realOffsetOne, src2);
-					tmp.setInventorySlotContents(realOffsetTwo, src1);
-					return true;
-				}else{
-					return false;
-				}
+				combineStack(tmp, realOffsetTwo, realOffsetOne, Math.min(difFrom2To1, src2.stackSize-src1.stackSize));
+				return true;
 			}
+			if(Math.abs(difFrom2To1)>=src2.stackSize && Math.abs(difFrom1To2)>=src1.stackSize){
+				tmp.setInventorySlotContents(realOffsetOne, src2);
+				tmp.setInventorySlotContents(realOffsetTwo, src1);
+				return true;
+			}
+			return false;
 		}
 	}
 	
@@ -115,8 +110,8 @@ public class PC_WeaselNativeInventoryInterface {
 			throw new RuntimeException(e);
 		}
 		target.put("itemName", Item.itemRegistry.getNameForObject(is.getItem()));
-		target.put("stackSize", is.stackSize);
-		target.put("itemDamage", is.getItemDamage());
+		target.put("stackSize", Integer.valueOf(is.stackSize));
+		target.put("itemDamage", Integer.valueOf(is.getItemDamage()));
 		return target;
 	}
 	
@@ -206,20 +201,20 @@ public class PC_WeaselNativeInventoryInterface {
 			}
 			inventory.setInventorySlotContents(to, stack);
 			return true;
-		}else{
-			if(!itemStacksEqual(src, target)){
-				return false;
-			}
-			if(src.stackSize<amount)
-				amount=src.stackSize;
-			target.stackSize+=amount;
-			if(amount<src.stackSize){
-				src.stackSize-=amount;
-			}else{
-				inventory.setInventorySlotContents(from, null);
-			}
-			return true;
 		}
+		if(!itemStacksEqual(src, target)){
+			return false;
+		}
+		int amountCapped = amount;
+		if(src.stackSize<amountCapped)
+			amountCapped=src.stackSize;
+		target.stackSize+=amountCapped;
+		if(amountCapped<src.stackSize){
+			src.stackSize-=amountCapped;
+		}else{
+			inventory.setInventorySlotContents(from, null);
+		}
+		return true;
 			
 	}
 }

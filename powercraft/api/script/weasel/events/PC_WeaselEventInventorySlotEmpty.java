@@ -31,7 +31,7 @@ public class PC_WeaselEventInventorySlotEmpty implements PC_IWeaselEvent {
 	@Override
 	public Object[] getParams() {
 		
-		return new Object[]{Long.valueOf(address), inventory, Long.valueOf(slot)};
+		return new Object[]{Long.valueOf(this.address), this.inventory, Long.valueOf(this.slot)};
 	}
 
 }

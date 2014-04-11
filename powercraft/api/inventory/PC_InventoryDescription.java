@@ -26,8 +26,8 @@ public class PC_InventoryDescription {
 	
 	public boolean isInRange(int index, boolean globally){
 		if(globally)
-			return !(index<firstIndex || index>lastIndex);
-		return !(index<0 || index>globalToLocal(lastIndex));
+			return !(index<this.firstIndex || index>this.lastIndex);
+		return !(index<0 || index>globalToLocal(this.lastIndex));
 	}
 	
 	

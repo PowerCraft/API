@@ -189,9 +189,9 @@ public abstract class PC_BlockTileEntity extends PC_AbstractBlockBase implements
         Block block = PC_Utils.getBlock(world, x, y, z);
         
         if (!ForgeHooks.canHarvestBlock(block, player, metadata)){
-            return player.getBreakSpeed(block, true, metadata) / hardness / 100F;
+            return player.getBreakSpeed(block, true, metadata, x, y, z) / hardness / 100F;
         }
-		return player.getBreakSpeed(block, false, metadata) / hardness / 30F;
+		return player.getBreakSpeed(block, false, metadata, x, y, z) / hardness / 30F;
 	}
 
 	@Override
