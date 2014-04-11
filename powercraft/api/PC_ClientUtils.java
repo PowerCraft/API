@@ -36,6 +36,7 @@ public final class PC_ClientUtils extends PC_Utils {
 		PC_Renderer.getInstance();
 		isClient.set(Boolean.TRUE);
 		PC_ResourceReloadListener.register();
+		PC_Keyboard.register();
 		
 	}
 
