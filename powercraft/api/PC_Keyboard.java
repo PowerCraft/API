@@ -1,8 +1,9 @@
 package powercraft.api;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+
+import net.minecraft.client.settings.KeyBinding;
 
 import org.lwjgl.input.Keyboard;
 
@@ -16,7 +17,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class PC_Keyboard {
 	
-	private static HashMap<Integer, KeyHandlers> handlers = new HashMap<Integer, KeyHandlers>();
+	static List<PC_KeyHandler> handlers = new ArrayList<PC_KeyHandler>();
 	
 	private static final PC_Keyboard INSTANCE = new PC_Keyboard();
 	
@@ -30,66 +31,50 @@ public class PC_Keyboard {
 		
 	}
 	
-	public static void registerKeyHandler(int key, PC_KeyHandler keyHandler){
-		KeyHandlers h = handlers.get(Integer.valueOf(key));
-		if(h==null){
-			handlers.put(Integer.valueOf(key), h = new KeyHandlers());
-		}
-		h.addKeyHandler(keyHandler);
-	}
-	
 	@SideOnly(Side.CLIENT)
 	@SuppressWarnings({ "unused", "static-method" })
 	@SubscribeEvent
 	public void onKeyEvent(KeyInputEvent inputEvent){
 		int key = Keyboard.getEventKey();
-		KeyHandlers handler = PC_Keyboard.handlers.get(Integer.valueOf(key));
-		if(handler!=null){
-			handler.onEvent();
+		boolean state = Keyboard.getEventKeyState();
+		for(PC_KeyHandler handler:handlers){
+			if(handler.getKeyCode()==key){
+				handler.onEvent(state);
+			}
 		}
 	}
 	
-	private static class KeyHandlers{
+	public static abstract class PC_KeyHandler extends KeyBinding{
 
 		private boolean state;
 		
+		public PC_KeyHandler(String sKey, int key, String desk) {
+			super(sKey, key, desk);
+			handlers.add(this);
+		}
+
 		@SuppressWarnings("hiding")
-		private List<PC_KeyHandler> handlers = new ArrayList<PC_KeyHandler>();
-		
-		KeyHandlers() {}
-
-		public void onEvent() {
-			boolean b = Keyboard.getEventKeyState();
-			if(b && this.state){
-				for(PC_KeyHandler handler:this.handlers){
-					handler.onTick();
-				}
-			}else if(b && !this.state){
-				this.state = b;
-				for(PC_KeyHandler handler:this.handlers){
-					handler.onPressed();
-				}
-			}else if(!b && this.state){
-				this.state = b;
-				for(PC_KeyHandler handler:this.handlers){
-					handler.onReleased();
-				}
+		void onEvent(boolean state) {
+			if(this.state && state){
+				onTick();
+			}else if(this.state && !state){
+				onRelease();
+			}else if(!this.state && state){
+				onPressed();
 			}
-		}
-
-		public void addKeyHandler(PC_KeyHandler keyHandler) {
-			this.handlers.add(keyHandler);
+			this.state = state;
 		}
 		
-	}
-	
-	public static interface PC_KeyHandler{
+		@Override
+		public boolean isPressed() {
+			return this.state;
+		}
 
-		public void onTick();
-
-		public void onReleased();
-
-		public void onPressed();
+		public abstract void onTick();
+		
+		public abstract void onPressed();
+		
+		public abstract void onRelease();
 		
 	}
 	
