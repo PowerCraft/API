@@ -41,5 +41,7 @@ public interface PC_IEntity {
 	
 	@SideOnly(Side.CLIENT)
 	public void doRender(PC_EntityRenderer<?> renderer, double x, double y, double z, float rotYaw, float timeStamp);
+
+	public boolean shouldRenderRider();
 	
 }

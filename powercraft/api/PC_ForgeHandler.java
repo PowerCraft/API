@@ -3,18 +3,25 @@ package powercraft.api;
 import java.util.List;
 import java.util.Random;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.common.MinecraftForge;
 import powercraft.api.block.PC_AbstractBlockBase;
 import powercraft.api.block.PC_Blocks;
+import powercraft.api.entity.PC_IEntity;
 import powercraft.api.item.PC_IItem;
 import powercraft.api.reflect.PC_Security;
 import cpw.mods.fml.common.IFuelHandler;
 import cpw.mods.fml.common.IWorldGenerator;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
-final class PC_ForgeHandler implements IFuelHandler, IWorldGenerator {
+public final class PC_ForgeHandler implements IFuelHandler, IWorldGenerator {
 
 	private static final PC_ForgeHandler INSTANCE = new PC_ForgeHandler();
 	
@@ -22,7 +29,7 @@ final class PC_ForgeHandler implements IFuelHandler, IWorldGenerator {
 		PC_Security.allowedCaller("PC_FuelHandler.register()", PC_Api.class);
 		GameRegistry.registerFuelHandler(INSTANCE);
 		GameRegistry.registerWorldGenerator(INSTANCE, 0);
-		
+		MinecraftForge.EVENT_BUS.register(INSTANCE);
 	}
 	
 	@Override
@@ -40,6 +47,18 @@ final class PC_ForgeHandler implements IFuelHandler, IWorldGenerator {
 			return item.getBurnTime(fuel);
 		}
 		return 0;
+	}
+	
+	@SuppressWarnings("static-method")
+	@SubscribeEvent
+	@SideOnly(Side.CLIENT)
+	public void shouldDrawPlayer(RenderPlayerEvent.Pre pre){
+		Entity riding = pre.entityPlayer.ridingEntity;
+		if(riding instanceof PC_IEntity){
+			if(!((PC_IEntity)riding).shouldRenderRider()){
+				pre.setCanceled(true);
+			}
+		}
 	}
 	
 }
