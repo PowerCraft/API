@@ -16,4 +16,10 @@ public interface PC_IWeaselGridTileAddressable extends PC_IWeaselGridTile {
 
 	public void setRedstoneValue(int side, int value);
 	
+	public PC_IWeaselGridTileAddressable getTileByAddress(int address);
+
+	public void print(String out);
+
+	public void cls();
+	
 }

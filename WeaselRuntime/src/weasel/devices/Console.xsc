@@ -1,0 +1,480 @@
+package weasel.devices;
+
+import weasel.Predef;
+import weasel.listener.ConsoleInputListener;
+
+public class Console:Device{
+
+	private static ConsoleInputListener listener;
+
+	public Console(int address):Device(address){}
+
+	private static void consoleInputInterruptEntryPoint(int address, String text){
+		if(listener!=null){
+			listener.onConsoleInput(address, text);
+		}
+	}
+	
+	public static void setConsoleInputListener(ConsoleInputListener listener){
+		Console.listener = listener;
+	}
+	
+	public static native bool printUnsafe(int address, String text);
+	
+	public static void print(int address, String text){
+		while(!printUnsafe(address, text)){
+			Predef.sleep(1);
+		}
+	}
+	
+	public bool printUnsafe(String text){
+		return printUnsafe(address, text);
+	}
+	
+	public void print(String text){
+		while(!printUnsafe(address, text)){
+			Predef.sleep(1);
+		}
+	}
+	
+	public static bool printUnsafe(int address, bool b){
+		printUnsafe(address, Bool.toString(b));
+	}
+	
+	public static void print(int address, bool b){
+		while(!printUnsafe(address, b)){
+			Predef.sleep(1);
+		}
+	}
+	
+	public bool printUnsafe(bool b){
+		return printUnsafe(address, b);
+	}
+	
+	public void print(bool b){
+		while(!printUnsafe(address, b)){
+			Predef.sleep(1);
+		}
+	}
+	
+	public static bool printUnsafe(int address, byte b){
+		printUnsafe(address, Int.toString(b));
+	}
+	
+	public static void print(int address, byte b){
+		while(!printUnsafe(address, b)){
+			Predef.sleep(1);
+		}
+	}
+	
+	public bool printUnsafe(byte b){
+		return printUnsafe(address, b);
+	}
+	
+	public void print(byte b){
+		while(!printUnsafe(address, b)){
+			Predef.sleep(1);
+		}
+	}
+	
+	public static bool printUnsafe(int address, short s){
+		printUnsafe(address, Int.toString(s));
+	}
+	
+	public static void print(int address, short s){
+		while(!printUnsafe(address, s)){
+			Predef.sleep(1);
+		}
+	}
+	
+	public bool printUnsafe(short s){
+		return printUnsafe(address, s);
+	}
+	
+	public void print(short s){
+		while(!printUnsafe(address, s)){
+			Predef.sleep(1);
+		}
+	}
+
+	public static bool printUnsafe(int address, int i){
+		printUnsafe(address, Int.toString(i));
+	}
+	
+	public static void print(int address, int i){
+		while(!printUnsafe(address, i)){
+			Predef.sleep(1);
+		}
+	}
+	
+	public bool printUnsafe(int i){
+		return printUnsafe(address, i);
+	}
+	
+	public void print(int i){
+		while(!printUnsafe(address, i)){
+			Predef.sleep(1);
+		}
+	}
+	
+	public static bool printUnsafe(int address, long l){
+		printUnsafe(address, Long.toString(l));
+	}
+	
+	public static void print(int address, long l){
+		while(!printUnsafe(address, l)){
+			Predef.sleep(1);
+		}
+	}
+	
+	public bool printUnsafe(long l){
+		return printUnsafe(address, l);
+	}
+	
+	public void print(long l){
+		while(!printUnsafe(address, l)){
+			Predef.sleep(1);
+		}
+	}
+	
+	public static bool printUnsafe(int address, float f){
+		printUnsafe(address, Float.toString(f));
+	}
+	
+	public static void print(int address, float f){
+		while(!printUnsafe(address, f)){
+			Predef.sleep(1);
+		}
+	}
+	
+	public bool printUnsafe(float f){
+		return printUnsafe(address, f);
+	}
+	
+	public void print(float f){
+		while(!printUnsafe(address, f)){
+			Predef.sleep(1);
+		}
+	}
+	
+	public static bool printUnsafe(int address, double d){
+		printUnsafe(address, Double.toString(d));
+	}
+	
+	public static void print(int address, double d){
+		while(!printUnsafe(address, d)){
+			Predef.sleep(1);
+		}
+	}
+	
+	public bool printUnsafe(double d){
+		return printUnsafe(address, d);
+	}
+	
+	public void print(double d){
+		while(!printUnsafe(address, d)){
+			Predef.sleep(1);
+		}
+	}
+
+	public static bool printUnsafe(int address, char c){
+		printUnsafe(address, Char.toString(c));
+	}
+	
+	public static void print(int address, char c){
+		while(!printUnsafe(address, c)){
+			Predef.sleep(1);
+		}
+	}
+	
+	public bool printUnsafe(char c){
+		return printUnsafe(address, c);
+	}
+	
+	public void print(char c){
+		while(!printUnsafe(address, c)){
+			Predef.sleep(1);
+		}
+	}
+
+	public static bool printUnsafe(int address, Object o){
+		printUnsafe(address, String.toString(o));
+	}
+	
+	public static void print(int address, Object o){
+		while(!printUnsafe(address, o)){
+			Predef.sleep(1);
+		}
+	}
+	
+	public bool printUnsafe(Object o){
+		return printUnsafe(address, o);
+	}
+	
+	public void print(Object o){
+		while(!printUnsafe(address, o)){
+			Predef.sleep(1);
+		}
+	}
+	
+	public static bool printlnUnsafe(int address, String text){
+		return printUnsafe(address, text+"\n");
+	}
+	
+	public static void println(int address, String text){
+		while(!printlnUnsafe(address, text)){
+			Predef.sleep(1);
+		}
+	}
+	
+	public bool printlnUnsafe(String text){
+		return printlnUnsafe(address, text);
+	}
+	
+	public void println(String text){
+		while(!printlnUnsafe(address, text)){
+			Predef.sleep(1);
+		}
+	}
+	
+	public static bool printlnUnsafe(int address, bool b){
+		printlnUnsafe(address, Bool.toString(b));
+	}
+	
+	public static void println(int address, bool b){
+		while(!printlnUnsafe(address, b)){
+			Predef.sleep(1);
+		}
+	}
+	
+	public bool printlnUnsafe(bool b){
+		return printlnUnsafe(address, b);
+	}
+	
+	public void println(bool b){
+		while(!printlnUnsafe(address, b)){
+			Predef.sleep(1);
+		}
+	}
+	
+	public static bool printlnUnsafe(int address, byte b){
+		printlnUnsafe(address, Int.toString(b));
+	}
+	
+	public static void println(int address, byte b){
+		while(!printlnUnsafe(address, b)){
+			Predef.sleep(1);
+		}
+	}
+	
+	public bool printlnUnsafe(byte b){
+		return printlnUnsafe(address, b);
+	}
+	
+	public void println(byte b){
+		while(!printlnUnsafe(address, b)){
+			Predef.sleep(1);
+		}
+	}
+	
+	public static bool printlnUnsafe(int address, short s){
+		printlnUnsafe(address, Int.toString(s));
+	}
+	
+	public static void println(int address, short s){
+		while(!printlnUnsafe(address, s)){
+			Predef.sleep(1);
+		}
+	}
+	
+	public bool printlnUnsafe(short s){
+		return printlnUnsafe(address, s);
+	}
+	
+	public void println(short s){
+		while(!printlnUnsafe(address, s)){
+			Predef.sleep(1);
+		}
+	}
+
+	public static bool printlnUnsafe(int address, int i){
+		printlnUnsafe(address, Int.toString(i));
+	}
+	
+	public static void println(int address, int i){
+		while(!printlnUnsafe(address, i)){
+			Predef.sleep(1);
+		}
+	}
+	
+	public bool printlnUnsafe(int i){
+		return printlnUnsafe(address, i);
+	}
+	
+	public void println(int i){
+		while(!printlnUnsafe(address, i)){
+			Predef.sleep(1);
+		}
+	}
+	
+	public static bool printlnUnsafe(int address, long l){
+		printlnUnsafe(address, Long.toString(l));
+	}
+	
+	public static void println(int address, long l){
+		while(!printlnUnsafe(address, l)){
+			Predef.sleep(1);
+		}
+	}
+	
+	public bool printlnUnsafe(long l){
+		return printlnUnsafe(address, l);
+	}
+	
+	public void println(long l){
+		while(!printlnUnsafe(address, l)){
+			Predef.sleep(1);
+		}
+	}
+	
+	public static bool printlnUnsafe(int address, float f){
+		printlnUnsafe(address, Float.toString(f));
+	}
+	
+	public static void println(int address, float f){
+		while(!printlnUnsafe(address, f)){
+			Predef.sleep(1);
+		}
+	}
+	
+	public bool printlnUnsafe(float f){
+		return printlnUnsafe(address, f);
+	}
+	
+	public void println(float f){
+		while(!printlnUnsafe(address, f)){
+			Predef.sleep(1);
+		}
+	}
+	
+	public static bool printlnUnsafe(int address, double d){
+		printlnUnsafe(address, Double.toString(d));
+	}
+	
+	public static void println(int address, double d){
+		while(!printlnUnsafe(address, d)){
+			Predef.sleep(1);
+		}
+	}
+	
+	public bool printlnUnsafe(double d){
+		return printlnUnsafe(address, d);
+	}
+	
+	public void println(double d){
+		while(!printlnUnsafe(address, d)){
+			Predef.sleep(1);
+		}
+	}
+
+	public static bool printlnUnsafe(int address, char c){
+		printlnUnsafe(address, Char.toString(c));
+	}
+	
+	public static void println(int address, char c){
+		while(!printlnUnsafe(address, c)){
+			Predef.sleep(1);
+		}
+	}
+	
+	public bool printlnUnsafe(char c){
+		return printlnUnsafe(address, c);
+	}
+	
+	public void println(char c){
+		while(!printlnUnsafe(address, c)){
+			Predef.sleep(1);
+		}
+	}
+
+	public static bool printlnUnsafe(int address, Object o){
+		printlnUnsafe(address, String.toString(o));
+	}
+	
+	public static void println(int address, Object o){
+		while(!printlnUnsafe(address, o)){
+			Predef.sleep(1);
+		}
+	}
+	
+	public bool printlnUnsafe(Object o){
+		return printlnUnsafe(address, o);
+	}
+	
+	public void println(Object o){
+		while(!printlnUnsafe(address, o)){
+			Predef.sleep(1);
+		}
+	}
+	
+	private static class ConsoleInputListenerL:ConsoleInputListener{
+	
+		private int address;
+		private Object sync;
+		private String text;
+	
+		private ConsoleInputListenerL(Object sync, int address){
+			this.sync = sync;
+			this.address = address;
+		}
+	
+		public void onConsoleInput(int address, String text){
+			if(this.address==-1 || this.address == address){
+				this.text = text;
+				synchronized(sync){
+					sync.notify();
+				}
+			}
+		}
+	
+		private String getText(){
+			return text;
+		}
+	
+	}
+	
+	public static String readln(int address){
+		Object sync = new Object();
+		ConsoleInputListener old = listener;
+		ConsoleInputListenerL l = new ConsoleInputListenerL(sync, address);
+		listener = l;
+		synchronized(sync){
+			sync.wait();
+		}
+		listener = old;
+		return l.getText();
+	}
+	
+	public static String readln(){
+		return readln(-1);
+	}
+	
+	public static native boolean clsUnsafe(int address);
+	
+	public static void cls(int address){
+		while(!clsUnsafe(address)){
+			Predef.sleep(1);
+		}
+	}
+	
+	public boolean clsUnsafe(){
+		return clsUnsafe(address);
+	}
+	
+	public void cls(){
+		while(!clsUnsafe(address)){
+			Predef.sleep(1);
+		}
+	}
+	
+}

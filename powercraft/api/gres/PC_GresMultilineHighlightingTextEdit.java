@@ -251,7 +251,7 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 		}
 		setSelected(addStruct.toAdd, null, false, false);
 		if(history!=null){
-			history.addHistoryEntry(new HistoryEntry(this, this.mouseSelectStart, this.mouseSelectEnd, removed, false, true, true));
+			addHistory(history, new HistoryEntry(this, this.mouseSelectStart, this.mouseSelectEnd, removed, false, true, true));
 			this.newStart = false;
 		}
 		if(addStruct.cursorPos!=-1){
@@ -290,7 +290,7 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 		this.document.remove(this.mouseSelectStart, this.mouseSelectEnd);
 		setToStartSelect();
 		if(history!=null){
-			history.addHistoryEntry(new HistoryEntry(this, this.mouseSelectStart, this.mouseSelectStart, removed, true, false, false));
+			addHistory(history, new HistoryEntry(this, this.mouseSelectStart, this.mouseSelectStart, removed, true, false, false));
 			this.newStart = false;
 		}
 		moveViewToSelect();
@@ -315,7 +315,7 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 		this.document.remove(this.mouseSelectStart, this.mouseSelectEnd);
 		setToStartSelect();
 		if(history!=null){
-			history.addHistoryEntry(new HistoryEntry(this, this.mouseSelectStart, this.mouseSelectStart, removed, this.newStart, false, true));
+			addHistory(history, new HistoryEntry(this, this.mouseSelectStart, this.mouseSelectStart, removed, this.newStart, false, true));
 			this.newStart = false;
 		}
 		moveViewToSelect();
@@ -340,7 +340,7 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 		this.document.remove(this.mouseSelectStart, this.mouseSelectEnd);
 		setToStartSelect();
 		if(history!=null){
-			history.addHistoryEntry(new HistoryEntry(this, this.mouseSelectStart, this.mouseSelectStart, removed, this.newStart, false, true));
+			addHistory(history, new HistoryEntry(this, this.mouseSelectStart, this.mouseSelectStart, removed, this.newStart, false, true));
 			this.newStart = false;
 		}
 		moveViewToSelect();
@@ -368,7 +368,7 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 			}
 		}
 		if(history!=null){
-			history.addHistoryEntry(new HistoryEntry(this, this.mouseSelectStart, this.mouseSelectEnd, removed, block || this.newStart, true, !block));
+			addHistory(history, new HistoryEntry(this, this.mouseSelectStart, this.mouseSelectEnd, removed, block || this.newStart, true, !block));
 			this.newStart = false;
 		}
 		if(startToEnd){
@@ -475,13 +475,18 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 			GuiScreen.setClipboardString(getSelect());
 			break;
 		case 22:
+			if(!isEditable())
+				return false;
 			setSelected(GuiScreen.getClipboardString(), history, true, true);
 			break;
 		case 24:
 			GuiScreen.setClipboardString(getSelect());
-			deleteSelected(history);
+			if(isEditable())
+				deleteSelected(history);
 			break;
 		default:
+			if(!isEditable())
+				return false;
 			switch (keyCode) {
 			case Keyboard.KEY_RETURN:
 				addKey('\n', history);
@@ -717,7 +722,7 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 							this.mouseSelectEnd.x++;
 					}
 					this.document.recalcHighlights(sline, ey-sy+1);
-					history.addHistoryEntry(new HistoryEntry(this, new PC_Vec2I(0, sy), new PC_Vec2I(l.getText().length(), ey), old, true, true, false));
+					addHistory(history, new HistoryEntry(this, new PC_Vec2I(0, sy), new PC_Vec2I(l.getText().length(), ey), old, true, true, false));
 					break;
 				}
 				addKey(key, history);
@@ -859,6 +864,7 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 	@Override
 	public void setText(String text) {
 		this.document = new PC_GresDocument(text, this.highlighting, this.docHandler = new DocHandler(), this.autoComplete==null?null:this.autoComplete.getInfoCollector());
+		this.mouseSelectStart = this.mouseSelectEnd = new PC_Vec2I(0, 0);
 	}
 
 	@Override
@@ -924,9 +930,13 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 		
 	}
 	
+	@SuppressWarnings("static-method")
+	protected void addHistory(PC_GresHistory history, HistoryEntry entry){
+		history.addHistoryEntry(entry);
+	}
 	
 	
-	private static class HistoryEntry implements PC_IGresHistoryEntry{
+	protected static class HistoryEntry implements PC_IGresHistoryEntry{
 
 		private PC_GresMultilineHighlightingTextEdit textEdit;
 		private PC_Vec2I startPoint;
@@ -1076,6 +1086,12 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 			}
 		}
 		return list;
+	}
+	
+	public void setCursorPos(long pos){
+		PC_Vec2I p = this.document.getPosFrom(pos);
+		this.mouseSelectStart = this.mouseSelectEnd = p;
+		moveViewToSelect();
 	}
 	
 }

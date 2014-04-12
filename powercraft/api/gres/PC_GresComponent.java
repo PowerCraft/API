@@ -72,6 +72,8 @@ public abstract class PC_GresComponent {
 
 	protected boolean parentEnabled = true;
 
+	protected boolean editable = true;
+	
 	protected boolean mouseOver;
 
 	protected boolean mouseDown;
@@ -421,6 +423,17 @@ public abstract class PC_GresComponent {
 	public boolean isRecursiveEnabled() {
 
 		return this.enabled && (this.parent == null || this.parent.isRecursiveEnabled());
+	}
+	
+	public void setEditable(boolean editable) {
+
+		this.editable = editable;
+	}
+
+
+	public boolean isEditable() {
+
+		return this.editable;
 	}
 
 	public boolean hasFocus(){

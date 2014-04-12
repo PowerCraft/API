@@ -9,6 +9,7 @@ import javax.tools.Diagnostic;
 
 import net.minecraft.nbt.NBTTagCompound;
 import powercraft.api.PC_INBT;
+import powercraft.api.script.weasel.grid.PC_IWeaselGridTileAddressable;
 
 
 
@@ -38,10 +39,12 @@ public interface PC_WeaselContainer extends PC_INBT {
 	
 	public void setErrorOutput(PrintStream errorStream);
 	
-	public void setHandler(Object handler);
+	public void setTile(PC_IWeaselGridTileAddressable tile);
 	
 	public Map<Object, Object> createInstance(String className);
 	
 	public Map<Object, Object> createObject(String className, Object... params);
+	
+	public PC_IWeaselGridTileAddressable getTile();
 	
 }
