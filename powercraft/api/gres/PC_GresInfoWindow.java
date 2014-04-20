@@ -13,7 +13,7 @@ public class PC_GresInfoWindow extends PC_GresNeedFocusFrame {
 	}
 
 	@Override
-	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp) {
+	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp, float zoom) {
 		drawTexture(textureName, 0, 0, this.rect.width, this.rect.height);
 	}
 	

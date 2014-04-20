@@ -85,7 +85,7 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 
 	@SuppressWarnings("hiding")
 	@Override
-	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp) {
+	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp, float zoom) {
 		
 		if(this.docHandler.searchNewLengst){
 			this.docHandler.searchNewLengst = false;
@@ -108,7 +108,7 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 		drawTexture(textureName, 0, 0, this.rect.width-d2+1, this.rect.height-d1+1);
 		
 		PC_Vec2I offset = getRealLocation();
-		setDrawRect(scissor, new PC_RectI(2+offset.x, 2+offset.y, this.rect.width - 3 - d2, this.rect.height - 3 - d1), scale, displayHeight);
+		setDrawRect(scissor, new PC_RectI(2+offset.x, 2+offset.y, this.rect.width - 3 - d2, this.rect.height - 3 - d1), scale, displayHeight, zoom);
 		
 		PC_GresDocumentLine line = this.document.getLine(this.scroll.y);
 		int lineNum = this.scroll.y;
@@ -120,9 +120,9 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 		}
 		
 		if(scissor==null){
-			setDrawRect(scissor, new PC_RectI(-1, -1, -1, -1), scale, displayHeight);
+			setDrawRect(scissor, new PC_RectI(-1, -1, -1, -1), scale, displayHeight, zoom);
 		}else{
-			setDrawRect(scissor, scissor, scale, displayHeight);
+			setDrawRect(scissor, scissor, scale, displayHeight, zoom);
 		}
 		
 	}

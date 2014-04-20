@@ -100,14 +100,14 @@ public class PC_GresWindowSideTab extends PC_GresContainer {
 	}
 
 	@Override
-	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp) {
+	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp, float zoom) {
 		GL11.glColor3d(this.color.x, this.color.y, this.color.z);
 		drawTexture("Frame", -2, 0, this.rect.width+2, this.rect.height);
 		GL11.glColor3f(1, 1, 1);
 		if(this.displayObject!=null)
 			this.displayObject.draw(2, 1, 16, 16);
 		PC_Vec2I loc = getRealLocation();
-		PC_RectI s = setDrawRect(scissor, new PC_RectI(loc.x+20, loc.y+2, this.rect.width-22, 16), scale, displayHeight);
+		PC_RectI s = setDrawRect(scissor, new PC_RectI(loc.x+20, loc.y+2, this.rect.width-22, 16), scale, displayHeight, zoom);
 		if(s!=null)
 			drawString(this.text, 20, 2, 100, 16, H.LEFT, V.CENTER, false);
 	}

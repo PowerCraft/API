@@ -140,5 +140,10 @@ public class PC_Vec2I {
 		return new PC_Vec2I(this.x < vec.x ? this.x : vec.x, this.y < vec.y ? this.y : vec.y);
 	}
 
+
+	public PC_Vec2I mul(float v) {
+		return new PC_Vec2I((int)(this.x * v), (int)(this.y * v));
+	}
+
 	
 }

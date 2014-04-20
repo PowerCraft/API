@@ -57,7 +57,7 @@ public class PC_GresDisplay extends PC_GresComponent {
 	}
 
 	@Override
-	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp) {
+	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp, float zoom) {
 		if(this.background!=null)
 			this.background.draw(0, 0, this.rect.width, this.rect.height);
 		if(this.displayObject!=null)

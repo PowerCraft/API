@@ -108,25 +108,25 @@ public class PC_GresWindow extends PC_GresContainer {
 	}
 	
 	@Override
-	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp) {
+	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp, float zoom) {
 		drawTexture(textureName, this.frame.x - 4, 0, this.rect.width - this.frame.width - this.frame.x + 8, this.rect.height);
 		drawString(this.text, this.frame.x, 4, this.rect.width - this.frame.width - this.frame.x, PC_GresAlign.H.CENTER, false);
 	}
 	
 	@SuppressWarnings("hiding")
 	@Override
-	protected void doPaint(PC_Vec2I offset, PC_RectI scissorOld, double scale, int displayHeight, float timeStamp) {
+	protected void doPaint(PC_Vec2I offset, PC_RectI scissorOld, double scale, int displayHeight, float timeStamp, float zoom) {
 		if (this.visible) {
 			PC_RectI rect = new PC_RectI(this.rect);
 			rect.x += offset.x;
 			rect.y += offset.y;
-			PC_RectI scissor = setDrawRect(scissorOld, rect, scale, displayHeight);
+			PC_RectI scissor = setDrawRect(scissorOld, rect, scale, displayHeight, zoom);
 			if(scissor==null)
 				return;
 			GL11.glPushMatrix();
 			GL11.glTranslatef(this.rect.x, this.rect.y, 0);
 			GL11.glColor3f(1.0f, 1.0f, 1.0f);
-			paint(scissor, scale, displayHeight, timeStamp);
+			paint(scissor, scale, displayHeight, timeStamp, zoom);
 			doDebugRendering(0, 0, rect.width, rect.height);
 			rect.x += this.frame.x;
 			rect.y += this.frame.y;
@@ -134,18 +134,18 @@ public class PC_GresWindow extends PC_GresContainer {
 			PC_Vec2I noffset = rect.getLocation();
 			rect.width -= this.frame.x + this.frame.width;
 			rect.height -= this.frame.y + this.frame.height;
-			PC_RectI nScissor = setDrawRect(scissor, rect, scale, displayHeight);
+			PC_RectI nScissor = setDrawRect(scissor, rect, scale, displayHeight, zoom);
 			if(nScissor!=null){
 				ListIterator<PC_GresComponent> iterator = this.children.listIterator(this.children.size());
 				while(iterator.hasPrevious()){
-					iterator.previous().doPaint(noffset, nScissor, scale, displayHeight, timeStamp);
+					iterator.previous().doPaint(noffset, nScissor, scale, displayHeight, timeStamp, zoom);
 				}
 			}
 			GL11.glTranslatef(-this.frame.x, -this.frame.y, 0);
 			noffset = noffset.sub(this.frame.getLocation());
 			ListIterator<PC_GresWindowSideTab> iterator2 = this.sideTabs.listIterator(this.sideTabs.size());
 			while(iterator2.hasPrevious()){
-				iterator2.previous().doPaint(noffset, scissor, scale, displayHeight, timeStamp);
+				iterator2.previous().doPaint(noffset, scissor, scale, displayHeight, timeStamp, zoom);
 			}
 			GL11.glPopMatrix();
 		}

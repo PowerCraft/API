@@ -55,10 +55,10 @@ public class PC_GresListBoxWithoutScroll extends PC_GresComponent {
 	}
 
 	@Override
-	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp) {
+	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp, float zoom) {
 		
 		PC_Vec2I offset = getRealLocation();
-		setDrawRect(scissor, new PC_RectI(2+offset.x, 2+offset.y, this.rect.width - 3, this.rect.height - 3), scale, displayHeight);
+		setDrawRect(scissor, new PC_RectI(2+offset.x, 2+offset.y, this.rect.width - 3, this.rect.height - 3), scale, displayHeight, zoom);
 		
 		int element = 0;
 		int y = 2;
@@ -68,9 +68,9 @@ public class PC_GresListBoxWithoutScroll extends PC_GresComponent {
 		}
 		
 		if(scissor==null){
-			setDrawRect(scissor, new PC_RectI(-1, -1, -1, -1), scale, displayHeight);
+			setDrawRect(scissor, new PC_RectI(-1, -1, -1, -1), scale, displayHeight, zoom);
 		}else{
-			setDrawRect(scissor, scissor, scale, displayHeight);
+			setDrawRect(scissor, scissor, scale, displayHeight, zoom);
 		}
 	}
 	

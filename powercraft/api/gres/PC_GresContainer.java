@@ -263,19 +263,19 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 
 	@SuppressWarnings("hiding")
 	@Override
-	protected void doPaint(PC_Vec2I offset, PC_RectI scissorOld, double scale, int displayHeight, float timeStamp) {
+	protected void doPaint(PC_Vec2I offset, PC_RectI scissorOld, double scale, int displayHeight, float timeStamp, float zoom) {
 
 		if (this.visible) {
 			PC_RectI rect = new PC_RectI(this.rect);
 			rect.x += offset.x;
 			rect.y += offset.y;
-			PC_RectI scissor = setDrawRect(scissorOld, rect, scale, displayHeight);
+			PC_RectI scissor = setDrawRect(scissorOld, rect, scale, displayHeight, zoom);
 			if(scissor==null)
 				return;
 			GL11.glPushMatrix();
 			GL11.glTranslatef(this.rect.x, this.rect.y, 0);
 			GL11.glColor3f(1.0f, 1.0f, 1.0f);
-			paint(scissor, scale, displayHeight, timeStamp);
+			paint(scissor, scale, displayHeight, timeStamp, zoom);
 			doDebugRendering(0, 0, rect.width, rect.height);
 			rect.x += this.frame.x;
 			rect.y += this.frame.y;
@@ -284,10 +284,10 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 			GL11.glTranslatef(this.frame.x, this.frame.y, 0);
 			PC_Vec2I noffset = rect.getLocation();
 			ListIterator<PC_GresComponent> iterator = this.children.listIterator(this.children.size());
-			scissor = setDrawRect(scissor, rect, scale, displayHeight);
+			scissor = setDrawRect(scissor, rect, scale, displayHeight, zoom);
 			if(scissor!=null){
 				while(iterator.hasPrevious()){
-					iterator.previous().doPaint(noffset, scissor, scale, displayHeight, timeStamp);
+					iterator.previous().doPaint(noffset, scissor, scale, displayHeight, timeStamp, zoom);
 				}
 			}
 			GL11.glPopMatrix();

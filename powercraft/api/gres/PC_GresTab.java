@@ -79,36 +79,36 @@ public class PC_GresTab extends PC_GresContainer {
 
 	@SuppressWarnings("hiding")
 	@Override
-	protected void doPaint(PC_Vec2I offset, PC_RectI scissorOld, double scale, int displayHeight, float timeStamp) {
+	protected void doPaint(PC_Vec2I offset, PC_RectI scissorOld, double scale, int displayHeight, float timeStamp, float zoom) {
 
 		if (this.visible) {
 			PC_RectI rect = new PC_RectI(this.rect);
 			rect.x += offset.x;
 			rect.y += offset.y;
-			PC_RectI scissor = setDrawRect(scissorOld, rect, scale, displayHeight);
+			PC_RectI scissor = setDrawRect(scissorOld, rect, scale, displayHeight, zoom);
 			if(scissor==null)
 				return;
 			GL11.glPushMatrix();
 			GL11.glTranslatef(this.rect.x, this.rect.y, 0);
 			GL11.glColor3f(1.0f, 1.0f, 1.0f);
-			paint(scissor, scale, displayHeight, timeStamp);
+			paint(scissor, scale, displayHeight, timeStamp, zoom);
 			doDebugRendering(0, 0, rect.width, rect.height);
 			rect.x += this.frame.x;
 			rect.y += this.frame.y;
 			GL11.glTranslatef(this.frame.x, this.frame.y, 0);
 			PC_Vec2I noffset = rect.getLocation();
 			if(this.children.size()>0){
-				this.children.get(0).doPaint(noffset, scissor, scale, displayHeight, timeStamp);
+				this.children.get(0).doPaint(noffset, scissor, scale, displayHeight, timeStamp, zoom);
 			}
 			GL11.glPopMatrix();
 		}
 	}
 	
 	@Override
-	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp) {
+	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp, float zoom) {
 		drawTexture(textureName, 0, 0, this.rect.width, this.rect.height);
 		PC_Vec2I rl = getRealLocation();
-		setDrawRect(scissor, new PC_RectI(1+rl.x, 1+rl.y, this.rect.width-2, 12), scale, displayHeight);
+		setDrawRect(scissor, new PC_RectI(1+rl.x, 1+rl.y, this.rect.width-2, 12), scale, displayHeight, zoom);
 		int x = -this.tabsScroll+1;
 		for(Tab tab:this.tabs){
 			int width = fontRenderer.getStringSize(tab.tab).x+4;
@@ -118,7 +118,7 @@ public class PC_GresTab extends PC_GresContainer {
 			GL11.glColor4f(1, 1, 1, 1);
 			x+=width;
 		}
-		setDrawRect(scissor, new PC_RectI(rl.x, rl.y, this.rect.width, this.rect.height), scale, displayHeight);
+		setDrawRect(scissor, new PC_RectI(rl.x, rl.y, this.rect.width, this.rect.height), scale, displayHeight, zoom);
 		int width = getTextureDefaultSize(textureNameTabScroll).x;
 		x = (int) (getTabScrollProz()*(this.rect.width-width-4));
 		drawTexture(textureNameTabScroll, x+2, 13, width, 1, this.move?2:0);

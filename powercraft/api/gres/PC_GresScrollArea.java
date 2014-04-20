@@ -61,7 +61,7 @@ public class PC_GresScrollArea extends PC_GresComponent {
 	}
 
 	@Override
-	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp) {
+	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp, float zoom) {
 		if(!this.mouseDown){
 			calcScrollPosition();
 		}
@@ -108,24 +108,24 @@ public class PC_GresScrollArea extends PC_GresComponent {
 
 	@SuppressWarnings("hiding")
 	@Override
-	protected void doPaint(PC_Vec2I offset, PC_RectI scissorOld, double scale, int displayHeight, float timeStamp) {
+	protected void doPaint(PC_Vec2I offset, PC_RectI scissorOld, double scale, int displayHeight, float timeStamp, float zoom) {
 		if (this.visible) {
 			PC_RectI rect = new PC_RectI(this.rect);
 			rect.x += offset.x;
 			rect.y += offset.y;
-			PC_RectI scissor = setDrawRect(scissorOld, rect, scale, displayHeight);
+			PC_RectI scissor = setDrawRect(scissorOld, rect, scale, displayHeight, zoom);
 			if(scissor==null)
 				return;
 			GL11.glPushMatrix();
 			GL11.glTranslatef(this.rect.x, this.rect.y, 0);
 			GL11.glColor3f(1.0f, 1.0f, 1.0f);
-			paint(scissor, scale, displayHeight, timeStamp);
+			paint(scissor, scale, displayHeight, timeStamp, zoom);
 			doDebugRendering(0, 0, rect.width, rect.height);
 			PC_Vec2I noffset = rect.getLocation();
 			rect.width -= getTextureDefaultSize(scrollVFrame).x;
 			rect.height -= getTextureDefaultSize(scrollHFrame).y;
-			scissor = setDrawRect(scissor, rect, scale, displayHeight);
-			this.container.doPaint(noffset, scissor, scale, displayHeight, timeStamp);
+			scissor = setDrawRect(scissor, rect, scale, displayHeight, zoom);
+			this.container.doPaint(noffset, scissor, scale, displayHeight, timeStamp, zoom);
 			GL11.glPopMatrix();
 		}
 	}

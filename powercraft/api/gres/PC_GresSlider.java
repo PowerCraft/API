@@ -53,7 +53,7 @@ public class PC_GresSlider extends PC_GresComponent {
 	}
 
 	@Override
-	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp) {
+	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp, float zoom) {
 		drawTexture(textureName, 0, 0, this.rect.width, this.rect.height, 3);
 		int x = (int) (this.progress*(this.rect.width-SLIDER_SIZE)/this.steps+0.5);
 		drawTexture(textureName, x, 0, SLIDER_SIZE, this.rect.height);

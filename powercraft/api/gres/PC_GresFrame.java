@@ -30,7 +30,7 @@ public class PC_GresFrame extends PC_GresContainer {
 	}
 
 	@Override
-	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp) {
+	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp, float zoom) {
 		drawTexture(textureName, 0, 0, this.rect.width, this.rect.height);
 	}
 

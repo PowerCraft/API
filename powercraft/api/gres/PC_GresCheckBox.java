@@ -37,7 +37,7 @@ public class PC_GresCheckBox extends PC_GresComponent {
 	}
 	
 	@Override
-	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp) {
+	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp, float zoom) {
 		PC_Vec2I tm = getTextureMinSize(textureName[this.state?1:0]);
 		drawTexture(textureName[this.state?1:0], 0, 0, tm.x, tm.y);
 		drawString(this.text, tm.x+1, 0, this.rect.width - tm.x-1, this.rect.height, PC_GresAlign.H.CENTER, PC_GresAlign.V.CENTER, false);

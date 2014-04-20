@@ -42,7 +42,7 @@ public class PC_GresMultilineLabel extends PC_GresComponent {
 	}
 
 	@Override
-	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp) {
+	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp, float zoom) {
 		drawString(this.breaked, 0, 0, false);
 	}
 

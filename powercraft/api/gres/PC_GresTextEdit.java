@@ -71,12 +71,12 @@ public class PC_GresTextEdit extends PC_GresComponent {
 
 	@Override
 	protected void paint(PC_RectI scissor, double scale, int displayHeight,
-			float timeStamp) {
+			float timeStamp, float zoom) {
 		drawTexture(textureName, 0, 0, this.rect.width, this.rect.height);
 		PC_Vec2I offset = getRealLocation();
 		setDrawRect(scissor,
 				new PC_RectI(2+offset.x, 6+offset.y, this.rect.width - 4, this.rect.height - 12), scale,
-				displayHeight);
+				displayHeight, zoom);
 
 		String t = this.text;
 		if(this.type==PC_GresInputType.PASSWORD){
@@ -109,9 +109,9 @@ public class PC_GresTextEdit extends PC_GresComponent {
 		}
 
 		if(scissor==null){
-			setDrawRect(scissor, new PC_RectI(-1, -1, -1, -1), scale, displayHeight);
+			setDrawRect(scissor, new PC_RectI(-1, -1, -1, -1), scale, displayHeight, zoom);
 		}else{
-			setDrawRect(scissor, scissor, scale, displayHeight);
+			setDrawRect(scissor, scissor, scale, displayHeight, zoom);
 		}
 	}
 

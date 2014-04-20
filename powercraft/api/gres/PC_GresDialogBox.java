@@ -29,7 +29,7 @@ public class PC_GresDialogBox extends PC_GresContainer {
 	}
 	
 	@Override
-	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp) {
+	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp, float zoom) {
 		drawTexture(textureName, this.rect.x, this.rect.y, this.rect.width, this.rect.height);
 	}
 	

@@ -470,7 +470,7 @@ public abstract class PC_GresComponent {
 	}
 
 
-	protected static PC_RectI setDrawRect(PC_RectI old, PC_RectI _new, double scale, int displayHeight) {
+	protected static PC_RectI setDrawRect(PC_RectI old, PC_RectI _new, double scale, int displayHeight, float zoom) {
 
 		PC_RectI rect;
 		if (old == null) {
@@ -486,19 +486,19 @@ public abstract class PC_GresComponent {
 
 
 	@SuppressWarnings("hiding")
-	protected void doPaint(PC_Vec2I offset, PC_RectI scissorOld, double scale, int displayHeight, float timeStamp) {
+	protected void doPaint(PC_Vec2I offset, PC_RectI scissorOld, double scale, int displayHeight, float timeStamp, float zoom) {
 
 		if (this.visible) {
 			PC_RectI rect = new PC_RectI(this.rect);
 			rect.x += offset.x;
 			rect.y += offset.y;
-			PC_RectI scissor = setDrawRect(scissorOld, rect, scale, displayHeight);
+			PC_RectI scissor = setDrawRect(scissorOld, rect, scale, displayHeight, zoom);
 			if(scissor==null)
 				return;
 			GL11.glPushMatrix();
 			GL11.glTranslatef(this.rect.x, this.rect.y, 0);
 			GL11.glColor3f(1.0f, 1.0f, 1.0f);
-			paint(scissor, scale, displayHeight, timeStamp);
+			paint(scissor, scale, displayHeight, timeStamp, zoom);
 			doDebugRendering(0, 0, rect.width, rect.height);
 			GL11.glPopMatrix();
 		}
@@ -523,7 +523,7 @@ public abstract class PC_GresComponent {
 		}
 	}
 	
-	protected abstract void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp);
+	protected abstract void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp, float zoom);
 
 
 	protected boolean onKeyTyped(char key, int keyCode, boolean repeat, PC_GresHistory history) {
@@ -747,9 +747,9 @@ public abstract class PC_GresComponent {
 	public PC_Vec2I getRealLocation() {
 
 		if (this.parent == null) {
-			return this.rect.getLocation();
+			return this.rect.getLocation().mul(getRecursiveZoom());
 		} 
-		return this.rect.getLocation().add(this.parent.getRealLocation()).add(this.parent.getFrame().getLocation());
+		return this.rect.getLocation().mul(getRecursiveZoom()).add(this.parent.getRealLocation()).add(this.parent.getFrame().getLocation().mul(this.parent.getRecursiveZoom()));
 	}
 
 
@@ -909,6 +909,18 @@ public abstract class PC_GresComponent {
 	
 	protected void onFocusChaned(PC_GresComponent oldFocus, PC_GresComponent newFocus){
 		//
+	}
+	
+	@SuppressWarnings("static-method")
+	public float getZoom(){
+		return 1.0f;
+	}
+	
+	public float getRecursiveZoom(){
+		if(this.parent!=null){
+			return getZoom()*this.parent.getRecursiveZoom();
+		}
+		return getZoom();
 	}
 	
 }

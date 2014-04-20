@@ -114,7 +114,7 @@ public class PC_GresInventory extends PC_GresComponent {
 
 
 	@Override
-	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp) {
+	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp, float zoom) {
 
 		PC_GresTexture[] textures = new PC_GresTexture[6];
 		PC_GresTexture[] textures1 = new PC_GresTexture[6];
