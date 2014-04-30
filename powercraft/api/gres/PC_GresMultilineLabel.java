@@ -1,6 +1,6 @@
 package powercraft.api.gres;
 
-import powercraft.api.PC_RectI;
+import powercraft.api.PC_Rect;
 import powercraft.api.PC_Vec2I;
 
 public class PC_GresMultilineLabel extends PC_GresComponent {
@@ -42,7 +42,7 @@ public class PC_GresMultilineLabel extends PC_GresComponent {
 	}
 
 	@Override
-	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp, float zoom) {
+	protected void paint(PC_Rect scissor, double scale, int displayHeight, float timeStamp, float zoom) {
 		drawString(this.breaked, 0, 0, false);
 	}
 

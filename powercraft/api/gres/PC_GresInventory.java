@@ -13,7 +13,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 import powercraft.api.PC_ClientUtils;
-import powercraft.api.PC_RectI;
+import powercraft.api.PC_Rect;
 import powercraft.api.PC_Vec2I;
 import powercraft.api.gres.slot.PC_Slot;
 import cpw.mods.fml.relauncher.Side;
@@ -114,7 +114,7 @@ public class PC_GresInventory extends PC_GresComponent {
 
 
 	@Override
-	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp, float zoom) {
+	protected void paint(PC_Rect scissor, double scale, int displayHeight, float timeStamp, float zoom) {
 
 		PC_GresTexture[] textures = new PC_GresTexture[6];
 		PC_GresTexture[] textures1 = new PC_GresTexture[6];

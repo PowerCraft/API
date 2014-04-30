@@ -151,7 +151,7 @@ public class PC_WeaselGresEdit extends PC_GresGroupContainer implements PC_IGres
 			if(mbe.getEvent()==Event.CLICK && mbe.getEventButton()==1){
 				if(mbe.getComponent()==this.listBox){
 					String selected = this.listBox.getSelected();
-					PC_GresNeedFocusFrame frame = new PC_GresNeedFocusFrame(mbe.getMouse().add(component.getRealLocation()));
+					PC_GresNeedFocusFrame frame = new PC_GresNeedFocusFrame(mbe.getMouse().add(new PC_Vec2I(component.getRealLocation())));
 					ListBoxEventListener lbel = new ListBoxEventListener(selected);
 					frame.addEventListener(lbel);
 					frame.setLayout(new PC_GresLayoutVertical());
@@ -168,7 +168,7 @@ public class PC_WeaselGresEdit extends PC_GresGroupContainer implements PC_IGres
 				}else if(mbe.getComponent()==this.tab){
 					PC_GresComponent tabContent = this.tab.getVisibleTab();
 					if(tabContent!=null){
-						PC_GresNeedFocusFrame frame = new PC_GresNeedFocusFrame(mbe.getMouse().add(component.getRealLocation()));
+						PC_GresNeedFocusFrame frame = new PC_GresNeedFocusFrame(mbe.getMouse().add(new PC_Vec2I(component.getRealLocation())));
 						TabEventListener evl = new TabEventListener(tabContent);
 						frame.addEventListener(evl);
 						frame.setLayout(new PC_GresLayoutVertical());

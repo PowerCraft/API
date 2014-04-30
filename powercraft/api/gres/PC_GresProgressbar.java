@@ -2,7 +2,7 @@ package powercraft.api.gres;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import powercraft.api.PC_RectI;
+import powercraft.api.PC_Rect;
 import powercraft.api.PC_Vec2I;
 
 @SideOnly(Side.CLIENT)
@@ -61,7 +61,7 @@ public class PC_GresProgressbar extends PC_GresComponent {
 	}
 
 	@Override
-	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp, float zoom) {
+	protected void paint(PC_Rect scissor, double scale, int displayHeight, float timeStamp, float zoom) {
 		drawTexture(textureName, 0, 0, this.rect.width, this.rect.height);
 		drawTexture(textureNameContent[this.type], 1, 1, (int) ((this.rect.width-2)*this.progress/this.steps+0.5), this.rect.height-2);
 	}

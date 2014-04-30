@@ -21,7 +21,9 @@ import org.lwjgl.opengl.GL12;
 
 import powercraft.api.PC_ClientUtils;
 import powercraft.api.PC_MathHelper;
+import powercraft.api.PC_Rect;
 import powercraft.api.PC_RectI;
+import powercraft.api.PC_Vec2;
 import powercraft.api.PC_Vec2I;
 import powercraft.api.gres.events.PC_GresKeyEvent;
 import powercraft.api.gres.events.PC_GresPaintEvent;
@@ -189,7 +191,7 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 
 	@SuppressWarnings("hiding")
 	@Override
-	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp, float zoom) {
+	protected void paint(PC_Rect scissor, double scale, int displayHeight, float timeStamp, float zoom) {
 
 		PC_GresRenderer.drawGradientRect(0, 0, this.rect.width, this.rect.height, -1072689136, -804253680);
 	}
@@ -234,7 +236,7 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 		onDrawTick(ts);
 		GL11.glEnable(GL11.GL_SCISSOR_TEST);
 		GL11.glEnable(GL11.GL_BLEND);
-		doPaint(new PC_Vec2I(0, 0), null, scaledresolution.getScaleFactor(), this.mc.displayHeight, ts, 1.0f);
+		doPaint(new PC_Vec2(0, 0), null, scaledresolution.getScaleFactor(), this.mc.displayHeight, ts, 1.0f);
 		GL11.glDisable(GL11.GL_SCISSOR_TEST);
 		GL11.glDisable(GL11.GL_BLEND);
 		drawMouseItemStack(mouse);
@@ -244,7 +246,7 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 
 	private void drawTooltip(PC_Vec2I mouse) {
 
-		List<String> list = this.mouseOverComponent.onGetTooltip(mouse.sub(this.mouseOverComponent.getRealLocation()).mul(this.mouseOverComponent.getRecursiveZoom()));
+		List<String> list = this.mouseOverComponent.onGetTooltip(mouse.sub(new PC_Vec2I(this.mouseOverComponent.getRealLocation())).div(this.mouseOverComponent.getRecursiveZoom()));
 		if (list != null && !list.isEmpty()) {
 			PC_GresRenderer.drawTooltip(mouse.x, mouse.y, this.rect.width, this.rect.height, list);
 		}
@@ -310,8 +312,8 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 			newMouseOverComponent = this;
 		}
 		if (newMouseOverComponent != this.mouseOverComponent) {
-			this.mouseOverComponent.onMouseLeave(mouse.sub(this.mouseOverComponent.getRealLocation()).mul(this.mouseOverComponent.getRecursiveZoom()), buttons, this.history);
-			newMouseOverComponent.onMouseEnter(mouse.sub(newMouseOverComponent.getRealLocation()).mul(this.mouseOverComponent.getRecursiveZoom()), buttons, this.history);
+			this.mouseOverComponent.onMouseLeave(mouse.sub(new PC_Vec2I(this.mouseOverComponent.getRealLocation())).div(this.mouseOverComponent.getRecursiveZoom()), buttons, this.history);
+			newMouseOverComponent.onMouseEnter(mouse.sub(new PC_Vec2I(newMouseOverComponent.getRealLocation())).div(this.mouseOverComponent.getRecursiveZoom()), buttons, this.history);
 			this.mouseOverComponent = newMouseOverComponent;
 		}
 	}
@@ -321,14 +323,14 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 
 		setFocus(this.mouseOverComponent);
 		inventoryMouseDown(mouse, buttons, eventButton, doubleClick);
-		this.focusedComponent.onMouseButtonDown(mouse.sub(this.focusedComponent.getRealLocation()).mul(this.focusedComponent.getRecursiveZoom()), buttons, eventButton, doubleClick, this.history);
+		this.focusedComponent.onMouseButtonDown(mouse.sub(new PC_Vec2I(this.focusedComponent.getRealLocation())).div(this.focusedComponent.getRecursiveZoom()), buttons, eventButton, doubleClick, this.history);
 	}
 
 
 	protected void eventMouseButtonUp(PC_Vec2I mouse, int buttons, int eventButton) {
 
 		inventoryMouseUp(mouse, buttons, eventButton);
-		this.focusedComponent.onMouseButtonUp(mouse.sub(this.focusedComponent.getRealLocation()).mul(this.focusedComponent.getRecursiveZoom()), buttons, eventButton, this.history);
+		this.focusedComponent.onMouseButtonUp(mouse.sub(new PC_Vec2I(this.focusedComponent.getRealLocation())).div(this.focusedComponent.getRecursiveZoom()), buttons, eventButton, this.history);
 	}
 
 
@@ -336,15 +338,15 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 
 		checkMouseOverComponent(mouse, buttons);
 		inventoryMouseMove(mouse, buttons);
-		this.mouseOverComponent.onMouseMove(mouse.sub(this.mouseOverComponent.getRealLocation()).mul(this.mouseOverComponent.getRecursiveZoom()), buttons, this.history);
+		this.mouseOverComponent.onMouseMove(mouse.sub(new PC_Vec2I(this.mouseOverComponent.getRealLocation())).div(this.mouseOverComponent.getRecursiveZoom()), buttons, this.history);
 		if(this.mouseOverComponent!=this.focusedComponent)
-			this.focusedComponent.onMouseMove(mouse.sub(this.focusedComponent.getRealLocation()).mul(this.focusedComponent.getRecursiveZoom()), buttons, this.history);
+			this.focusedComponent.onMouseMove(mouse.sub(new PC_Vec2I(this.focusedComponent.getRealLocation())).div(this.focusedComponent.getRecursiveZoom()), buttons, this.history);
 	}
 
 
 	protected void eventMouseWheel(PC_Vec2I mouse, int buttons, int wheel) {
 		PC_GresComponent c = this.focusedComponent;
-		while(c!=null && !c.onMouseWheel(mouse.sub(c.getRealLocation()).mul(c.getRecursiveZoom()), buttons, wheel, this.history)){
+		while(c!=null && !c.onMouseWheel(mouse.sub(new PC_Vec2I(c.getRealLocation())).div(c.getRecursiveZoom()), buttons, wheel, this.history)){
 			c = c.getParent();
 		}
 	}

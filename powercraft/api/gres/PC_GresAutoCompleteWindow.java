@@ -121,18 +121,18 @@ public class PC_GresAutoCompleteWindow extends PC_GresNeedFocusFrame{
 	
 	@Override
 	public void putInRect(int x, int y, int width, int height) {
-		setLocation(this.textEdit.getRealLocation().add(this.textEdit.getCursorLowerPosition()));
+		setLocation(new PC_Vec2I(this.textEdit.getRealLocation()).add(this.textEdit.getCursorLowerPosition()));
 		if(this.infoWindow!=null){
-			this.infoWindow.setRealPos(getRealLocation().add(this.rect.width, 0));
+			this.infoWindow.setRealPos(new PC_Vec2I(getRealLocation()).add(this.rect.width, 0));
 		}
 	}
 	
 	@Override
 	protected void onScaleChanged(int newScale) {
 		this.textEdit.onScaleChanged(newScale);
-		setLocation(this.textEdit.getRealLocation().add(this.textEdit.getCursorLowerPosition()));
+		setLocation(new PC_Vec2I(this.textEdit.getRealLocation()).add(this.textEdit.getCursorLowerPosition()));
 		if(this.infoWindow!=null){
-			this.infoWindow.setRealPos(getRealLocation().add(this.rect.width, 0));
+			this.infoWindow.setRealPos(new PC_Vec2I(getRealLocation()).add(this.rect.width, 0));
 		}
 		super.onScaleChanged(newScale);
 	}
@@ -200,7 +200,7 @@ public class PC_GresAutoCompleteWindow extends PC_GresNeedFocusFrame{
 			if(info!=null){
 				this.lastTickMove++;
 				if(this.lastTickMove>=20){
-					this.infoWindow = new PC_GresInfoWindow(getRealLocation().add(this.rect.width, 0));
+					this.infoWindow = new PC_GresInfoWindow(new PC_Vec2I(getRealLocation()).add(this.rect.width, 0));
 					this.sa = new PC_GresScrollArea();
 					this.sa.setFill(Fill.BOTH);
 					this.sa.setMinSize(new PC_Vec2I(100, 100));

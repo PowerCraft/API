@@ -13,7 +13,9 @@ import org.lwjgl.opengl.GL11;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import powercraft.api.PC_ImmutableList;
+import powercraft.api.PC_Rect;
 import powercraft.api.PC_RectI;
+import powercraft.api.PC_Vec2;
 import powercraft.api.PC_Vec2I;
 import powercraft.api.gres.history.PC_GresHistory;
 import powercraft.api.gres.layout.PC_IGresLayout;
@@ -263,31 +265,36 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 
 	@SuppressWarnings("hiding")
 	@Override
-	protected void doPaint(PC_Vec2I offset, PC_RectI scissorOld, double scale, int displayHeight, float timeStamp, float zoom) {
+	protected void doPaint(PC_Vec2 offset, PC_Rect scissorOld, double scale, int displayHeight, float timeStamp, float zoom) {
 
 		if (this.visible) {
-			PC_RectI rect = new PC_RectI(this.rect);
+			float tzoom = getZoom();
+			float zoomm = zoom * tzoom;
+			PC_Rect rect = new PC_Rect(this.rect);
+			rect.x *= zoom;
+			rect.y *= zoom;
 			rect.x += offset.x;
 			rect.y += offset.y;
-			PC_RectI scissor = setDrawRect(scissorOld, rect, scale, displayHeight, zoom);
+			PC_Rect scissor = setDrawRect(scissorOld, rect, scale, displayHeight, zoomm);
 			if(scissor==null)
 				return;
 			GL11.glPushMatrix();
 			GL11.glTranslatef(this.rect.x, this.rect.y, 0);
+			GL11.glScalef(tzoom, tzoom, 0);
 			GL11.glColor3f(1.0f, 1.0f, 1.0f);
-			paint(scissor, scale, displayHeight, timeStamp, zoom);
+			paint(scissor, scale, displayHeight, timeStamp, zoomm);
 			doDebugRendering(0, 0, rect.width, rect.height);
 			rect.x += this.frame.x;
 			rect.y += this.frame.y;
 			rect.width -= this.frame.x + this.frame.width;
 			rect.height -= this.frame.y + this.frame.height;
 			GL11.glTranslatef(this.frame.x, this.frame.y, 0);
-			PC_Vec2I noffset = rect.getLocation();
+			PC_Vec2 noffset = rect.getLocation();
 			ListIterator<PC_GresComponent> iterator = this.children.listIterator(this.children.size());
-			scissor = setDrawRect(scissor, rect, scale, displayHeight, zoom);
+			scissor = setDrawRect(scissor, rect, scale, displayHeight, zoomm);
 			if(scissor!=null){
 				while(iterator.hasPrevious()){
-					iterator.previous().doPaint(noffset, scissor, scale, displayHeight, timeStamp, zoom);
+					iterator.previous().doPaint(noffset, scissor, scale, displayHeight, timeStamp, zoomm);
 				}
 			}
 			GL11.glPopMatrix();
@@ -300,6 +307,8 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 	protected PC_GresComponent getComponentAtPosition(PC_Vec2I position) {
 
 		if (this.visible) {
+			position.x /= getZoom();
+			position.y /= getZoom();
 			if(getChildRect().contains(position)){
 				PC_Vec2I nposition = position.sub(this.frame.getLocation());
 				for (PC_GresComponent child : this.children) {

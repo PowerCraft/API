@@ -1,19 +1,19 @@
 package powercraft.api.gres;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import powercraft.api.PC_Rect;
 import powercraft.api.PC_Vec2;
 import powercraft.api.PC_Vec2I;
 import powercraft.api.gres.events.PC_GresMouseWheelEvent;
 import powercraft.api.gres.history.PC_GresHistory;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-class PC_GresScrollAreaContainer extends PC_GresContainer {
+class PC_GresScrollAreaZoomableContainer extends PC_GresContainer {
 	
-	private PC_GresScrollArea scrollArea;
+	private PC_GresScrollAreaZoomable scrollArea;
 	
-	protected PC_GresScrollAreaContainer(PC_GresScrollArea scrollArea){
+	protected PC_GresScrollAreaZoomableContainer(PC_GresScrollAreaZoomable scrollArea){
 		this.scrollArea = scrollArea;
 	}
 	
@@ -66,7 +66,7 @@ class PC_GresScrollAreaContainer extends PC_GresContainer {
 	
 	@Override
 	public PC_Vec2 getRealLocation() {
-		return this.rect.getLocationF().add(this.scrollArea.getRealLocation());
+		return this.rect.getLocationF().mul(getRecursiveZoom()).add(this.scrollArea.getRealLocation());
 	}
 	
 	@Override
@@ -88,5 +88,15 @@ class PC_GresScrollAreaContainer extends PC_GresContainer {
 	public PC_GresContainer getParent() {
 		return this.scrollArea.getParent();
 	}
+
+	@Override
+	public float getZoom() {
+		return this.scrollArea.getComponentZoom();
+	}
+
+	@Override
+	public float getRecursiveZoom() {
+		return getZoom()*this.scrollArea.getRecursiveZoom();
+	}	
 	
 }

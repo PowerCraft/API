@@ -12,7 +12,9 @@ import net.minecraft.util.ChatAllowedCharacters;
 
 import org.lwjgl.input.Keyboard;
 
+import powercraft.api.PC_Rect;
 import powercraft.api.PC_RectI;
+import powercraft.api.PC_Vec2;
 import powercraft.api.PC_Vec2I;
 import powercraft.api.gres.autoadd.PC_AutoAdd;
 import powercraft.api.gres.autoadd.PC_AutoComplete;
@@ -85,7 +87,7 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 
 	@SuppressWarnings("hiding")
 	@Override
-	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp, float zoom) {
+	protected void paint(PC_Rect scissor, double scale, int displayHeight, float timeStamp, float zoom) {
 		
 		if(this.docHandler.searchNewLengst){
 			this.docHandler.searchNewLengst = false;
@@ -107,8 +109,8 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 		
 		drawTexture(textureName, 0, 0, this.rect.width-d2+1, this.rect.height-d1+1);
 		
-		PC_Vec2I offset = getRealLocation();
-		setDrawRect(scissor, new PC_RectI(2+offset.x, 2+offset.y, this.rect.width - 3 - d2, this.rect.height - 3 - d1), scale, displayHeight, zoom);
+		PC_Vec2 offset = getRealLocation();
+		setDrawRect(scissor, new PC_Rect(2+offset.x, 2+offset.y, this.rect.width - 3 - d2, this.rect.height - 3 - d1), scale, displayHeight, zoom);
 		
 		PC_GresDocumentLine line = this.document.getLine(this.scroll.y);
 		int lineNum = this.scroll.y;
@@ -120,7 +122,7 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 		}
 		
 		if(scissor==null){
-			setDrawRect(scissor, new PC_RectI(-1, -1, -1, -1), scale, displayHeight, zoom);
+			setDrawRect(scissor, new PC_Rect(-1, -1, -1, -1), scale, displayHeight, zoom);
 		}else{
 			setDrawRect(scissor, scissor, scale, displayHeight, zoom);
 		}

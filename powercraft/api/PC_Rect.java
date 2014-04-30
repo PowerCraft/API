@@ -1,20 +1,20 @@
 package powercraft.api;
 
 
-public class PC_RectI {
+public class PC_Rect {
 
-	public int x;
-	public int y;
-	public int width;
-	public int height;
+	public double x;
+	public double y;
+	public double width;
+	public double height;
 
 
-	public PC_RectI() {
+	public PC_Rect() {
 
 	}
 
 
-	public PC_RectI(int x, int y, int width, int height) {
+	public PC_Rect(double x, double y, double width, double height) {
 
 		this.x = x;
 		this.y = y;
@@ -23,24 +23,30 @@ public class PC_RectI {
 	}
 
 
-	public PC_RectI(PC_RectI rect) {
+	public PC_Rect(PC_Rect rect) {
 
 		this(rect.x, rect.y, rect.width, rect.height);
 	}
 
 
-	public PC_RectI(String attribute) {
+	public PC_Rect(PC_RectI rect) {
+
+		this(rect.x, rect.y, rect.width, rect.height);
+	}
+
+	
+	public PC_Rect(String attribute) {
 
 		String[] attributes = attribute.split(",");
 		if (attributes.length != 4) throw new NumberFormatException();
-		this.x = Integer.parseInt(attributes[0].trim());
-		this.y = Integer.parseInt(attributes[1].trim());
-		this.width = Integer.parseInt(attributes[2].trim());
-		this.height = Integer.parseInt(attributes[3].trim());
+		this.x = Double.parseDouble(attributes[0].trim());
+		this.y = Double.parseDouble(attributes[1].trim());
+		this.width = Double.parseDouble(attributes[2].trim());
+		this.height = Double.parseDouble(attributes[3].trim());
 	}
 
 
-	public void setTo(PC_RectI rect) {
+	public void setTo(PC_Rect rect) {
 
 		this.x = rect.x;
 		this.y = rect.y;
@@ -60,9 +66,9 @@ public class PC_RectI {
 	}
 
 
-	public PC_Vec2I getLocation() {
+	public PC_Vec2 getLocation() {
 
-		return new PC_Vec2I(this.x, this.y);
+		return new PC_Vec2(this.x, this.y);
 	}
 	
 	public PC_Vec2 getLocationF() {
@@ -82,16 +88,16 @@ public class PC_RectI {
 	}
 
 
-	public PC_Vec2I getSize() {
+	public PC_Vec2 getSize() {
 
-		return new PC_Vec2I(this.width, this.height);
+		return new PC_Vec2(this.width, this.height);
 	}
 
 
-	public PC_RectI averageQuantity(PC_RectI rect) {
+	public PC_Rect averageQuantity(PC_Rect rect) {
 
-		PC_RectI fin = new PC_RectI();
-		int v1, v2;
+		PC_Rect fin = new PC_Rect();
+		double v1, v2;
 
 		if (this.x > rect.x) {
 			fin.x = this.x;
@@ -142,30 +148,34 @@ public class PC_RectI {
 
 	@Override
 	public int hashCode() {
-
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + this.height;
-		result = prime * result + this.width;
-		result = prime * result + this.x;
-		result = prime * result + this.y;
+		long temp;
+		temp = Double.doubleToLongBits(this.height);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(this.width);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(this.x);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(this.y);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
 		return result;
 	}
 
 
 	@Override
 	public boolean equals(Object obj) {
-
 		if (this == obj) return true;
 		if (obj == null) return false;
 		if (getClass() != obj.getClass()) return false;
-		PC_RectI other = (PC_RectI) obj;
-		if (this.height != other.height) return false;
-		if (this.width != other.width) return false;
-		if (this.x != other.x) return false;
-		if (this.y != other.y) return false;
+		PC_Rect other = (PC_Rect) obj;
+		if (Double.doubleToLongBits(this.height) != Double.doubleToLongBits(other.height)) return false;
+		if (Double.doubleToLongBits(this.width) != Double.doubleToLongBits(other.width)) return false;
+		if (Double.doubleToLongBits(this.x) != Double.doubleToLongBits(other.x)) return false;
+		if (Double.doubleToLongBits(this.y) != Double.doubleToLongBits(other.y)) return false;
 		return true;
 	}
+
 
 
 }

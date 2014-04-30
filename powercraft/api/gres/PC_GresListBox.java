@@ -5,7 +5,9 @@ import java.util.List;
 
 import org.lwjgl.input.Keyboard;
 
+import powercraft.api.PC_Rect;
 import powercraft.api.PC_RectI;
+import powercraft.api.PC_Vec2;
 import powercraft.api.PC_Vec2I;
 import powercraft.api.gres.events.PC_GresMouseWheelEvent;
 import powercraft.api.gres.history.PC_GresHistory;
@@ -60,7 +62,7 @@ public class PC_GresListBox extends PC_GresComponent {
 	}
 
 	@Override
-	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp, float zoom) {
+	protected void paint(PC_Rect scissor, double scale, int displayHeight, float timeStamp, float zoom) {
 		if(!this.mouseDown){
 			calcScrollPosition();
 		}
@@ -74,8 +76,8 @@ public class PC_GresListBox extends PC_GresComponent {
 		drawTexture(scrollHFrame, 0, this.rect.height-d1, this.rect.width-d2, d1, getStateForBar(0));
 		drawTexture(scrollH, (int)this.hScrollPos+1, this.rect.height-d1+1, this.hScrollSize-1, d1-2, getStateForBar(0));
 		
-		PC_Vec2I offset = getRealLocation();
-		setDrawRect(scissor, new PC_RectI(2+offset.x, 2+offset.y, this.rect.width - 3 - d2, this.rect.height - 3 - d1), scale, displayHeight, zoom);
+		PC_Vec2 offset = getRealLocation();
+		setDrawRect(scissor, new PC_Rect(2+offset.x, 2+offset.y, this.rect.width - 3 - d2, this.rect.height - 3 - d1), scale, displayHeight, zoom);
 		
 		int element = this.scroll.y;
 		int y = 2;
@@ -85,7 +87,7 @@ public class PC_GresListBox extends PC_GresComponent {
 		}
 		
 		if(scissor==null){
-			setDrawRect(scissor, new PC_RectI(-1, -1, -1, -1), scale, displayHeight, zoom);
+			setDrawRect(scissor, new PC_Rect(-1, -1, -1, -1), scale, displayHeight, zoom);
 		}else{
 			setDrawRect(scissor, scissor, scale, displayHeight, zoom);
 		}

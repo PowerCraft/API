@@ -10,7 +10,7 @@ import org.lwjgl.opengl.GL12;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import powercraft.api.PC_RectI;
+import powercraft.api.PC_Rect;
 import powercraft.api.PC_Vec2I;
 
 @SideOnly(Side.CLIENT)
@@ -38,7 +38,7 @@ public class PC_GresPlayerInventory extends PC_GresInventory {
 
 
 	@Override
-	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp, float zoom) {
+	protected void paint(PC_Rect scissor, double scale, int displayHeight, float timeStamp, float zoom) {
 
 		for (int x = 0; x < this.slots.length; x++) {
 			for (int y = 0; y < 3; y++) {

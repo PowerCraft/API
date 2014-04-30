@@ -1,5 +1,6 @@
 package powercraft.api.gres;
 
+import powercraft.api.PC_Vec2I;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -20,7 +21,7 @@ class PC_GresComboBoxFrame extends PC_GresFrame {
 
 	@Override
 	public void putInRect(int x, int y, int width, int height) {
-		setLocation(this.comboBox.getRealLocation().add(0, this.comboBox.rect.height));
+		setLocation(new PC_Vec2I(this.comboBox.getRealLocation()).add(0, (int) (this.comboBox.rect.height*this.comboBox.getRecursiveZoom())));
 	}
 	
 }

@@ -10,7 +10,9 @@ import net.minecraft.inventory.Slot;
 import org.lwjgl.opengl.GL11;
 
 import powercraft.api.PC_Debug;
+import powercraft.api.PC_Rect;
 import powercraft.api.PC_RectI;
+import powercraft.api.PC_Vec2;
 import powercraft.api.PC_Vec2I;
 import powercraft.api.gres.events.PC_GresEvent;
 import powercraft.api.gres.events.PC_GresFocusGotEvent;
@@ -27,7 +29,6 @@ import powercraft.api.gres.events.PC_GresTooltipGetEvent;
 import powercraft.api.gres.events.PC_IGresEventListener;
 import powercraft.api.gres.events.PC_IGresEventListenerEx;
 import powercraft.api.gres.font.PC_FontRenderer;
-import powercraft.api.gres.font.PC_FontTexture;
 import powercraft.api.gres.font.PC_Fonts;
 import powercraft.api.gres.history.PC_GresHistory;
 import cpw.mods.fml.relauncher.Side;
@@ -156,6 +157,15 @@ public abstract class PC_GresComponent {
 	public PC_RectI getRect() {
 
 		return new PC_RectI(this.rect);
+	}
+	
+	public PC_RectI getRectScaled() {
+
+		PC_RectI r = getRect();
+		float zoom = getZoom();
+		r.width *= zoom;
+		r.height *= zoom;
+		return r;
 	}
 
 
@@ -470,13 +480,18 @@ public abstract class PC_GresComponent {
 	}
 
 
-	protected static PC_RectI setDrawRect(PC_RectI old, PC_RectI _new, double scale, int displayHeight, float zoom) {
+	protected static PC_Rect setDrawRect(PC_Rect old, PC_Rect _new, double scale, int displayHeight, float zoom) {
 
-		PC_RectI rect;
+		PC_Rect rect;
 		if (old == null) {
-			rect = new PC_RectI(_new);
+			rect = new PC_Rect(_new);
+			rect.width *= zoom;
+			rect.height *= zoom;
 		} else {
-			rect = old.averageQuantity(_new);
+			rect = new PC_Rect(_new);
+			rect.width *= zoom;
+			rect.height *= zoom;
+			rect = old.averageQuantity(rect);
 		}
 		if (rect.width <= 0 || rect.height <= 0) return null;
 		GL11.glScissor((int) (rect.x * scale), displayHeight - (int) ((rect.y + rect.height) * scale), (int) (rect.width * scale),
@@ -486,25 +501,30 @@ public abstract class PC_GresComponent {
 
 
 	@SuppressWarnings("hiding")
-	protected void doPaint(PC_Vec2I offset, PC_RectI scissorOld, double scale, int displayHeight, float timeStamp, float zoom) {
+	protected void doPaint(PC_Vec2 offset, PC_Rect scissorOld, double scale, int displayHeight, float timeStamp, float zoom) {
 
 		if (this.visible) {
-			PC_RectI rect = new PC_RectI(this.rect);
+			float tzoom = getZoom();
+			float zoomm = zoom * tzoom;
+			PC_Rect rect = new PC_Rect(this.rect);
+			rect.x *= zoom;
+			rect.y *= zoom;
 			rect.x += offset.x;
 			rect.y += offset.y;
-			PC_RectI scissor = setDrawRect(scissorOld, rect, scale, displayHeight, zoom);
+			PC_Rect scissor = setDrawRect(scissorOld, rect, scale, displayHeight, zoomm);
 			if(scissor==null)
 				return;
 			GL11.glPushMatrix();
 			GL11.glTranslatef(this.rect.x, this.rect.y, 0);
+			GL11.glScalef(tzoom, tzoom, 0);
 			GL11.glColor3f(1.0f, 1.0f, 1.0f);
-			paint(scissor, scale, displayHeight, timeStamp, zoom);
+			paint(scissor, scale, displayHeight, timeStamp, zoomm);
 			doDebugRendering(0, 0, rect.width, rect.height);
 			GL11.glPopMatrix();
 		}
 	}
 
-	protected void doDebugRendering(int x, int y, int width, int height){
+	protected void doDebugRendering(double x, double y, double width, double height){
 		if(PC_Debug.DEBUG){
 			GL11.glDisable(GL11.GL_TEXTURE_2D);
 			int hash = hashCode();
@@ -523,7 +543,7 @@ public abstract class PC_GresComponent {
 		}
 	}
 	
-	protected abstract void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp, float zoom);
+	protected abstract void paint(PC_Rect scissor, double scale, int displayHeight, float timeStamp, float zoom);
 
 
 	protected boolean onKeyTyped(char key, int keyCode, boolean repeat, PC_GresHistory history) {
@@ -744,12 +764,12 @@ public abstract class PC_GresComponent {
 	}
 
 
-	public PC_Vec2I getRealLocation() {
+	public PC_Vec2 getRealLocation() {
 
 		if (this.parent == null) {
-			return this.rect.getLocation().mul(getRecursiveZoom());
+			return this.rect.getLocationF().mul(getRecursiveZoom());
 		} 
-		return this.rect.getLocation().mul(getRecursiveZoom()).add(this.parent.getRealLocation()).add(this.parent.getFrame().getLocation().mul(this.parent.getRecursiveZoom()));
+		return this.rect.getLocationF().mul(getRecursiveZoom()).add(this.parent.getRealLocation()).add(this.parent.getFrame().getLocationF().mul(this.parent.getRecursiveZoom()));
 	}
 
 

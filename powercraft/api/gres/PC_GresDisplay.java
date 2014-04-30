@@ -2,6 +2,7 @@ package powercraft.api.gres;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import powercraft.api.PC_Rect;
 import powercraft.api.PC_RectI;
 import powercraft.api.PC_Vec2I;
 
@@ -57,7 +58,7 @@ public class PC_GresDisplay extends PC_GresComponent {
 	}
 
 	@Override
-	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp, float zoom) {
+	protected void paint(PC_Rect scissor, double scale, int displayHeight, float timeStamp, float zoom) {
 		if(this.background!=null)
 			this.background.draw(0, 0, this.rect.width, this.rect.height);
 		if(this.displayObject!=null)

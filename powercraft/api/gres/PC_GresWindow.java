@@ -11,7 +11,9 @@ import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import powercraft.api.PC_Rect;
 import powercraft.api.PC_RectI;
+import powercraft.api.PC_Vec2;
 import powercraft.api.PC_Vec2I;
 import powercraft.api.gres.history.PC_GresHistory;
 
@@ -108,19 +110,19 @@ public class PC_GresWindow extends PC_GresContainer {
 	}
 	
 	@Override
-	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp, float zoom) {
+	protected void paint(PC_Rect scissor, double scale, int displayHeight, float timeStamp, float zoom) {
 		drawTexture(textureName, this.frame.x - 4, 0, this.rect.width - this.frame.width - this.frame.x + 8, this.rect.height);
 		drawString(this.text, this.frame.x, 4, this.rect.width - this.frame.width - this.frame.x, PC_GresAlign.H.CENTER, false);
 	}
 	
 	@SuppressWarnings("hiding")
 	@Override
-	protected void doPaint(PC_Vec2I offset, PC_RectI scissorOld, double scale, int displayHeight, float timeStamp, float zoom) {
+	protected void doPaint(PC_Vec2 offset, PC_Rect scissorOld, double scale, int displayHeight, float timeStamp, float zoom) {
 		if (this.visible) {
-			PC_RectI rect = new PC_RectI(this.rect);
+			PC_Rect rect = new PC_Rect(this.rect);
 			rect.x += offset.x;
 			rect.y += offset.y;
-			PC_RectI scissor = setDrawRect(scissorOld, rect, scale, displayHeight, zoom);
+			PC_Rect scissor = setDrawRect(scissorOld, rect, scale, displayHeight, zoom);
 			if(scissor==null)
 				return;
 			GL11.glPushMatrix();
@@ -131,10 +133,10 @@ public class PC_GresWindow extends PC_GresContainer {
 			rect.x += this.frame.x;
 			rect.y += this.frame.y;
 			GL11.glTranslatef(this.frame.x, this.frame.y, 0);
-			PC_Vec2I noffset = rect.getLocation();
+			PC_Vec2 noffset = rect.getLocation();
 			rect.width -= this.frame.x + this.frame.width;
 			rect.height -= this.frame.y + this.frame.height;
-			PC_RectI nScissor = setDrawRect(scissor, rect, scale, displayHeight, zoom);
+			PC_Rect nScissor = setDrawRect(scissor, rect, scale, displayHeight, zoom);
 			if(nScissor!=null){
 				ListIterator<PC_GresComponent> iterator = this.children.listIterator(this.children.size());
 				while(iterator.hasPrevious()){
@@ -142,7 +144,7 @@ public class PC_GresWindow extends PC_GresContainer {
 				}
 			}
 			GL11.glTranslatef(-this.frame.x, -this.frame.y, 0);
-			noffset = noffset.sub(this.frame.getLocation());
+			noffset = noffset.sub(this.frame.getLocationF());
 			ListIterator<PC_GresWindowSideTab> iterator2 = this.sideTabs.listIterator(this.sideTabs.size());
 			while(iterator2.hasPrevious()){
 				iterator2.previous().doPaint(noffset, scissor, scale, displayHeight, timeStamp, zoom);

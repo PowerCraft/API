@@ -1,6 +1,6 @@
 package powercraft.api.gres;
 
-import powercraft.api.PC_RectI;
+import powercraft.api.PC_Rect;
 import powercraft.api.PC_Vec2I;
 
 
@@ -13,7 +13,7 @@ public class PC_GresInfoWindow extends PC_GresNeedFocusFrame {
 	}
 
 	@Override
-	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp, float zoom) {
+	protected void paint(PC_Rect scissor, double scale, int displayHeight, float timeStamp, float zoom) {
 		drawTexture(textureName, 0, 0, this.rect.width, this.rect.height);
 	}
 	

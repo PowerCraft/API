@@ -34,6 +34,12 @@ public class PC_Vec2I {
 	}
 
 
+	public PC_Vec2I(PC_Vec2 vec) {
+		this.x = (int) (vec.x+0.5);
+		this.y = (int) (vec.y+0.5);
+	}
+
+
 	public void setTo(PC_Vec2I vec) {
 
 		this.x = vec.x;
@@ -143,6 +149,10 @@ public class PC_Vec2I {
 
 	public PC_Vec2I mul(float v) {
 		return new PC_Vec2I((int)(this.x * v), (int)(this.y * v));
+	}
+	
+	public PC_Vec2I div(float v) {
+		return new PC_Vec2I((int)(this.x / v), (int)(this.y / v));
 	}
 
 	

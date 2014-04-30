@@ -1,6 +1,6 @@
 package powercraft.api.gres;
 
-import powercraft.api.PC_RectI;
+import powercraft.api.PC_Rect;
 import powercraft.api.PC_Vec2I;
 import powercraft.api.gres.PC_GresAlign.Fill;
 
@@ -29,7 +29,7 @@ public class PC_GresDialogBox extends PC_GresContainer {
 	}
 	
 	@Override
-	protected void paint(PC_RectI scissor, double scale, int displayHeight, float timeStamp, float zoom) {
+	protected void paint(PC_Rect scissor, double scale, int displayHeight, float timeStamp, float zoom) {
 		drawTexture(textureName, this.rect.x, this.rect.y, this.rect.width, this.rect.height);
 	}
 	
