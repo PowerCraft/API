@@ -5,7 +5,7 @@ import net.minecraft.world.World;
 import powercraft.api.PC_Direction;
 import powercraft.api.PC_Utils;
 
-public class PC_GridHelper {
+public final class PC_GridHelper {
 
 	public static <G extends PC_Grid<G, T, N, E>, T extends PC_IGridTile<G, T, N, E>, N extends PC_Node<G, T, N, E>, E extends PC_Edge<G, T, N, E>> void remove(T tile){
 		tile.getGrid().removeTile(tile);
@@ -163,6 +163,10 @@ public class PC_GridHelper {
 		if(world!=null && !world.isRemote && thisTile.getGrid()!=null){
 			remove(thisTile);
 		}
+	}
+	
+	private PC_GridHelper(){
+		PC_Utils.staticClassConstructor();
 	}
 	
 }

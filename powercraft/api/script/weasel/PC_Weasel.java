@@ -53,7 +53,7 @@ public final class PC_Weasel {
 	}
 	
 	private PC_Weasel(){
-		throw new InstantiationError();
+		PC_Utils.staticClassConstructor();
 	}
 	
 	public static void saveAs(String name, PC_WeaselContainer classSave){

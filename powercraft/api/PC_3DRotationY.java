@@ -60,7 +60,8 @@ public class PC_3DRotationY implements PC_3DRotation {
 
 	@Override
 	public AxisAlignedBB rotateBox(AxisAlignedBB box) {
-		// TODO Auto-generated method stub
+		for(int i=0; i<this.rotation; i++)
+			PC_Utils.rotateAABB(box, PC_Direction.UP);
 		return box;
 	}
 

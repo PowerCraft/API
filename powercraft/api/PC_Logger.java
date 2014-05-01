@@ -158,6 +158,10 @@ public final class PC_Logger {
 		logger.throwing(sourceClass, sourceMethod, thrown);
 	}
 
+	private PC_Logger(){
+		PC_Utils.staticClassConstructor();
+	}
+	
 	/**
 	 *
 	 * the log formatter

@@ -45,7 +45,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 
-public class PC_Gres {
+public final class PC_Gres {
 	
 	private static TreeMap<String, PC_IGresGuiOpenHandler> guiOpenHandlers = new TreeMap<String, PC_IGresGuiOpenHandler>();
 	@SideOnly(Side.CLIENT)
@@ -316,6 +316,10 @@ public class PC_Gres {
 			}
 		}
 		return null;
+	}
+	
+	private PC_Gres(){
+		PC_Utils.staticClassConstructor();
 	}
 	
 }

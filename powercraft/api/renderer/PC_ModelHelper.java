@@ -3,10 +3,11 @@ package powercraft.api.renderer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.IIcon;
 import powercraft.api.PC_Direction;
+import powercraft.api.PC_Utils;
 import powercraft.api.PC_Vec3;
 import powercraft.api.block.PC_AbstractBlockBase;
 
-public class PC_ModelHelper {
+public final class PC_ModelHelper {
 
 	public static void drawBlockAsUsual(PC_AbstractBlockBase block, Tessellator tessellator, int meta) {
 		for (PC_Direction side : PC_Direction.VALID_DIRECTIONS)
@@ -125,4 +126,9 @@ public class PC_ModelHelper {
 		tessellator.addVertexWithUV(x2, y1, z1, u2, v2);
 		tessellator.addVertexWithUV(x2, y1, z2, u2, v1);
 	}
+	
+	private PC_ModelHelper(){
+		PC_Utils.staticClassConstructor();
+	}
+	
 }

@@ -11,6 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import powercraft.api.PC_Lang;
+import powercraft.api.PC_Utils;
 import powercraft.api.gres.PC_GresComponent;
 import powercraft.api.gres.autoadd.PC_AutoAdd;
 import powercraft.api.gres.autoadd.PC_AutoComplete;
@@ -31,8 +32,12 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class PC_MiniscriptHighlighting {
+public final class PC_MiniscriptHighlighting {
 
+	private PC_MiniscriptHighlighting(){
+		PC_Utils.staticClassConstructor();
+	}
+	
 	public static PC_GresHighlighting makeHighlighting(Set<String> consts, Set<String> pointers){
 		List<String> wordList = new ArrayList<String>(consts);
 		wordList.addAll(pointers);

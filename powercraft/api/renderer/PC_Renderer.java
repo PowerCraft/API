@@ -21,7 +21,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class PC_Renderer implements ISimpleBlockRenderingHandler, IItemRenderer {
+public final class PC_Renderer implements ISimpleBlockRenderingHandler, IItemRenderer {
 
 	private static PC_FakeBlockForRenderer fakeBlock = new PC_FakeBlockForRenderer();
 	

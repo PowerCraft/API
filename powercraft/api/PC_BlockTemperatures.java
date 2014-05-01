@@ -10,7 +10,7 @@ import net.minecraftforge.fluids.IFluidBlock;
 import powercraft.api.block.PC_AbstractBlockBase;
 
 
-public class PC_BlockTemperatures {
+public final class PC_BlockTemperatures {
 
 	public static final int CELCIUS0_TEMPERATURE = 273;
 	public static final int DEFAULT_TEMPERATURE = 24+CELCIUS0_TEMPERATURE;
@@ -80,7 +80,7 @@ public class PC_BlockTemperatures {
 		return temperature+CELCIUS0_TEMPERATURE;
 	}
 	
-	public static int kelvinTOCelcius(int temperature){
+	public static int kelvinToCelcius(int temperature){
 		return temperature-CELCIUS0_TEMPERATURE;
 	}
 	
@@ -96,6 +96,10 @@ public class PC_BlockTemperatures {
 		setTemperatureFor(Blocks.lit_redstone_lamp, 50+CELCIUS0_TEMPERATURE);
 		setTemperatureFor(Blocks.lit_pumpkin, 40+CELCIUS0_TEMPERATURE);
 		setTemperatureFor(Blocks.redstone_torch, 40+CELCIUS0_TEMPERATURE);
+	}
+	
+	private PC_BlockTemperatures(){
+		PC_Utils.staticClassConstructor();
 	}
 	
 }

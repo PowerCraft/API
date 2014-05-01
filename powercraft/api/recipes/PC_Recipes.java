@@ -3,6 +3,7 @@ package powercraft.api.recipes;
 import java.util.ArrayList;
 import java.util.List;
 
+import powercraft.api.PC_Utils;
 import powercraft.api.PC_Vec3I;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -10,7 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-public class PC_Recipes {
+public final class PC_Recipes {
 	
 	private static List<PC_3DRecipe> recipes3d = new ArrayList<PC_3DRecipe>();
 	
@@ -51,6 +52,10 @@ public class PC_Recipes {
 			}
 		}
 		return false;
+	}
+	
+	private PC_Recipes(){
+		PC_Utils.staticClassConstructor();
 	}
 	
 }

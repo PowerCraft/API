@@ -1,6 +1,7 @@
 package powercraft.api.reflect;
 
 import powercraft.api.PC_Logger;
+import powercraft.api.PC_Utils;
 
 
 public final class PC_Security {
@@ -48,7 +49,7 @@ public final class PC_Security {
 	}
 	
 	private PC_Security() {
-		throw new InstantiationError();
+		PC_Utils.staticClassConstructor();
 	}
 	
 }

@@ -15,7 +15,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 
-public class PC_Keyboard {
+public final class PC_Keyboard {
 	
 	static List<PC_KeyHandler> handlers = new ArrayList<PC_KeyHandler>();
 	

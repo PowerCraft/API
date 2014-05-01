@@ -1,6 +1,6 @@
 package powercraft.api;
 
-public class PC_Sound {
+public final class PC_Sound {
 
 	public static boolean isSoundEnabled(){
 		if (PC_Utils.isServer()) {
@@ -13,6 +13,10 @@ public class PC_Sound {
 		if (isSoundEnabled()) {
 			PC_Registry.playSound(x, y, z, sound, soundVolume, pitch);
 		}
+	}
+	
+	private PC_Sound(){
+		PC_Utils.staticClassConstructor();
 	}
 	
 }

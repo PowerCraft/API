@@ -30,4 +30,8 @@ final class PC_Bootstrap {
 		return loaded;
 	}
 	
+	private PC_Bootstrap(){
+		PC_Utils.staticClassConstructor();
+	}
+	
 }

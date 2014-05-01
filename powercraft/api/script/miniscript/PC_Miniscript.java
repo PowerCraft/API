@@ -178,7 +178,7 @@ public final class PC_Miniscript {
 	}
 	
 	private PC_Miniscript(){
-		throw new InstantiationError();
+		PC_Utils.staticClassConstructor();
 	}
 
 	public static String generateDefaultSource(String type, String[] vectors) {

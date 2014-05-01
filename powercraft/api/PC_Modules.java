@@ -35,7 +35,7 @@ public final class PC_Modules {
 	}
 	
 	private PC_Modules(){
-		throw new InstantiationError();
+		PC_Utils.staticClassConstructor();
 	}
 	
 }

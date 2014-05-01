@@ -6,7 +6,7 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import powercraft.api.PC_Utils;
 
-class PC_FakeBlockForRenderer extends Block {
+final class PC_FakeBlockForRenderer extends Block {
 
 	PC_FakeBlockForRenderer() {
 		super(Material.ground);

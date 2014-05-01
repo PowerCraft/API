@@ -365,7 +365,7 @@ public final class PC_NBTTagHandler {
 	}
 	
 	private PC_NBTTagHandler() {
-		throw new InstantiationError();
+		PC_Utils.staticClassConstructor();
 	}
 	
 }

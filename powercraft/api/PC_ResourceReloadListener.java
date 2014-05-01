@@ -20,7 +20,9 @@ public final class PC_ResourceReloadListener {
 		((IReloadableResourceManager)PC_ClientUtils.mc().getResourceManager()).registerReloadListener(PC_ResourceListener.INSTANCE);
 	}
 	
-	private PC_ResourceReloadListener(){}
+	private PC_ResourceReloadListener(){
+		PC_Utils.staticClassConstructor();
+	}
 
 	static void onResourceReload(){
 		for(PC_IResourceReloadListener listener:listeners){

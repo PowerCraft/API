@@ -6,6 +6,7 @@ import java.lang.reflect.Modifier;
 import java.util.EnumMap;
 
 import powercraft.api.PC_Logger;
+import powercraft.api.PC_Utils;
 import powercraft.api.reflect.PC_Processor.Result;
 
 
@@ -244,7 +245,7 @@ public final class PC_Reflection {
 	}
 	
 	private PC_Reflection() {
-		throw new InstantiationError();
+		PC_Utils.staticClassConstructor();
 	}
 	
 }

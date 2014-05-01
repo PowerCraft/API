@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 
-public class PC_OreDicrionary {
+public final class PC_OreDictionary {
 
     public static int getOreID(String name){
     	return OreDictionary.getOreID(name);
@@ -36,4 +36,8 @@ public class PC_OreDicrionary {
         return OreDictionary.itemMatches(target, input, strict);
     }
 	
+    private PC_OreDictionary(){
+    	PC_Utils.staticClassConstructor();
+    }
+    
 }

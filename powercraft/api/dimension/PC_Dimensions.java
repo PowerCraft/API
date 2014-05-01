@@ -7,6 +7,7 @@ import java.util.List;
 import powercraft.api.PC_Api;
 import powercraft.api.PC_ImmutableList;
 import powercraft.api.PC_Logger;
+import powercraft.api.PC_Utils;
 import powercraft.api.reflect.PC_Security;
 
 public final class PC_Dimensions {
@@ -46,7 +47,7 @@ public final class PC_Dimensions {
 	}
 	
 	private PC_Dimensions(){
-		throw new InstantiationError();
+		PC_Utils.staticClassConstructor();
 	}
 	
 }

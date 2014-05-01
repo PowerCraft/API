@@ -9,6 +9,7 @@ import powercraft.api.PC_ClientRegistry;
 import powercraft.api.PC_IconRegistry;
 import powercraft.api.PC_ImmutableList;
 import powercraft.api.PC_Logger;
+import powercraft.api.PC_Utils;
 import powercraft.api.network.PC_PacketHandler;
 import powercraft.api.network.packet.PC_PacketMultiblockObjectSync;
 import powercraft.api.network.packet.PC_PacketSelectMultiblockTile;
@@ -64,7 +65,7 @@ public final class PC_Multiblocks {
 	}
 	
 	private PC_Multiblocks(){
-		throw new InstantiationError();
+		PC_Utils.staticClassConstructor();
 	}
 
 	public static PC_MultiblockItem getItem(PC_MultiblockObject multiblockObject) {

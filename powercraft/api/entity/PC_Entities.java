@@ -8,9 +8,10 @@ import net.minecraft.entity.Entity;
 import powercraft.api.PC_Api;
 import powercraft.api.PC_ImmutableList;
 import powercraft.api.PC_Logger;
+import powercraft.api.PC_Utils;
 import powercraft.api.reflect.PC_Security;
 
-public class PC_Entities {
+public final class PC_Entities {
 
 	private static boolean done;
 	private static List<PC_EntityType<?>> entities = new ArrayList<PC_EntityType<?>>();
@@ -55,7 +56,7 @@ public class PC_Entities {
 	}
 	
 	private PC_Entities(){
-		throw new InstantiationError();
+		PC_Utils.staticClassConstructor();
 	}
 	
 }

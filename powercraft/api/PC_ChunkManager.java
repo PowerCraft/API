@@ -13,7 +13,7 @@ import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import net.minecraftforge.common.ForgeChunkManager.Type;
 
 
-public class PC_ChunkManager implements LoadingCallback {
+public final class PC_ChunkManager implements LoadingCallback {
 	
 	private static PC_ChunkManager INSTANCE = new PC_ChunkManager();
 	private static WeakHashMap<World, WorldInfo> worldInfos = new WeakHashMap<World, WorldInfo>();

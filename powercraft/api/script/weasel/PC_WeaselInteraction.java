@@ -5,8 +5,14 @@ import java.util.Map;
 import javax.script.Invocable;
 import javax.script.ScriptException;
 
+import powercraft.api.PC_Utils;
 
-public class PC_WeaselInteraction {
+
+public final class PC_WeaselInteraction {
+	
+	private PC_WeaselInteraction(){
+		PC_Utils.staticClassConstructor();
+	}
 	
 	@SuppressWarnings("unchecked")
 	public static Map<Object, Object> newInstance(Object vm, String className) throws NoSuchMethodException, ScriptException{

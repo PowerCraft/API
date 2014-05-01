@@ -3,8 +3,12 @@ package powercraft.api;
 import java.io.File;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
 import javax.management.InstanceAlreadyExistsException;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -31,6 +35,7 @@ import powercraft.api.block.PC_AbstractBlockBase;
 import powercraft.api.block.PC_Block;
 import powercraft.api.block.PC_BlockTileEntity;
 import powercraft.api.block.PC_TileEntity;
+import powercraft.api.reflect.PC_Reflection;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
 
@@ -530,6 +535,7 @@ public class PC_Utils {
 
 	@SuppressWarnings("unused")
 	public static int getSideRotation(IBlockAccess world, int x, int y, int z, PC_Direction side, int faceSide) {
+		notImplementedYet("getSideRotation");
 		// TODO Auto-generated method stub
 		return 0;
 	}
@@ -597,13 +603,48 @@ public class PC_Utils {
 	}
 
 	public static void setArrayContentsToNull(Object[] array) {
-		for (int i = 0; i < array.length; i++) {
-			array[i] = null;
+		Arrays.fill(array, null);
+	}
+
+	public static boolean isBlockSideSolid(IBlockAccess world, int x, int y, int z, PC_Direction dir){
+		Block block = PC_Utils.getBlock(world, x, y, z);
+		return block.isSideSolid(world, x, y, z, dir.toForgeDirection());
+	}
+
+	public static void removeBlock(World world, int x, int y, int z) {
+		Block block = PC_Utils.getBlock(world, x, y, z);
+		block.dropBlockAsItem(world, x, y, z, getMetadata(world, x, y, z), 0);
+        setAir(world, x, y, z);
+	}
+
+	public static void rotateAABB(AxisAlignedBB box, PC_Direction dir) {
+		double tmp;
+		switch(dir){
+		case UP:
+			tmp = box.maxZ;
+			box.maxZ = box.maxX;
+			box.maxX = 1-box.minZ;
+			box.minZ = box.minX;
+			box.minX = 1-tmp;
+			break;
+		default:
+			notImplementedYet("AABB rotations around other than UP");
+			break;
+		}
+	}
+	
+	private static List<String> messages = new ArrayList<String>();
+	
+	public static void notImplementedYet(String what){
+		if(!messages.contains(what)){
+			messages.add(what);
+			PC_Logger.severe("%s not implemented yet", what);
 		}
 	}
 
-	public static void setCollectionContentsToNull(java.util.SortedSet<?> array) {
-		setArrayContentsToNull(array.toArray());
+	public static void staticClassConstructor() {
+		Class<?> caller = PC_Reflection.getCallerClass();
+		throw new InstantiationError(caller+" is a static class, therefore there can't be an instance");
 	}
-
+	
 }

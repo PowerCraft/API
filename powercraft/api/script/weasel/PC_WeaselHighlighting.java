@@ -2,6 +2,7 @@ package powercraft.api.script.weasel;
 
 import java.awt.Font;
 
+import powercraft.api.PC_Utils;
 import powercraft.api.gres.PC_GresComponent;
 import powercraft.api.gres.autoadd.PC_AutoAdd;
 import powercraft.api.gres.autoadd.PC_AutoComplete;
@@ -18,8 +19,12 @@ import powercraft.api.script.weasel.source.PC_WeaselSourceIterator;
 import powercraft.api.script.weasel.source.PC_WeaselToken;
 import powercraft.api.script.weasel.source.PC_WeaselTokenKind;
 
-public class PC_WeaselHighlighting {
+public final class PC_WeaselHighlighting {
 
+	private PC_WeaselHighlighting(){
+		PC_Utils.staticClassConstructor();
+	}
+	
 	public static PC_GresHighlighting makeHighlighting(){
 		PC_GresHighlighting highlighting = new PC_GresHighlighting();
 		PC_GresHighlighting INNER = new PC_GresHighlighting();

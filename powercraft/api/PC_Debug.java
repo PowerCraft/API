@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.entity.RenderManager;
  * @author XOR
  *
  */
-public class PC_Debug {
+public final class PC_Debug {
 
 	/**
 	 * Debug on/off
@@ -29,6 +29,10 @@ public class PC_Debug {
 		if(DEBUG){
 			RenderManager.debugBoundingBox = true;
 		}
+	}
+	
+	private PC_Debug(){
+		PC_Utils.staticClassConstructor();
 	}
 	
 }

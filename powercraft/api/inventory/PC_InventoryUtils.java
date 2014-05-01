@@ -27,7 +27,7 @@ import powercraft.api.PC_Vec3;
 import powercraft.api.PC_Vec3I;
 import powercraft.api.item.PC_IItem;
 
-public class PC_InventoryUtils {
+public final class PC_InventoryUtils {
 
 	public static void loadInventoryFromNBT(IInventory inventory, NBTTagCompound nbtTagCompound, String key) {
 
@@ -644,6 +644,10 @@ public class PC_InventoryUtils {
 		int maxStack = itemStack.getMaxStackSize();
 		int maxSlot = slot.getSlotStackLimit();
 		return maxStack>maxSlot?maxSlot:maxStack;
+	}
+	
+	private PC_InventoryUtils(){
+		PC_Utils.staticClassConstructor();
 	}
 	
 }

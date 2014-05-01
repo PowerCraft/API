@@ -10,7 +10,7 @@ import powercraft.api.PC_NBTTagHandler;
 import powercraft.api.PC_Field.Flag;
 import net.minecraft.nbt.NBTTagCompound;
 
-public class PC_FakeDiagnostic implements Diagnostic<String> {
+public final class PC_FakeDiagnostic implements Diagnostic<String> {
 	
 	public static final PC_DiagnosticTranslater DEFAULT_TRANSLATER = new PC_DiagnosticTranslater(){
 

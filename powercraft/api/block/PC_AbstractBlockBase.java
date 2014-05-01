@@ -182,6 +182,8 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 	@Override
 	public final AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z) {
 		AxisAlignedBB box = getMainCollisionBoundingBox(world, x, y, z);
+		if(box==null)
+			return null;
 		return PC_Utils.rotateAABB(world, x, y, z, box).offset(x, y, z);
 	}
 
@@ -401,6 +403,13 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 	@SuppressWarnings("static-method")
 	public int getTemperature() {
 		return PC_BlockTemperatures.DEFAULT_TEMPERATURE;
+	}
+
+	@Override
+	public void onNeighborBlockChange(World world, int x, int y, int z, Block block) {
+		if(!canBlockStay(world, x, y, z)){
+			PC_Utils.removeBlock(world, x, y, z);
+		}
 	}
 	
 }
