@@ -89,8 +89,8 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 	}
 	
 	@Override
-	public void setLayout(PC_IGresLayout layout) {
-		//
+	public PC_GresContainer setLayout(PC_IGresLayout layout) {
+		return this;
 	}
 
 	public PC_IGresGui getClient() {

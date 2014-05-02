@@ -27,6 +27,10 @@ public class PC_GresWindow extends PC_GresContainer {
 	public PC_GresWindow(String title) {
 		this.frame.setTo(new PC_RectI(4, 4 + fontRenderer.getStringSize(title).y + 2, 4, 4));
 		setText(title);
+		this.fontColors[0] = 0x404040;
+		this.fontColors[1] = 0x404040;
+		this.fontColors[2] = 0x404040;
+		this.fontColors[3] = 0x404040;
 	}
 
 	public void addSideTab(PC_GresWindowSideTab sideTab) {

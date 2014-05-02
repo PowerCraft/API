@@ -2,7 +2,7 @@
 	<Texture textureName="Gui.png">
 		<Subtexture name="Window" size="20, 20" frame="4, 4, 4, 4" loc_active="0, 0" loc_mouseDown="0, 0" loc_mouseOver="0, 0" loc_disabled="0, 0"></Subtexture>
 		<Subtexture name="Frame" size="20, 20" frame="1, 1, 1, 1" loc_active="0, 20" loc_mouseDown="0, 20" loc_mouseOver="0, 20" loc_disabled="0, 20"></Subtexture>
-		<Subtexture name="Button" size="30, 15" frame="2, 2, 2, 3" loc_active="20, 0" loc_mouseDown="20, 30" loc_mouseOver="20, 15" loc_disabled="20, 45"></Subtexture>
+		<Subtexture name="Button" size="30, 15" frame="2, 3, 2, 3" loc_active="20, 0" loc_mouseDown="20, 30" loc_mouseOver="20, 15" loc_disabled="20, 45"></Subtexture>
 		<Subtexture name="Slot" size="4, 4" frame="1, 1, 1, 1" loc_active="0, 40" loc_mouseDown="0, 40" loc_mouseOver="0, 40" loc_disabled="0, 40"></Subtexture>
 		<Subtexture name="FireOn" size="14, 14" frame="0, 0, 0, 14" loc_active="50, 0" loc_mouseDown="50, 0" loc_mouseOver="50, 0" loc_disabled="50, 0"></Subtexture>
 		<Subtexture name="FireShadow" size="14, 14" frame="0, 0, 0, 14" loc_active="64, 0" loc_mouseDown="64, 0" loc_mouseOver="64, 0" loc_disabled="64, 0"></Subtexture>
@@ -45,6 +45,7 @@
 		<Subtexture name="ListElement" size="28, 12" frame="1, 1, 1, 1" loc_active="230, 240" loc_mouseDown="137, 40" loc_mouseOver="137, 28" loc_disabled="230, 240"></Subtexture>
 		<Subtexture name="InfoFrame" size="20, 20" frame="1, 1, 1, 1" loc_active="0, 73" loc_mouseDown="0, 73" loc_mouseOver="0, 73" loc_disabled="0, 73"></Subtexture>
 		<Subtexture name="DialogBoxBackground" size="1, 1" frame="0, 0, 0, 0" loc_active="0, 44" loc_mouseDown="0, 44" loc_mouseOver="0, 44" loc_disabled="0, 44"></Subtexture>
+		<Subtexture name="LineColor" size="1, 1" frame="0, 0, 0, 0" loc_active="1, 44" loc_mouseDown="1, 44" loc_mouseOver="1, 44" loc_disabled="1, 44"></Subtexture>
 	</Texture>
 	<Texture textureName="Images.png">
 		<Subtexture name="I_ON" size="16, 16" frame="16, 16, 0, 0" loc_active="0, 0" loc_mouseDown="0, 0" loc_mouseOver="0, 0" loc_disabled="0, 0"></Subtexture>

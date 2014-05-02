@@ -81,7 +81,7 @@ public abstract class PC_GresComponent {
 
 	protected static PC_FontRenderer fontRenderer = new PC_FontRenderer(PC_Fonts.getFontByName("Default"));
 
-	protected final int fontColors[] = { 4210752, 4210752, 4210752, 4210752 };
+	protected final int fontColors[] = { 0x000000, 0x000000, 0x000000, 0x333333 };
 
 	protected final List<PC_IGresEventListener> eventListeners = new ArrayList<PC_IGresEventListener>();
 
@@ -197,9 +197,10 @@ public abstract class PC_GresComponent {
 	}
 
 
-	public void setPadding(PC_RectI rect) {
+	public PC_GresComponent setPadding(PC_RectI rect) {
 
 		this.padding.setTo(rect);
+		return this;
 	}
 
 
@@ -209,9 +210,10 @@ public abstract class PC_GresComponent {
 	}
 
 
-	public void setAlignH(PC_GresAlign.H alignH) {
+	public PC_GresComponent setAlignH(PC_GresAlign.H alignH) {
 
 		this.alignH = alignH;
+		return this;
 	}
 
 
@@ -221,9 +223,10 @@ public abstract class PC_GresComponent {
 	}
 
 
-	public void setAlignV(PC_GresAlign.V alignV) {
+	public PC_GresComponent setAlignV(PC_GresAlign.V alignV) {
 
 		this.alignV = alignV;
+		return this;
 	}
 
 
@@ -233,9 +236,10 @@ public abstract class PC_GresComponent {
 	}
 
 
-	public void setFill(PC_GresAlign.Fill fill) {
+	public PC_GresComponent setFill(PC_GresAlign.Fill fill) {
 
 		this.fill = fill;
+		return this;
 	}
 
 
@@ -780,9 +784,10 @@ public abstract class PC_GresComponent {
 	}
 
 
-	public void addEventListener(PC_IGresEventListener eventListener) {
+	public PC_GresComponent addEventListener(PC_IGresEventListener eventListener) {
 
 		if (!this.eventListeners.contains(eventListener)) this.eventListeners.add(eventListener);
+		return this;
 	}
 
 

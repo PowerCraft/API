@@ -54,6 +54,10 @@ public class PC_GresTextEdit extends PC_GresComponent {
 		setText(text);
 		this.type = type;
 		this.maxChars = chars;
+		this.fontColors[0] = 0xffffffff;
+		this.fontColors[1] = 0xffffffff;
+		this.fontColors[2] = 0xffffffff;
+		this.fontColors[3] = 0xffffffff;
 	}
 
 	@Override

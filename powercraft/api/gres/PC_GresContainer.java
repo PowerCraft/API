@@ -65,10 +65,11 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 	}
 
 
-	public void setLayout(PC_IGresLayout layout) {
+	public PC_GresContainer setLayout(PC_IGresLayout layout) {
 
 		this.layout = layout;
 		notifyChange();
+		return this;
 	}
 
 
