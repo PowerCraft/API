@@ -68,6 +68,11 @@ public class PC_GresRadioButton extends PC_GresComponent {
 
 	@Override
 	protected boolean handleMouseButtonClick(PC_Vec2I mouse, int buttons, int eventButton, PC_GresHistory history) {
+		check();
+		return true;
+	}
+	
+	public void check(){
 		if(!this.state){
 			for(PC_GresRadioButton rb:this.group){
 				rb.state = false;
@@ -75,7 +80,10 @@ public class PC_GresRadioButton extends PC_GresComponent {
 			this.state = true;
 		}
 		notifyChange();
-		return true;
 	}
 
+	public boolean getState(){
+		return this.state;
+	}
+	
 }

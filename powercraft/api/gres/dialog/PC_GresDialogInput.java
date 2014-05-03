@@ -51,7 +51,7 @@ public class PC_GresDialogInput extends PC_GresDialogBasic {
 	}
 
 	@Override
-	public void addEventListener(PC_IGresEventListener eventListener) {
+	public PC_GresDialogInput addEventListener(PC_IGresEventListener eventListener) {
 		super.addEventListener(eventListener);
 		if(this.textEdit!=null){
 			String input = this.textEdit.getText();
@@ -59,6 +59,7 @@ public class PC_GresDialogInput extends PC_GresDialogBasic {
 			fireEvent(ev);
 			this.doButton.setEnabled(ev.isEnabled());
 		}
+		return this;
 	}
 
 	public static class EventInput extends PC_GresEvent{

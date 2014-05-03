@@ -155,5 +155,13 @@ public final class PC_MathHelper {
     private PC_MathHelper(){
     	PC_Utils.staticClassConstructor();
     }
+
+	public static double length(double ... v) {
+		double vv=0;
+		for(int i=0; i<v.length; i++){
+			vv += v[i]*v[i];
+		}
+		return sqrt_double(vv);
+	}
     
 }

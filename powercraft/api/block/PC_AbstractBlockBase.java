@@ -28,6 +28,8 @@ import powercraft.api.PC_Direction;
 import powercraft.api.PC_IconRegistry;
 import powercraft.api.PC_Module;
 import powercraft.api.PC_Utils;
+import powercraft.api.beam.PC_BeamHitResult;
+import powercraft.api.beam.PC_IBeam;
 import powercraft.api.redstone.PC_RedstoneConnectable;
 import powercraft.api.renderer.PC_Renderer;
 import cpw.mods.fml.common.ModContainer;
@@ -410,6 +412,11 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 		if(!canBlockStay(world, x, y, z)){
 			PC_Utils.removeBlock(world, x, y, z);
 		}
+	}
+	
+	@SuppressWarnings({ "static-method", "unused" })
+	public PC_BeamHitResult onHitByBeam(World world, int x, int y, int z, PC_IBeam beam){
+		return PC_BeamHitResult.STANDART;
 	}
 	
 }

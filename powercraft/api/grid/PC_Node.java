@@ -50,7 +50,6 @@ public class PC_Node<G extends PC_Grid<G, T, N, E>, T extends PC_IGridTile<G, T,
 			E edge2Delete = this.edges.get(1);
 			edge.integrate((N) this, this.tile, edge2Delete);
 			this.grid.removeNode((N) this);
-			this.grid.removeEdge(edge2Delete);
 		}
 	}
 

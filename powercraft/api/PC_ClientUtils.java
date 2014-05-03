@@ -100,5 +100,9 @@ public final class PC_ClientUtils extends PC_Utils {
 	boolean iIsEntityFX(Entity entity) {
 		return entity instanceof EntityFX;
 	}
+
+	public static void spawnParicle(EntityFX entityFX) {
+		mc().effectRenderer.addEffect(entityFX);
+	}
 	
 }

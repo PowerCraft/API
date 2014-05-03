@@ -23,24 +23,40 @@ public class PC_Edge<G extends PC_Grid<G, T, N, E>, T extends PC_IGridTile<G, T,
 	@SuppressWarnings("unchecked")
 	@Override
 	protected N getAsNode(T tile) {
-		int index = this.tiles.indexOf(tile);
-		N node = this.grid.newNode(tile);
-		E edge = this.grid.newEdge(node, this.end);
-		this.end.replaceEdge((E) this, edge);
-		this.end = node;
-		this.tiles.remove(index);
-		while(this.tiles.size()>index){
-			edge.tiles.add(0, this.tiles.remove(index));
+		N node;
+		if(this.start==null&&this.end==null){
+			int index = this.tiles.indexOf(tile);
+			node = this.grid.newNode(tile);
+			this.start = node;
+			this.end = node;
+			this.tiles.remove(index);
+			for(int i=0; i<index; i++){
+				this.tiles.add(this.tiles.remove(0));
+			}
+			node.connectEdge((E) this);
+		}else{
+			int index = this.tiles.indexOf(tile);
+			node = this.grid.newNode(tile);
+			E edge = this.grid.newEdge(node, this.end);
+			this.end.replaceEdge((E) this, edge);
+			this.end = node;
+			this.tiles.remove(index);
+			while(this.tiles.size()>index){
+				edge.tiles.add(0, this.tiles.remove(index));
+			}
+			node.connectEdge(edge);
 		}
 		onChanged();
-		node.connectEdge(edge);
 		node.connectEdge((E) this);
 		return node;
 	}
 	
 	@SuppressWarnings("unchecked")
 	protected void integrate(N node, T tile, E edge){
-		if(this.start==node){
+		if(edge==this){
+			this.start=null;
+			this.end=null;
+		}else if(this.start==node){
 			this.tiles.add(0, tile);
 			if(edge.start==node){
 				this.start = edge.end;
@@ -54,6 +70,7 @@ public class PC_Edge<G extends PC_Grid<G, T, N, E>, T extends PC_IGridTile<G, T,
 				}
 			}
 			this.start.replaceEdge(edge, (E) this);
+			this.grid.removeEdge(edge);
 		}else if(this.end==node){
 			this.tiles.add(tile);
 			if(edge.start==node){
@@ -68,6 +85,7 @@ public class PC_Edge<G extends PC_Grid<G, T, N, E>, T extends PC_IGridTile<G, T,
 				}
 			}
 			this.end.replaceEdge(edge, (E) this);
+			this.grid.removeEdge(edge);
 		}
 		onChanged();
 	}
@@ -103,8 +121,10 @@ public class PC_Edge<G extends PC_Grid<G, T, N, E>, T extends PC_IGridTile<G, T,
 	protected void markVisibles(List<N> visibleNodes, List<E> visibleEdges) {
 		if(!visibleEdges.contains(this)){
 			visibleEdges.add((E) this);
-			this.start.markVisibles(visibleNodes, visibleEdges);
-			this.end.markVisibles(visibleNodes, visibleEdges);
+			if(this.start!=null)
+				this.start.markVisibles(visibleNodes, visibleEdges);
+			if(this.end!=null)
+				this.end.markVisibles(visibleNodes, visibleEdges);
 		}
 	}
 	
