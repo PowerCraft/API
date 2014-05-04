@@ -32,17 +32,17 @@ public class PC_Building implements IVillageCreationHandler {
 	
 	@SuppressWarnings("unused")
 	public int getPieceLimit(Random random, int terrainType){
-		return this.pieceWeight;
+		return this.pieceLimit;
 	}
 	
 	@Override
 	public final PieceWeight getVillagePieceWeight(Random random, int terrainType) {
-		return new PieceWeight(getClass(), getPieceWeight(random, terrainType), getPieceLimit(random, terrainType));
+		return new PieceWeight(this.pieceClass, getPieceWeight(random, terrainType), getPieceLimit(random, terrainType));
 	}
 
 	@Override
 	public final Class<?> getComponentClass() {
-		return getClass();
+		return this.pieceClass;
 	}
 
 	@SuppressWarnings("rawtypes")
