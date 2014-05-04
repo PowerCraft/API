@@ -190,7 +190,10 @@ public class PC_GresAutoCompleteWindow extends PC_GresNeedFocusFrame{
 	@Override
 	protected void onTick() {
 		super.onTick();
-		String[] info = this.withInfos.get(this.listBox.getSelection()).getInfo();
+		int select = this.listBox.getSelection();
+		if(select==-1)
+			return;
+		String[] info = this.withInfos.get(select).getInfo();
 		if(this.infoWindow==null || this.infoWindow.getParent()==null){
 			if(this.infoWindow!=null){
 				removeOtherAllowed(this.infoWindow);
@@ -230,7 +233,10 @@ public class PC_GresAutoCompleteWindow extends PC_GresNeedFocusFrame{
 
 	void updateInfo(){
 		if(this.infoWindow!=null){
-			this.selected = this.listBox.getSelection();
+			int select = this.listBox.getSelection();
+			if(select==-1)
+				return;
+			this.selected = select;
 			String info[] = this.withInfos.get(this.selected).getInfo();
 			if(info==null){
 				this.infoWindow.close();
