@@ -28,7 +28,7 @@ public final class PC_ClientRegistry extends PC_Registry {
 
 	private PC_TileEntitySpecialRenderer specialRenderer;
 	
-	PC_ClientRegistry()  throws InstanceAlreadyExistsException{
+	public PC_ClientRegistry()  throws InstanceAlreadyExistsException{
 		this.specialRenderer = new PC_TileEntitySpecialRenderer();
 	}
 	

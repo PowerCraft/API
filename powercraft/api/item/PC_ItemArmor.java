@@ -1,18 +1,5 @@
 package powercraft.api.item;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import powercraft.api.PC_Api;
-import powercraft.api.PC_ClientRegistry;
-import powercraft.api.PC_IconRegistry;
-import powercraft.api.PC_Module;
-import powercraft.api.PC_Utils;
-import powercraft.api.inventory.PC_InventoryUtils;
-import cpw.mods.fml.common.ModContainer;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -28,6 +15,15 @@ import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.client.IItemRenderer.ItemRendererHelper;
 import net.minecraftforge.common.ISpecialArmor;
 import net.minecraftforge.oredict.OreDictionary;
+import powercraft.api.PC_ClientRegistry;
+import powercraft.api.PC_IconRegistry;
+import powercraft.api.PC_Module;
+import powercraft.api.PC_Utils;
+import powercraft.api.inventory.PC_InventoryUtils;
+import cpw.mods.fml.common.ModContainer;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class PC_ItemArmor extends ItemArmor implements PC_IItem, ISpecialArmor {
 
@@ -75,13 +71,7 @@ public class PC_ItemArmor extends ItemArmor implements PC_IItem, ISpecialArmor {
 			this.creativeTabs = NULLCREATIVTABS;
 		}else{
 			if(this.constructed){
-				List<CreativeTabs> creativeTabList = new ArrayList<CreativeTabs>();
-				creativeTabList.add(creativeTab);
-				if(!creativeTabList.contains(getModule().getCreativeTab()))
-					creativeTabList.add(getModule().getCreativeTab());
-				if(!creativeTabList.contains(PC_Api.INSTANCE.getCreativeTab()))
-					creativeTabList.add(PC_Api.INSTANCE.getCreativeTab());
-				this.creativeTabs = creativeTabList.toArray(new CreativeTabs[creativeTabList.size()]);
+				this.creativeTabs = PC_Utils.getCreativeTabsFor(creativeTab, getModule());
 			}else{
 				this.creativeTabs = new CreativeTabs[]{creativeTab};
 			}

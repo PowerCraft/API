@@ -11,6 +11,7 @@ import javax.management.InstanceAlreadyExistsException;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -645,6 +646,16 @@ public class PC_Utils {
 	public static void staticClassConstructor() {
 		Class<?> caller = PC_Reflection.getCallerClass();
 		throw new InstantiationError(caller+" is a static class, therefore there can't be an instance");
+	}
+
+	public static CreativeTabs[] getCreativeTabsFor(CreativeTabs creativeTab, PC_Module module) {
+		List<CreativeTabs> creativeTabList = new ArrayList<CreativeTabs>();
+		creativeTabList.add(creativeTab);
+		if(!creativeTabList.contains(module.getCreativeTab()))
+			creativeTabList.add(module.getCreativeTab());
+		if(!creativeTabList.contains(PC_Api.INSTANCE.getCreativeTab()))
+			creativeTabList.add(PC_Api.INSTANCE.getCreativeTab());
+		return creativeTabList.toArray(new CreativeTabs[creativeTabList.size()]);
 	}
 	
 }

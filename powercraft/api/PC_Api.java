@@ -63,6 +63,8 @@ public final class PC_Api extends PC_Module {
 		PC_Multiblocks.register();
 		PC_EnergyGrid.register();
 		
+		PC_ChunkManager.register();
+		
 		PC_Blocks.construct();
 		PC_Items.construct();
 		PC_Multiblocks.construct();

@@ -3,10 +3,21 @@ package powercraft.api;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 
-final class PC_Bootstrap {
+/**
+ * First thing that is invoked after PC_Api
+ * @author XOR
+ *
+ */
+public final class PC_Bootstrap {
 
+	/**
+	 * has prepare been invoked
+	 */
 	private static boolean loaded;
 	
+	/**
+	 * initialize Utils and Registry and logger
+	 */
 	@SuppressWarnings("unused")
 	static void prepare() {
 		try{
@@ -26,6 +37,10 @@ final class PC_Bootstrap {
 		loaded = true;
 	}
 
+	/**
+	 * is Utils and Registry and Logger been loaded
+	 * @return if all is loaded
+	 */
 	public static boolean isLoaded(){
 		return loaded;
 	}

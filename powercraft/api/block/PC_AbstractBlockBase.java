@@ -1,6 +1,5 @@
 package powercraft.api.block;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -21,7 +20,6 @@ import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.oredict.OreDictionary;
 import powercraft.api.PC_3DRotation;
-import powercraft.api.PC_Api;
 import powercraft.api.PC_BlockTemperatures;
 import powercraft.api.PC_ClientRegistry;
 import powercraft.api.PC_Direction;
@@ -84,13 +82,7 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 			this.creativeTabs = NULLCREATIVTABS;
 		}else{
 			if(this.constructed){
-				List<CreativeTabs> creativeTabList = new ArrayList<CreativeTabs>();
-				creativeTabList.add(creativeTab);
-				if(!creativeTabList.contains(getModule().getCreativeTab()))
-					creativeTabList.add(getModule().getCreativeTab());
-				if(!creativeTabList.contains(PC_Api.INSTANCE.getCreativeTab()))
-					creativeTabList.add(PC_Api.INSTANCE.getCreativeTab());
-				this.creativeTabs = creativeTabList.toArray(new CreativeTabs[creativeTabList.size()]);
+				this.creativeTabs = PC_Utils.getCreativeTabsFor(creativeTab, getModule());
 			}else{
 				this.creativeTabs = new CreativeTabs[]{creativeTab};
 			}

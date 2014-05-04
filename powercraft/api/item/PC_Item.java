@@ -1,8 +1,5 @@
 package powercraft.api.item;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -14,7 +11,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.client.IItemRenderer.ItemRendererHelper;
 import net.minecraftforge.oredict.OreDictionary;
-import powercraft.api.PC_Api;
 import powercraft.api.PC_ClientRegistry;
 import powercraft.api.PC_IconRegistry;
 import powercraft.api.PC_Module;
@@ -66,13 +62,7 @@ public abstract class PC_Item extends Item implements PC_IItem{
 			this.creativeTabs = NULLCREATIVTABS;
 		}else{
 			if(this.constructed){
-				List<CreativeTabs> creativeTabList = new ArrayList<CreativeTabs>();
-				creativeTabList.add(creativeTab);
-				if(!creativeTabList.contains(getModule().getCreativeTab()))
-					creativeTabList.add(getModule().getCreativeTab());
-				if(!creativeTabList.contains(PC_Api.INSTANCE.getCreativeTab()))
-					creativeTabList.add(PC_Api.INSTANCE.getCreativeTab());
-				this.creativeTabs = creativeTabList.toArray(new CreativeTabs[creativeTabList.size()]);
+				this.creativeTabs = PC_Utils.getCreativeTabsFor(creativeTab, getModule());
 			}else{
 				this.creativeTabs = new CreativeTabs[]{creativeTab};
 			}

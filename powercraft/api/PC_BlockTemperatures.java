@@ -9,20 +9,48 @@ import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.fluids.IFluidBlock;
 import powercraft.api.block.PC_AbstractBlockBase;
 
-
+/**
+ * Temperature handling for blocks
+ * @author XOR
+ *
+ */
 public final class PC_BlockTemperatures {
 
+	/**
+	 * Temperature of 0°C in Kelvin
+	 */
 	public static final int CELCIUS0_TEMPERATURE = 273;
+	/**
+	 * Temperature of 24°C in Kelvin
+	 */
 	public static final int DEFAULT_TEMPERATURE = 24+CELCIUS0_TEMPERATURE;
-
+	/**
+	 * Some Minecraft block temperatures
+	 */
 	private static HashMap<Block, Integer> blockTemperatures = new HashMap<Block, Integer>();
 	
+	/**
+	 * Get the temperature of an block
+	 * @param world the world
+	 * @param x x-coord
+	 * @param y y-coord
+	 * @param z z-coord
+	 * @return the temperature in Kelvin
+	 */
 	public static int getTemperature(World world, int x, int y, int z){
 		int temperature = getTemperatureForBiomeAndHeight2(world, x, y, z);
 		int blockTemperature = getTemperature2(world, x, y, z);
 		return blockTemperature+temperature-DEFAULT_TEMPERATURE;
 	}
 	
+	/**
+	 * Get the temperature of an block not connected to the hight-temperature
+	 * @param world the world
+	 * @param x x-coord
+	 * @param y y-coord
+	 * @param z z-coord
+	 * @return the temperature in Kelvin
+	 */
 	public static int getTemperature2(World world, int x, int y, int z){
 		Block block = PC_Utils.getBlock(world, x, y, z);
 		if(block instanceof PC_AbstractBlockBase){
@@ -33,6 +61,11 @@ public final class PC_BlockTemperatures {
     	return getTemperatureFallback(block);
 	}
 	
+	/**
+	 * Get the temperature of an block
+	 * @param block the block
+	 * @return the temperature in Kelvin
+	 */
 	public static int getTemperature(Block block) {
 		if(block instanceof PC_AbstractBlockBase){
     		return ((PC_AbstractBlockBase)block).getTemperature();
@@ -42,16 +75,37 @@ public final class PC_BlockTemperatures {
 		return getTemperatureFallback(block);
 	}
 	
+	/**
+	 * Temperature of Minecraft blocks
+	 * @param block the Minecraft block
+	 * @return the temperature in Kelvin
+	 */
 	public static int getTemperatureFallback(Block block){
 		Integer temperature = blockTemperatures.get(block);
 		return temperature==null?DEFAULT_TEMPERATURE:temperature.intValue();
 	}
 	
+	/**
+	 * Get the temperature for a specific height and biome
+	 * @param world the world
+	 * @param x x-coord
+	 * @param y y-coord
+	 * @param z z-coord
+	 * @return the temperature in Kelvin
+	 */
 	public static int getTemperatureForBiomeAndHeight(World world, int x, int y, int z){
 		BiomeGenBase biome = PC_Utils.getBiome(world, x, z);
 		return (int) (biome.getFloatTemperature(x, y, z)-0.1)*35+CELCIUS0_TEMPERATURE;
 	}
 	
+	/**
+	 * Get the temperature for a specific height and biome and weather
+	 * @param world the world
+	 * @param x x-coord
+	 * @param y y-coord
+	 * @param z z-coord
+	 * @return the temperature in Kelvin
+	 */
 	public static int getTemperatureForBiomeAndHeight2(World world, int x, int y, int z){
 		BiomeGenBase biome = PC_Utils.getBiome(world, x, z);
 		int temperature = (int) ((biome.getFloatTemperature(x, y, z)-0.2)*32);
@@ -68,6 +122,11 @@ public final class PC_BlockTemperatures {
 		return temperature+CELCIUS0_TEMPERATURE;
 	}
 	
+	/**
+	 * Set a temperature for a Minecraft block
+	 * @param block the block which should have a temperature
+	 * @param temperature the temperature for the block
+	 */
 	public static void setTemperatureFor(Block block, int temperature){
 		if(block instanceof PC_AbstractBlockBase || block instanceof IFluidBlock){
 			PC_Logger.warning("PowerCraft Blocks or IFluidBlock's have a funktion for temperature");
@@ -76,10 +135,20 @@ public final class PC_BlockTemperatures {
 		}
 	}
 	
+	/**
+	 * convert °C to Kelvin
+	 * @param temperature temperature in °C
+	 * @return temperature in Kelvin
+	 */
 	public static int celciusToKelvin(int temperature){
 		return temperature+CELCIUS0_TEMPERATURE;
 	}
 	
+	/**
+	 * convert Kelvin to °C
+	 * @param temperature temperature in Kelvin
+	 * @return temperature in °C
+	 */
 	public static int kelvinToCelcius(int temperature){
 		return temperature-CELCIUS0_TEMPERATURE;
 	}

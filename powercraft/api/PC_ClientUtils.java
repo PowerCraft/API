@@ -31,7 +31,7 @@ public final class PC_ClientUtils extends PC_Utils {
 	/**
 	 * Will be called from Forge
 	 */
-	PC_ClientUtils() throws InstanceAlreadyExistsException {
+	public PC_ClientUtils() throws InstanceAlreadyExistsException {
 
 		PC_Renderer.getInstance();
 		isClient.set(Boolean.TRUE);
