@@ -195,6 +195,8 @@ public class PC_GresWindowSideTab extends PC_GresContainer {
 		sideTab.setColor(new PC_Vec3(1.0, 0.2, 0.2));
 		sideTab.setLayout(new PC_GresLayoutVertical());
 		PC_RedstoneWorkType[] types = tileEntity.getAllowedRedstoneWorkTypes();
+		if(types==null || types.length==0)
+			return null;
 		Object[] disps = new Object[types.length];
 		int act = 0;
 		for(int i=0; i<types.length; i++){

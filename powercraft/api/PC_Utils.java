@@ -348,7 +348,7 @@ public class PC_Utils {
 		entityitem.delayBeforeCanPickup = 10;
 		world.spawnEntityInWorld(entityitem);
 	}
-
+	
 	public static void spawnEntity(World world, Entity entity) {
 		if (!world.isRemote) {
 			world.spawnEntityInWorld(entity);

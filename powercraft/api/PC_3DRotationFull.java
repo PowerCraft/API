@@ -45,7 +45,7 @@ public class PC_3DRotationFull implements PC_3DRotation {
 	@Override
 	public AxisAlignedBB rotateBox(AxisAlignedBB box) {
 		// TODO Auto-generated method stub
-		return null;
+		return box;
 	}
 
 	@Override

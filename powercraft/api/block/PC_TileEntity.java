@@ -91,6 +91,15 @@ public class PC_TileEntity extends TileEntity {
 	@PC_Field(flags = { Flag.SAVE })
 	protected PC_RedstoneWorkType workWhen;
 
+	public PC_TileEntity(){
+		PC_RedstoneWorkType[] types = getAllowedRedstoneWorkTypes();
+		if(types==null || types.length==0){
+			this.workWhen = null;
+		}else{
+			this.workWhen = types[0];
+		}
+	}
+	
 	public boolean isClient() {
 
 		if (this.worldObj == null)
@@ -771,6 +780,8 @@ public class PC_TileEntity extends TileEntity {
 
 	public void setRedstoneWorkType(PC_RedstoneWorkType rwt) {
 		PC_RedstoneWorkType allowed[] = getAllowedRedstoneWorkTypes();
+		if(allowed==null)
+			return;
 		for (int i = 0; i < allowed.length; i++) {
 			if (allowed[i] == rwt) {
 				this.workWhen = rwt;
@@ -787,7 +798,7 @@ public class PC_TileEntity extends TileEntity {
 
 	@SuppressWarnings("static-method")
 	public PC_RedstoneWorkType[] getAllowedRedstoneWorkTypes() {
-		return new PC_RedstoneWorkType[] { null };
+		return null;
 	}
 
 	public PC_RedstoneWorkType getRedstoneWorkType() {
