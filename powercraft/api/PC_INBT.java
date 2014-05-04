@@ -10,7 +10,7 @@ import net.minecraft.nbt.NBTTagCompound;
  * 
  * Indicates that this Object can be saved to an NBTTagCompound
  * 
- * <p><b>YOU HAVE TO MAKE THE CONSTRUCTOR(NBTTagCompound)</b> to load the object again
+ * <p><b>YOU HAVE TO MAKE THE CONSTRUCTOR(NBTTagCompound,powercraft.api.PC_Field.Flag) or CONSTRUCTOR(NBTTagCompound)</b> to load the object again
  * 
  * @author XOR
  *

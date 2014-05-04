@@ -25,6 +25,10 @@ public final class PC_ForgeHandler implements IFuelHandler, IWorldGenerator {
 
 	private static final PC_ForgeHandler INSTANCE = new PC_ForgeHandler();
 	
+	private PC_ForgeHandler(){
+		
+	}
+	
 	static void register(){
 		PC_Security.allowedCaller("PC_FuelHandler.register()", PC_Api.class);
 		GameRegistry.registerFuelHandler(INSTANCE);

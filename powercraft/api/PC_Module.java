@@ -46,10 +46,17 @@ public abstract class PC_Module implements PC_IResourceReloadListener {
 		//
 	}
 
+	/**
+	 * save the config into the config file
+	 */
 	public void saveConfig() {
 		this.config.save();
 	}
 
+	/**
+	 * get the config
+	 * @return the config
+	 */
 	public Configuration getConfig() {
 		return this.config;
 	}
@@ -72,16 +79,32 @@ public abstract class PC_Module implements PC_IResourceReloadListener {
 		return this.mod.getMetadata();
 	}
 
+	/**
+	 * the module name, same as @Mod(name=xxx)
+	 * @return
+	 */
 	public String getName() {
 		return getContainer().getName();
 	}
-
+	
+	/**
+	 * the module modid, same as @Mod(modid=xxx)
+	 * @return
+	 */
 	public String getModId() {
 		return getContainer().getModId();
 	}
 
+	/**
+	 * the itemstack that should be displayed in the creative tab button
+	 * @return the itemstack that should be displayed
+	 */
 	public abstract ItemStack getCreativeTabItemStack();
 
+	/**
+	 * the creative tab for this module
+	 * @return the creative tab
+	 */
 	public PC_CreativeTab getCreativeTab() {
 		return this.creativeTab;
 	}
