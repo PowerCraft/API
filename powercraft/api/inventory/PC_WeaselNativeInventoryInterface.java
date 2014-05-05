@@ -48,7 +48,7 @@ public class PC_WeaselNativeInventoryInterface {
 			combineStack(tmp, realOffsetOne, realOffsetTwo, difFrom1To2);
 			return true;
 		}else{
-			if(itemStacksEqual(src1, src2)){
+			if(PC_InventoryUtils.itemStacksEqual(src1, src2)){
 				if(src1.stackSize>src2.stackSize){
 					combineStack(tmp, realOffsetOne, realOffsetTwo, Math.min(difFrom1To2, src1.stackSize-src2.stackSize));
 					return true;
@@ -139,10 +139,6 @@ public class PC_WeaselNativeInventoryInterface {
 		return -1;
 	}
 	
-	public static boolean itemStacksEqual(ItemStack one, ItemStack two){
-		return ItemStack.areItemStacksEqual(one, two) && ItemStack.areItemStackTagsEqual(one, two);
-	}
-	
 	public static int getMaxStackSize(IInventory inventory, int realPos, boolean ignoreCurrent){
 		ItemStack isTarget = inventory.getStackInSlot(realPos);
 		if(isTarget==null || ignoreCurrent){
@@ -170,7 +166,7 @@ public class PC_WeaselNativeInventoryInterface {
 		if(target==null){
 			return inventory.isItemValidForSlot(realPos, stack)?Math.min(stack.getMaxStackSize(), getMaxStackSize(inventory, realPos, true)):0;
 		}
-		if(itemStacksEqual(stack, target)){
+		if(PC_InventoryUtils.itemStacksEqual(stack, target)){
 			return getMaxStackSize(inventory, realPos, false)-target.stackSize;
 		}
 		return -Math.min(stack.getMaxStackSize(), getMaxStackSize(inventory, realPos, true));
@@ -202,7 +198,7 @@ public class PC_WeaselNativeInventoryInterface {
 			inventory.setInventorySlotContents(to, stack);
 			return true;
 		}
-		if(!itemStacksEqual(src, target)){
+		if(!PC_InventoryUtils.itemStacksEqual(src, target)){
 			return false;
 		}
 		int amountCapped = amount;
