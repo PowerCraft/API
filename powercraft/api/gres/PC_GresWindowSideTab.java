@@ -155,7 +155,7 @@ public class PC_GresWindowSideTab extends PC_GresContainer {
 		if(type==null)
 			return PC_Gres.getGresTexture("I_OFF");
 		switch(type){
-		case EVER:
+		case ALWAYS:
 			return PC_Gres.getGresTexture("I_ON");
 		case ON_FLANK:
 			return PC_Gres.getGresTexture("I_FL");

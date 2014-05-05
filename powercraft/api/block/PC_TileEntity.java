@@ -193,7 +193,7 @@ public class PC_TileEntity extends TileEntity {
 	}
 
 	public boolean isWorking() {
-		return this.workWhen == PC_RedstoneWorkType.EVER
+		return this.workWhen == PC_RedstoneWorkType.ALWAYS
 				|| (this.redstoneValue == 0 && this.workWhen == PC_RedstoneWorkType.ON_OFF)
 				|| (this.redstoneValue != 0 && this.workWhen == PC_RedstoneWorkType.ON_ON);
 	}
@@ -202,11 +202,11 @@ public class PC_TileEntity extends TileEntity {
 	public final void updateEntity() {
 		if (isInvalid())
 			return;
-		if (isWorking()) {
-			doWork();
-		}
 		if (this instanceof PC_IGridHolder) {
 			((PC_IGridHolder) this).getGridIfNull();
+		}
+		if (isWorking()) {
+			doWork();
 		}
 		onTick();
 		if (!isClient() && this.sync) {
