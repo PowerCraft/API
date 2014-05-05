@@ -798,7 +798,7 @@ public class PC_TileEntity extends TileEntity {
 
 	@SuppressWarnings("static-method")
 	public PC_RedstoneWorkType[] getAllowedRedstoneWorkTypes() {
-		return null;
+		return new PC_RedstoneWorkType[]{null};
 	}
 
 	public PC_RedstoneWorkType getRedstoneWorkType() {
