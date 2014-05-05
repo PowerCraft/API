@@ -26,6 +26,7 @@ import org.xml.sax.SAXParseException;
 import powercraft.api.PC_Api;
 import powercraft.api.PC_Direction;
 import powercraft.api.PC_Logger;
+import powercraft.api.PC_MathHelper;
 import powercraft.api.PC_Utils;
 import powercraft.api.building.PC_Build.ItemStackSpawn;
 import powercraft.api.reflect.PC_Security;
@@ -123,20 +124,42 @@ public class PC_TreeHarvesting implements PC_ISpecialHarvesting {
 		}
 	}
 	
+	private static boolean isLeaveOrLog(World world, int x, int y, int z, Tree tree){
+		Block b = PC_Utils.getBlock(world, x, y, z);
+		int m = PC_Utils.getMetadata(world, x, y, z);
+		TreeState ts = new TreeState(PC_Utils.getBlockSID(b), m);
+		return tree.woods.contains(ts)||tree.leaves.contains(ts);
+	}
 	
-	public void harvestLeaves(World world, int x, int y, int z, Block block, int meta, int fortune, Tree tree, List<ItemStackSpawn> drops, int recursion){
+	private static boolean isConnectedToLog(World world, int x, int y, int z, Tree tree){
 		int range = 4;
-		for(int i=-range; i<range; i++){
-			for(int j=-range; j<range; j++){
-				for(int k=-range; k<range; k++){
-					Block b = PC_Utils.getBlock(world, x+i, y+j, z+k);
-					int m = PC_Utils.getMetadata(world, x+i, y+j, z+k);
-					if(tree.woods.contains(new TreeState(PC_Utils.getBlockSID(b), m))){
-						return;
+		for(int i=-range; i<=range; i++){
+			for(int j=-range; j<=range; j++){
+				for(int k=-range; k<=range; k++){
+					if(PC_MathHelper.abs(i)+PC_MathHelper.abs(j)+PC_MathHelper.abs(k)<=range){
+						Block b = PC_Utils.getBlock(world, x+i, y+j, z+k);
+						int m = PC_Utils.getMetadata(world, x+i, y+j, z+k);
+						if(tree.woods.contains(new TreeState(PC_Utils.getBlockSID(b), m))){
+							boolean ok = true;
+							for(int l=1; l<range; l++){
+								if(!isLeaveOrLog(world, (int)(x+i*l/4.0f+0.5f), (int)(y+j*l/4.0f+0.5f), (int)(z+k*l/4.0f+0.5f), tree)){
+									ok = false;
+									break;
+								}
+							}
+							if(ok)
+								return true;
+						}
 					}
 				}
 			}
 		}
+		return false;
+	}
+	
+	public void harvestLeaves(World world, int x, int y, int z, Block block, int meta, int fortune, Tree tree, List<ItemStackSpawn> drops, int recursion){
+		if(isConnectedToLog(world, x, y, z, tree))
+			return;
 		List<ItemStack> blockDrops = PC_Build.harvestEasy(world, x, y, z, fortune);
 		if(blockDrops!=null){
 			for(ItemStack blockDrop:blockDrops){
