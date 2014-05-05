@@ -236,7 +236,7 @@ public abstract class PC_GresBaseWithInventory extends Container implements PC_I
 	
 	@Override
 	protected boolean mergeItemStack(ItemStack itemStack, int start, int end, boolean par4){
-		return PC_InventoryUtils.storeItemStackToInventoryFrom(this, itemStack, PC_InventoryUtils.makeIndexList(start, end));
+		return PC_InventoryUtils.storeItemStackToInventoryFrom(this, itemStack, PC_InventoryUtils.makeIndexList(start, end))==0;
     }
 
 
