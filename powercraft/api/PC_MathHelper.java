@@ -144,12 +144,34 @@ public final class PC_MathHelper {
         return calculateLogBaseTwoDeBruijn(value) - (isPowerOfTwo(value) ? 0 : 1);
     }
 
-    public static int max(int... nums){
-    	int max = nums[0];
+    public static double max(double... nums){
+    	double max = nums[0];
     	for(int i=1; i<nums.length; i++){
     		max = Math.max(max, nums[i]);
     	}
     	return max;
+    }
+    
+    public static double min(double... nums){
+    	double min = nums[0];
+    	for(int i=1; i<nums.length; i++){
+    		min = Math.min(min, nums[i]);
+    	}
+    	return min;
+    }
+    
+    public static double minAbs(double... nums){
+    	double min = nums[0];
+    	double minAbs = abs_double(min);
+    	double tmpAbs;
+    	for(int i=1; i<nums.length; i++){
+    		tmpAbs = abs_double(nums[i]);
+    		if(minAbs>tmpAbs){
+    			min = nums[i];
+    			minAbs = tmpAbs;
+    		}
+    	}
+    	return min;
     }
     
     private PC_MathHelper(){
