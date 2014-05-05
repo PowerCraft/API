@@ -8,6 +8,7 @@ import net.minecraft.block.Block;
 import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
@@ -100,7 +101,7 @@ public final class PC_InventoryUtils {
 	public static ItemStack tryToStore(World world, int x, int y, int z, PC_Direction to, ItemStack itemstack) {
 		IInventory inventory = getInventoryAt(world, x, y, z);
 		if(inventory!=null){
-			if(storeItemStackToInventoryFrom(inventory, itemstack, to))
+			if(storeItemStackToInventoryFrom(inventory, itemstack, to)==0)
 				return null;
 		}
 		return itemstack;
@@ -138,7 +139,7 @@ public final class PC_InventoryUtils {
 
 		@Override
 		public boolean isEntityApplicable(Entity entity) {
-			return (this.livingEnabled || !(entity instanceof EntityLiving)) && getInventoryFrom(entity)!=null;
+			return (this.livingEnabled || !(entity instanceof EntityLivingBase)) && getInventoryFrom(entity)!=null;
 		}
 		
 	}
@@ -268,22 +269,38 @@ public final class PC_InventoryUtils {
 		return getFirstEmptySlot(inv, itemstack, indexes);
 	}
 	
-	public static boolean storeItemStackToInventoryFrom(IInventory inv, ItemStack itemstack){
+	public static int storeItemStackToInventoryFrom(IInventory inv, ItemStack itemstack){
 		return storeItemStackToInventoryFrom(inv, itemstack, (int[])null);
 	}
 	
-	public static boolean storeItemStackToInventoryFrom(IInventory inv, ItemStack itemstack, PC_Direction side){
+	public static int storeItemStackToInventoryFrom(IInventory inv, ItemStack itemstack, PC_Direction side){
 		return storeItemStackToInventoryFrom(inv, itemstack, getInvIndexesForSide(inv, side));
 	}
 	
-	public static boolean storeItemStackToInventoryFrom(IInventory inv, ItemStack itemstack, int[] indexes){
+	/**
+	 * @param inv
+	 * @param itemstack
+	 * @param indexes
+	 * @return 
+	 * <br>
+	 * <br>
+	 * 0 -> itemStack entirely stored<br>
+	 * 1 -> itemStack partially stored<br>
+	 * 2 -> no slot for itemStack<br>
+	 * <br>
+	 * previously returned true now means 0 (-> check on 0 for same result)<br>
+	 */
+	public static int storeItemStackToInventoryFrom(IInventory inv, ItemStack itemstack, int[] indexes){
+		int output=2;
 		while(itemstack.stackSize>0){
 			int slot = getSlotWithPlaceFor(inv, itemstack, indexes);
 			if(slot<0)
 				break;
 			storeItemStackToSlot(inv, itemstack, slot);
+			output=1;
 		}
-		return itemstack.stackSize==0;
+		if(itemstack.stackSize==0) return 0;
+		return output;
 	}
 	
 	public static boolean storeItemStackToSlot(IInventory inv, ItemStack itemstack, int i){
@@ -664,6 +681,14 @@ public final class PC_InventoryUtils {
 		int maxStack = itemStack.getMaxStackSize();
 		int maxSlot = slot.getSlotStackLimit();
 		return maxStack>maxSlot?maxSlot:maxStack;
+	}
+	
+	public static boolean itemStacksEqual(ItemStack one, ItemStack two){
+		if(one == null && two == null) return true;
+		if(one == null || two == null) return false;
+		if(!(one.getItem()==two.getItem())) return false;
+		if(!(one.getItemDamage()==two.getItemDamage())) return false;
+		return ItemStack.areItemStackTagsEqual(one, two);
 	}
 	
 	private PC_InventoryUtils(){
