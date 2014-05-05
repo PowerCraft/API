@@ -55,6 +55,10 @@ public class PC_Vec3I {
 		return new PC_Vec3I(this.x+other.x, this.y+other.y, this.z+other.z);
 	}
 	
+	public PC_Vec3I offset(PC_Direction other) {
+		return new PC_Vec3I(this.x+other.offsetX, this.y+other.offsetY, this.z+other.offsetZ);
+	}
+	
 	
 	public PC_Vec3I rotate(PC_Direction pcDir, int times){
 		int tmpX=0, tmpY=0, tmpZ=0;
