@@ -410,5 +410,10 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 	public PC_BeamHitResult onHitByBeam(World world, int x, int y, int z, PC_IBeam beam){
 		return PC_BeamHitResult.STANDART;
 	}
+
+	@SuppressWarnings({ "static-method", "unused" })
+	public boolean canBeHarvested(World world, int x, int y, int z) {
+		return false;
+	}
 	
 }

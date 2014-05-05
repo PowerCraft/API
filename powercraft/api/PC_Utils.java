@@ -88,6 +88,10 @@ public class PC_Utils {
 		return getBlock(name, Block.class);
 	}
 
+	public static String getBlockSID(Block block) {
+		return Block.blockRegistry.getNameForObject(block);
+	}
+	
 	public static <T> T getBlock(String modId, String name, Class<T> c) {
 		return as(Block.blockRegistry.getObject(modId + ":" + name), c);
 	}
@@ -162,6 +166,10 @@ public class PC_Utils {
 
 	public static Item getItem(String name) {
 		return getItem(name, Item.class);
+	}
+	
+	public static Item getItemForBlock(Block block) {
+		return Item.getItemFromBlock(block);
 	}
 
 	public static <T> T getItem(String modId, String name, Class<T> c) {
@@ -365,6 +373,8 @@ public class PC_Utils {
 			if (!file.exists())
 				file.mkdir();
 		}
+		if(f==null)
+			return file;
 		return new File(file, f);
 	}
 

@@ -3,6 +3,8 @@ package powercraft.api;
 
 import net.minecraft.item.ItemStack;
 import powercraft.api.block.PC_Blocks;
+import powercraft.api.building.PC_CropHarvesting;
+import powercraft.api.building.PC_TreeHarvesting;
 import powercraft.api.dimension.PC_Dimensions;
 import powercraft.api.energy.PC_EnergyGrid;
 import powercraft.api.entity.PC_Entities;
@@ -64,6 +66,9 @@ public final class PC_Api extends PC_Module {
 		PC_EnergyGrid.register();
 		
 		PC_ChunkManager.register();
+		
+		PC_CropHarvesting.register();
+		PC_TreeHarvesting.register();
 		
 		PC_Blocks.construct();
 		PC_Items.construct();
