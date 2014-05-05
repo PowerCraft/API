@@ -130,22 +130,28 @@ public final class PC_InventoryUtils {
 	
 	private static class EntitySelector implements IEntitySelector{
 
-		public EntitySelector() {
-			
+		private boolean livingEnabled;
+		
+		public EntitySelector(boolean livingEnabled) {
+			this.livingEnabled = livingEnabled;
 		}
 
 		@Override
 		public boolean isEntityApplicable(Entity entity) {
-			return getInventoryFrom(entity)!=null;
+			return (this.livingEnabled || !(entity instanceof EntityLiving)) && getInventoryFrom(entity)!=null;
 		}
 		
 	}
 	
 	public static IInventory getEntityInventoryAt(World world, int x, int y, int z){
+		return getEntityInventoryAt(world, x, y, z, true);
+	}
+	
+	public static IInventory getEntityInventoryAt(World world, int x, int y, int z, boolean livingEnabled){
 		List<?> list = world.selectEntitiesWithinAABB(
 				Object.class,
 				AxisAlignedBB.getBoundingBox(x, y, z, x + 1, y + 1, z + 1)
-						.expand(0.6D, 0.6D, 0.6D), new EntitySelector());
+						.expand(0.6D, 0.6D, 0.6D), new EntitySelector(livingEnabled));
 
 		if (list.size() >= 1) {
 			return getInventoryFrom(list.get(0));
@@ -166,6 +172,20 @@ public final class PC_InventoryUtils {
 	
 	public static IInventory getInventoryAt(World world, PC_Vec3I pos) {
 		return getInventoryAt(world, pos.x, pos.y, pos.z);
+	}
+	
+	public static IInventory getInventoryAt(World world, int x, int y, int z, boolean livingEnabled) {
+		IInventory invAt = getBlockInventoryAt(world, x, y, z);
+
+		if (invAt != null) {
+			return invAt;
+		}
+
+		return getEntityInventoryAt(world, x, y, z, livingEnabled);
+	}
+	
+	public static IInventory getInventoryAt(World world, PC_Vec3I pos, boolean livingEnabled) {
+		return getInventoryAt(world, pos.x, pos.y, pos.z, livingEnabled);
 	}
 	
 	public static int[] getInvIndexesForSide(IInventory inv, PC_Direction side){
