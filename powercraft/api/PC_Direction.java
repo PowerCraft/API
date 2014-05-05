@@ -150,5 +150,16 @@ public enum PC_Direction {
 		if(from.rotate(axis, 2)==to) return 2;
 		throw new RuntimeException("You can't rotate from "+from+" to "+to+" via "+axis+"-axis!!");
 	}
+	
+	public boolean isVertical(){
+		return offsetY!=0;
+	}
+	
+	public boolean isHorizontalX(){
+		return offsetX!=0;
+	}
 
+	public boolean isHorizontalZ(){
+		return offsetZ!=0;
+	}
 }
