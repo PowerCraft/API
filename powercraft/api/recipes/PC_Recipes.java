@@ -8,12 +8,17 @@ import powercraft.api.PC_Vec3I;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public final class PC_Recipes {
 	
 	private static List<PC_3DRecipe> recipes3d = new ArrayList<PC_3DRecipe>();
+	
+	public static void addRecipe(IRecipe recipe){
+		GameRegistry.addRecipe(recipe);
+	}
 	
 	public static void addShapedRecipe(ItemStack out, Object...params){
 		GameRegistry.addShapedRecipe(out, params);

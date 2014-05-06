@@ -168,8 +168,8 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 		return getMainCollisionBoundingBoxPre(world, x, y, z);
 	}
 	
-	@SuppressWarnings("unused")
 	public AxisAlignedBB getMainCollisionBoundingBoxPre(World world, int x, int y, int z) {
+		setBlockBoundsBasedOnState(world, x, y, z);
 		return AxisAlignedBB.getAABBPool().getAABB(this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ);
 	}
 	
@@ -406,6 +406,11 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 		}
 	}
 	
+	@Override
+	public boolean canPlaceBlockAt(World world, int x, int y, int z){
+		return canBlockStay(world, x, y, z) && super.canPlaceBlockAt(world, x, y, z);
+	}
+	
 	@SuppressWarnings({ "static-method", "unused" })
 	public PC_BeamHitResult onHitByBeam(World world, int x, int y, int z, PC_IBeam beam){
 		return PC_BeamHitResult.STANDART;
@@ -414,6 +419,11 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 	@SuppressWarnings({ "static-method", "unused" })
 	public boolean canBeHarvested(World world, int x, int y, int z) {
 		return false;
+	}
+
+	@SuppressWarnings("unused")
+	public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> list, boolean advancedItemTooltips) {
+		//
 	}
 	
 }

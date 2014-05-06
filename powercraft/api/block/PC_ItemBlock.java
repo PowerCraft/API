@@ -1,5 +1,7 @@
 package powercraft.api.block;
 
+import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -63,11 +65,11 @@ public class PC_ItemBlock extends ItemBlock implements PC_IItem {
         	playerStetting.set(player);
         	if (placeBlockAt(itemStack, player, world, nx, ny, nz, iside, hitX, hitY, hitZ, metadata)) {
         		playerStetting.set(null);
+        		itemStack.stackSize--;
         		if (this.field_150939_a instanceof PC_AbstractBlockBase) {
         			((PC_AbstractBlockBase) this.field_150939_a).onBlockPostSet(world, nx, ny, nz, side, itemStack, player, hitX, hitY, hitZ, metadata);
         		}
         		world.playSoundEffect(nx+0.5, ny+0.5, nz+0.5, this.field_150939_a.stepSound.func_150496_b(), this.field_150939_a.stepSound.getVolume() + 1 / 2, (float) (this.field_150939_a.stepSound.getPitch() * 0.8));
-        		itemStack.stackSize--;
         	}else{
         		playerStetting.set(null);
         	}
@@ -150,6 +152,12 @@ public class PC_ItemBlock extends ItemBlock implements PC_IItem {
 	@Override
 	public final void initRecipes() {
 		//
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Override
+	public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean advancedItemTooltips) {
+		((PC_AbstractBlockBase)this.field_150939_a).addInformation(itemStack, player, list, advancedItemTooltips);
 	}
 
 }
