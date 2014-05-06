@@ -269,10 +269,16 @@ public final class PC_InventoryUtils {
 		return getFirstEmptySlot(inv, itemstack, indexes);
 	}
 	
+	/**
+	 * @see PC_InventoryUtils#storeItemStackToInventoryFrom(IInventory, ItemStack, int[])
+	 */
 	public static int storeItemStackToInventoryFrom(IInventory inv, ItemStack itemstack){
 		return storeItemStackToInventoryFrom(inv, itemstack, (int[])null);
 	}
 	
+	/**
+	 * @see PC_InventoryUtils#storeItemStackToInventoryFrom(IInventory, ItemStack, int[])
+	 */
 	public static int storeItemStackToInventoryFrom(IInventory inv, ItemStack itemstack, PC_Direction side){
 		return storeItemStackToInventoryFrom(inv, itemstack, getInvIndexesForSide(inv, side));
 	}
