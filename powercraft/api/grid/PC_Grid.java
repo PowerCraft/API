@@ -161,4 +161,8 @@ public abstract class PC_Grid<G extends PC_Grid<G, T, N, E>, T extends PC_IGridT
 		splitGridsIfAble();
 	}
 	
+	public void update(){
+		//
+	}
+	
 }

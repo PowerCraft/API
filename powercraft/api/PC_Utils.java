@@ -400,6 +400,10 @@ public class PC_Utils {
 			block.onNeighborBlockChange(world, x, y, z, neightbor);
 		}
 	}
+	
+	public static void notifyBlockChange(World world, int x, int y, int z, Block block) {
+		world.notifyBlockChange(x, y, z, block);
+	}
 
 	@SuppressWarnings("static-method")
 	File iGetPowerCraftFile() {

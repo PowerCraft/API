@@ -15,8 +15,8 @@ import org.lwjgl.opengl.GL11;
 
 import powercraft.api.PC_Direction;
 import powercraft.api.PC_Field;
-import powercraft.api.PC_Utils;
 import powercraft.api.PC_Field.Flag;
+import powercraft.api.PC_Utils;
 import powercraft.api.grid.PC_IGridHolder;
 import powercraft.api.multiblock.PC_BlockMultiblock;
 import powercraft.api.multiblock.PC_MultiblockIndex;
@@ -107,6 +107,11 @@ public abstract class PC_MultiblockObjectConduit extends PC_MultiblockObject imp
 		checkConnections();
 	}
 
+	@Override
+	public void onInternalChange() {
+		checkConnections();
+	}
+	
 	public abstract IIcon getNormalConduitIcon();
 	public abstract IIcon getCornerConduitIcon();
 	public abstract IIcon getConnectionConduitIcon(int connectionInfo);

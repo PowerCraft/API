@@ -92,6 +92,13 @@ public final class PC_TileEntityMultiblock extends PC_TileEntity implements PC_I
 		}
 	}
 
+	void onInternalChange(PC_MultiblockObject tile){
+		for(PC_MultiblockObject t:this.tiles){
+			if(t!=null && t!=tile)
+				tile.onInternalChange();
+		}
+	}
+	
 	@Override
 	public float getPlayerRelativeHardness(EntityPlayer player) {
 		PC_MultiblockIndex index = PC_BlockMultiblock.playerSelection.get(player);
@@ -301,6 +308,24 @@ public final class PC_TileEntityMultiblock extends PC_TileEntity implements PC_I
 			return tileClass.cast(tile);
 		}
 		return null;
+	}
+
+	@Override
+	public boolean canRedstoneConnect(PC_Direction side, int faceSide) {
+		PC_MultiblockObject tile = this.tiles[PC_MultiblockIndex.FACEBOTTOM.ordinal()];
+		if(tile!=null){
+			return tile.canConnectRedstone(side);
+		}
+		return false;
+	}
+
+	@Override
+	public int getRedstonePowerValue(PC_Direction side, int faceSide) {
+		PC_MultiblockObject tile = this.tiles[PC_MultiblockIndex.FACEBOTTOM.ordinal()];
+		if(tile!=null){
+			return tile.getRedstonePowerValue(side);
+		}
+		return 0;
 	}
 	
 }

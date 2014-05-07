@@ -2,7 +2,6 @@ package powercraft.api.redstone;
 
 import java.util.List;
 
-import net.minecraft.init.Blocks;
 import powercraft.api.grid.PC_Grid;
 import powercraft.api.grid.PC_IGridFactory;
 
@@ -35,10 +34,11 @@ public class PC_RedstoneGrid extends PC_Grid<PC_RedstoneGrid, PC_IRedstoneGridTi
 		
 	}
 	
-	public void onUpdateTick() {
+	@Override
+	public void update() {
 
-		if(this.firstTick)
-			return;
+		//if(this.firstTick)
+		//	return;
 		int newPower = 0;
 		for(PC_RedstoneNode node:this.nodes){
 			int p = node.getPower();
@@ -56,30 +56,24 @@ public class PC_RedstoneGrid extends PC_Grid<PC_RedstoneGrid, PC_IRedstoneGridTi
 			}
 		}
 	}
-	
-	@Override
-	protected void addTile(PC_IRedstoneGridTile tile) {
-		super.addTile(tile);
-		onUpdateTick();
-	}
 
 	@Override
 	protected void removeTile(PC_IRedstoneGridTile tile) {
 		super.removeTile(tile);
-		onUpdateTick();
+		update();
 	}
 
 	@SuppressWarnings("hiding")
 	@Override
 	protected void addAll(List<PC_RedstoneNode> nodes, List<PC_RedstoneEdge> edges) {
 		super.addAll(nodes, edges);
-		onUpdateTick();
+		update();
 	}
 
 	@Override
 	protected void splitGridsIfAble() {
 		super.splitGridsIfAble();
-		onUpdateTick();
+		update();
 	}
 
 	@Override
@@ -98,8 +92,9 @@ public class PC_RedstoneGrid extends PC_Grid<PC_RedstoneGrid, PC_IRedstoneGridTi
 	}
 
 	public int getRedstonePowerValue() {
-		if (Blocks.redstone_wire.canProvidePower()) return this.power;
-		return this.power == 0 ? 0 : this.power - 1;
+		return this.power;
+		//if (Blocks.redstone_wire.canProvidePower()) return this.power;
+		//return this.power == 0 ? 0 : this.power - 1;
 	}
 	
 }

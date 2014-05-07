@@ -1,5 +1,8 @@
 package powercraft.api.grid;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import powercraft.api.PC_Direction;
@@ -7,6 +10,8 @@ import powercraft.api.PC_Utils;
 
 public final class PC_GridHelper {
 
+	public static final List<Object> list = new ArrayList<Object>();
+	
 	public static <G extends PC_Grid<G, T, N, E>, T extends PC_IGridTile<G, T, N, E>, N extends PC_Node<G, T, N, E>, E extends PC_Edge<G, T, N, E>> void remove(T tile){
 		tile.getGrid().removeTile(tile);
 	}
@@ -53,14 +58,23 @@ public final class PC_GridHelper {
 		return false;
 	}
 	
+	private static <G extends PC_Grid<G, T, N, E>, T extends PC_IGridTile<G, T, N, E>, N extends PC_Node<G, T, N, E>, E extends PC_Edge<G, T, N, E>> G getGridIfNull(T tile){
+		if(tile instanceof PC_IGridHolder){
+			((PC_IGridHolder)tile).getGridIfNull();
+		}
+		return tile.getGrid();
+	}
+	
 	public static <G extends PC_Grid<G, T, N, E>, T extends PC_IGridTile<G, T, N, E>, N extends PC_Node<G, T, N, E>, E extends PC_Edge<G, T, N, E>> void getGridIfNull(World world, int x, int y, int z, int sides, T thisTile, PC_IGridFactory<G, T, N, E> factory, Class<T> tileClass){
-		if(world!=null && !world.isRemote && thisTile.getGrid()==null){
+		if(world!=null && !world.isRemote && thisTile.getGrid()==null && !list.contains(thisTile)){
+			boolean b = list.isEmpty();
+			list.add(thisTile);
 			int s = sides;
 			boolean hasGrid = false;
 			for(PC_Direction dir:PC_Direction.VALID_DIRECTIONS){
 				if((s&1)!=0){
 					T tile = getGridTile(world, x+dir.offsetX, y+dir.offsetY, z+dir.offsetZ, dir.getOpposite(), tileClass);
-					if(tile!=null && tile.getGrid()!=null){
+					if(tile!=null && getGridIfNull(tile)!=null){
 						if(hasGrid){
 							connect(tile, thisTile);
 						}else{
@@ -74,11 +88,17 @@ public final class PC_GridHelper {
 			if(!hasGrid){
 				factory.make(thisTile);
 			}
+			if(b){
+				list.clear();
+				thisTile.getGrid().update();
+			}
 		}
 	}
 	
 	public static <G extends PC_Grid<G, T, N, E>, T extends PC_IGridTile<G, T, N, E>, N extends PC_Node<G, T, N, E>, E extends PC_Edge<G, T, N, E>> void getGridIfNull(World world, int x, int y, int z, int sides, PC_Direction dir, T thisTile, PC_IGridFactory<G, T, N, E> factory, Class<T> tileClass){
-		if(world!=null && !world.isRemote && thisTile.getGrid()==null){
+		if(world!=null && !world.isRemote && thisTile.getGrid()==null && !list.contains(thisTile)){
+			boolean b = list.isEmpty();
+			list.add(thisTile);
 			int s = sides;
 			boolean hasGrid = false;
 			for(PC_Direction dir2:PC_Direction.VALID_DIRECTIONS){
@@ -87,7 +107,7 @@ public final class PC_GridHelper {
 				}
 				if((s&(1<<0))!=0){
 					T tile = getGridTile(world, x, y, z, dir2, dir, tileClass);
-					if(tile!=null && tile.getGrid()!=null){
+					if(tile!=null && getGridIfNull(tile)!=null){
 						if(hasGrid){
 							connect(tile, thisTile);
 						}else{
@@ -98,7 +118,7 @@ public final class PC_GridHelper {
 				}
 				if((s&(1<<1))!=0){
 					T tile = getGridTile(world, x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ, dir2, dir.getOpposite(), tileClass);
-					if(tile!=null && tile.getGrid()!=null){
+					if(tile!=null && getGridIfNull(tile)!=null){
 						if(hasGrid){
 							connect(tile, thisTile);
 						}else{
@@ -109,7 +129,7 @@ public final class PC_GridHelper {
 				}
 				if((s&(1<<2))!=0){
 					T tile = getGridTile(world, x + dir2.offsetX, y + dir2.offsetY, z + dir2.offsetZ, dir, dir2.getOpposite(), tileClass);
-					if(tile!=null && tile.getGrid()!=null){
+					if(tile!=null && getGridIfNull(tile)!=null){
 						if(hasGrid){
 							connect(tile, thisTile);
 						}else{
@@ -120,7 +140,7 @@ public final class PC_GridHelper {
 				}
 				if((s&(1<<3))!=0){
 					T tile = getGridTile(world, x + dir2.offsetX, y + dir2.offsetY, z + dir2.offsetZ, dir2.getOpposite(), dir, tileClass);
-					if(tile!=null && tile.getGrid()!=null){
+					if(tile!=null && getGridIfNull(tile)!=null){
 						if(hasGrid){
 							connect(tile, thisTile);
 						}else{
@@ -131,7 +151,7 @@ public final class PC_GridHelper {
 				}
 				if((s&(1<<4))!=0){
 					T tile = getGridTile(world, x + dir2.offsetX + dir.offsetX, y + dir2.offsetY + dir.offsetY, z + dir2.offsetZ + dir.offsetZ, dir2.getOpposite(), dir.getOpposite(), tileClass);
-					if(tile!=null && tile.getGrid()!=null){
+					if(tile!=null && getGridIfNull(tile)!=null){
 						if(hasGrid){
 							connect(tile, thisTile);
 						}else{
@@ -142,7 +162,7 @@ public final class PC_GridHelper {
 				}
 				if((s&(1<<4))!=0){
 					T tile = getGridTile(world, x + dir2.offsetX + dir.offsetX, y + dir2.offsetY + dir.offsetY, z + dir2.offsetZ + dir.offsetZ, dir.getOpposite(), dir2.getOpposite(), tileClass);
-					if(tile!=null && tile.getGrid()!=null){
+					if(tile!=null && getGridIfNull(tile)!=null){
 						if(hasGrid){
 							connect(tile, thisTile);
 						}else{
@@ -155,6 +175,10 @@ public final class PC_GridHelper {
 			}
 			if(!hasGrid){
 				factory.make(thisTile);
+			}
+			if(b){
+				list.clear();
+				thisTile.getGrid().update();
 			}
 		}
 	}

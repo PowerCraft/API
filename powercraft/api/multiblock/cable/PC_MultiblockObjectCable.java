@@ -196,6 +196,12 @@ public abstract class PC_MultiblockObjectCable extends PC_MultiblockObject imple
 		if (drops != null) this.multiblock.drop(drops);
 	}
 
+	@Override
+	public void onInternalChange() {
+		
+		List<ItemStack> drops = checkConnections(false);
+		if (drops != null) this.multiblock.drop(drops);
+	}
 
 	@Override
 	public boolean onAdded() {
@@ -206,8 +212,6 @@ public abstract class PC_MultiblockObjectCable extends PC_MultiblockObject imple
 		getGridIfNull();
 		return true;
 	}
-
-	
 
 	@Override
 	public List<AxisAlignedBB> getCollisionBoundingBoxes() {
@@ -244,7 +248,7 @@ public abstract class PC_MultiblockObjectCable extends PC_MultiblockObject imple
 				for(int j=0; j<4; j++){
 					d[j] = w;
 				}
-				d[i] = -0.25;
+				d[i] = -w;
 				int j = i%2==0?i+1:i-1;
 				d[j] = 0.5;
 				makeWithRot(d, buf);
@@ -380,7 +384,7 @@ public abstract class PC_MultiblockObjectCable extends PC_MultiblockObject imple
 						d[j] = w;
 						iicons[j] = side;
 					}
-					d[i] = -0.25;
+					d[i] = -w;
 					iicons[i] = null;
 					int j = i%2==0?i+1:i-1;
 					d[j] = 0.5;

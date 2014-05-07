@@ -117,7 +117,7 @@ public abstract class PC_MultiblockObject implements PC_INBT{
 
 	@SuppressWarnings("unused")
 	public void onNeighborBlockChange(Block neighbor) {
-		//
+		onChange();
 	}
 
 	@SuppressWarnings({ "static-method", "unused" })
@@ -151,7 +151,7 @@ public abstract class PC_MultiblockObject implements PC_INBT{
 
 	@SuppressWarnings("unused")
 	public void onNeighborTEChange(int tileX, int tileY, int tileZ) {
-		//
+		onChange();
 	}
 
 	@SuppressWarnings("unused")
@@ -286,6 +286,19 @@ public abstract class PC_MultiblockObject implements PC_INBT{
 	public final void applySync(NBTTagCompound nbtTagCompound) {
 		readFromNBT(nbtTagCompound, Flag.SYNC);
 		this.multiblock.renderUpdate();
+	}
+
+	public void onInternalChange() {
+		onChange();
+	}
+	
+	public void onChange(){
+		//
+	}
+
+	@SuppressWarnings({ "static-method", "unused" })
+	public int getRedstonePowerValue(PC_Direction side) {
+		return 0;
 	}
 	
 }
