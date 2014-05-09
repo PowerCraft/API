@@ -298,6 +298,13 @@ public abstract class PC_MultiblockObjectCable extends PC_MultiblockObject imple
 		for(int i=0; i<4; i++){
 			d[i] = w;
 		}
+		boolean overlay = useOverlay();
+		int mask;
+		if(overlay) {
+			mask = getMask();
+		}else{
+			mask = 0;
+		}
 		IIcon side = getCableSideIcon();
 		for(int i=0; i<6; i++){
 			icons[i] = side;
@@ -375,7 +382,7 @@ public abstract class PC_MultiblockObjectCable extends PC_MultiblockObject imple
 		makeWithRot(d, buf);
 		renderer.overrideBlockBounds(buf[0], buf[1], buf[2], buf[3], buf[4], buf[5]);
 		makeRot(rot, renderer);
-		PC_Renderer.renderStandardBlockInWorld(world, x, y, z, icons, 0xFFFFFFFF, 0, renderer);
+		renderTileInWorld(world, x, y, z, icons, renderer, mask);
 		if(renderConnections || onlyExtension){
 			icons[topIcon] = icon;
 			icons[botIcon] = icon;
@@ -396,7 +403,7 @@ public abstract class PC_MultiblockObjectCable extends PC_MultiblockObject imple
 						makeWithRot(iicons, icons);
 						makeWithRot(d, buf);
 						renderer.overrideBlockBounds(buf[0], buf[1], buf[2], buf[3], buf[4], buf[5]);
-						PC_Renderer.renderStandardBlockInWorld(world, x, y, z, icons, 0xFFFFFFFF, 0, renderer);
+						renderTileInWorld(world, x, y, z, icons, renderer, mask);
 					}
 					if(getSpecialConnections(i)!=0){
 						PC_Direction di = dirFrom(i);
@@ -407,13 +414,28 @@ public abstract class PC_MultiblockObjectCable extends PC_MultiblockObject imple
 						makeWithRot(iicons, icons);
 						makeWithRot(d, buf);
 						renderer.overrideBlockBounds(buf[0], buf[1], buf[2], buf[3], buf[4], buf[5]);
-						PC_Renderer.renderStandardBlockInWorld(world, x+di.offsetX, y+di.offsetY, z+di.offsetZ, icons, 0xFFFFFFFF, 0, renderer);
+						renderTileInWorld(world, x+di.offsetX, y+di.offsetY, z+di.offsetZ, icons, renderer, mask);
 					}
 				}
 			}
 		}
 		renderer.unlockBlockBounds();
 		PC_Renderer.resetRotation(renderer);
+	}
+	
+	private void renderTileInWorld(World world, int x, int y, int z, IIcon[] icons, RenderBlocks renderer, int mask){
+		PC_Renderer.renderStandardBlockInWorld(world, x, y, z, icons, 0xFFFFFFFF, 0, renderer);
+		if(mask!=0){
+			int j = 0;
+			for(int i=0; i<16; i++){
+				if((mask & 1<<i)!=0){
+					IIcon icon = getCableLineIcon(j++);
+					int color = getColorForCable(i);
+					IIcon[] iicons = new IIcon[]{icon, icon, icon, icon, icon, icon};
+					PC_Renderer.renderStandardBlockInWorld(world, x, y, z, iicons, color, 0, renderer);
+				}
+			}
+		}
 	}
 	
 	private PC_Direction dirFrom(int i) {

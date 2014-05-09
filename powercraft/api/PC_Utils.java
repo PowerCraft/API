@@ -676,5 +676,15 @@ public class PC_Utils {
 	public static int getColorFor(int index) {
 		return ItemDye.field_150922_c[index];
 	}
+
+	public static int countBits(int mask) {
+		int bits = 0;
+		for(int i=0; i<32; i++){
+			if((mask & 1<<i)!=0){
+				bits++;
+			}
+		}
+		return bits;
+	}
 	
 }

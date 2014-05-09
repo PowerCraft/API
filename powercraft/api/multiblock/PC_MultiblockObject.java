@@ -216,7 +216,7 @@ public abstract class PC_MultiblockObject implements PC_INBT{
 	
 	@SuppressWarnings({ "hiding", "unused" })
 	public boolean isUsing(PC_MultiblockIndex index, PC_MultiblockObject multiblockObject){
-		return this.index == index;
+		return this.index == index && !canMixWith(multiblockObject);
 	}
 	
 	public World getWorld(){
