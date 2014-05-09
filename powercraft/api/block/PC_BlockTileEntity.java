@@ -592,6 +592,15 @@ public abstract class PC_BlockTileEntity extends PC_AbstractBlockBase implements
 	}
 
 	@Override
+	public boolean canProvideStrongPower(IBlockAccess world, int x, int y, int z, PC_Direction side){
+		PC_TileEntity te = PC_Utils.getTileEntity(world, x, y, z, PC_TileEntity.class);
+		if(te!=null){
+			return te.canProvideStrongPower(side);
+		}
+		return true;
+	}
+	
+	@Override
 	public int getRedstonePowerValue(IBlockAccess world, int x, int y, int z, PC_Direction side, int faceSide) {
 		PC_TileEntity te = PC_Utils.getTileEntity(world, x, y, z, PC_TileEntity.class);
 		if(te!=null){

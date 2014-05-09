@@ -829,4 +829,9 @@ public class PC_TileEntity extends TileEntity {
 		//
 	}
 
+	@SuppressWarnings({ "static-method", "unused" })
+	public boolean canProvideStrongPower(PC_Direction side) {
+		return true;
+	}
+
 }

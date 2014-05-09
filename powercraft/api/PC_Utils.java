@@ -19,6 +19,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
@@ -670,6 +671,10 @@ public class PC_Utils {
 		if(!creativeTabList.contains(PC_Api.INSTANCE.getCreativeTab()))
 			creativeTabList.add(PC_Api.INSTANCE.getCreativeTab());
 		return creativeTabList.toArray(new CreativeTabs[creativeTabList.size()]);
+	}
+
+	public static int getColorFor(int index) {
+		return ItemDye.field_150922_c[index];
 	}
 	
 }

@@ -300,5 +300,10 @@ public abstract class PC_MultiblockObject implements PC_INBT{
 	public int getRedstonePowerValue(PC_Direction side) {
 		return 0;
 	}
+
+	@SuppressWarnings({ "static-method", "unused" })
+	public boolean canProvideStrongPower(PC_Direction side) {
+		return true;
+	}
 	
 }

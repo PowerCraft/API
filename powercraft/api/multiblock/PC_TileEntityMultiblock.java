@@ -327,5 +327,14 @@ public final class PC_TileEntityMultiblock extends PC_TileEntity implements PC_I
 		}
 		return 0;
 	}
+
+	@Override
+	public boolean canProvideStrongPower(PC_Direction side) {
+		PC_MultiblockObject tile = this.tiles[PC_MultiblockIndex.FACEBOTTOM.ordinal()];
+		if(tile!=null){
+			return tile.canProvideStrongPower(side);
+		}
+		return false;
+	}
 	
 }

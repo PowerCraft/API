@@ -205,14 +205,23 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 	
 	@Override
 	public final int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side) {
-		return isProvidingStrongPower(world, x, y, z, side);
+		return getRedstonePowerValue(world, x, y, z, PC_Utils.getSidePosition(world, x, y, z, PC_Direction.fromSide(side).getOpposite()), -1);
 	}
 	
 	@Override
 	public final int isProvidingStrongPower(IBlockAccess world, int x, int y, int z, int side) {
-		return getRedstonePowerValue(world, x, y, z, PC_Utils.getSidePosition(world, x, y, z, side), -1);
+		PC_Direction dir = PC_Utils.getSidePosition(world, x, y, z, PC_Direction.fromSide(side).getOpposite());
+		if(canProvideStrongPower(world, x, y, z, dir)){
+			return getRedstonePowerValue(world, x, y, z, dir, -1);
+		}
+		return 0;
 	}
 
+	@SuppressWarnings({ "static-method", "unused" })
+	public boolean canProvideStrongPower(IBlockAccess world, int x, int y, int z, PC_Direction side){
+		return true;
+	}
+	
 	@SuppressWarnings("unused")
 	public boolean canRedstoneConnect(IBlockAccess world, int x, int y, int z, PC_Direction side, int faceSide){
 		return canProvidePower();
@@ -311,7 +320,7 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 	
 	@Override
 	public final boolean canConnectRedstone(IBlockAccess world, int x, int y, int z, int side) {
-		return canRedstoneConnect(world, x, y, z, PC_Utils.getSidePosition(world, x, y, z, PC_Direction.DOWN), PC_Utils.getSideRotation(world, x, y, z, PC_Direction.DOWN, side));
+		return canRedstoneConnect(world, x, y, z, PC_Utils.getSidePosition(world, x, y, z, side), -1);
 	}
 
 	@SuppressWarnings({ "static-method", "unused" })

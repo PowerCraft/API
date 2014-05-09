@@ -2,6 +2,7 @@ package powercraft.api.redstone;
 
 import java.util.List;
 
+import net.minecraft.init.Blocks;
 import powercraft.api.grid.PC_Grid;
 import powercraft.api.grid.PC_IGridFactory;
 
@@ -61,13 +62,23 @@ public class PC_RedstoneGrid extends PC_Grid<PC_RedstoneGrid, PC_IRedstoneGridTi
 	protected void removeTile(PC_IRedstoneGridTile tile) {
 		super.removeTile(tile);
 		update();
+		
 	}
 
 	@SuppressWarnings("hiding")
 	@Override
 	protected void addAll(List<PC_RedstoneNode> nodes, List<PC_RedstoneEdge> edges) {
 		super.addAll(nodes, edges);
+		int oldPower = this.power;
 		update();
+		if(this.power==oldPower){
+			for (PC_RedstoneNode node : nodes) {
+				node.onRedstonePowerChange();
+			}
+			for (PC_RedstoneEdge edge : edges) {
+				edge.onRedstonePowerChange();
+			}
+		}
 	}
 
 	@Override
@@ -92,9 +103,8 @@ public class PC_RedstoneGrid extends PC_Grid<PC_RedstoneGrid, PC_IRedstoneGridTi
 	}
 
 	public int getRedstonePowerValue() {
-		return this.power;
-		//if (Blocks.redstone_wire.canProvidePower()) return this.power;
-		//return this.power == 0 ? 0 : this.power - 1;
+		if (Blocks.redstone_wire.canProvidePower()) return this.power;
+		return this.power == 0 ? 0 : this.power - 1;
 	}
 	
 }

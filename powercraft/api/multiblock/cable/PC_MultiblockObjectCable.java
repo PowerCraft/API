@@ -74,12 +74,13 @@ public abstract class PC_MultiblockObjectCable extends PC_MultiblockObject imple
 	@SuppressWarnings("hiding")
 	protected int canConnectToMultiblock(PC_MultiblockObject multiblock, PC_Direction dir, PC_Direction dir2) {
 		if (multiblock.getClass() != getClass()) return 0;
+		PC_MultiblockObjectCable cable = (PC_MultiblockObjectCable)multiblock;
 		if(dir.offsetY!=0){
-			return 0xFFFF|1<<16;
+			return cable.getMask()|1<<16;
 		}else if(dir.offsetX!=0 && dir2.offsetY==0){
-			return 0xFFFF|1<<16;
+			return cable.getMask()|1<<16;
 		}
-		return 0xFFFF;
+		return cable.getMask();
 	}
 
 	@SuppressWarnings({ "static-method", "unused" })
