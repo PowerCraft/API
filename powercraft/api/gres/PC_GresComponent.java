@@ -951,4 +951,10 @@ public abstract class PC_GresComponent {
 		return getZoom();
 	}
 	
+	protected void addToBase(PC_GresComponent c){
+		if(this.getParent()!=null){
+			this.getParent().addToBase(c);
+		}
+	}
+	
 }

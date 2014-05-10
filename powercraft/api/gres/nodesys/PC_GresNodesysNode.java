@@ -319,7 +319,16 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 		}
 		return c;
 	}
-	
-	
+
+	@Override
+	protected void tryActionOnKeyTyped(char key, int keyCode, boolean repeat, PC_GresHistory history) {
+		if(keyCode == Keyboard.KEY_DELETE){
+			for(PC_GresComponent s:PC_GresNodesysNode.selected){
+				s.getParent().remove(s);
+			}
+			PC_GresNodesysNode.selected.clear();
+		}
+		super.tryActionOnKeyTyped(key, keyCode, repeat, history);
+	}
 	
 }

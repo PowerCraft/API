@@ -3,7 +3,10 @@ package powercraft.api.gres;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.lwjgl.input.Keyboard;
+
 import powercraft.api.PC_Vec2I;
+import powercraft.api.gres.history.PC_GresHistory;
 
 
 public class PC_GresNeedFocusFrame extends PC_GresFrame {
@@ -104,6 +107,21 @@ public class PC_GresNeedFocusFrame extends PC_GresFrame {
 			comp = comp.getParent();
 		}
 		return true;
+	}
+	
+	@Override
+	protected void addToBase(PC_GresComponent c){
+		addOtherAllowed(c);
+		super.addToBase(c);
+	}
+
+	@Override
+	protected boolean handleKeyTyped(char key, int keyCode, boolean repeat, PC_GresHistory history) {
+		if(keyCode==Keyboard.KEY_ESCAPE){
+			close();
+			return true;
+		}
+		return false;
 	}
 	
 }

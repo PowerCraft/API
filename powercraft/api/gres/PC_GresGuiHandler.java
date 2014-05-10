@@ -484,6 +484,10 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 		}
 	}
 	
+	public PC_GresComponent getMouseOverComponent(){
+		return this.mouseOverComponent;
+	}
+	
 	private void onSlotClicked(){
 		if(GuiScreen.isShiftKeyDown()){
 			sendMouseClickToServer(this.slotOver.slotNumber, this.slotClickButton, 1);
@@ -600,6 +604,11 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 
 	public void onAdded(PC_GresComponent component) {
 		component.onScaleChanged(this.scale);
+	}
+	
+	@Override
+	protected void addToBase(PC_GresComponent c){
+		add(c);
 	}
 	
 }
