@@ -152,14 +152,14 @@ public enum PC_Direction {
 	}
 	
 	public boolean isVertical(){
-		return offsetY!=0;
+		return this.offsetY!=0;
 	}
 	
 	public boolean isHorizontalX(){
-		return offsetX!=0;
+		return this.offsetX!=0;
 	}
 
 	public boolean isHorizontalZ(){
-		return offsetZ!=0;
+		return this.offsetZ!=0;
 	}
 }

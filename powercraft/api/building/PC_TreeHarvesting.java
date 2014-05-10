@@ -68,6 +68,7 @@ public class PC_TreeHarvesting implements PC_ISpecialHarvesting {
 		return drops;
 	}
 	
+	@SuppressWarnings("unused")
 	public void harvestWood(World world, int x, int y, int z, Block block, int meta, int fortune, Tree tree, List<ItemStackSpawn> drops, int recursion){
 		List<ItemStack> blockDrops = PC_Build.harvestEasy(world, x, y, z, fortune);
 		if(blockDrops!=null){
@@ -157,6 +158,7 @@ public class PC_TreeHarvesting implements PC_ISpecialHarvesting {
 		return false;
 	}
 	
+	@SuppressWarnings("unused")
 	public void harvestLeaves(World world, int x, int y, int z, Block block, int meta, int fortune, Tree tree, List<ItemStackSpawn> drops, int recursion){
 		if(isConnectedToLog(world, x, y, z, tree))
 			return;
