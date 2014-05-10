@@ -37,7 +37,7 @@ public class PC_GresNodesysGrid extends PC_GresContainer {
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glLineWidth(1);
         tessellator.startDrawing(GL11.GL_LINES);
-        tessellator.setColorRGBA(0, 0, 0, 255);
+        tessellator.setColorRGBA(0, 0, 0, 128);
         for(int i=0; i<=200; i++){
         	if(i%5!=0){
 	        	tessellator.addVertex(0, i*5, 0);
@@ -49,7 +49,7 @@ public class PC_GresNodesysGrid extends PC_GresContainer {
         tessellator.draw();
         GL11.glLineWidth(2);
         tessellator.startDrawing(GL11.GL_LINES);
-        tessellator.setColorRGBA(0, 0, 0, 255);
+        tessellator.setColorRGBA(0, 0, 0, 128);
         for(int i=0; i<=200; i+=5){
         	if(i!=100){
 	        	tessellator.addVertex(0, i*5, 0);
@@ -61,7 +61,7 @@ public class PC_GresNodesysGrid extends PC_GresContainer {
         tessellator.draw();
         GL11.glLineWidth(3);
         tessellator.startDrawing(GL11.GL_LINES);
-        tessellator.setColorRGBA(0, 0, 0, 255);
+        tessellator.setColorRGBA(0, 0, 0, 128);
         tessellator.addVertex(0, 500, 0);
 	    tessellator.addVertex(1000, 500, 0);
 	    tessellator.addVertex(500, 0, 0);
