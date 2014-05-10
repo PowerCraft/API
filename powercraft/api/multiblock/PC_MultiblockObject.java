@@ -17,6 +17,7 @@ import powercraft.api.PC_Field;
 import powercraft.api.PC_Field.Flag;
 import powercraft.api.PC_INBT;
 import powercraft.api.PC_NBTTagHandler;
+import powercraft.api.grid.PC_IGridTile;
 import powercraft.api.network.PC_Packet;
 import powercraft.api.network.PC_PacketHandler;
 import powercraft.api.network.packet.PC_PacketMultiblockObjectSync;
@@ -214,7 +215,7 @@ public abstract class PC_MultiblockObject implements PC_INBT{
 		this.multiblock.markDirty();
 	}
 	
-	@SuppressWarnings({ "hiding", "unused" })
+	@SuppressWarnings({ "hiding" })
 	public boolean isUsing(PC_MultiblockIndex index, PC_MultiblockObject multiblockObject){
 		return this.index == index && !canMixWith(multiblockObject);
 	}
@@ -304,6 +305,14 @@ public abstract class PC_MultiblockObject implements PC_INBT{
 	@SuppressWarnings({ "static-method", "unused" })
 	public boolean canProvideStrongPower(PC_Direction side) {
 		return true;
+	}
+	
+	@SuppressWarnings("unused")
+	public <T extends PC_IGridTile<?, T, ?, ?>> T getGridTile(int flags, Class<T> tileClass){
+		if(tileClass.isAssignableFrom(getClass())){
+			return tileClass.cast(this);
+		}
+		return null;
 	}
 	
 }

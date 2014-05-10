@@ -730,7 +730,7 @@ public abstract class PC_GresComponent {
 		this.focus = true;
 	}
 	
-	protected PC_GresComponent getComponentAtPosition(PC_Vec2I mouse) {
+	public PC_GresComponent getComponentAtPosition(PC_Vec2I mouse) {
 
 		return this.visible ? this : null;
 	}
@@ -815,10 +815,13 @@ public abstract class PC_GresComponent {
 		}
 	}
 
+	public int getCState(){
+		return this.enabled && this.parentEnabled ? this.mouseDown ? 2 : this.mouseOver ? 1 : 0 : 3;
+	}
 
 	protected void drawTexture(String textureName, int x, int y, int width, int height) {
 
-		drawTexture(textureName, x, y, width, height, this.enabled && this.parentEnabled ? this.mouseDown ? 2 : this.mouseOver ? 1 : 0 : 3);
+		drawTexture(textureName, x, y, width, height, getCState());
 	}
 
 
@@ -879,7 +882,7 @@ public abstract class PC_GresComponent {
 
 	@SuppressWarnings("hiding")
 	protected void drawString(String text, int x, int y, int width, int height, PC_GresAlign.H alignH, PC_GresAlign.V alignV, boolean shadow) {
-		drawString(text, x, y, width, height, alignH, alignV, shadow, this.enabled && this.parentEnabled ? this.mouseDown ? 2 : this.mouseOver ? 1 : 0 : 3);
+		drawString(text, x, y, width, height, alignH, alignV, shadow, getCState());
 	}
 
 	@SuppressWarnings("hiding")

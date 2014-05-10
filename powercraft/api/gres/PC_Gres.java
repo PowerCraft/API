@@ -6,6 +6,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.TreeMap;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -290,11 +292,23 @@ public final class PC_Gres {
 			e.printStackTrace();
 		}
 	}
-
+	
+	@SideOnly(Side.CLIENT)
+	private static List<String> warnings;
+	
 	@SideOnly(Side.CLIENT)
 	public static PC_GresTexture getGresTexture(String name) {
-
-		return textures.get(name);
+		PC_GresTexture tex = textures.get(name);
+		if(tex==null){
+			if(warnings==null){
+				warnings = new ArrayList<String>();
+			}
+			if(!warnings.contains(name)){
+				warnings.add(name);
+				PC_Logger.warning("Can't find texture %s", name);
+			}
+		}
+		return tex;
 	}
 	
 	@SideOnly(Side.CLIENT)

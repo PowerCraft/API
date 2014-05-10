@@ -154,6 +154,5 @@ public class PC_Vec2I {
 	public PC_Vec2I div(float v) {
 		return new PC_Vec2I((int)(this.x / v), (int)(this.y / v));
 	}
-
 	
 }

@@ -293,19 +293,19 @@ public final class PC_TileEntityMultiblock extends PC_TileEntity implements PC_I
 	}
 
 	@Override
-	public <T extends PC_IGridTile<?, T, ?, ?>> T getTile(PC_Direction side, Class<T> tileClass) {
+	public <T extends PC_IGridTile<?, T, ?, ?>> T getTile(PC_Direction side, int flags, Class<T> tileClass) {
 		PC_MultiblockObject tile = this.tiles[0];
-		if(tile!=null && tileClass.isAssignableFrom(tile.getClass())){
-			return tileClass.cast(tile);
+		if(tile!=null){
+			return tile.getGridTile(flags, tileClass);
 		}
 		return null;
 	}
 	
 	@Override
-	public <T extends PC_IGridTile<?, T, ?, ?>> T getTile(PC_Direction dir, PC_Direction dir2, Class<T> tileClass) {
+	public <T extends PC_IGridTile<?, T, ?, ?>> T getTile(PC_Direction dir, PC_Direction dir2, int flags, Class<T> tileClass) {
 		PC_MultiblockObject tile = this.tiles[PC_MultiblockIndex.getFromDir(dir).ordinal()];
-		if(tile!=null && tileClass.isAssignableFrom(tile.getClass())){
-			return tileClass.cast(tile);
+		if(tile!=null){
+			return tile.getGridTile(flags, tileClass);
 		}
 		return null;
 	}

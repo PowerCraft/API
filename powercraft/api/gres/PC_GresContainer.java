@@ -305,7 +305,7 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 
 	@SuppressWarnings("hiding")
 	@Override
-	protected PC_GresComponent getComponentAtPosition(PC_Vec2I position) {
+	public PC_GresComponent getComponentAtPosition(PC_Vec2I position) {
 
 		if (this.visible) {
 			position.x /= getZoom();

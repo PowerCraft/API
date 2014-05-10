@@ -140,7 +140,7 @@ public class PC_GresTab extends PC_GresContainer {
 
 	@SuppressWarnings("hiding")
 	@Override
-	protected PC_GresComponent getComponentAtPosition(PC_Vec2I position) {
+	public PC_GresComponent getComponentAtPosition(PC_Vec2I position) {
 
 		if (this.visible && this.children.size()>0) {
 			PC_Vec2I nposition = position.sub(this.frame.getLocation());

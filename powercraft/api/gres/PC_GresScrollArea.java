@@ -135,7 +135,7 @@ public class PC_GresScrollArea extends PC_GresComponent {
 
 	@SuppressWarnings("hiding")
 	@Override
-	protected PC_GresComponent getComponentAtPosition(PC_Vec2I position) {
+	public PC_GresComponent getComponentAtPosition(PC_Vec2I position) {
 		if (this.visible) {
 			PC_RectI rect = this.container.getRect();
 			if (rect.contains(position)&& position.x < this.rect.width-getTextureDefaultSize(scrollVFrame).x && position.y < this.rect.height-getTextureDefaultSize(scrollHFrame).y){

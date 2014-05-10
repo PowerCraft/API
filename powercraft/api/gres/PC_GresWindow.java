@@ -159,7 +159,7 @@ public class PC_GresWindow extends PC_GresContainer {
 	
 	@SuppressWarnings("hiding")
 	@Override
-	protected PC_GresComponent getComponentAtPosition(PC_Vec2I position) {
+	public PC_GresComponent getComponentAtPosition(PC_Vec2I position) {
 		PC_GresComponent component = super.getComponentAtPosition(position);
 		if(component!=this) return component;
 		if (this.visible) {

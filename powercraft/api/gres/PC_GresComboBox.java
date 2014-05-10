@@ -28,10 +28,19 @@ public class PC_GresComboBox extends PC_GresComponent {
 		this.items = new ArrayList<String>(items);
 		setText(items.get(select));
 		notifyChange();
+		setDefColor();
 	}
 	
 	public PC_GresComboBox(){
 		this.items = new ArrayList<String>();
+		setDefColor();
+	}
+	
+	private void setDefColor(){
+		this.fontColors[0] = 0x808080;
+		this.fontColors[1] = 0x808080;
+		this.fontColors[2] = 0x808080;
+		this.fontColors[3] = 0x808080;
 	}
 	
 	public void setItems(List<String> items, int select){
