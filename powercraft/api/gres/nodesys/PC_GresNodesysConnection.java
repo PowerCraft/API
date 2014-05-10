@@ -7,6 +7,8 @@ import net.minecraft.client.renderer.Tessellator;
 
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import powercraft.api.PC_Rect;
 import powercraft.api.PC_Vec2;
 import powercraft.api.PC_Vec2I;
@@ -14,7 +16,7 @@ import powercraft.api.gres.PC_GresComponent;
 import powercraft.api.gres.PC_GresRenderer;
 import powercraft.api.gres.history.PC_GresHistory;
 
-
+@SideOnly(Side.CLIENT)
 public class PC_GresNodesysConnection extends PC_GresComponent implements PC_IGresNodesysLineDraw {
 	
 	public static final int RADIUS_DETECTION = 4;
@@ -51,7 +53,8 @@ public class PC_GresNodesysConnection extends PC_GresComponent implements PC_IGr
 	
 	@Override
 	protected void paint(PC_Rect scissor, double scale, int displayHeight, float timeStamp, float zoom) {
-		PC_GresRenderer.drawRect(2, 2, 6, 6, this.color);
+		int radius = getRadius();
+		PC_GresRenderer.drawRect(2, radius-2, 6, radius+2, this.color);
 	}
 
 	public boolean isLeft() {
@@ -119,6 +122,10 @@ public class PC_GresNodesysConnection extends PC_GresComponent implements PC_IGr
 		return null;
 	}
 
+	public int getRadius(){
+		return this.rect.height/2;
+	}
+	
 	@Override
 	public void drawLines() {
 		GL11.glLineWidth(3);
@@ -134,18 +141,18 @@ public class PC_GresNodesysConnection extends PC_GresComponent implements PC_IGr
 				}else{
 					PC_Vec2 rl = nc.getRealLocation();
 			        float zoom = nc.getRecursiveZoom();
-			        tessellator.addVertex(rl.x+RADIUS_DETECTION*zoom, rl.y+RADIUS_DETECTION*zoom, 0);
+			        tessellator.addVertex(rl.x+RADIUS_DETECTION*zoom, rl.y+nc.getRadius()*zoom, 0);
 				}
 		        PC_Vec2 rl = con.getRealLocation();
 		        float zoom = con.getRecursiveZoom();
-		        tessellator.addVertex(rl.x+RADIUS_DETECTION*zoom, rl.y+RADIUS_DETECTION*zoom, 0);
+		        tessellator.addVertex(rl.x+RADIUS_DETECTION*zoom, rl.y+con.getRadius()*zoom, 0);
 			}else{
 		        PC_Vec2 rl = getRealLocation();
 		        float zoom = getRecursiveZoom();
-		        tessellator.addVertex(rl.x+RADIUS_DETECTION*zoom, rl.y+RADIUS_DETECTION*zoom, 0);
+		        tessellator.addVertex(rl.x+RADIUS_DETECTION*zoom, rl.y+getRadius()*zoom, 0);
 		        rl = con.getRealLocation();
 		        zoom = con.getRecursiveZoom();
-		        tessellator.addVertex(rl.x+RADIUS_DETECTION*zoom, rl.y+RADIUS_DETECTION*zoom, 0);
+		        tessellator.addVertex(rl.x+RADIUS_DETECTION*zoom, rl.y+con.getRadius()*zoom, 0);
 			}
 		}else if(this.mouseDown){
 			PC_GresNodesysConnection nc = getConnectionAt(new PC_Vec2I(mousePos), this);
@@ -154,11 +161,11 @@ public class PC_GresNodesysConnection extends PC_GresComponent implements PC_IGr
 			}else{
 				PC_Vec2 rl = nc.getRealLocation();
 		        float zoom = nc.getRecursiveZoom();
-		        tessellator.addVertex(rl.x+RADIUS_DETECTION*zoom, rl.y+RADIUS_DETECTION*zoom, 0);
+		        tessellator.addVertex(rl.x+RADIUS_DETECTION*zoom, rl.y+nc.getRadius()*zoom, 0);
 			}
 	        PC_Vec2 rl = getRealLocation();
 	        float zoom = getRecursiveZoom();
-	        tessellator.addVertex(rl.x+RADIUS_DETECTION*zoom, rl.y+RADIUS_DETECTION*zoom, 0);
+	        tessellator.addVertex(rl.x+RADIUS_DETECTION*zoom, rl.y+getRadius()*zoom, 0);
 		}
 		tessellator.draw();
 	}
@@ -172,7 +179,8 @@ public class PC_GresNodesysConnection extends PC_GresComponent implements PC_IGr
 	}
 
 	public void setMidP(int x, float y) {
-		this.rect.setLocation(new PC_Vec2I(x-RADIUS_DETECTION, (int) (y-RADIUS_DETECTION)));
+		this.rect.setLocation(new PC_Vec2I(x-4, (int) (y-3)));
+		this.rect.setSize(new PC_Vec2I(8, 6));
 	}
 	
 }

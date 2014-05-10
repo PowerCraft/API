@@ -4,12 +4,15 @@ import net.minecraft.client.renderer.Tessellator;
 
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import powercraft.api.PC_Rect;
 import powercraft.api.PC_Vec2I;
 import powercraft.api.gres.PC_GresComponent;
 import powercraft.api.gres.PC_GresContainer;
+import powercraft.api.gres.history.PC_GresHistory;
 
-
+@SideOnly(Side.CLIENT)
 public class PC_GresNodesysGrid extends PC_GresContainer {
 	
 	@Override
@@ -75,6 +78,24 @@ public class PC_GresNodesysGrid extends PC_GresContainer {
 	    GL11.glPopMatrix();
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glLineWidth(1);
+	}
+
+	@Override
+	protected boolean handleMouseMove(PC_Vec2I mouse, int buttons, PC_GresHistory history) {
+		PC_GresNodesysNode.mouseMove(this, mouse.mul(getRecursiveZoom()).add(new PC_Vec2I(getRealLocation())));
+		return super.handleMouseMove(mouse, buttons, history);
+	}
+
+	@Override
+	protected boolean handleMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton, boolean doubleClick, PC_GresHistory history) {
+		PC_GresNodesysNode.mouseDownForMove(this, mouse.mul(getRecursiveZoom()).add(new PC_Vec2I(getRealLocation())));
+		return super.handleMouseButtonDown(mouse, buttons, eventButton, doubleClick, history);
+	}
+
+	@Override
+	protected boolean handleMouseButtonUp(PC_Vec2I mouse, int buttons, int eventButton, PC_GresHistory history) {
+		PC_GresNodesysNode.mouseUpForMove(this);
+		return super.handleMouseButtonUp(mouse, buttons, eventButton, history);
 	}
 	
 }

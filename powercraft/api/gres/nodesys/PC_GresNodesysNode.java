@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.lwjgl.input.Keyboard;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import powercraft.api.PC_Rect;
 import powercraft.api.PC_RectI;
 import powercraft.api.PC_Vec2I;
@@ -16,7 +18,7 @@ import powercraft.api.gres.history.PC_GresHistory;
 import powercraft.api.gres.layout.PC_GresLayoutVertical;
 import powercraft.api.gres.layout.PC_IGresLayout;
 
-
+@SideOnly(Side.CLIENT)
 public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNodesysLineDraw {
 	
 	private static final String textureName1 = "NodeT";
@@ -29,6 +31,8 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 	private static final List<PC_GresComponent> selected = new ArrayList<PC_GresComponent>();
 	
 	private static final PC_Vec2I lastMousePos = new PC_Vec2I(0, 0);
+	
+	private static PC_GresComponent moveHandler;
 	
 	private boolean isSmall;
 	
@@ -63,7 +67,7 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 				getAllConnections(node, left, rigth);
 				int leftC = left.size();
 				int rigthC = rigth.size();
-				int max = (leftC>rigthC?leftC:rigthC)*8;
+				int max = (leftC>rigthC?leftC:rigthC)*6;
 				return node.calculatePrefSize().max(0, max);
 			}
 			return super.getPreferredLayoutSize(container).max(node.calculatePrefSize());
@@ -78,7 +82,7 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 				getAllConnections(node, left, rigth);
 				int leftC = left.size();
 				int rigthC = rigth.size();
-				int max = (leftC>rigthC?leftC:rigthC)*8;
+				int max = (leftC>rigthC?leftC:rigthC)*6;
 				return node.calculatePrefSize().max(0, max);
 			}
 			return super.getMinimumLayoutSize(container).max(node.calculateMinSize());
@@ -102,7 +106,7 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 					float p = max / (float)leftC;
 					float y = p/2;
 					for(PC_GresNodesysConnection l:left){
-						l.setMidP(PC_GresNodesysConnection.RADIUS_DETECTION, y);
+						l.setMidP(4, y);
 						y+=p;
 					}
 				}
@@ -110,7 +114,7 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 					float p = max / (float)rigthC;
 					float y = p/2;
 					for(PC_GresNodesysConnection r:rigth){
-						r.setMidP(rect.width-PC_GresNodesysConnection.RADIUS_DETECTION, y);
+						r.setMidP(rect.width-4, y);
 						y+=p;
 					}
 				}
@@ -118,9 +122,6 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 				super.updateLayout(container);
 			}
 		}
-		
-		
-		
 	}
 	
 	public PC_GresNodesysNode(String name){
@@ -141,7 +142,7 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 		PC_Vec2I size2 = getTextureDefaultSize(arrowDown);
 		PC_Vec2I max = size.max(size2);
 		PC_Vec2I fMax = fontRenderer.getStringSize(this.text);
-		max.x += fMax.x+PC_GresNodesysConnection.RADIUS_DETECTION*2+6;
+		max.x += fMax.x+PC_GresNodesysConnection.RADIUS_DETECTION*2+2;
 		if(max.y<fMax.y){
 			max.y = fMax.y;
 		}
@@ -164,7 +165,7 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 		PC_Vec2I size2 = getTextureDefaultSize(arrowDown);
 		PC_Vec2I max = size.max(size2);
 		PC_Vec2I fMax = fontRenderer.getStringSize(this.text);
-		max.x += fMax.x+PC_GresNodesysConnection.RADIUS_DETECTION*2+6;
+		max.x += fMax.x+PC_GresNodesysConnection.RADIUS_DETECTION*2+2;
 		if(max.y<fMax.y){
 			max.y = fMax.y;
 		}
@@ -185,14 +186,14 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 		if(this.isSmall){
 			h = this.rect.height;
 			drawTexture(textureName3, PC_GresNodesysConnection.RADIUS_DETECTION, 0, this.rect.width-PC_GresNodesysConnection.RADIUS_DETECTION*2, this.rect.height);
-			drawTexture(arrowRight, PC_GresNodesysConnection.RADIUS_DETECTION*2+2+(max-size.x)/2, (this.rect.height-size.y)/2, size.x, size.y);
+			drawTexture(arrowRight, PC_GresNodesysConnection.RADIUS_DETECTION*2+(max-size.x)/2, (this.rect.height-size.y)/2, size.x, size.y);
 		}else{
 			h = this.frame.y;
 			drawTexture(textureName1, PC_GresNodesysConnection.RADIUS_DETECTION, 0, this.rect.width-PC_GresNodesysConnection.RADIUS_DETECTION*2, this.frame.y);
 			drawTexture(textureName2, PC_GresNodesysConnection.RADIUS_DETECTION, this.frame.y, this.rect.width-PC_GresNodesysConnection.RADIUS_DETECTION*2, this.rect.height);
-			drawTexture(arrowDown, PC_GresNodesysConnection.RADIUS_DETECTION*2+2+(max-size2.x)/2, (this.frame.y-size2.y)/2, size2.x, size2.y);
+			drawTexture(arrowDown, PC_GresNodesysConnection.RADIUS_DETECTION*2+(max-size2.x)/2, (this.frame.y-size2.y)/2, size2.x, size2.y);
 		}
-		drawString(this.text, PC_GresNodesysConnection.RADIUS_DETECTION*2+4+max, 0, this.rect.width-PC_GresNodesysConnection.RADIUS_DETECTION*2-2, h, H.LEFT, V.CENTER, false);
+		drawString(this.text, PC_GresNodesysConnection.RADIUS_DETECTION*2+2+max, 0, this.rect.width-PC_GresNodesysConnection.RADIUS_DETECTION*4-2, h, H.LEFT, V.CENTER, false);
 	}
 
 	@Override
@@ -208,38 +209,59 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 		PC_Vec2I max = size.max(size2);
 		PC_RectI rect;
 		if(this.isSmall){
-			rect = new PC_RectI(PC_GresNodesysConnection.RADIUS_DETECTION*2+2, (this.rect.height-max.y)/2, max.x, max.y);
+			rect = new PC_RectI(PC_GresNodesysConnection.RADIUS_DETECTION*2, (this.rect.height-max.y)/2, max.x, max.y);
 		}else{
-			rect = new PC_RectI(PC_GresNodesysConnection.RADIUS_DETECTION*2+2, (this.frame.y-max.y)/2, max.x, max.y);
+			rect = new PC_RectI(PC_GresNodesysConnection.RADIUS_DETECTION*2, (this.frame.y-max.y)/2, max.x, max.y);
 		}
 		if(rect.contains(mouse)){
 			setSmall(!this.isSmall);
 			return true;
 		}
-		if(Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL)){
+		if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)){
 			selected.remove(this);
 		}else{
 			selected.clear();
 		}
 		selected.add(this);
 		this.mouseDown = this.enabled && this.parentEnabled;
-		lastMousePos.setTo(mouse.mul(getRecursiveZoom()).add(new PC_Vec2I(getRealLocation())));
+		mouseDownForMove(this, mouse.mul(getRecursiveZoom()).add(new PC_Vec2I(getRealLocation())));
 		return true;
 	}
 
 	@Override
 	protected boolean handleMouseMove(PC_Vec2I mouse, int buttons, PC_GresHistory history) {
-		if((buttons&1)!=0){
-			PC_Vec2I m = mouse.mul(getRecursiveZoom()).add(new PC_Vec2I(getRealLocation()));
-			PC_Vec2I move = m.sub(lastMousePos);
-			lastMousePos.setTo(m);
+		mouseMove(this, mouse.mul(getRecursiveZoom()).add(new PC_Vec2I(getRealLocation())));
+		return true;
+	}
+	
+	@Override
+	protected boolean handleMouseButtonUp(PC_Vec2I mouse, int buttons, int eventButton, PC_GresHistory history) {
+		mouseUpForMove(this);
+		return super.handleMouseButtonUp(mouse, buttons, eventButton, history);
+	}
+
+	public static void mouseDownForMove(PC_GresComponent mh, PC_Vec2I mouse){
+		if(PC_GresNodesysNode.moveHandler==null){
+			PC_GresNodesysNode.moveHandler = mh;
+			lastMousePos.setTo(mouse);
+		}
+	}
+	
+	public static void mouseUpForMove(PC_GresComponent mh){
+		if(PC_GresNodesysNode.moveHandler == mh)
+			PC_GresNodesysNode.moveHandler = null;
+	}
+	
+	public static void mouseMove(PC_GresComponent mh, PC_Vec2I mouse){
+		if(PC_GresNodesysNode.moveHandler==mh){
+			PC_Vec2I move = mouse.sub(lastMousePos);
+			lastMousePos.setTo(mouse);
 			for(PC_GresComponent c:selected){
 				c.setLocation(c.getLocation().add(move.div(c.getRecursiveZoom())));
 			}
 		}
-		return true;
 	}
-
+	
 	@Override
 	public void drawLines() {
 		for(PC_GresComponent c:this.children){
@@ -288,5 +310,16 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 	public boolean isSmall() {
 		return this.isSmall;
 	}
+
+	@Override
+	public PC_GresComponent getComponentAtPosition(PC_Vec2I position) {
+		PC_GresComponent c = super.getComponentAtPosition(position);
+		if(c==this && (position.x<PC_GresNodesysConnection.RADIUS_DETECTION || position.x>=this.rect.width-PC_GresNodesysConnection.RADIUS_DETECTION)){
+			return null;
+		}
+		return c;
+	}
+	
+	
 	
 }

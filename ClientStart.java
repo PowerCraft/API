@@ -22,10 +22,10 @@ public class ClientStart {
 		String assetsDir="";
 		if(args!=null){
 			for(int i=0; i<args.length-1; i++){
-				if(args[i++].equals("--username")){
-					userName = args[i];
-				}else if(args[i++].equals("--assetsDir")){
-					assetsDir = args[i];
+				if(args[i].equals("--username")){
+					userName = args[++i];
+				}else if(args[i].equals("--assetsDir")){
+					assetsDir = args[++i];
 				}
 			}
 		}
