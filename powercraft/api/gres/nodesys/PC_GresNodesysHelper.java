@@ -81,6 +81,9 @@ public final class PC_GresNodesysHelper {
 		PC_GresNodesysNode guiNode = new PC_GresNodesysNode(node.getDefaultName());
 		PinProgramIn progIn = node.getProgIn();
 		guiNode.add(makeEntry(progIn));
+		for(int i=0; i<node.getAmountOfProgOut(); i++){
+			guiNode.add(makeEntry(node.getProgOut(i)));
+		}
 		for(int i=0; i<node.getAmountOfValOut(); i++){
 			guiNode.add(makeEntry(node.getValOut(i)));
 		}
