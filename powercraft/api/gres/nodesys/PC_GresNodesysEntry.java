@@ -128,7 +128,7 @@ public class PC_GresNodesysEntry extends PC_GresContainer implements PC_IGresNod
 		if(hasConnection || this.mid==null){
 			if(this.mid==null){
 				PC_RectI childRect = getChildRect();
-				drawString(this.text, childRect.x+PC_GresNodesysConnection.RADIUS_DETECTION*2, childRect.y, childRect.width-PC_GresNodesysConnection.RADIUS_DETECTION*4, childRect.height, this.left!=null || this.rigth==null?H.LEFT:H.RIGHT, V.CENTER, false);
+				drawString(this.text, childRect.x+PC_GresNodesysConnection.RADIUS_DETECTION*2, childRect.y, childRect.width-PC_GresNodesysConnection.RADIUS_DETECTION*4, childRect.height, this.left!=null && this.rigth!=null? this.alignH:this.left!=null || this.rigth==null?H.LEFT:H.RIGHT, V.CENTER, false);
 			}else{
 				PC_RectI rect = this.mid.getRect();
 				drawString(this.text, rect.x, rect.y, rect.width, rect.height, this.mid.getAlignH(), V.CENTER, false);

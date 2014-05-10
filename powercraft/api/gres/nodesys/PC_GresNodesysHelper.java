@@ -13,6 +13,7 @@ import powercraft.api.PC_ImmutableList;
 import powercraft.api.PC_Utils;
 import powercraft.api.PC_Vec2I;
 import powercraft.api.gres.PC_GresAlign.Fill;
+import powercraft.api.gres.PC_GresAlign.H;
 import powercraft.api.gres.PC_GresComboBox;
 import powercraft.api.gres.PC_GresComponent;
 import powercraft.api.gres.PC_GresGroupContainer;
@@ -104,7 +105,12 @@ public final class PC_GresNodesysHelper {
 	public static PC_GresNodesysEntry makeEntry(Object obj){
 		PC_GresNodesysEntry entry;
 		if(obj instanceof PinBaseImp){
-			entry = new PC_GresNodesysEntry(((PinBaseImp)obj).getName());
+			if(obj instanceof PinProgramIn){
+				entry = new PC_GresNodesysEntry("Prog Flow");
+				entry.setAlignH(H.CENTER);
+			}else{
+				entry = new PC_GresNodesysEntry(((PinBaseImp)obj).getName());
+			}
 			int pinColor = getColorInt(((PinBaseImp)obj).getColor());
 			if(obj instanceof PinProgramIn){
 				PinProgramIn progIn = (PinProgramIn)obj;
