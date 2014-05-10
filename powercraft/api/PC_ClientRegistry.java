@@ -25,10 +25,19 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+@SuppressWarnings("unused")
 @SideOnly(Side.CLIENT)
 public final class PC_ClientRegistry extends PC_Registry {
 
 	private PC_TileEntitySpecialRenderer specialRenderer;
+	
+	static{
+		try {
+			new PC_ClientRegistry();
+		} catch (InstanceAlreadyExistsException e) {
+			throw new RuntimeException(e);
+		}
+	}
 	
 	public PC_ClientRegistry()  throws InstanceAlreadyExistsException{
 		this.specialRenderer = new PC_TileEntitySpecialRenderer();

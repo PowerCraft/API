@@ -23,10 +23,19 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author XOR
  *
  */
+@SuppressWarnings("unused")
 @SideOnly(Side.CLIENT)
 public final class PC_ClientUtils extends PC_Utils {
 
 	private static InheritableThreadLocal<Boolean> isClient = new InheritableThreadLocal<Boolean>();
+	
+	static{
+		try {
+			new PC_ClientUtils();
+		} catch (InstanceAlreadyExistsException e) {
+			throw new RuntimeException(e);
+		}
+	}
 	
 	/**
 	 * Will be called from Forge

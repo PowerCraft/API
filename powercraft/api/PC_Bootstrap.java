@@ -22,8 +22,8 @@ public final class PC_Bootstrap {
 	static void prepare() {
 		try{
 			if(FMLCommonHandler.instance().getSide()==Side.CLIENT){
-				Class.forName("powercraft.api.PC_ClientUtils").newInstance();
-				Class.forName("powercraft.api.PC_ClientRegistry").newInstance();
+				Class.forName("powercraft.api.PC_ClientUtils");
+				Class.forName("powercraft.api.PC_ClientRegistry");
 			}else{
 				new PC_Utils();
 				new PC_Registry();
