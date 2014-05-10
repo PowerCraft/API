@@ -31,9 +31,13 @@ public abstract class PC_GresDialogBasic extends PC_GresDialogBox implements PC_
 		init(window, data);
 		PC_GresGroupContainer group = new PC_GresGroupContainer();
 		group.setLayout(new PC_GresLayoutHorizontal());
-		this.doButton = new PC_GresButton(doButtonName);
-		this.doButton.addEventListener(this);
-		group.add(this.doButton);
+		if(doButtonName!=null){
+			this.doButton = new PC_GresButton(doButtonName);
+			this.doButton.addEventListener(this);
+			group.add(this.doButton);
+		}else{
+			this.doButton = null;
+		}
 		this.cancelButton = new PC_GresButton("Cancel");
 		this.cancelButton.addEventListener(this);
 		group.add(this.cancelButton);

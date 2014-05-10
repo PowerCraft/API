@@ -28,6 +28,7 @@ import powercraft.api.gres.PC_GresAlign.H;
 import powercraft.api.gres.PC_GresComboBox;
 import powercraft.api.gres.PC_GresComponent;
 import powercraft.api.gres.PC_GresGroupContainer;
+import powercraft.api.gres.PC_GresItemSelect;
 import powercraft.api.gres.PC_GresListBoxElement;
 import powercraft.api.gres.PC_GresTextEdit;
 import powercraft.api.gres.PC_GresTextEdit.PC_GresInputType;
@@ -137,13 +138,7 @@ public final class PC_GresNodesysHelper {
 	
 	public static PC_GresComponent makeValueIn(ValueType<?> valueType){
 		if(valueType instanceof ItemStackData){
-			PC_GresGroupContainer c = new PC_GresGroupContainer();
-			c.setLayout(new PC_GresLayoutVertical());
-			c.setFill(Fill.HORIZONTAL);
-			c.add(new PC_GresTextEdit("name", 10).setFill(Fill.HORIZONTAL));
-			c.add(new PC_GresTextEdit("0", 10, PC_GresInputType.UNSIGNED_INT).setFill(Fill.HORIZONTAL));
-			c.add(new PC_GresTextEdit("0", 10, PC_GresInputType.UNSIGNED_INT).setFill(Fill.HORIZONTAL));
-			return c;
+			return new PC_GresItemSelect();
 		}else if(valueType instanceof SelectionData){
 			PC_GresComboBox comboBox = new PC_GresComboBox(new PC_ImmutableArrayList<String>(((SelectionData)valueType).getOptions()), 0);
 			return comboBox;
