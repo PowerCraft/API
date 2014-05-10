@@ -134,8 +134,8 @@ public class PC_GresWindow extends PC_GresContainer {
 			GL11.glColor3f(1.0f, 1.0f, 1.0f);
 			paint(scissor, scale, displayHeight, timeStamp, zoom);
 			doDebugRendering(0, 0, rect.width, rect.height);
-			rect.x += this.frame.x;
-			rect.y += this.frame.y;
+			rect.x += this.frame.x*zoom;
+			rect.y += this.frame.y*zoom;
 			GL11.glTranslatef(this.frame.x, this.frame.y, 0);
 			PC_Vec2 noffset = rect.getLocation();
 			rect.width -= this.frame.x + this.frame.width;

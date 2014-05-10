@@ -285,8 +285,8 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 			GL11.glColor3f(1.0f, 1.0f, 1.0f);
 			paint(scissor, scale, displayHeight, timeStamp, zoomm);
 			doDebugRendering(0, 0, rect.width, rect.height);
-			rect.x += this.frame.x;
-			rect.y += this.frame.y;
+			rect.x += this.frame.x*zoom;
+			rect.y += this.frame.y*zoom;
 			rect.width -= this.frame.x + this.frame.width;
 			rect.height -= this.frame.y + this.frame.height;
 			GL11.glTranslatef(this.frame.x, this.frame.y, 0);
