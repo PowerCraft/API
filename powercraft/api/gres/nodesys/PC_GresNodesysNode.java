@@ -6,7 +6,10 @@ import java.util.List;
 import org.lwjgl.input.Keyboard;
 
 import powercraft.api.PC_Rect;
+import powercraft.api.PC_RectI;
 import powercraft.api.PC_Vec2I;
+import powercraft.api.gres.PC_GresAlign.H;
+import powercraft.api.gres.PC_GresAlign.V;
 import powercraft.api.gres.PC_GresComponent;
 import powercraft.api.gres.PC_GresContainer;
 import powercraft.api.gres.history.PC_GresHistory;
@@ -16,19 +19,117 @@ import powercraft.api.gres.layout.PC_IGresLayout;
 
 public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNodesysLineDraw {
 	
-	private static final String textureName = "Node";
+	private static final String textureName1 = "NodeT";
+	private static final String textureName2 = "NodeB";
+	private static final String textureName3 = "NodeS";
+	
+	private static final String arrowRight = "ArrowRight";
+	private static final String arrowDown = "ArrowDown";
 	
 	private static final List<PC_GresComponent> selected = new ArrayList<PC_GresComponent>();
 	
 	private static final PC_Vec2I lastMousePos = new PC_Vec2I(0, 0);
 	
-	public PC_GresNodesysNode(String name){
-		this.frame.y = 13;
-		super.setLayout(new PC_GresLayoutVertical());
-		setText(name);
-		setSize(getTextureMinSize(textureName).max(fontRenderer.getStringSize(this.text).add(4, 0)).add(PC_GresNodesysConnection.RADIUS_DETECTION*2, 0));
+	private boolean isSmall;
+	
+	private int lastSize;
+	
+	private static final Layout LAYOUT = new Layout();
+	
+	private static class Layout extends PC_GresLayoutVertical{
+
+		public Layout() {
+			
+		}
+
+		private static void getAllConnections(PC_GresNodesysNode node, List<PC_GresNodesysConnection> left, List<PC_GresNodesysConnection> rigth){
+			for(PC_GresComponent c:node.getLayoutChildOrder()){
+				if(c instanceof PC_GresNodesysEntry){
+					PC_GresNodesysEntry entry = (PC_GresNodesysEntry)c;
+					if(entry.getLeft()!=null)
+						left.add(entry.getLeft());
+					if(entry.getRigth()!=null)
+						rigth.add(entry.getRigth());
+				}
+			}
+		}
+		
+		@Override
+		public PC_Vec2I getPreferredLayoutSize(PC_GresContainer container) {
+			PC_GresNodesysNode node = (PC_GresNodesysNode)container;
+			if(node.isSmall()){
+				List<PC_GresNodesysConnection> left = new ArrayList<PC_GresNodesysConnection>();
+				List<PC_GresNodesysConnection> rigth = new ArrayList<PC_GresNodesysConnection>();
+				getAllConnections(node, left, rigth);
+				int leftC = left.size();
+				int rigthC = rigth.size();
+				int max = (leftC>rigthC?leftC:rigthC)*8;
+				return node.calculatePrefSize().max(0, max);
+			}
+			return super.getPreferredLayoutSize(container).max(node.calculatePrefSize());
+		}
+
+		@Override
+		public PC_Vec2I getMinimumLayoutSize(PC_GresContainer container) {
+			PC_GresNodesysNode node = (PC_GresNodesysNode)container;
+			if(node.isSmall()){
+				List<PC_GresNodesysConnection> left = new ArrayList<PC_GresNodesysConnection>();
+				List<PC_GresNodesysConnection> rigth = new ArrayList<PC_GresNodesysConnection>();
+				getAllConnections(node, left, rigth);
+				int leftC = left.size();
+				int rigthC = rigth.size();
+				int max = (leftC>rigthC?leftC:rigthC)*8;
+				return node.calculatePrefSize().max(0, max);
+			}
+			return super.getMinimumLayoutSize(container).max(node.calculateMinSize());
+		}
+
+		@Override
+		public void updateLayout(PC_GresContainer container) {
+			PC_GresNodesysNode node = (PC_GresNodesysNode)container;
+			if(node.isSmall()){
+				PC_RectI rect = node.getChildRect();
+				for(PC_GresComponent component : container.getLayoutChildOrder()){
+					component.setRect(rect);
+				}
+				List<PC_GresNodesysConnection> left = new ArrayList<PC_GresNodesysConnection>();
+				List<PC_GresNodesysConnection> rigth = new ArrayList<PC_GresNodesysConnection>();
+				getAllConnections(node, left, rigth);
+				int leftC = left.size();
+				int rigthC = rigth.size();
+				int max = rect.height;
+				if(leftC>0){
+					float p = max / (float)leftC;
+					float y = p/2;
+					for(PC_GresNodesysConnection l:left){
+						l.setMidP(PC_GresNodesysConnection.RADIUS_DETECTION, y);
+						y+=p;
+					}
+				}
+				if(rigthC>0){
+					float p = max / (float)rigthC;
+					float y = p/2;
+					for(PC_GresNodesysConnection r:rigth){
+						r.setMidP(rect.width-PC_GresNodesysConnection.RADIUS_DETECTION, y);
+						y+=p;
+					}
+				}
+			}else{
+				super.updateLayout(container);
+			}
+		}
+		
+		
+		
 	}
 	
+	public PC_GresNodesysNode(String name){
+		this.frame.y = 13;
+		super.setLayout(LAYOUT);
+		setText(name);
+		setSize(calculateMinSize());
+	}
+
 	@Override
 	public PC_GresNodesysNode setLayout(PC_IGresLayout layout){
 		return this;
@@ -36,7 +137,20 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 	
 	@Override
 	protected PC_Vec2I calculateMinSize() {
-		return getTextureMinSize(textureName).max(fontRenderer.getStringSize(this.text).add(4, 0)).add(PC_GresNodesysConnection.RADIUS_DETECTION*2, 0);
+		PC_Vec2I size = getTextureDefaultSize(arrowRight);
+		PC_Vec2I size2 = getTextureDefaultSize(arrowDown);
+		PC_Vec2I max = size.max(size2);
+		PC_Vec2I fMax = fontRenderer.getStringSize(this.text);
+		max.x += fMax.x+PC_GresNodesysConnection.RADIUS_DETECTION*2+6;
+		if(max.y<fMax.y){
+			max.y = fMax.y;
+		}
+		if(this.isSmall){
+			max = max.max(getTextureMinSize(textureName3));
+		}else{
+			max = max.max(getTextureMinSize(textureName1).add(getTextureMinSize(textureName2)));
+		}
+		return max.add(PC_GresNodesysConnection.RADIUS_DETECTION*2, 0);
 	}
 	
 	@Override
@@ -46,13 +160,39 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 	
 	@Override
 	protected PC_Vec2I calculatePrefSize() {
-		return getTextureDefaultSize(textureName).max(fontRenderer.getStringSize(this.text).add(4, 0)).add(PC_GresNodesysConnection.RADIUS_DETECTION*2, 0);
+		PC_Vec2I size = getTextureDefaultSize(arrowRight);
+		PC_Vec2I size2 = getTextureDefaultSize(arrowDown);
+		PC_Vec2I max = size.max(size2);
+		PC_Vec2I fMax = fontRenderer.getStringSize(this.text);
+		max.x += fMax.x+PC_GresNodesysConnection.RADIUS_DETECTION*2+6;
+		if(max.y<fMax.y){
+			max.y = fMax.y;
+		}
+		if(this.isSmall){
+			max = max.max(getTextureDefaultSize(textureName3));
+		}else{
+			max = max.max(getTextureDefaultSize(textureName1).add(getTextureDefaultSize(textureName2)));
+		}
+		return max.add(PC_GresNodesysConnection.RADIUS_DETECTION*2, 0);
 	}
 	
 	@Override
 	protected void paint(PC_Rect scissor, double scale, int displayHeight, float timeStamp, float zoom) {
-		drawTexture(textureName, PC_GresNodesysConnection.RADIUS_DETECTION, 0, this.rect.width-PC_GresNodesysConnection.RADIUS_DETECTION*2, this.rect.height);
-		drawString(this.text, PC_GresNodesysConnection.RADIUS_DETECTION+2, 0, false);
+		PC_Vec2I size = getTextureDefaultSize(arrowRight);
+		PC_Vec2I size2 = getTextureDefaultSize(arrowDown);
+		int max = size.x>size2.x?size.x:size2.x;
+		int h;
+		if(this.isSmall){
+			h = this.rect.height;
+			drawTexture(textureName3, PC_GresNodesysConnection.RADIUS_DETECTION, 0, this.rect.width-PC_GresNodesysConnection.RADIUS_DETECTION*2, this.rect.height);
+			drawTexture(arrowRight, PC_GresNodesysConnection.RADIUS_DETECTION*2+2+(max-size.x)/2, (this.rect.height-size.y)/2, size.x, size.y);
+		}else{
+			h = this.frame.y;
+			drawTexture(textureName1, PC_GresNodesysConnection.RADIUS_DETECTION, 0, this.rect.width-PC_GresNodesysConnection.RADIUS_DETECTION*2, this.frame.y);
+			drawTexture(textureName2, PC_GresNodesysConnection.RADIUS_DETECTION, this.frame.y, this.rect.width-PC_GresNodesysConnection.RADIUS_DETECTION*2, this.rect.height);
+			drawTexture(arrowDown, PC_GresNodesysConnection.RADIUS_DETECTION*2+2+(max-size2.x)/2, (this.frame.y-size2.y)/2, size2.x, size2.y);
+		}
+		drawString(this.text, PC_GresNodesysConnection.RADIUS_DETECTION*2+4+max, 0, this.rect.width-PC_GresNodesysConnection.RADIUS_DETECTION*2-2, h, H.LEFT, V.CENTER, false);
 	}
 
 	@Override
@@ -60,8 +200,22 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 		return this.enabled && this.parentEnabled ? selected.contains(this) ? selected.get(selected.size()-1)==this ? 1 : 2 : 0 : 3;
 	}
 	
+	@SuppressWarnings("hiding")
 	@Override
 	protected boolean handleMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton, boolean doubleClick, PC_GresHistory history) {
+		PC_Vec2I size = getTextureDefaultSize(arrowRight);
+		PC_Vec2I size2 = getTextureDefaultSize(arrowDown);
+		PC_Vec2I max = size.max(size2);
+		PC_RectI rect;
+		if(this.isSmall){
+			rect = new PC_RectI(PC_GresNodesysConnection.RADIUS_DETECTION*2+2, (this.rect.height-max.y)/2, max.x, max.y);
+		}else{
+			rect = new PC_RectI(PC_GresNodesysConnection.RADIUS_DETECTION*2+2, (this.frame.y-max.y)/2, max.x, max.y);
+		}
+		if(rect.contains(mouse)){
+			setSmall(!this.isSmall);
+			return true;
+		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL)){
 			selected.remove(this);
 		}else{
@@ -93,6 +247,46 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 				((PC_IGresNodesysLineDraw)c).drawLines();
 		    }
 		}
+	}
+	
+	private boolean changing = false;
+	
+	@Override
+	public void notifyChildChange(PC_GresComponent component) {
+		if(!this.changing){
+			super.notifyChildChange(component);
+		}
+	}
+	
+	public void setSmall(boolean isSmall){
+		if(this.isSmall!=isSmall){
+			this.isSmall = isSmall;
+			if(this.isSmall){
+				this.frame.y = 0;
+			}else{
+				this.frame.y = 13;
+			}
+			int ls = this.lastSize;
+			this.lastSize = this.rect.width;
+			this.changing = true;
+			for(PC_GresComponent c:this.children){
+				c.setVisible(!isSmall);
+			}
+			this.changing = false;
+			int lh = this.isSmall?13:this.rect.height;
+			setSize(new PC_Vec2I(ls, 0));
+			int nh = this.isSmall?this.rect.height:13;
+			setLocation(getLocation().add(0, lh/2-nh/2));
+			if(!this.isSmall){
+				for(PC_GresComponent c:this.children){
+					c.setSize(new PC_Vec2I(0, 0));
+				}
+			}
+		}
+	}
+	
+	public boolean isSmall() {
+		return this.isSmall;
 	}
 	
 }

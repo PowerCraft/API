@@ -2,6 +2,7 @@ package powercraft.api.gres.nodesys;
 
 import powercraft.api.PC_Rect;
 import powercraft.api.PC_RectI;
+import powercraft.api.PC_Vec2;
 import powercraft.api.PC_Vec2I;
 import powercraft.api.gres.PC_GresAlign.Fill;
 import powercraft.api.gres.PC_GresAlign.H;
@@ -15,6 +16,8 @@ public class PC_GresNodesysEntry extends PC_GresContainer implements PC_IGresNod
 	private PC_GresNodesysConnection left;
 	private PC_GresNodesysConnection rigth;
 	private PC_GresComponent mid;
+	
+	private boolean rv = true;
 	
 	public PC_GresNodesysEntry(String name){
 		setFill(Fill.HORIZONTAL);
@@ -96,22 +99,26 @@ public class PC_GresNodesysEntry extends PC_GresContainer implements PC_IGresNod
 	@SuppressWarnings("hiding")
 	@Override
 	public void updateLayout() {
-		PC_RectI childRect = getChildRect();
-		if(this.left!=null){
-			this.left.setLocation(new PC_Vec2I(childRect.x, childRect.y + childRect.height/2-PC_GresNodesysConnection.RADIUS_DETECTION));
-		}
-		if(this.rigth!=null){
-			this.rigth.setLocation(new PC_Vec2I(childRect.x+childRect.width-PC_GresNodesysConnection.RADIUS_DETECTION*2, childRect.y + childRect.height/2-PC_GresNodesysConnection.RADIUS_DETECTION));
-		}
-		if(this.mid!=null){
-			PC_RectI padding = this.mid.getPadding();
-			this.mid.putInRect(childRect.x+PC_GresNodesysConnection.RADIUS_DETECTION*2+padding.x, childRect.y+padding.y, childRect.width-PC_GresNodesysConnection.RADIUS_DETECTION*4-padding.x-padding.width, childRect.height-padding.y-padding.height);
+		if(this.rv){
+			PC_RectI childRect = getChildRect();
+			if(this.left!=null){
+				this.left.setLocation(new PC_Vec2I(childRect.x, childRect.y + childRect.height/2-PC_GresNodesysConnection.RADIUS_DETECTION));
+			}
+			if(this.rigth!=null){
+				this.rigth.setLocation(new PC_Vec2I(childRect.x+childRect.width-PC_GresNodesysConnection.RADIUS_DETECTION*2, childRect.y + childRect.height/2-PC_GresNodesysConnection.RADIUS_DETECTION));
+			}
+			if(this.mid!=null){
+				PC_RectI padding = this.mid.getPadding();
+				this.mid.putInRect(childRect.x+PC_GresNodesysConnection.RADIUS_DETECTION*2+padding.x, childRect.y+padding.y, childRect.width-PC_GresNodesysConnection.RADIUS_DETECTION*4-padding.x-padding.width, childRect.height-padding.y-padding.height);
+			}
 		}
 	}
 
 	@SuppressWarnings("hiding")
 	@Override
 	protected void paint(PC_Rect scissor, double scale, int displayHeight, float timeStamp, float zoom) {
+		if(!this.rv)
+			return;
 		boolean hasConnection = (this.left!=null && this.left.isInput() && this.left.isConnected()) || (this.rigth!=null && this.rigth.isInput() && this.rigth.isConnected());
 		if(this.mid!=null){
 			this.mid.setVisible(!hasConnection);
@@ -134,6 +141,44 @@ public class PC_GresNodesysEntry extends PC_GresContainer implements PC_IGresNod
 		}
 		if(this.rigth!=null){
 			this.rigth.drawLines();
+		}
+	}
+
+	public PC_GresNodesysConnection getLeft() {
+		return this.left;
+	}
+
+	public PC_GresNodesysConnection getRigth() {
+		return this.rigth;
+	}
+
+	@Override
+	protected void doPaint(PC_Vec2 offset, PC_Rect scissorOld, double scale, int displayHeight, float timeStamp, float zoom) {
+		this.visible = true;
+		super.doPaint(offset, scissorOld, scale, displayHeight, timeStamp, zoom);
+		this.visible = this.rv;
+	}
+
+	@Override
+	public void setVisible(boolean visible) {
+		this.rv = visible;
+		if(this.mid!=null)
+			this.mid.setVisible(visible);
+		super.setVisible(visible);
+	}
+
+	@Override
+	public PC_GresComponent getComponentAtPosition(PC_Vec2I position) {
+		this.visible = true;
+		PC_GresComponent c = super.getComponentAtPosition(position);
+		this.visible = this.rv;
+		return c==this?null:c;
+	}
+	
+	@Override
+	protected void notifyChange() {
+		if(this.rv){
+			super.notifyChange();
 		}
 	}
 	

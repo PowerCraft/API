@@ -170,5 +170,9 @@ public class PC_GresNodesysConnection extends PC_GresComponent implements PC_IGr
 	public boolean isConnected() {
 		return !this.connection.isEmpty();
 	}
+
+	public void setMidP(int x, float y) {
+		this.rect.setLocation(new PC_Vec2I(x-RADIUS_DETECTION, (int) (y-RADIUS_DETECTION)));
+	}
 	
 }
