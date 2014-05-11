@@ -48,11 +48,18 @@ public final class PC_GresNodesysHelper {
 		maths.add(new PC_GresListBoxElement(5, "ItemStackSeperator"));
 		maths.add(new PC_GresListBoxElement(6, "ItemAmountSelector"));
 		base.add(new PC_GresListBoxElement("Convert",new PC_ImmutableList<PC_GresListBoxElement>(maths)));
+		List<PC_GresListBoxElement> layout = new ArrayList<PC_GresListBoxElement>();
+		layout.add(new PC_GresListBoxElement(7, "Split"));
+		base.add(new PC_GresListBoxElement("Layout",new PC_ImmutableList<PC_GresListBoxElement>(layout)));
 		allNodes = new PC_ImmutableList<PC_GresListBoxElement>(base);
 	}
 	
 	public static void addNodeToGrid(PC_GresNodesysGrid grid, PC_Vec2I pos, int id){
-		grid.add(nodeToGuiNode(makeNodeByID(id)));
+		if(id==7){
+			grid.add(new PC_GresNodesysConnectionSplit());
+		}else{
+			grid.add(nodeToGuiNode(makeNodeByID(id)));
+		}
 	}
 	
 	public static Node makeNodeByID(int id){
@@ -146,11 +153,14 @@ public final class PC_GresNodesysHelper {
 	}
 	
 	public static boolean canConnectTo(PC_IGresNodesysConnection con, PC_IGresNodesysConnection to){
+		if(con==to)
+			return false;
 		int c1 = con.getCompGroup();
 		int c2 = to.getCompGroup();
 		if(c1!=-1 && c2!=-1 && c1!=c2)
 			return false;
-		if(con.getNode()==to.getNode())
+		PC_GresNodesysNode node = con.getNode();
+		if(node==to.getNode() && node!=null)
 			return false;
 		int t1 = con.getType(true);
 		int t2 = to.getType(false);

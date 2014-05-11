@@ -85,7 +85,7 @@ public class PC_GresNodesysConnection extends PC_GresComponent implements PC_IGr
 				to.addConnection(nc, false);
 			}
 		}
-		return super.onMouseButtonUp(mouse, buttons, eventButton, history);
+		return super.handleMouseButtonUp(mouse, buttons, eventButton, history);
 	}
 	
 	@Override

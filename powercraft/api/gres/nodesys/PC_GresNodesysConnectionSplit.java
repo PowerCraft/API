@@ -12,6 +12,7 @@ import powercraft.api.PC_Rect;
 import powercraft.api.PC_Vec2;
 import powercraft.api.PC_Vec2I;
 import powercraft.api.gres.PC_GresComponent;
+import powercraft.api.gres.PC_GresContainer;
 import powercraft.api.gres.PC_GresRenderer;
 import powercraft.api.gres.history.PC_GresHistory;
 
@@ -23,6 +24,8 @@ public class PC_GresNodesysConnectionSplit extends PC_GresComponent implements P
 	private static final PC_Vec2 mousePos = new PC_Vec2();
 	
 	private PC_IGresNodesysConnection input;
+	
+	private boolean makeConnection;
 	
 	private List<PC_IGresNodesysConnection> outputs = new ArrayList<PC_IGresNodesysConnection>();
 	
@@ -98,14 +101,15 @@ public class PC_GresNodesysConnectionSplit extends PC_GresComponent implements P
 
 	@Override
 	protected boolean handleMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton, boolean doubleClick, PC_GresHistory history) {
-		if(buttons==1){
+		if(eventButton==0){
+			this.makeConnection = true;
+		}else if(eventButton==1){
 			if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)){
 				PC_GresNodesysNode.selected.remove(this);
 			}else{
 				PC_GresNodesysNode.selected.clear();
 			}
 			PC_GresNodesysNode.selected.add(this);
-			this.mouseDown = this.enabled && this.parentEnabled;
 			PC_GresNodesysNode.mouseDownForMove(this, mouse.mul(getRecursiveZoom()).add(new PC_Vec2I(getRealLocation())));
 		}
 		return super.handleMouseButtonDown(mouse, buttons, eventButton, doubleClick, history);
@@ -113,17 +117,16 @@ public class PC_GresNodesysConnectionSplit extends PC_GresComponent implements P
 
 	@Override
 	protected boolean handleMouseMove(PC_Vec2I mouse, int buttons, PC_GresHistory history) {
-		if(buttons==0){
+		if(this.makeConnection){
 			mousePos.setTo(new PC_Vec2(mouse).mul(getRecursiveZoom()).add(getRealLocation()));
-		}else{
-			PC_GresNodesysNode.mouseMove(this, mouse.mul(getRecursiveZoom()).add(new PC_Vec2I(getRealLocation())));
 		}
+		PC_GresNodesysNode.mouseMove(this, mouse.mul(getRecursiveZoom()).add(new PC_Vec2I(getRealLocation())));
 		return super.handleMouseMove(mouse, buttons, history);
 	}
 	
 	@Override
 	protected boolean handleMouseButtonUp(PC_Vec2I mouse, int buttons, int eventButton, PC_GresHistory history) {
-		if(buttons==0){
+		if(eventButton==0){
 			PC_Vec2I pos = mouse.mul(getRecursiveZoom()).add(new PC_Vec2I(getRealLocation()));
 			PC_GresComponent c = getGuiHandler().getComponentAtPosition(pos);
 			PC_IGresNodesysConnection nc = PC_GresNodesysHelper.getConnection(this, c);
@@ -131,6 +134,7 @@ public class PC_GresNodesysConnectionSplit extends PC_GresComponent implements P
 				this.outputs.add(nc);
 				nc.addConnection(this, true);
 			}
+			this.makeConnection = false;
 		}else{
 			PC_GresNodesysNode.mouseUpForMove(this);
 		}
@@ -144,24 +148,47 @@ public class PC_GresNodesysConnectionSplit extends PC_GresComponent implements P
 	
 	@Override
 	public void drawLines() {
-		if(this.mouseDown){
+		if((this.mouseDown && this.makeConnection) || this.input!=null){
 			GL11.glLineWidth(3);
 		    Tessellator tessellator = Tessellator.instance;
 		    tessellator.startDrawing(GL11.GL_LINES);
 	        tessellator.setColorRGBA(0, 0, 0, 255);
-	        PC_GresComponent c = getGuiHandler().getComponentAtPosition(new PC_Vec2I(mousePos));
-			PC_IGresNodesysConnection nc = PC_GresNodesysHelper.getConnection(this, c);
-			if(nc==null){
-				tessellator.addVertex(mousePos.x, mousePos.y, 0);
-			}else{
-				PC_Vec2 rl = nc.getPosOnScreen();
+	        if(this.input!=null){
+	        	PC_Vec2 rl = getPosOnScreen();
+		        tessellator.addVertex(rl.x, rl.y, 0);
+		        rl = this.input.getPosOnScreen();
+		        tessellator.addVertex(rl.x, rl.y, 0);
+	        }
+	        if(this.mouseDown && this.makeConnection){
+		        PC_GresComponent c = getGuiHandler().getComponentAtPosition(new PC_Vec2I(mousePos));
+				PC_IGresNodesysConnection nc = PC_GresNodesysHelper.getConnection(this, c);
+				if(nc==null){
+					tessellator.addVertex(mousePos.x, mousePos.y, 0);
+				}else{
+					PC_Vec2 rl = nc.getPosOnScreen();
+				    tessellator.addVertex(rl.x, rl.y, 0);
+				}
+			    PC_Vec2 rl = getPosOnScreen();
 			    tessellator.addVertex(rl.x, rl.y, 0);
-			}
-		    PC_Vec2 rl = getPosOnScreen();
-		    tessellator.addVertex(rl.x, rl.y, 0);
+	        }
 			tessellator.draw();
 		}
 	}
 
+	public void removeAllConnections(){
+		while(!this.outputs.isEmpty()){
+			removeConnection(this.outputs.get(0));
+		}
+		if(this.input!=null)
+			removeConnection(this.input);
+	}
+	
+	@Override
+	protected void setParent(PC_GresContainer parent) {
+		super.setParent(parent);
+		if(this.parent==null){
+			removeAllConnections();
+		}
+	}
 	
 }
