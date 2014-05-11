@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nodecode.core.Node;
+import nodecode.core.NodeFactory;
 import nodecode.core.PinBaseImp;
 import nodecode.core.PinProgramIn;
 import nodecode.core.PinProgramOut;
@@ -12,11 +13,6 @@ import nodecode.core.PinValueOut;
 import nodecode.core.ValueHandler;
 import nodecode.core.ValueType;
 import nodecode.core.ValueType.COLOR;
-import nodecode.node.NodeBranch;
-import nodecode.node.NodeCountLoop;
-import nodecode.node.NodeItemCompareOutCount;
-import nodecode.node.NodeItemStackSeperate;
-import nodecode.node.NodeMaths;
 import nodecode.type.ItemStackData;
 import nodecode.type.SelectionData;
 import powercraft.api.PC_ImmutableArrayList;
@@ -60,20 +56,7 @@ public final class PC_GresNodesysHelper {
 	}
 	
 	public static Node makeNodeByID(int id){
-		switch(id){
-		case 2:
-			return new NodeBranch();
-		case 3:
-			return new NodeCountLoop();
-		case 4:
-			return new NodeMaths();
-		case 5:
-			return new NodeItemStackSeperate();
-		case 6:
-			return new NodeItemCompareOutCount();
-		default:
-			return null;
-		}
+		return NodeFactory.getNewNodeForTypeID(id);
 	}
 	
 	public static PC_GresNodesysNode nodeToGuiNode(Node node){
