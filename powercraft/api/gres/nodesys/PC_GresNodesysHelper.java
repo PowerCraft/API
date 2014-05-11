@@ -3,22 +3,20 @@ package powercraft.api.gres.nodesys;
 import java.util.ArrayList;
 import java.util.List;
 
-import libraries.nodecode.core.Node;
-import libraries.nodecode.core.PinBaseImp;
-import libraries.nodecode.core.PinProgramIn;
-import libraries.nodecode.core.PinProgramOut;
-import libraries.nodecode.core.PinValueIn;
-import libraries.nodecode.core.PinValueOut;
-import libraries.nodecode.core.ValueHandler;
-import libraries.nodecode.core.ValueType;
-import libraries.nodecode.core.ValueType.COLOR;
-import libraries.nodecode.node.NodeBranch;
-import libraries.nodecode.node.NodeCountLoop;
-import libraries.nodecode.node.NodeItemCompareOutCount;
-import libraries.nodecode.node.NodeItemStackSeperate;
-import libraries.nodecode.node.NodeMaths;
-import libraries.nodecode.type.ItemStackData;
-import libraries.nodecode.type.SelectionData;
+import node.NodeBranch;
+import node.NodeCountLoop;
+import node.NodeItemCompareOutCount;
+import node.NodeItemStackSeperate;
+import node.NodeMaths;
+import core.Node;
+import core.PinBaseImp;
+import core.PinProgramIn;
+import core.PinProgramOut;
+import core.PinValueIn;
+import core.PinValueOut;
+import core.ValueHandler;
+import core.ValueType;
+import core.ValueType.COLOR;
 import powercraft.api.PC_ImmutableArrayList;
 import powercraft.api.PC_ImmutableList;
 import powercraft.api.PC_Utils;
@@ -33,6 +31,8 @@ import powercraft.api.gres.PC_GresListBoxElement;
 import powercraft.api.gres.PC_GresTextEdit;
 import powercraft.api.gres.PC_GresTextEdit.PC_GresInputType;
 import powercraft.api.gres.layout.PC_GresLayoutVertical;
+import type.ItemStackData;
+import type.SelectionData;
 
 
 public final class PC_GresNodesysHelper {
@@ -80,14 +80,19 @@ public final class PC_GresNodesysHelper {
 	}
 	
 	public static PC_GresNodesysNode nodeToGuiNode(Node node){
-		PC_GresNodesysNode guiNode = new PC_GresNodesysNode(node.getDefaultName());
-		PinProgramIn progIn = node.getProgIn();
-		PC_GresNodesysEntry entry = makeEntry(progIn);
-		if(node.getAmountOfProgOut()>0){
-			int pinColor = getColorInt(node.getProgOut(0).getColor());
-			entry.add(new PC_GresNodesysConnection(true, false, pinColor, 0));
+		PC_GresNodesysNode guiNode = new PC_GresNodesysNode(node.getName());
+		if(node.getAmountOfProgIn()>0){
+			PinProgramIn progIn = node.getProgIn(0);
+			PC_GresNodesysEntry entry = makeEntry(progIn);
+			if(node.getAmountOfProgOut()>0){
+				int pinColor = getColorInt(node.getProgOut(0).getColor());
+				entry.add(new PC_GresNodesysConnection(true, false, pinColor, 0));
+			}
+			guiNode.add(entry);
 		}
-		guiNode.add(entry);
+		for(int i=1; i<node.getAmountOfProgIn(); i++){
+			guiNode.add(makeEntry(node.getProgIn(i)));
+		}
 		for(int i=1; i<node.getAmountOfProgOut(); i++){
 			guiNode.add(makeEntry(node.getProgOut(i)));
 		}
