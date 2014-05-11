@@ -28,7 +28,7 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 	private static final String arrowRight = "ArrowRight";
 	private static final String arrowDown = "ArrowDown";
 	
-	private static final List<PC_GresComponent> selected = new ArrayList<PC_GresComponent>();
+	public static final List<PC_GresComponent> selected = new ArrayList<PC_GresComponent>();
 	
 	private static final PC_Vec2I lastMousePos = new PC_Vec2I(0, 0);
 	

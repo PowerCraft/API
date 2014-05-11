@@ -3,36 +3,33 @@ package powercraft.api.gres.nodesys;
 import java.util.ArrayList;
 import java.util.List;
 
-import libraries.nodecode.core.Node;
-import libraries.nodecode.core.PinBaseImp;
-import libraries.nodecode.core.PinProgramIn;
-import libraries.nodecode.core.PinProgramOut;
-import libraries.nodecode.core.PinValueIn;
-import libraries.nodecode.core.PinValueOut;
-import libraries.nodecode.core.ValueHandler;
-import libraries.nodecode.core.ValueType;
-import libraries.nodecode.core.ValueType.COLOR;
-import libraries.nodecode.node.NodeBranch;
-import libraries.nodecode.node.NodeCountLoop;
-import libraries.nodecode.node.NodeItemCompareOutCount;
-import libraries.nodecode.node.NodeItemStackSeperate;
-import libraries.nodecode.node.NodeMaths;
-import libraries.nodecode.type.ItemStackData;
-import libraries.nodecode.type.SelectionData;
+import nodecode.core.Node;
+import nodecode.core.PinBaseImp;
+import nodecode.core.PinProgramIn;
+import nodecode.core.PinProgramOut;
+import nodecode.core.PinValueIn;
+import nodecode.core.PinValueOut;
+import nodecode.core.ValueHandler;
+import nodecode.core.ValueType;
+import nodecode.core.ValueType.COLOR;
+import nodecode.node.NodeBranch;
+import nodecode.node.NodeCountLoop;
+import nodecode.node.NodeItemCompareOutCount;
+import nodecode.node.NodeItemStackSeperate;
+import nodecode.node.NodeMaths;
+import nodecode.type.ItemStackData;
+import nodecode.type.SelectionData;
 import powercraft.api.PC_ImmutableArrayList;
 import powercraft.api.PC_ImmutableList;
 import powercraft.api.PC_Utils;
 import powercraft.api.PC_Vec2I;
-import powercraft.api.gres.PC_GresAlign.Fill;
 import powercraft.api.gres.PC_GresAlign.H;
 import powercraft.api.gres.PC_GresComboBox;
 import powercraft.api.gres.PC_GresComponent;
-import powercraft.api.gres.PC_GresGroupContainer;
 import powercraft.api.gres.PC_GresItemSelect;
 import powercraft.api.gres.PC_GresListBoxElement;
 import powercraft.api.gres.PC_GresTextEdit;
 import powercraft.api.gres.PC_GresTextEdit.PC_GresInputType;
-import powercraft.api.gres.layout.PC_GresLayoutVertical;
 
 
 public final class PC_GresNodesysHelper {
@@ -156,6 +153,25 @@ public final class PC_GresNodesysHelper {
 	
 	public static int getColorInt(COLOR c){
 		return 0x80000000|c.rgb;
+	}
+	
+	public static PC_IGresNodesysConnection getConnection(PC_IGresNodesysConnection forConnection, PC_GresComponent c){
+		if(c instanceof PC_IGresNodesysConnection && canConnectTo(forConnection, (PC_IGresNodesysConnection)c)){
+			return (PC_IGresNodesysConnection)c;
+		}
+		return null;
+	}
+	
+	public static boolean canConnectTo(PC_IGresNodesysConnection con, PC_IGresNodesysConnection to){
+		int c1 = con.getCompGroup();
+		int c2 = to.getCompGroup();
+		if(c1!=-1 && c2!=-1 && c1!=c2)
+			return false;
+		if(con.getNode()==to.getNode())
+			return false;
+		int t1 = con.getType(true);
+		int t2 = to.getType(false);
+		return ((t1&1)!=0 && (t2&2)!=0) || ((t1&2)!=0 && (t2&1)!=0);
 	}
 	
 }

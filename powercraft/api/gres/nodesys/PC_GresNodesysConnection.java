@@ -7,14 +7,14 @@ import net.minecraft.client.renderer.Tessellator;
 
 import org.lwjgl.opengl.GL11;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import powercraft.api.PC_Rect;
 import powercraft.api.PC_Vec2;
 import powercraft.api.PC_Vec2I;
 import powercraft.api.gres.PC_GresComponent;
 import powercraft.api.gres.PC_GresRenderer;
 import powercraft.api.gres.history.PC_GresHistory;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class PC_GresNodesysConnection extends PC_GresComponent implements PC_IGresNodesysLineDraw, PC_IGresNodesysConnection {
@@ -27,7 +27,7 @@ public class PC_GresNodesysConnection extends PC_GresComponent implements PC_IGr
 	private boolean left;
 	private int color;
 	private int compGroup;
-	private List<PC_GresNodesysConnection> connection = new ArrayList<PC_GresNodesysConnection>();
+	private List<PC_IGresNodesysConnection> connections = new ArrayList<PC_IGresNodesysConnection>();
 	
 	public PC_GresNodesysConnection(boolean isInput, boolean left, int color, int compGroup){
 		this.isInput = isInput;
@@ -62,27 +62,27 @@ public class PC_GresNodesysConnection extends PC_GresComponent implements PC_IGr
 	}
 
 	@Override
-	protected boolean onMouseButtonUp(PC_Vec2I mouse, int buttons, int eventButton, PC_GresHistory history) {
+	protected boolean handleMouseButtonUp(PC_Vec2I mouse, int buttons, int eventButton, PC_GresHistory history) {
 		PC_Vec2I pos = mouse.mul(getRecursiveZoom()).add(new PC_Vec2I(getRealLocation()));
-		PC_GresNodesysConnection nc;
-		if(!this.connection.isEmpty() && this.isInput){
-			nc = getConnectionAt(pos, this.connection.get(0));
+		PC_GresComponent c = getGuiHandler().getComponentAtPosition(pos);
+		PC_IGresNodesysConnection nc;
+		if(!this.connections.isEmpty() && this.isInput){
+			nc = PC_GresNodesysHelper.getConnection(this.connections.get(0), c);
 		}else{
-			nc = getConnectionAt(pos, this);
+			nc = PC_GresNodesysHelper.getConnection(this, c);
 		}
 		if(nc==null){
-			if(!this.connection.isEmpty() && this.isInput){
-				removeConnection(this.connection.get(0));
+			if(!this.connections.isEmpty() && this.isInput){
+				removeConnection(this.connections.get(0));
 			}
 		}else{
-			if(this.connection.isEmpty() || !this.isInput){
-				this.connection.add(nc);
-				nc.addConnection(this);
+			if(this.connections.isEmpty() || !this.isInput){
+				this.connections.add(nc);
+				nc.addConnection(this, !this.isInput);
 			}else{
-				PC_GresNodesysConnection to = this.connection.get(0);
+				PC_IGresNodesysConnection to = this.connections.get(0);
 				removeConnection(to);
-				to.connection.add(nc);
-				nc.addConnection(to);
+				to.addConnection(nc, false);
 			}
 		}
 		return super.onMouseButtonUp(mouse, buttons, eventButton, history);
@@ -99,34 +99,28 @@ public class PC_GresNodesysConnection extends PC_GresComponent implements PC_IGr
 		return super.handleMouseMove(mouse, buttons, history);
 	}
 
-	private void addConnection(PC_GresNodesysConnection con) {
-		if(this.isInput && !this.connection.isEmpty()){
-			removeConnection(this.connection.get(0));
+	@Override
+	public void addConnection(PC_IGresNodesysConnection con, boolean asInput) {
+		if(this.connections.contains(con))
+			return;
+		if(this.isInput && !this.connections.isEmpty()){
+			removeConnection(this.connections.get(0));
 		}
-		this.connection.add(con);
+		this.connections.add(con);
+		con.addConnection(this, !asInput);
 	}
 
-	private void removeConnection(PC_GresNodesysConnection con){
-		this.connection.remove(con);
-		con.connection.remove(this);
+	@Override
+	public void removeConnection(PC_IGresNodesysConnection con){
+		if(this.connections.remove(con)){
+			con.removeConnection(this);
+		}
 	}
 	
 	public void removeAllConnections(){
-		for(PC_GresNodesysConnection con:this.connection){
-			con.connection.remove(this);
+		while(!this.connections.isEmpty()){
+			removeConnection(this.connections.get(0));
 		}
-		this.connection.clear();
-	}
-	
-	private static PC_GresNodesysConnection getConnectionAt(PC_Vec2I pos, PC_GresNodesysConnection forConnection){
-		PC_GresComponent c = forConnection.getGuiHandler().getComponentAtPosition(pos);
-		if(c instanceof PC_GresNodesysConnection){
-			PC_GresNodesysConnection connection = (PC_GresNodesysConnection)c;
-			if(connection.compGroup==forConnection.compGroup && connection.isInput!=forConnection.isInput && connection.getParent().getParent()!=forConnection.getParent().getParent()){
-				return connection;
-			}
-		}
-		return null;
 	}
 
 	public int getRadius(){
@@ -139,51 +133,46 @@ public class PC_GresNodesysConnection extends PC_GresComponent implements PC_IGr
 	    Tessellator tessellator = Tessellator.instance;
 	    tessellator.startDrawing(GL11.GL_LINES);
         tessellator.setColorRGBA(0, 0, 0, 255);
-		if(this.isInput && !this.connection.isEmpty()){
-			PC_GresNodesysConnection con = this.connection.get(0);
+		if(this.isInput && !this.connections.isEmpty()){
+			PC_IGresNodesysConnection con = this.connections.get(0);
 			if(this.mouseDown){
-				PC_GresNodesysConnection nc = getConnectionAt(new PC_Vec2I(mousePos), con);
+				PC_GresComponent c = getGuiHandler().getComponentAtPosition(new PC_Vec2I(mousePos));
+				PC_IGresNodesysConnection nc = PC_GresNodesysHelper.getConnection(con, c);
 				if(nc==null){
 					tessellator.addVertex(mousePos.x, mousePos.y, 0);
 				}else{
-					PC_Vec2 rl = nc.getRealLocation();
-			        float zoom = nc.getRecursiveZoom();
-			        tessellator.addVertex(rl.x+RADIUS_DETECTION*zoom, rl.y+nc.getRadius()*zoom, 0);
+					PC_Vec2 rl = nc.getPosOnScreen();
+			        tessellator.addVertex(rl.x, rl.y, 0);
 				}
-		        PC_Vec2 rl = con.getRealLocation();
-		        float zoom = con.getRecursiveZoom();
-		        tessellator.addVertex(rl.x+RADIUS_DETECTION*zoom, rl.y+con.getRadius()*zoom, 0);
+		        PC_Vec2 rl = con.getPosOnScreen();
+		        tessellator.addVertex(rl.x, rl.y, 0);
 			}else{
-		        PC_Vec2 rl = getRealLocation();
-		        float zoom = getRecursiveZoom();
-		        tessellator.addVertex(rl.x+RADIUS_DETECTION*zoom, rl.y+getRadius()*zoom, 0);
-		        rl = con.getRealLocation();
-		        zoom = con.getRecursiveZoom();
-		        tessellator.addVertex(rl.x+RADIUS_DETECTION*zoom, rl.y+con.getRadius()*zoom, 0);
+		        PC_Vec2 rl = getPosOnScreen();
+		        tessellator.addVertex(rl.x, rl.y, 0);
+		        rl = con.getPosOnScreen();
+		        tessellator.addVertex(rl.x, rl.y, 0);
 			}
 		}else if(this.mouseDown){
-			PC_GresNodesysConnection nc = getConnectionAt(new PC_Vec2I(mousePos), this);
+			PC_GresComponent c = getGuiHandler().getComponentAtPosition(new PC_Vec2I(mousePos));
+			PC_IGresNodesysConnection nc = PC_GresNodesysHelper.getConnection(this, c);
 			if(nc==null){
 				tessellator.addVertex(mousePos.x, mousePos.y, 0);
 			}else{
-				PC_Vec2 rl = nc.getRealLocation();
-		        float zoom = nc.getRecursiveZoom();
-		        tessellator.addVertex(rl.x+RADIUS_DETECTION*zoom, rl.y+nc.getRadius()*zoom, 0);
+				PC_Vec2 rl = nc.getPosOnScreen();
+		        tessellator.addVertex(rl.x, rl.y, 0);
 			}
-	        PC_Vec2 rl = getRealLocation();
-	        float zoom = getRecursiveZoom();
-	        tessellator.addVertex(rl.x+RADIUS_DETECTION*zoom, rl.y+getRadius()*zoom, 0);
+	        PC_Vec2 rl = getPosOnScreen();
+	        tessellator.addVertex(rl.x, rl.y, 0);
 		}
 		tessellator.draw();
 	}
 
-	@Override
 	public boolean isInput() {
 		return this.isInput;
 	}
 
 	public boolean isConnected() {
-		return !this.connection.isEmpty();
+		return !this.connections.isEmpty();
 	}
 
 	public void setMidP(int x, float y) {
@@ -201,10 +190,18 @@ public class PC_GresNodesysConnection extends PC_GresComponent implements PC_IGr
 		return (PC_GresNodesysNode)getParent().getParent();
 	}
 
-	@SuppressWarnings("hiding")
 	@Override
-	public boolean canConnectWith(boolean isInput) {
-		return this.isInput!=isInput;
+	public int getType(boolean fromThis) {
+		return this.isInput?1:2;
+	}
+
+	@Override
+	public PC_Vec2 getPosOnScreen() {
+		PC_Vec2 rl = getRealLocation();
+	    float zoom = getRecursiveZoom();
+	    rl.x += RADIUS_DETECTION*zoom;
+	    rl.y += getRadius()*zoom;
+	    return rl;
 	}
 	
 }

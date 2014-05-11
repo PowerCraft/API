@@ -75,4 +75,9 @@ public class PC_Vec2 {
 	}
 
 
+	public PC_Vec2 add(double v) {
+		return new PC_Vec2(this.x + v, this.y + v);
+	}
+
+
 }
