@@ -17,7 +17,7 @@ import powercraft.api.gres.PC_GresRenderer;
 import powercraft.api.gres.history.PC_GresHistory;
 
 @SideOnly(Side.CLIENT)
-public class PC_GresNodesysConnection extends PC_GresComponent implements PC_IGresNodesysLineDraw {
+public class PC_GresNodesysConnection extends PC_GresComponent implements PC_IGresNodesysLineDraw, PC_IGresNodesysConnection {
 	
 	public static final int RADIUS_DETECTION = 4;
 	
@@ -111,6 +111,13 @@ public class PC_GresNodesysConnection extends PC_GresComponent implements PC_IGr
 		con.connection.remove(this);
 	}
 	
+	public void removeAllConnections(){
+		for(PC_GresNodesysConnection con:this.connection){
+			con.connection.remove(this);
+		}
+		this.connection.clear();
+	}
+	
 	private static PC_GresNodesysConnection getConnectionAt(PC_Vec2I pos, PC_GresNodesysConnection forConnection){
 		PC_GresComponent c = forConnection.getGuiHandler().getComponentAtPosition(pos);
 		if(c instanceof PC_GresNodesysConnection){
@@ -170,6 +177,7 @@ public class PC_GresNodesysConnection extends PC_GresComponent implements PC_IGr
 		tessellator.draw();
 	}
 
+	@Override
 	public boolean isInput() {
 		return this.isInput;
 	}
@@ -181,6 +189,22 @@ public class PC_GresNodesysConnection extends PC_GresComponent implements PC_IGr
 	public void setMidP(int x, float y) {
 		this.rect.setLocation(new PC_Vec2I(x-4, (int) (y-3)));
 		this.rect.setSize(new PC_Vec2I(8, 6));
+	}
+
+	@Override
+	public int getCompGroup() {
+		return this.compGroup;
+	}
+
+	@Override
+	public PC_GresNodesysNode getNode() {
+		return (PC_GresNodesysNode)getParent().getParent();
+	}
+
+	@SuppressWarnings("hiding")
+	@Override
+	public boolean canConnectWith(boolean isInput) {
+		return this.isInput!=isInput;
 	}
 	
 }

@@ -81,7 +81,7 @@ public final class PC_GresNodesysHelper {
 	
 	public static PC_GresNodesysNode nodeToGuiNode(Node node){
 		PC_GresNodesysNode guiNode = new PC_GresNodesysNode(node.getDefaultName());
-		PinProgramIn progIn = node.getProgIn();
+		PinProgramIn progIn = node.getProgIn(0);
 		PC_GresNodesysEntry entry = makeEntry(progIn);
 		if(node.getAmountOfProgOut()>0){
 			int pinColor = getColorInt(node.getProgOut(0).getColor());

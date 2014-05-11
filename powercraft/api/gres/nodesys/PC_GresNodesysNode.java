@@ -45,18 +45,6 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 		public Layout() {
 			
 		}
-
-		private static void getAllConnections(PC_GresNodesysNode node, List<PC_GresNodesysConnection> left, List<PC_GresNodesysConnection> rigth){
-			for(PC_GresComponent c:node.getLayoutChildOrder()){
-				if(c instanceof PC_GresNodesysEntry){
-					PC_GresNodesysEntry entry = (PC_GresNodesysEntry)c;
-					if(entry.getLeft()!=null)
-						left.add(entry.getLeft());
-					if(entry.getRigth()!=null)
-						rigth.add(entry.getRigth());
-				}
-			}
-		}
 		
 		@Override
 		public PC_Vec2I getPreferredLayoutSize(PC_GresContainer container) {
@@ -64,7 +52,7 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 			if(node.isSmall()){
 				List<PC_GresNodesysConnection> left = new ArrayList<PC_GresNodesysConnection>();
 				List<PC_GresNodesysConnection> rigth = new ArrayList<PC_GresNodesysConnection>();
-				getAllConnections(node, left, rigth);
+				node.getAllConnections(left, rigth);
 				int leftC = left.size();
 				int rigthC = rigth.size();
 				int max = (leftC>rigthC?leftC:rigthC)*6;
@@ -79,7 +67,7 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 			if(node.isSmall()){
 				List<PC_GresNodesysConnection> left = new ArrayList<PC_GresNodesysConnection>();
 				List<PC_GresNodesysConnection> rigth = new ArrayList<PC_GresNodesysConnection>();
-				getAllConnections(node, left, rigth);
+				node.getAllConnections(left, rigth);
 				int leftC = left.size();
 				int rigthC = rigth.size();
 				int max = (leftC>rigthC?leftC:rigthC)*6;
@@ -98,7 +86,7 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 				}
 				List<PC_GresNodesysConnection> left = new ArrayList<PC_GresNodesysConnection>();
 				List<PC_GresNodesysConnection> rigth = new ArrayList<PC_GresNodesysConnection>();
-				getAllConnections(node, left, rigth);
+				node.getAllConnections(left, rigth);
 				int leftC = left.size();
 				int rigthC = rigth.size();
 				int max = rect.height;
@@ -329,6 +317,30 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 			PC_GresNodesysNode.selected.clear();
 		}
 		super.tryActionOnKeyTyped(key, keyCode, repeat, history);
+	}
+
+	@Override
+	protected void setParent(PC_GresContainer parent) {
+		super.setParent(parent);
+		if(this.parent==null){
+			List<PC_GresNodesysConnection> all = new ArrayList<PC_GresNodesysConnection>();
+			getAllConnections(all, all);
+			for(PC_GresNodesysConnection c:all){
+				c.removeAllConnections();
+			}
+		}
+	}
+	
+	void getAllConnections(List<PC_GresNodesysConnection> left, List<PC_GresNodesysConnection> rigth){
+		for(PC_GresComponent c:getLayoutChildOrder()){
+			if(c instanceof PC_GresNodesysEntry){
+				PC_GresNodesysEntry entry = (PC_GresNodesysEntry)c;
+				if(entry.getLeft()!=null)
+					left.add(entry.getLeft());
+				if(entry.getRigth()!=null)
+					rigth.add(entry.getRigth());
+			}
+		}
 	}
 	
 }
