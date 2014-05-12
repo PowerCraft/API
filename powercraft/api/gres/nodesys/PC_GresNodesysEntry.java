@@ -1,7 +1,5 @@
 package powercraft.api.gres.nodesys;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import powercraft.api.PC_Rect;
 import powercraft.api.PC_RectI;
 import powercraft.api.PC_Vec2;
@@ -11,6 +9,8 @@ import powercraft.api.gres.PC_GresAlign.H;
 import powercraft.api.gres.PC_GresAlign.V;
 import powercraft.api.gres.PC_GresComponent;
 import powercraft.api.gres.PC_GresContainer;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class PC_GresNodesysEntry extends PC_GresContainer implements PC_IGresNodesysLineDraw {
@@ -137,12 +137,12 @@ public class PC_GresNodesysEntry extends PC_GresContainer implements PC_IGresNod
 	}
 	
 	@Override
-	public void drawLines() {
+	public void drawLines(boolean pre) {
 		if(this.left!=null){
-			this.left.drawLines();
+			this.left.drawLines(pre);
 		}
 		if(this.rigth!=null){
-			this.rigth.drawLines();
+			this.rigth.drawLines(pre);
 		}
 	}
 

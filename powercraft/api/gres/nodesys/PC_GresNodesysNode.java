@@ -2,22 +2,22 @@ package powercraft.api.gres.nodesys;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.lwjgl.input.Keyboard;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import powercraft.api.PC_Rect;
 import powercraft.api.PC_RectI;
 import powercraft.api.PC_Vec2;
 import powercraft.api.PC_Vec2I;
 import powercraft.api.gres.PC_GresAlign.H;
-import powercraft.api.gres.PC_GresAlign.V;
 import powercraft.api.gres.PC_GresComponent;
 import powercraft.api.gres.PC_GresContainer;
 import powercraft.api.gres.history.PC_GresHistory;
 import powercraft.api.gres.layout.PC_GresLayoutVertical;
 import powercraft.api.gres.layout.PC_IGresLayout;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNodesysLineDraw {
@@ -40,6 +40,8 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 	private int lastSize;
 	
 	private boolean canCollaps;
+	
+	private String rigthButton;
 	
 	private static final Layout LAYOUT = new Layout();
 	
@@ -121,6 +123,7 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 		setText(name);
 		setSize(calculateMinSize());
 		this.canCollaps = true;
+		setAlignH(H.LEFT);
 	}
 
 	protected PC_GresNodesysNode(String name, boolean canCollaps){
@@ -128,6 +131,11 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 		setText(name);
 		setSize(calculateMinSize());
 		this.canCollaps = canCollaps;
+		setAlignH(H.LEFT);
+	}
+	
+	public void setButtonName(String texName){
+		this.rigthButton = texName;
 	}
 	
 	@Override
@@ -144,6 +152,13 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 		max.x += fMax.x+PC_GresNodesysConnection.RADIUS_DETECTION*2+2;
 		if(max.y<fMax.y){
 			max.y = fMax.y;
+		}
+		if(this.rigthButton!=null){
+			size = getTextureDefaultSize(this.rigthButton);
+			max.x += size.x+1;
+			if(max.y<size.y){
+				max.y = size.y;
+			}
 		}
 		if(this.isSmall){
 			max = max.max(getTextureMinSize(textureName3));
@@ -167,6 +182,13 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 		max.x += fMax.x+PC_GresNodesysConnection.RADIUS_DETECTION*2+2;
 		if(max.y<fMax.y){
 			max.y = fMax.y;
+		}
+		if(this.rigthButton!=null){
+			size = getTextureDefaultSize(this.rigthButton);
+			max.x += size.x+1;
+			if(max.y<size.y){
+				max.y = size.y;
+			}
 		}
 		if(this.isSmall){
 			max = max.max(getTextureDefaultSize(textureName3));
@@ -196,7 +218,14 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 			if(this.canCollaps)
 				drawTexture(arrowDown, PC_GresNodesysConnection.RADIUS_DETECTION*2+(max-size2.x)/2, (this.frame.y-size2.y)/2, size2.x, size2.y);
 		}
-		drawString(this.text, PC_GresNodesysConnection.RADIUS_DETECTION*2+2+max, 0, this.rect.width-PC_GresNodesysConnection.RADIUS_DETECTION*4-2, h, H.LEFT, V.CENTER, false);
+		int x = PC_GresNodesysConnection.RADIUS_DETECTION*2+2+max;
+		int w = this.rect.width-PC_GresNodesysConnection.RADIUS_DETECTION*2-2-x;
+		if(this.rigthButton!=null){
+			size = getTextureDefaultSize(this.rigthButton);
+			w -= size.x-1;
+			drawTexture(this.rigthButton, x+w+1, (h-size.y)/2, size.x, size.y);
+		}
+		drawString(this.text, x, 0, w, h, this.alignH, this.alignV, false);
 	}
 
 	@Override
@@ -267,6 +296,7 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 								cc.getParent().removeOnly(cc);
 								cc.setLocation(new PC_Vec2I(move).sub(f.getFrame().getLocation()));
 								f.add(cc);
+								cc.moveToTop();
 							}
 						}
 						break;
@@ -296,10 +326,10 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 	}
 	
 	@Override
-	public void drawLines() {
+	public void drawLines(boolean pre) {
 		for(PC_GresComponent c:this.children){
 			if(c instanceof PC_IGresNodesysLineDraw){
-				((PC_IGresNodesysLineDraw)c).drawLines();
+				((PC_IGresNodesysLineDraw)c).drawLines(pre);
 		    }
 		}
 	}

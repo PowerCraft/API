@@ -290,6 +290,7 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 			PC_Rect scissor = setDrawRect(scissorOld, rect, scale, displayHeight, zoomm);
 			if(scissor==null)
 				return;
+			PC_Rect oldRect = new PC_Rect(rect);
 			GL11.glPushMatrix();
 			GL11.glTranslatef(this.rect.x, this.rect.y, 0);
 			GL11.glScalef(tzoom, tzoom, 0);
@@ -310,9 +311,19 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 				}
 			}
 			GL11.glPopMatrix();
+			GL11.glPushMatrix();
+			GL11.glTranslatef(this.rect.x, this.rect.y, 0);
+			GL11.glScalef(tzoom, tzoom, 0);
+			GL11.glColor3f(1.0f, 1.0f, 1.0f);
+			setDrawRect(scissorOld, oldRect, scale, displayHeight, zoomm);
+			postPaint(scissor, scale, displayHeight, timeStamp, zoomm);
+			GL11.glPopMatrix();
 		}
 	}
 
+	protected void postPaint(PC_Rect scissor, double scale, int displayHeight, float timeStamp, float zoom){
+		//
+	}
 
 	@SuppressWarnings("hiding")
 	@Override

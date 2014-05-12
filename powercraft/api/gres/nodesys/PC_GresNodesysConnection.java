@@ -128,7 +128,7 @@ public class PC_GresNodesysConnection extends PC_GresComponent implements PC_IGr
 	}
 	
 	@Override
-	public void drawLines() {
+	public void drawLines(boolean pre) {
 		GL11.glLineWidth(3);
 	    Tessellator tessellator = Tessellator.instance;
 	    tessellator.startDrawing(GL11.GL_LINES);
@@ -136,23 +136,25 @@ public class PC_GresNodesysConnection extends PC_GresComponent implements PC_IGr
 		if(this.isInput && !this.connections.isEmpty()){
 			PC_IGresNodesysConnection con = this.connections.get(0);
 			if(this.mouseDown){
-				PC_GresComponent c = getGuiHandler().getComponentAtPosition(new PC_Vec2I(mousePos));
-				PC_IGresNodesysConnection nc = PC_GresNodesysHelper.getConnection(con, c);
-				if(nc==null){
-					tessellator.addVertex(mousePos.x, mousePos.y, 0);
-				}else{
-					PC_Vec2 rl = nc.getPosOnScreen();
+				if(!pre){
+					PC_GresComponent c = getGuiHandler().getComponentAtPosition(new PC_Vec2I(mousePos));
+					PC_IGresNodesysConnection nc = PC_GresNodesysHelper.getConnection(con, c);
+					if(nc==null){
+						tessellator.addVertex(mousePos.x, mousePos.y, 0);
+					}else{
+						PC_Vec2 rl = nc.getPosOnScreen();
+				        tessellator.addVertex(rl.x, rl.y, 0);
+					}
+			        PC_Vec2 rl = con.getPosOnScreen();
 			        tessellator.addVertex(rl.x, rl.y, 0);
 				}
-		        PC_Vec2 rl = con.getPosOnScreen();
-		        tessellator.addVertex(rl.x, rl.y, 0);
-			}else{
+			}else if(pre){
 		        PC_Vec2 rl = getPosOnScreen();
 		        tessellator.addVertex(rl.x, rl.y, 0);
 		        rl = con.getPosOnScreen();
 		        tessellator.addVertex(rl.x, rl.y, 0);
 			}
-		}else if(this.mouseDown){
+		}else if(this.mouseDown && !pre){
 			PC_GresComponent c = getGuiHandler().getComponentAtPosition(new PC_Vec2I(mousePos));
 			PC_IGresNodesysConnection nc = PC_GresNodesysHelper.getConnection(this, c);
 			if(nc==null){

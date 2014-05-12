@@ -7,12 +7,14 @@ import powercraft.api.PC_RectI;
 import powercraft.api.PC_Vec2;
 import powercraft.api.gres.PC_GresComponent;
 import powercraft.api.gres.PC_GresContainer;
+import powercraft.api.gres.PC_GresAlign.H;
 
 
 public class PC_GresNodesysNodeFrame extends PC_GresNodesysNode implements PC_IGresNodesysBackgroundDraw {
 
 	public PC_GresNodesysNodeFrame() {
 		super("Frame", false);
+		setAlignH(H.CENTER);
 	}
 
 	private boolean updating;
@@ -22,27 +24,27 @@ public class PC_GresNodesysNodeFrame extends PC_GresNodesysNode implements PC_IG
 			return;
 		}
 		this.updating = true;
-		PC_RectI rect = null;
+		PC_RectI r = null;
 		for(PC_GresComponent c:this.children){
-			if(rect==null){
-				rect=c.getRect();
+			if(r==null){
+				r=c.getRect();
 			}else{
-				rect = rect.enclosing(c.getRect());
+				r = r.enclosing(c.getRect());
 			}
 		}
-		if(rect==null){
-			rect = new PC_RectI(0, 0, 100, 100);
+		if(r==null){
+			r = new PC_RectI(0, 0, 60, 50);
 		}else{
-			rect.x -= 5;
-			rect.y -= 5;
-			rect.width += 10 + this.frame.x + this.frame.width;
-			rect.height += 10 + this.frame.y + this.frame.height;
+			r.x -= 5;
+			r.y -= 5;
+			r.width += 10 + this.frame.x + this.frame.width;
+			r.height += 10 + this.frame.y + this.frame.height;
 		}
 		for(PC_GresComponent c:this.children){
-			c.setLocation(c.getLocation().sub(rect.getLocation()));
+			c.setLocation(c.getLocation().sub(r.getLocation()));
 		}
-		setLocation(getLocation().add(rect.getLocation()));
-		setSize(rect.getSize());
+		setLocation(getLocation().add(r.getLocation()));
+		setSize(r.getSize());
 		this.updating = false;
 	}
 	

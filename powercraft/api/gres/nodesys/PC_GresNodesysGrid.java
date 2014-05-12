@@ -81,7 +81,23 @@ public class PC_GresNodesysGrid extends PC_GresContainer {
 	    GL11.glDisable(GL11.GL_TEXTURE_2D);
 	    for(PC_GresComponent c:this.children){
 	    	if(c instanceof PC_IGresNodesysLineDraw){
-	    		((PC_IGresNodesysLineDraw)c).drawLines();
+	    		((PC_IGresNodesysLineDraw)c).drawLines(true);
+	    	}
+	    }
+	    GL11.glPopMatrix();
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glLineWidth(1);
+	}
+	
+	@Override
+	protected void postPaint(PC_Rect scissor, double scale, int displayHeight, float timeStamp, float zoom){
+		GL11.glPushMatrix();
+	    GL11.glLoadIdentity();
+	    GL11.glTranslatef(0.0F, 0.0F, -2000.0F);
+	    GL11.glDisable(GL11.GL_TEXTURE_2D);
+	    for(PC_GresComponent c:this.children){
+	    	if(c instanceof PC_IGresNodesysLineDraw){
+	    		((PC_IGresNodesysLineDraw)c).drawLines(false);
 	    	}
 	    }
 	    GL11.glPopMatrix();

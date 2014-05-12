@@ -61,6 +61,7 @@ public final class PC_GresNodesysHelper {
 		List<PC_GresListBoxElement> layout = new ArrayList<PC_GresListBoxElement>();
 		layout.add(new PC_GresListBoxElement(7, "Split"));
 		layout.add(new PC_GresListBoxElement(8, "Frame"));
+		layout.add(new PC_GresListBoxElement(9, "Group"));
 		base.add(new PC_GresListBoxElement("Layout",new PC_ImmutableList<PC_GresListBoxElement>(layout)));
 		allNodes = new PC_ImmutableList<PC_GresListBoxElement>(base);
 	}
@@ -70,6 +71,15 @@ public final class PC_GresNodesysHelper {
 			grid.add(new PC_GresNodesysConnectionSplit());
 		}else if(id==8){
 			grid.add(new PC_GresNodesysNodeFrame());
+		}else if(id==9){
+			PC_GresNodesysNode node = new PC_GresNodesysNode("Group");
+			node.setButtonName("NodesysGroup");
+			PC_GresNodesysEntry entry = new PC_GresNodesysEntry("Group");
+			List<String> groups = new ArrayList<String>();
+			groups.add("This");
+			entry.add(new PC_GresComboBox(groups, 0));
+			node.add(entry);
+			grid.add(node);
 		}else{
 			grid.add(nodeToGuiNode(makeNodeByID(id)));
 		}

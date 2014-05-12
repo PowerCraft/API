@@ -147,19 +147,19 @@ public class PC_GresNodesysConnectionSplit extends PC_GresComponent implements P
 	}
 	
 	@Override
-	public void drawLines() {
+	public void drawLines(boolean pre) {
 		if((this.mouseDown && this.makeConnection) || this.input!=null){
 			GL11.glLineWidth(3);
 		    Tessellator tessellator = Tessellator.instance;
 		    tessellator.startDrawing(GL11.GL_LINES);
 	        tessellator.setColorRGBA(0, 0, 0, 255);
-	        if(this.input!=null){
+	        if(this.input!=null && pre){
 	        	PC_Vec2 rl = getPosOnScreen();
 		        tessellator.addVertex(rl.x, rl.y, 0);
 		        rl = this.input.getPosOnScreen();
 		        tessellator.addVertex(rl.x, rl.y, 0);
 	        }
-	        if(this.mouseDown && this.makeConnection){
+	        if(this.mouseDown && this.makeConnection && !pre){
 		        PC_GresComponent c = getGuiHandler().getComponentAtPosition(new PC_Vec2I(mousePos));
 				PC_IGresNodesysConnection nc = PC_GresNodesysHelper.getConnection(this, c);
 				if(nc==null){

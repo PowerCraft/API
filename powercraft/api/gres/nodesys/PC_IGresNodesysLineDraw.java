@@ -6,6 +6,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public interface PC_IGresNodesysLineDraw {
 	
-	public void drawLines();
+	public void drawLines(boolean pre);
 	
 }
