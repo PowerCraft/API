@@ -2,17 +2,16 @@ package powercraft.api.gres.nodesys;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 
 import org.lwjgl.input.Keyboard;
 
 import powercraft.api.PC_Rect;
 import powercraft.api.PC_RectI;
-import powercraft.api.PC_Vec2;
 import powercraft.api.PC_Vec2I;
 import powercraft.api.gres.PC_GresAlign.H;
 import powercraft.api.gres.PC_GresComponent;
 import powercraft.api.gres.PC_GresContainer;
+import powercraft.api.gres.events.PC_GresEvent;
 import powercraft.api.gres.history.PC_GresHistory;
 import powercraft.api.gres.layout.PC_GresLayoutVertical;
 import powercraft.api.gres.layout.PC_IGresLayout;
@@ -28,12 +27,6 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 	
 	private static final String arrowRight = "ArrowRight";
 	private static final String arrowDown = "ArrowDown";
-	
-	public static final List<PC_GresComponent> selected = new ArrayList<PC_GresComponent>();
-	
-	private static final PC_Vec2I lastMousePos = new PC_Vec2I(0, 0);
-	
-	private static PC_GresComponent moveHandler;
 	
 	private boolean isSmall;
 	
@@ -230,16 +223,18 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 
 	@Override
 	public int getCState(){
+		List<PC_GresComponent> selected = PC_GresNodesysGrid.gridFor(this).selected;
 		return this.enabled && this.parentEnabled ? selected.contains(this) ? selected.get(selected.size()-1)==this ? 1 : 2 : 0 : 3;
 	}
 	
 	@SuppressWarnings("hiding")
 	@Override
 	protected boolean handleMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton, boolean doubleClick, PC_GresHistory history) {
+		PC_Vec2I max = new PC_Vec2I();
 		if(this.canCollaps){
 			PC_Vec2I size = getTextureDefaultSize(arrowRight);
 			PC_Vec2I size2 = getTextureDefaultSize(arrowDown);
-			PC_Vec2I max = size.max(size2);
+			max = size.max(size2);
 			PC_RectI rect;
 			if(this.isSmall){
 				rect = new PC_RectI(PC_GresNodesysConnection.RADIUS_DETECTION*2, (this.rect.height-max.y)/2, max.x, max.y);
@@ -251,6 +246,18 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 				return true;
 			}
 		}
+		if(this.rigthButton!=null){
+			int h = this.isSmall?this.rect.height:this.frame.y;
+			int x = PC_GresNodesysConnection.RADIUS_DETECTION*2+2+max.x;
+			int w = this.rect.width-PC_GresNodesysConnection.RADIUS_DETECTION*2-2-x;
+			PC_Vec2I size = getTextureDefaultSize(this.rigthButton);
+			w -= size.x-1;
+			if(new PC_Rect(x+w+1, (h-size.y)/2, size.x, size.y).contains(mouse)){
+				buttonPressed();
+				return true;
+			}
+		}
+		List<PC_GresComponent> selected = PC_GresNodesysGrid.gridFor(this).selected;
 		if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)){
 			selected.remove(this);
 		}else{
@@ -258,71 +265,24 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 		}
 		selected.add(this);
 		this.mouseDown = this.enabled && this.parentEnabled;
-		mouseDownForMove(this, mouse.mul(getRecursiveZoom()).add(new PC_Vec2I(getRealLocation())));
+		PC_GresNodesysGrid.mouseDownForMove(this, mouse.mul(getRecursiveZoom()).add(new PC_Vec2I(getRealLocation())));
 		return true;
 	}
 
+	protected void buttonPressed(){
+		fireEvent(new ButtonPressed(this));
+	}
+	
 	@Override
 	protected boolean handleMouseMove(PC_Vec2I mouse, int buttons, PC_GresHistory history) {
-		mouseMove(this, mouse.mul(getRecursiveZoom()).add(new PC_Vec2I(getRealLocation())));
+		PC_GresNodesysGrid.mouseMove(this, mouse.mul(getRecursiveZoom()).add(new PC_Vec2I(getRealLocation())));
 		return true;
 	}
 	
 	@Override
 	protected boolean handleMouseButtonUp(PC_Vec2I mouse, int buttons, int eventButton, PC_GresHistory history) {
-		mouseUpForMove(this);
+		PC_GresNodesysGrid.mouseUpForMove(this);
 		return super.handleMouseButtonUp(mouse, buttons, eventButton, history);
-	}
-	
-	public static void mouseDownForMove(PC_GresComponent mh, PC_Vec2I mouse){
-		if(PC_GresNodesysNode.moveHandler==null){
-			PC_GresNodesysNode.moveHandler = mh;
-			lastMousePos.setTo(mouse);
-		}
-	}
-	
-	public static void mouseUpForMove(PC_GresComponent mh){
-		if(PC_GresNodesysNode.moveHandler == mh){
-			PC_GresNodesysNode.moveHandler = null;
-			if(mh.getGuiHandler()!=null){
-				List<PC_GresComponent> list = new ArrayList<PC_GresComponent>();
-				mh.getGuiHandler().getComponentsAtPosition(lastMousePos, list);
-				for(PC_GresComponent c:list){
-					if(c instanceof PC_GresNodesysNodeFrame && !selected.contains(c)){
-						PC_GresNodesysNodeFrame f = (PC_GresNodesysNodeFrame) c;
-						for(PC_GresComponent cc:selected){
-							if(cc.canAddTo(f)){
-								PC_Vec2 move = cc.getRealLocation().sub(f.getRealLocation());
-								cc.getParent().removeOnly(cc);
-								cc.setLocation(new PC_Vec2I(move).sub(f.getFrame().getLocation()));
-								f.add(cc);
-								cc.moveToTop();
-							}
-						}
-						break;
-					}
-				}
-			}
-		}
-	}
-	
-	public static void mouseMove(PC_GresComponent mh, PC_Vec2I mouse){
-		if(PC_GresNodesysNode.moveHandler==mh){
-			PC_Vec2I move = mouse.sub(lastMousePos);
-			lastMousePos.setTo(mouse);
-			for(PC_GresComponent c:selected){
-				boolean allOk = true;
-				for(PC_GresComponent cc:selected){
-					if(!c.canAddTo(cc) && c!=cc){
-						allOk = false;
-						break;
-					}
-				}
-				if(allOk){
-					c.setLocation(c.getLocation().add(move.div(c.getRecursiveZoom())));
-				}
-			}
-		}
 	}
 	
 	@Override
@@ -405,6 +365,14 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 					rigth.add(entry.getRigth());
 			}
 		}
+	}
+	
+	public static class ButtonPressed extends PC_GresEvent{
+
+		ButtonPressed(PC_GresComponent component) {
+			super(component);
+		}
+		
 	}
 	
 }

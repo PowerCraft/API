@@ -3,6 +3,8 @@ package powercraft.api.gres.nodesys;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.lwjgl.input.Keyboard;
+
 import nodecode.core.INodeFactoryDescriptor;
 import nodecode.core.Node;
 import nodecode.core.NodeFactory;
@@ -27,6 +29,10 @@ import powercraft.api.gres.PC_GresItemSelect;
 import powercraft.api.gres.PC_GresListBoxElement;
 import powercraft.api.gres.PC_GresTextEdit;
 import powercraft.api.gres.PC_GresTextEdit.PC_GresInputType;
+import powercraft.api.gres.events.PC_GresEvent;
+import powercraft.api.gres.events.PC_GresKeyEvent;
+import powercraft.api.gres.events.PC_IGresEventListener;
+import powercraft.api.gres.nodesys.PC_GresNodesysNode.ButtonPressed;
 
 
 public final class PC_GresNodesysHelper {
@@ -72,8 +78,7 @@ public final class PC_GresNodesysHelper {
 		}else if(id==8){
 			grid.add(new PC_GresNodesysNodeFrame());
 		}else if(id==9){
-			PC_GresNodesysNode node = new PC_GresNodesysNode("Group");
-			node.setButtonName("NodesysGroup");
+			PC_GresNodesysNode node = new PC_GresNodesysNodeGroup("Group");
 			PC_GresNodesysEntry entry = new PC_GresNodesysEntry("Group");
 			List<String> groups = new ArrayList<String>();
 			groups.add("This");

@@ -101,9 +101,9 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 		if (!this.children.contains(component)) {
 			this.children.add(component);
 			this.layoutChildOrder.add(component);
-			component.takeFocus();
 			component.setParent(this);
 			if(component.getParent()==this){
+				component.takeFocus();
 				notifyChange();
 			}else{
 				this.children.remove(component);
@@ -117,7 +117,7 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 
 		this.children.remove(component);
 		this.layoutChildOrder.remove(component);
-		if(component.hasFocus()){
+		if(component.hasFocusOrChild()){
 			takeFocus();
 		}
 		if(component.getParent()==this)
@@ -129,7 +129,7 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 
 		this.children.remove(component);
 		this.layoutChildOrder.remove(component);
-		if(component.hasFocus()){
+		if(component.hasFocusOrChild()){
 			takeFocus();
 		}
 		notifyChange();

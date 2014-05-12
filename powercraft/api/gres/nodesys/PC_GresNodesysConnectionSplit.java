@@ -104,13 +104,14 @@ public class PC_GresNodesysConnectionSplit extends PC_GresComponent implements P
 		if(eventButton==0){
 			this.makeConnection = true;
 		}else if(eventButton==1){
+			List<PC_GresComponent> selected = PC_GresNodesysGrid.gridFor(this).selected;
 			if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)){
-				PC_GresNodesysNode.selected.remove(this);
+				selected.remove(this);
 			}else{
-				PC_GresNodesysNode.selected.clear();
+				selected.clear();
 			}
-			PC_GresNodesysNode.selected.add(this);
-			PC_GresNodesysNode.mouseDownForMove(this, mouse.mul(getRecursiveZoom()).add(new PC_Vec2I(getRealLocation())));
+			selected.add(this);
+			PC_GresNodesysGrid.mouseDownForMove(this, mouse.mul(getRecursiveZoom()).add(new PC_Vec2I(getRealLocation())));
 		}
 		return super.handleMouseButtonDown(mouse, buttons, eventButton, doubleClick, history);
 	}
@@ -120,7 +121,7 @@ public class PC_GresNodesysConnectionSplit extends PC_GresComponent implements P
 		if(this.makeConnection){
 			mousePos.setTo(new PC_Vec2(mouse).mul(getRecursiveZoom()).add(getRealLocation()));
 		}
-		PC_GresNodesysNode.mouseMove(this, mouse.mul(getRecursiveZoom()).add(new PC_Vec2I(getRealLocation())));
+		PC_GresNodesysGrid.mouseMove(this, mouse.mul(getRecursiveZoom()).add(new PC_Vec2I(getRealLocation())));
 		return super.handleMouseMove(mouse, buttons, history);
 	}
 	
@@ -136,7 +137,7 @@ public class PC_GresNodesysConnectionSplit extends PC_GresComponent implements P
 			}
 			this.makeConnection = false;
 		}else{
-			PC_GresNodesysNode.mouseUpForMove(this);
+			PC_GresNodesysGrid.mouseUpForMove(this);
 		}
 		return super.handleMouseButtonUp(mouse, buttons, eventButton, history);
 	}
