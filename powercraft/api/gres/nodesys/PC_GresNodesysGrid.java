@@ -2,11 +2,13 @@ package powercraft.api.gres.nodesys;
 
 import net.minecraft.client.renderer.Tessellator;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import powercraft.api.PC_Rect;
+import powercraft.api.PC_Vec2;
 import powercraft.api.PC_Vec2I;
 import powercraft.api.gres.PC_GresComponent;
 import powercraft.api.gres.PC_GresContainer;
@@ -70,6 +72,13 @@ public class PC_GresNodesysGrid extends PC_GresContainer {
 	    GL11.glPushMatrix();
 	    GL11.glLoadIdentity();
 	    GL11.glTranslatef(0.0F, 0.0F, -2000.0F);
+	    GL11.glEnable(GL11.GL_TEXTURE_2D);
+	    for(PC_GresComponent c:this.children){
+	    	if(c instanceof PC_IGresNodesysBackgroundDraw){
+	    		((PC_IGresNodesysBackgroundDraw)c).drawBackground();
+	    	}
+	    }
+	    GL11.glDisable(GL11.GL_TEXTURE_2D);
 	    for(PC_GresComponent c:this.children){
 	    	if(c instanceof PC_IGresNodesysLineDraw){
 	    		((PC_IGresNodesysLineDraw)c).drawLines();
@@ -96,6 +105,33 @@ public class PC_GresNodesysGrid extends PC_GresContainer {
 	protected boolean handleMouseButtonUp(PC_Vec2I mouse, int buttons, int eventButton, PC_GresHistory history) {
 		PC_GresNodesysNode.mouseUpForMove(this);
 		return super.handleMouseButtonUp(mouse, buttons, eventButton, history);
+	}
+	
+	@Override
+	protected void tryActionOnKeyTyped(char key, int keyCode, boolean repeat, PC_GresHistory history) {
+		if(keyCode == Keyboard.KEY_DELETE){
+			for(PC_GresComponent s:PC_GresNodesysNode.selected){
+				s.getParent().remove(s);
+			}
+			PC_GresNodesysNode.selected.clear();
+		}else if(keyCode == Keyboard.KEY_P && Keyboard.isKeyDown(Keyboard.KEY_LMENU)){
+			for(PC_GresComponent c:PC_GresNodesysNode.selected){
+				PC_GresNodesysGrid grid = null;
+				PC_GresComponent cc = c;
+				while((!(cc instanceof PC_GresNodesysGrid)) && cc!=null){
+					cc = cc.getParent();
+				}
+				grid = (PC_GresNodesysGrid)cc;
+				if(grid!=null){
+					PC_Vec2 move = c.getRealLocation().sub(grid.getRealLocation());
+					c.getParent().removeOnly(c);
+					c.setLocation(new PC_Vec2I(move));
+					grid.add(c);
+					c.moveToTop();
+				}
+			}
+		}
+		super.tryActionOnKeyTyped(key, keyCode, repeat, history);
 	}
 	
 }

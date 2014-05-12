@@ -157,6 +157,21 @@ public class PC_GresTab extends PC_GresContainer {
 
 	@SuppressWarnings("hiding")
 	@Override
+	public void getComponentsAtPosition(PC_Vec2I position, List<PC_GresComponent> list) {
+
+		if (this.visible && this.children.size()>0) {
+			PC_Vec2I nposition = position.sub(this.frame.getLocation());
+			PC_GresComponent child = this.children.get(0);
+			PC_RectI rect = child.getRect();
+			if (rect.contains(nposition)){
+				child.getComponentsAtPosition(nposition.sub(rect.getLocation()), list);
+			}
+			list.add(this);
+		}
+	}
+	
+	@SuppressWarnings("hiding")
+	@Override
 	protected Slot getSlotAtPosition(PC_Vec2I position) {
 
 		if (this.visible && this.children.size()>0) {

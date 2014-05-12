@@ -31,6 +31,7 @@ import powercraft.api.gres.events.PC_IGresEventListenerEx;
 import powercraft.api.gres.font.PC_FontRenderer;
 import powercraft.api.gres.font.PC_Fonts;
 import powercraft.api.gres.history.PC_GresHistory;
+import powercraft.api.gres.nodesys.PC_GresNodesysNodeFrame;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -734,6 +735,13 @@ public abstract class PC_GresComponent {
 
 		return this.visible ? this : null;
 	}
+	
+	public void getComponentsAtPosition(PC_Vec2I mouse, List<PC_GresComponent> list) {
+
+		if(this.visible){
+			list.add(this);
+		}
+	}
 
 
 	protected void onTick() {
@@ -955,6 +963,16 @@ public abstract class PC_GresComponent {
 		if(this.getParent()!=null){
 			this.getParent().addToBase(c);
 		}
+	}
+
+	public boolean canAddTo(PC_GresComponent c) {
+		PC_GresComponent cc = this;
+		while(cc!=null){
+			if(cc==c)
+				return false;
+			cc = cc.getParent();
+		}
+		return true;
 	}
 	
 }

@@ -120,7 +120,18 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 		if(component.hasFocus()){
 			takeFocus();
 		}
-		component.setParent(null);
+		if(component.getParent()==this)
+			component.setParent(null);
+		notifyChange();
+	}
+	
+	public void removeOnly(PC_GresComponent component) {
+
+		this.children.remove(component);
+		this.layoutChildOrder.remove(component);
+		if(component.hasFocus()){
+			takeFocus();
+		}
 		notifyChange();
 	}
 
@@ -325,6 +336,25 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 		return null;
 	}
 
+	@SuppressWarnings("hiding")
+	@Override
+	public void getComponentsAtPosition(PC_Vec2I position, List<PC_GresComponent> list) {
+
+		if (this.visible) {
+			position.x /= getZoom();
+			position.y /= getZoom();
+			if(getChildRect().contains(position)){
+				PC_Vec2I nposition = position.sub(this.frame.getLocation());
+				for (PC_GresComponent child : this.children) {
+					PC_RectI rect = child.getRect();
+					if (rect.contains(nposition)){
+						child.getComponentsAtPosition(nposition.sub(rect.getLocation()), list);
+					}
+				}
+			}
+			list.add(this);
+		}
+	}
 
 	@Override
 	protected void onTick() {

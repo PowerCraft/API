@@ -9,6 +9,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import powercraft.api.PC_Rect;
 import powercraft.api.PC_RectI;
+import powercraft.api.PC_Vec2;
 import powercraft.api.PC_Vec2I;
 import powercraft.api.gres.PC_GresAlign.H;
 import powercraft.api.gres.PC_GresAlign.V;
@@ -138,7 +139,7 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 	protected PC_Vec2I calculateMinSize() {
 		PC_Vec2I size = getTextureDefaultSize(arrowRight);
 		PC_Vec2I size2 = getTextureDefaultSize(arrowDown);
-		PC_Vec2I max = canCollaps?size.max(size2):new PC_Vec2I();
+		PC_Vec2I max = this.canCollaps?size.max(size2):new PC_Vec2I();
 		PC_Vec2I fMax = fontRenderer.getStringSize(this.text);
 		max.x += fMax.x+PC_GresNodesysConnection.RADIUS_DETECTION*2+2;
 		if(max.y<fMax.y){
@@ -161,7 +162,7 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 	protected PC_Vec2I calculatePrefSize() {
 		PC_Vec2I size = getTextureDefaultSize(arrowRight);
 		PC_Vec2I size2 = getTextureDefaultSize(arrowDown);
-		PC_Vec2I max = canCollaps?size.max(size2):new PC_Vec2I();
+		PC_Vec2I max = this.canCollaps?size.max(size2):new PC_Vec2I();
 		PC_Vec2I fMax = fontRenderer.getStringSize(this.text);
 		max.x += fMax.x+PC_GresNodesysConnection.RADIUS_DETECTION*2+2;
 		if(max.y<fMax.y){
@@ -180,19 +181,19 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 		PC_Vec2I size = getTextureDefaultSize(arrowRight);
 		PC_Vec2I size2 = getTextureDefaultSize(arrowDown);
 		int max = size.x>size2.x?size.x:size2.x;
-		if(!canCollaps)
+		if(!this.canCollaps)
 			max = 0;
 		int h;
 		if(this.isSmall){
 			h = this.rect.height;
 			drawTexture(textureName3, PC_GresNodesysConnection.RADIUS_DETECTION, 0, this.rect.width-PC_GresNodesysConnection.RADIUS_DETECTION*2, this.rect.height);
-			if(canCollaps)
+			if(this.canCollaps)
 				drawTexture(arrowRight, PC_GresNodesysConnection.RADIUS_DETECTION*2+(max-size.x)/2, (this.rect.height-size.y)/2, size.x, size.y);
 		}else{
 			h = this.frame.y;
 			drawTexture(textureName1, PC_GresNodesysConnection.RADIUS_DETECTION, 0, this.rect.width-PC_GresNodesysConnection.RADIUS_DETECTION*2, this.frame.y);
-			drawTexture(textureName2, PC_GresNodesysConnection.RADIUS_DETECTION, this.frame.y, this.rect.width-PC_GresNodesysConnection.RADIUS_DETECTION*2, this.rect.height);
-			if(canCollaps)
+			drawTexture(textureName2, PC_GresNodesysConnection.RADIUS_DETECTION, this.frame.y, this.rect.width-PC_GresNodesysConnection.RADIUS_DETECTION*2, this.rect.height-this.frame.y);
+			if(this.canCollaps)
 				drawTexture(arrowDown, PC_GresNodesysConnection.RADIUS_DETECTION*2+(max-size2.x)/2, (this.frame.y-size2.y)/2, size2.x, size2.y);
 		}
 		drawString(this.text, PC_GresNodesysConnection.RADIUS_DETECTION*2+2+max, 0, this.rect.width-PC_GresNodesysConnection.RADIUS_DETECTION*4-2, h, H.LEFT, V.CENTER, false);
@@ -206,7 +207,7 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 	@SuppressWarnings("hiding")
 	@Override
 	protected boolean handleMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton, boolean doubleClick, PC_GresHistory history) {
-		if(canCollaps){
+		if(this.canCollaps){
 			PC_Vec2I size = getTextureDefaultSize(arrowRight);
 			PC_Vec2I size2 = getTextureDefaultSize(arrowDown);
 			PC_Vec2I max = size.max(size2);
@@ -243,7 +244,7 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 		mouseUpForMove(this);
 		return super.handleMouseButtonUp(mouse, buttons, eventButton, history);
 	}
-
+	
 	public static void mouseDownForMove(PC_GresComponent mh, PC_Vec2I mouse){
 		if(PC_GresNodesysNode.moveHandler==null){
 			PC_GresNodesysNode.moveHandler = mh;
@@ -254,14 +255,21 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 	public static void mouseUpForMove(PC_GresComponent mh){
 		if(PC_GresNodesysNode.moveHandler == mh){
 			PC_GresNodesysNode.moveHandler = null;
-			PC_GresComponent c = mh.getGuiHandler().getComponentAtPosition(lastMousePos);
-			if(c instanceof PC_GresNodesysNodeFrame){
-				PC_GresNodesysNodeFrame f = (PC_GresNodesysNodeFrame) c;
-				for(PC_GresComponent cc:selected){
-					if(!(cc.getParent() instanceof PC_GresNodesysNodeFrame || cc instanceof PC_GresNodesysNodeFrame)){
-						cc.getParent().remove(cc);
-						f.add(cc);
-						cc.setLocation(cc.getLocation().sub(f.getLocation()).sub(f.getFrame().getLocation()));
+			if(mh.getGuiHandler()!=null){
+				List<PC_GresComponent> list = new ArrayList<PC_GresComponent>();
+				mh.getGuiHandler().getComponentsAtPosition(lastMousePos, list);
+				for(PC_GresComponent c:list){
+					if(c instanceof PC_GresNodesysNodeFrame && !selected.contains(c)){
+						PC_GresNodesysNodeFrame f = (PC_GresNodesysNodeFrame) c;
+						for(PC_GresComponent cc:selected){
+							if(cc.canAddTo(f)){
+								PC_Vec2 move = cc.getRealLocation().sub(f.getRealLocation());
+								cc.getParent().removeOnly(cc);
+								cc.setLocation(new PC_Vec2I(move).sub(f.getFrame().getLocation()));
+								f.add(cc);
+							}
+						}
+						break;
 					}
 				}
 			}
@@ -273,7 +281,16 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 			PC_Vec2I move = mouse.sub(lastMousePos);
 			lastMousePos.setTo(mouse);
 			for(PC_GresComponent c:selected){
-				c.setLocation(c.getLocation().add(move.div(c.getRecursiveZoom())));
+				boolean allOk = true;
+				for(PC_GresComponent cc:selected){
+					if(!c.canAddTo(cc) && c!=cc){
+						allOk = false;
+						break;
+					}
+				}
+				if(allOk){
+					c.setLocation(c.getLocation().add(move.div(c.getRecursiveZoom())));
+				}
 			}
 		}
 	}
@@ -334,17 +351,6 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 			return null;
 		}
 		return c;
-	}
-
-	@Override
-	protected void tryActionOnKeyTyped(char key, int keyCode, boolean repeat, PC_GresHistory history) {
-		if(keyCode == Keyboard.KEY_DELETE){
-			for(PC_GresComponent s:PC_GresNodesysNode.selected){
-				s.getParent().remove(s);
-			}
-			PC_GresNodesysNode.selected.clear();
-		}
-		super.tryActionOnKeyTyped(key, keyCode, repeat, history);
 	}
 
 	@Override

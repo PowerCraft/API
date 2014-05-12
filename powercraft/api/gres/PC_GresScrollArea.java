@@ -1,5 +1,7 @@
 package powercraft.api.gres;
 
+import java.util.List;
+
 import net.minecraft.inventory.Slot;
 
 import org.lwjgl.opengl.GL11;
@@ -147,7 +149,19 @@ public class PC_GresScrollArea extends PC_GresComponent {
 		return null;
 	}
 
+	@SuppressWarnings("hiding")
+	@Override
+	public void getComponentsAtPosition(PC_Vec2I position, List<PC_GresComponent> list) {
 
+		if (this.visible) {
+			PC_RectI rect = this.container.getRectScaled();
+			if (rect.contains(position)&& position.x < this.rect.width-getTextureDefaultSize(scrollVFrame).x && position.y < this.rect.height-getTextureDefaultSize(scrollHFrame).y){
+				this.container.getComponentsAtPosition(position.sub(rect.getLocation()), list);
+			}
+			list.add(this);
+		}
+	}
+	
 	@Override
 	protected void onTick() {
 		this.container.onTick();
