@@ -60,6 +60,7 @@ public final class PC_GresNodesysHelper {
 		base.add(new PC_GresListBoxElement("Convert",new PC_ImmutableList<PC_GresListBoxElement>(maths)));
 		List<PC_GresListBoxElement> layout = new ArrayList<PC_GresListBoxElement>();
 		layout.add(new PC_GresListBoxElement(7, "Split"));
+		layout.add(new PC_GresListBoxElement(8, "Frame"));
 		base.add(new PC_GresListBoxElement("Layout",new PC_ImmutableList<PC_GresListBoxElement>(layout)));
 		allNodes = new PC_ImmutableList<PC_GresListBoxElement>(base);
 	}
@@ -67,6 +68,8 @@ public final class PC_GresNodesysHelper {
 	public static void addNodeToGrid(PC_GresNodesysGrid grid, PC_Vec2I pos, int id){
 		if(id==7){
 			grid.add(new PC_GresNodesysConnectionSplit());
+		}else if(id==8){
+			grid.add(new PC_GresNodesysNodeFrame());
 		}else{
 			grid.add(nodeToGuiNode(makeNodeByID(id)));
 		}

@@ -38,6 +38,8 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 	
 	private int lastSize;
 	
+	private boolean canCollaps;
+	
 	private static final Layout LAYOUT = new Layout();
 	
 	private static class Layout extends PC_GresLayoutVertical{
@@ -117,8 +119,16 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 		super.setLayout(LAYOUT);
 		setText(name);
 		setSize(calculateMinSize());
+		this.canCollaps = true;
 	}
 
+	protected PC_GresNodesysNode(String name, boolean canCollaps){
+		this.frame.y = 13;
+		setText(name);
+		setSize(calculateMinSize());
+		this.canCollaps = canCollaps;
+	}
+	
 	@Override
 	public PC_GresNodesysNode setLayout(PC_IGresLayout layout){
 		return this;
@@ -128,7 +138,7 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 	protected PC_Vec2I calculateMinSize() {
 		PC_Vec2I size = getTextureDefaultSize(arrowRight);
 		PC_Vec2I size2 = getTextureDefaultSize(arrowDown);
-		PC_Vec2I max = size.max(size2);
+		PC_Vec2I max = canCollaps?size.max(size2):new PC_Vec2I();
 		PC_Vec2I fMax = fontRenderer.getStringSize(this.text);
 		max.x += fMax.x+PC_GresNodesysConnection.RADIUS_DETECTION*2+2;
 		if(max.y<fMax.y){
@@ -151,7 +161,7 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 	protected PC_Vec2I calculatePrefSize() {
 		PC_Vec2I size = getTextureDefaultSize(arrowRight);
 		PC_Vec2I size2 = getTextureDefaultSize(arrowDown);
-		PC_Vec2I max = size.max(size2);
+		PC_Vec2I max = canCollaps?size.max(size2):new PC_Vec2I();
 		PC_Vec2I fMax = fontRenderer.getStringSize(this.text);
 		max.x += fMax.x+PC_GresNodesysConnection.RADIUS_DETECTION*2+2;
 		if(max.y<fMax.y){
@@ -170,16 +180,20 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 		PC_Vec2I size = getTextureDefaultSize(arrowRight);
 		PC_Vec2I size2 = getTextureDefaultSize(arrowDown);
 		int max = size.x>size2.x?size.x:size2.x;
+		if(!canCollaps)
+			max = 0;
 		int h;
 		if(this.isSmall){
 			h = this.rect.height;
 			drawTexture(textureName3, PC_GresNodesysConnection.RADIUS_DETECTION, 0, this.rect.width-PC_GresNodesysConnection.RADIUS_DETECTION*2, this.rect.height);
-			drawTexture(arrowRight, PC_GresNodesysConnection.RADIUS_DETECTION*2+(max-size.x)/2, (this.rect.height-size.y)/2, size.x, size.y);
+			if(canCollaps)
+				drawTexture(arrowRight, PC_GresNodesysConnection.RADIUS_DETECTION*2+(max-size.x)/2, (this.rect.height-size.y)/2, size.x, size.y);
 		}else{
 			h = this.frame.y;
 			drawTexture(textureName1, PC_GresNodesysConnection.RADIUS_DETECTION, 0, this.rect.width-PC_GresNodesysConnection.RADIUS_DETECTION*2, this.frame.y);
 			drawTexture(textureName2, PC_GresNodesysConnection.RADIUS_DETECTION, this.frame.y, this.rect.width-PC_GresNodesysConnection.RADIUS_DETECTION*2, this.rect.height);
-			drawTexture(arrowDown, PC_GresNodesysConnection.RADIUS_DETECTION*2+(max-size2.x)/2, (this.frame.y-size2.y)/2, size2.x, size2.y);
+			if(canCollaps)
+				drawTexture(arrowDown, PC_GresNodesysConnection.RADIUS_DETECTION*2+(max-size2.x)/2, (this.frame.y-size2.y)/2, size2.x, size2.y);
 		}
 		drawString(this.text, PC_GresNodesysConnection.RADIUS_DETECTION*2+2+max, 0, this.rect.width-PC_GresNodesysConnection.RADIUS_DETECTION*4-2, h, H.LEFT, V.CENTER, false);
 	}
@@ -192,18 +206,20 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 	@SuppressWarnings("hiding")
 	@Override
 	protected boolean handleMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton, boolean doubleClick, PC_GresHistory history) {
-		PC_Vec2I size = getTextureDefaultSize(arrowRight);
-		PC_Vec2I size2 = getTextureDefaultSize(arrowDown);
-		PC_Vec2I max = size.max(size2);
-		PC_RectI rect;
-		if(this.isSmall){
-			rect = new PC_RectI(PC_GresNodesysConnection.RADIUS_DETECTION*2, (this.rect.height-max.y)/2, max.x, max.y);
-		}else{
-			rect = new PC_RectI(PC_GresNodesysConnection.RADIUS_DETECTION*2, (this.frame.y-max.y)/2, max.x, max.y);
-		}
-		if(rect.contains(mouse)){
-			setSmall(!this.isSmall);
-			return true;
+		if(canCollaps){
+			PC_Vec2I size = getTextureDefaultSize(arrowRight);
+			PC_Vec2I size2 = getTextureDefaultSize(arrowDown);
+			PC_Vec2I max = size.max(size2);
+			PC_RectI rect;
+			if(this.isSmall){
+				rect = new PC_RectI(PC_GresNodesysConnection.RADIUS_DETECTION*2, (this.rect.height-max.y)/2, max.x, max.y);
+			}else{
+				rect = new PC_RectI(PC_GresNodesysConnection.RADIUS_DETECTION*2, (this.frame.y-max.y)/2, max.x, max.y);
+			}
+			if(rect.contains(mouse)){
+				setSmall(!this.isSmall);
+				return true;
+			}
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)){
 			selected.remove(this);
@@ -236,8 +252,20 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 	}
 	
 	public static void mouseUpForMove(PC_GresComponent mh){
-		if(PC_GresNodesysNode.moveHandler == mh)
+		if(PC_GresNodesysNode.moveHandler == mh){
 			PC_GresNodesysNode.moveHandler = null;
+			PC_GresComponent c = mh.getGuiHandler().getComponentAtPosition(lastMousePos);
+			if(c instanceof PC_GresNodesysNodeFrame){
+				PC_GresNodesysNodeFrame f = (PC_GresNodesysNodeFrame) c;
+				for(PC_GresComponent cc:selected){
+					if(!(cc.getParent() instanceof PC_GresNodesysNodeFrame || cc instanceof PC_GresNodesysNodeFrame)){
+						cc.getParent().remove(cc);
+						f.add(cc);
+						cc.setLocation(cc.getLocation().sub(f.getLocation()).sub(f.getFrame().getLocation()));
+					}
+				}
+			}
+		}
 	}
 	
 	public static void mouseMove(PC_GresComponent mh, PC_Vec2I mouse){
