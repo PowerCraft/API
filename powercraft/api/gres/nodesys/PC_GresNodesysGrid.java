@@ -20,18 +20,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class PC_GresNodesysGrid extends PC_GresContainer {
-	
-	private final PC_GresNodesysBackgroundGrid background = new PC_GresNodesysBackgroundGrid();
-	
+
 	public final List<PC_GresComponent> selected = new ArrayList<PC_GresComponent>();
 	
 	private PC_GresComponent moveHandler;
 	
 	private final PC_Vec2I lastMousePos = new PC_Vec2I(0, 0);
-	
-	public PC_GresNodesysGrid(){
-		add(this.background);
-	}
 	
 	@Override
 	protected PC_Vec2I calculateMinSize() {
@@ -209,7 +203,7 @@ public class PC_GresNodesysGrid extends PC_GresContainer {
 			grid.moveHandler = null;
 			if(mh.getGuiHandler()!=null){
 				List<PC_GresComponent> list = new ArrayList<PC_GresComponent>();
-				grid.getComponentsAtPosition(grid.lastMousePos, list);
+				grid.getComponentsAtPosition(grid.lastMousePos.sub(new PC_Vec2I(grid.getRealLocation())), list);
 				for(PC_GresComponent c:list){
 					if(c instanceof PC_GresNodesysNodeFrame && !grid.selected.contains(c)){
 						PC_GresNodesysNodeFrame f = (PC_GresNodesysNodeFrame) c;
@@ -258,13 +252,20 @@ public class PC_GresNodesysGrid extends PC_GresContainer {
 	}
 
 	@Override
-	public void add(PC_GresComponent component) {
-		if(component instanceof PC_GresNodesysNodeFrame){
-			this.background.add(component);
-		}else{
-			super.add(component);
-			component.moveToTop();
+	public PC_GresComponent getComponentAtPosition(PC_Vec2I position) {
+		List<PC_GresComponent> list = new ArrayList<PC_GresComponent>();
+		getComponentsAtPosition(position, list);
+		if(list.isEmpty()){
+			return this;
 		}
+		for(PC_GresComponent c:list){
+			if(!(c instanceof PC_GresNodesysNodeFrame || c instanceof PC_GresNodesysGrid)){
+				return c;
+			}
+		}
+		return list.get(0);
 	}
+	
+	
 	
 }
