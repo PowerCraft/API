@@ -99,11 +99,10 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 	public void add(PC_GresComponent component) {
 
 		if (!this.children.contains(component)) {
-			this.children.add(component);
-			this.layoutChildOrder.add(component);
+			addChild(component);
 			component.setParent(this);
 			if(component.getParent()==this){
-				component.takeFocus();
+				giveChildFocus(component);
 				notifyChange();
 			}else{
 				this.children.remove(component);
@@ -112,6 +111,15 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 		}
 	}
 
+	protected void addChild(PC_GresComponent component){
+		this.children.add(component);
+		this.layoutChildOrder.add(component);
+	}
+	
+	@SuppressWarnings("static-method")
+	protected void giveChildFocus(PC_GresComponent component){
+		component.takeFocus();
+	}
 
 	public void remove(PC_GresComponent component) {
 

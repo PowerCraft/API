@@ -8,21 +8,12 @@ import powercraft.api.gres.history.PC_GresHistory;
 
 public class PC_GresNodesysNodeGroup extends PC_GresNodesysNode {
 
-	private PC_GresNodesysGrid grid = new PC_GresNodesysGrid();
+	private PC_GresNodesysGroup group = new PC_GresNodesysGroup();
 	
 	public PC_GresNodesysNodeGroup(String name) {
 		super(name);
 		setButtonName("NodesysGroup");
-		PC_GresNodesysNode node = new PC_GresNodesysNode("Group In");
-		PC_GresNodesysEntry entry = new PC_GresNodesysEntry("");
-		entry.add(new PC_GresNodesysConnectionEmpty(false));
-		node.add(entry);
-		this.grid.add(node);
-		node = new PC_GresNodesysNode("Group Out");
-		entry = new PC_GresNodesysEntry("");
-		entry.add(new PC_GresNodesysConnectionEmpty(true));
-		node.add(entry);
-		this.grid.add(node);
+		this.group.addUser(this);
 	}
 
 	@Override
@@ -33,10 +24,11 @@ public class PC_GresNodesysNodeGroup extends PC_GresNodesysNode {
 				return;
 			c = c.getParent();
 		}
-		((PC_GresNodesysGridView)c).add(this.grid);
-		this.grid.moveToTop();
-		if(!this.grid.selected.isEmpty()){
-			this.grid.selected.get(this.grid.selected.size()-1).takeFocus();
+		PC_GresNodesysGrid grid = this.group.getGrid();
+		((PC_GresNodesysGridView)c).add(grid);
+		grid.moveToTop();
+		if(!grid.selected.isEmpty()){
+			grid.selected.get(grid.selected.size()-1).takeFocus();
 		}
 	}
 
@@ -48,7 +40,36 @@ public class PC_GresNodesysNodeGroup extends PC_GresNodesysNode {
 		}
 		return super.handleKeyTyped(key, keyCode, repeat, history);
 	}
+
+	private int where = -1;
 	
+	public void onPinAdded(boolean left, boolean isInput, int color, int compGroup, String text, int index) {
+		PC_GresNodesysEntry entry = new PC_GresNodesysEntry(text);
+		entry.add(new PC_GresNodesysConnection(isInput, left, color, compGroup));
+		if(left){
+			add(entry);
+		}else{
+			this.where = index+1;
+			add(entry);
+			this.where = -1;
+		}
+	}
 	
+	@Override
+	protected void addChild(PC_GresComponent component){
+		this.children.add(component);
+		if(this.where==-1){
+			this.layoutChildOrder.add(component);
+		}else{
+			this.layoutChildOrder.add(this.where, component);
+		}
+	}
+	
+	@Override
+	protected void giveChildFocus(PC_GresComponent component){
+		if(component.hasFocusOrChild()){
+			component.takeFocus();
+		}
+	}
 	
 }

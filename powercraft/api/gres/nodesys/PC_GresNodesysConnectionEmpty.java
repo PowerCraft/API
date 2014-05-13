@@ -9,8 +9,11 @@ public class PC_GresNodesysConnectionEmpty extends PC_GresNodesysConnection {
 
 	private int input = 3;
 	
-	public PC_GresNodesysConnectionEmpty(boolean left) {
+	private PC_GresNodesysGroup group;
+	
+	public PC_GresNodesysConnectionEmpty(boolean left, PC_GresNodesysGroup group) {
 		super(false, left, 0x80FFFFFF, -1);
+		this.group = group;
 	}
 	
 	@Override
@@ -29,7 +32,7 @@ public class PC_GresNodesysConnectionEmpty extends PC_GresNodesysConnection {
 			}
 		}else{
 			if(this.connections.isEmpty() || !isInput()){
-				addConnection(nc, (nc.getType(false)&2)!=0);
+				addConnection(nc, (nc.getType(false)&1)==0);
 			}else{
 				PC_IGresNodesysConnection to = this.connections.get(0);
 				removeConnection(to);
@@ -47,12 +50,13 @@ public class PC_GresNodesysConnectionEmpty extends PC_GresNodesysConnection {
 			int t = con.getType(true);
 			if(t!=3){
 				PC_GresNodesysEntry entry = new PC_GresNodesysEntry("");
-				entry.add(new PC_GresNodesysConnectionEmpty(this.left));
+				entry.add(new PC_GresNodesysConnectionEmpty(this.left, this.group));
 				getParent().getParent().add(entry);
 				this.input = asInput?1:2;
 				this.color = con.getColor();
 				this.compGroup = con.getCompGroup();
 				getParent().setText(con.getName());
+				this.group.addPin(!this.left, !asInput, this.color, this.compGroup, getParent().getText());
 			}
 		}
 		if(isInput() && !this.connections.isEmpty()){

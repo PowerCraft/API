@@ -200,13 +200,7 @@ public class PC_GresNodesysGrid extends PC_GresContainer {
 			grid.moveHandler = null;
 			if(mh.getGuiHandler()!=null){
 				List<PC_GresComponent> list = new ArrayList<PC_GresComponent>();
-				PC_GresComponent gg = mh;
-				while(!(gg instanceof PC_GresNodesysGrid)){
-					if(gg==null)
-						return;
-					gg = gg.getParent();
-				}
-				gg.getComponentsAtPosition(grid.lastMousePos, list);
+				grid.getComponentsAtPosition(grid.lastMousePos, list);
 				for(PC_GresComponent c:list){
 					if(c instanceof PC_GresNodesysNodeFrame && !grid.selected.contains(c)){
 						PC_GresNodesysNodeFrame f = (PC_GresNodesysNodeFrame) c;
