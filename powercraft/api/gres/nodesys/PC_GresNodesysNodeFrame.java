@@ -1,5 +1,7 @@
 package powercraft.api.gres.nodesys;
 
+import java.util.ListIterator;
+
 import org.lwjgl.opengl.GL11;
 
 import powercraft.api.PC_Rect;
@@ -84,10 +86,12 @@ public class PC_GresNodesysNodeFrame extends PC_GresNodesysNode implements PC_IG
 		GL11.glScaled(zoom, zoom, 1);
 		super.paint(null, 0, 0, 0, zoom);
 		GL11.glPopMatrix();
-		for(PC_GresComponent c:this.children){
+		ListIterator<PC_GresComponent> li = this.children.listIterator(this.children.size());
+		while(li.hasPrevious()){
+			PC_GresComponent c = li.previous();
 			if(c instanceof PC_IGresNodesysBackgroundDraw){
-				((PC_IGresNodesysBackgroundDraw) c).drawBackground();
-			}
+	    		((PC_IGresNodesysBackgroundDraw)c).drawBackground();
+	    	}
 		}
 	}
 	

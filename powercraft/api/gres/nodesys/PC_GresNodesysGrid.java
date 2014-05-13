@@ -2,6 +2,7 @@ package powercraft.api.gres.nodesys;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 import net.minecraft.client.renderer.Tessellator;
 
@@ -20,11 +21,17 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class PC_GresNodesysGrid extends PC_GresContainer {
 	
+	private final PC_GresNodesysBackgroundGrid background = new PC_GresNodesysBackgroundGrid();
+	
 	public final List<PC_GresComponent> selected = new ArrayList<PC_GresComponent>();
 	
 	private PC_GresComponent moveHandler;
 	
 	private final PC_Vec2I lastMousePos = new PC_Vec2I(0, 0);
+	
+	public PC_GresNodesysGrid(){
+		add(this.background);
+	}
 	
 	@Override
 	protected PC_Vec2I calculateMinSize() {
@@ -91,11 +98,13 @@ public class PC_GresNodesysGrid extends PC_GresContainer {
 	    GL11.glLoadIdentity();
 	    GL11.glTranslatef(0.0F, 0.0F, -2000.0F);
 	    GL11.glEnable(GL11.GL_TEXTURE_2D);
-	    for(PC_GresComponent c:this.children){
-	    	if(c instanceof PC_IGresNodesysBackgroundDraw){
+	    ListIterator<PC_GresComponent> li = this.children.listIterator(this.children.size());
+		while(li.hasPrevious()){
+			PC_GresComponent c = li.previous();
+			if(c instanceof PC_IGresNodesysBackgroundDraw){
 	    		((PC_IGresNodesysBackgroundDraw)c).drawBackground();
 	    	}
-	    }
+		}
 	    GL11.glDisable(GL11.GL_TEXTURE_2D);
 	    for(PC_GresComponent c:this.children){
 	    	if(c instanceof PC_IGresNodesysLineDraw){
@@ -246,6 +255,16 @@ public class PC_GresNodesysGrid extends PC_GresContainer {
 			cc = cc.getParent();
 		}
 		return (PC_GresNodesysGrid) cc;
+	}
+
+	@Override
+	public void add(PC_GresComponent component) {
+		if(component instanceof PC_GresNodesysNodeFrame){
+			this.background.add(component);
+		}else{
+			super.add(component);
+			component.moveToTop();
+		}
 	}
 	
 }

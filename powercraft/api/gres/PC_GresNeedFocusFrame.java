@@ -86,7 +86,7 @@ public class PC_GresNeedFocusFrame extends PC_GresFrame {
 	
 	public void close(){
 		if(getParent()!=null){
-			getParent().remove(this);
+			getParent().removeNoFocus(this);
 		}
 	}
 	

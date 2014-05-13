@@ -143,6 +143,14 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 		notifyChange();
 	}
 
+	public void removeNoFocus(PC_GresComponent component) {
+
+		this.children.remove(component);
+		this.layoutChildOrder.remove(component);
+		if(component.getParent()==this)
+			component.setParent(null);
+		notifyChange();
+	}
 
 	public void removeAll() {
 
