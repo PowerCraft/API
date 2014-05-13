@@ -16,5 +16,9 @@ public interface PC_IGresNodesysConnection {
 	public void removeConnection(PC_IGresNodesysConnection con);
 	
 	public void addConnection(PC_IGresNodesysConnection con, boolean asInput);
+
+	public int getColor();
+
+	public String getName();
 	
 }

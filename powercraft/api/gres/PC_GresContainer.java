@@ -248,7 +248,7 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 	@Override
 	protected void setParentVisible(boolean visible) {
 
-		super.setParentVisible(this.enabled);
+		super.setParentVisible(visible);
 		for (PC_GresComponent child : this.children) {
 			child.setParentVisible(visible);
 		}

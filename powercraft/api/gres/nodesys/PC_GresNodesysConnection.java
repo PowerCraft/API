@@ -24,10 +24,10 @@ public class PC_GresNodesysConnection extends PC_GresComponent implements PC_IGr
 	private static final PC_Vec2 mousePos = new PC_Vec2();
 	
 	private boolean isInput;
-	private boolean left;
-	private int color;
-	private int compGroup;
-	private List<PC_IGresNodesysConnection> connections = new ArrayList<PC_IGresNodesysConnection>();
+	protected boolean left;
+	protected int color;
+	protected int compGroup;
+	protected List<PC_IGresNodesysConnection> connections = new ArrayList<PC_IGresNodesysConnection>();
 	
 	public PC_GresNodesysConnection(boolean isInput, boolean left, int color, int compGroup){
 		this.isInput = isInput;
@@ -133,7 +133,7 @@ public class PC_GresNodesysConnection extends PC_GresComponent implements PC_IGr
 	    Tessellator tessellator = Tessellator.instance;
 	    tessellator.startDrawing(GL11.GL_LINES);
         tessellator.setColorRGBA(0, 0, 0, 255);
-		if(this.isInput && !this.connections.isEmpty()){
+		if(isInput() && !this.connections.isEmpty()){
 			PC_IGresNodesysConnection con = this.connections.get(0);
 			if(this.mouseDown){
 				if(!pre){
@@ -170,7 +170,7 @@ public class PC_GresNodesysConnection extends PC_GresComponent implements PC_IGr
 	}
 
 	public boolean isInput() {
-		return this.isInput;
+		return (getType(false)&1)!=0;
 	}
 
 	public boolean isConnected() {
@@ -204,6 +204,16 @@ public class PC_GresNodesysConnection extends PC_GresComponent implements PC_IGr
 	    rl.x += RADIUS_DETECTION*zoom;
 	    rl.y += getRadius()*zoom;
 	    return rl;
+	}
+
+	@Override
+	public int getColor() {
+		return this.color;
+	}
+
+	@Override
+	public String getName() {
+		return getParent().getText();
 	}
 	
 }

@@ -13,6 +13,16 @@ public class PC_GresNodesysNodeGroup extends PC_GresNodesysNode {
 	public PC_GresNodesysNodeGroup(String name) {
 		super(name);
 		setButtonName("NodesysGroup");
+		PC_GresNodesysNode node = new PC_GresNodesysNode("Group In");
+		PC_GresNodesysEntry entry = new PC_GresNodesysEntry("");
+		entry.add(new PC_GresNodesysConnectionEmpty(false));
+		node.add(entry);
+		this.grid.add(node);
+		node = new PC_GresNodesysNode("Group Out");
+		entry = new PC_GresNodesysEntry("");
+		entry.add(new PC_GresNodesysConnectionEmpty(true));
+		node.add(entry);
+		this.grid.add(node);
 	}
 
 	@Override

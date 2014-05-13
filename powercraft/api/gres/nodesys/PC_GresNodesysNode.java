@@ -142,7 +142,7 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 		PC_Vec2I size2 = getTextureDefaultSize(arrowDown);
 		PC_Vec2I max = this.canCollaps?size.max(size2):new PC_Vec2I();
 		PC_Vec2I fMax = fontRenderer.getStringSize(this.text);
-		max.x += fMax.x+PC_GresNodesysConnection.RADIUS_DETECTION*2+2;
+		max.x += fMax.x+PC_GresNodesysConnection.RADIUS_DETECTION*2+4;
 		if(max.y<fMax.y){
 			max.y = fMax.y;
 		}
@@ -172,7 +172,7 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 		PC_Vec2I size2 = getTextureDefaultSize(arrowDown);
 		PC_Vec2I max = this.canCollaps?size.max(size2):new PC_Vec2I();
 		PC_Vec2I fMax = fontRenderer.getStringSize(this.text);
-		max.x += fMax.x+PC_GresNodesysConnection.RADIUS_DETECTION*2+2;
+		max.x += fMax.x+PC_GresNodesysConnection.RADIUS_DETECTION*2+4;
 		if(max.y<fMax.y){
 			max.y = fMax.y;
 		}
@@ -330,6 +330,21 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 		}
 	}
 	
+	@Override
+	public void add(PC_GresComponent component) {
+		int lh = this.rect.height;
+		if(this.isSmall){
+			this.changing = true;
+		}
+		super.add(component);
+		if(this.isSmall){
+			component.setVisible(false);
+			setSize(new PC_Vec2I(this.rect.width, 0));
+			setLocation(getLocation().add(0, lh/2-this.rect.height/2));
+			this.changing = false;
+		}
+	}
+
 	public boolean isSmall() {
 		return this.isSmall;
 	}

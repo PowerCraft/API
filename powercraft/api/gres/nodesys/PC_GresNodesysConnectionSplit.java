@@ -191,5 +191,15 @@ public class PC_GresNodesysConnectionSplit extends PC_GresComponent implements P
 			removeAllConnections();
 		}
 	}
+
+	@Override
+	public int getColor() {
+		return this.input == null ? this.outputs.isEmpty() ? -1 : this.outputs.get(0).getColor() : this.input.getColor();
+	}
+
+	@Override
+	public String getName() {
+		return this.input == null ? this.outputs.isEmpty() ? null : this.outputs.get(0).getName() : this.input.getName();
+	}
 	
 }
