@@ -14,6 +14,7 @@ import powercraft.api.PC_Vec2;
 import powercraft.api.PC_Vec2I;
 import powercraft.api.gres.events.PC_GresMouseWheelEvent;
 import powercraft.api.gres.history.PC_GresHistory;
+import powercraft.api.renderer.PC_OpenGL;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -90,7 +91,7 @@ public class PC_GresTab extends PC_GresContainer {
 			PC_Rect scissor = setDrawRect(scissorOld, rect, scale, displayHeight, zoom);
 			if(scissor==null)
 				return;
-			GL11.glPushMatrix();
+			PC_OpenGL.pushMatrix();
 			GL11.glTranslatef(this.rect.x, this.rect.y, 0);
 			GL11.glColor3f(1.0f, 1.0f, 1.0f);
 			paint(scissor, scale, displayHeight, timeStamp, zoom);
@@ -102,7 +103,7 @@ public class PC_GresTab extends PC_GresContainer {
 			if(this.children.size()>0){
 				this.children.get(0).doPaint(noffset, scissor, scale, displayHeight, timeStamp, zoom);
 			}
-			GL11.glPopMatrix();
+			PC_OpenGL.popMatrix();
 		}
 	}
 	

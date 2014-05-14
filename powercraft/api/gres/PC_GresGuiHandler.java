@@ -7,8 +7,6 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
@@ -17,7 +15,6 @@ import net.minecraft.util.EnumChatFormatting;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 import powercraft.api.PC_ClientUtils;
 import powercraft.api.PC_MathHelper;
@@ -234,9 +231,13 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 		ScaledResolution scaledresolution = new ScaledResolution(this.mc.gameSettings, this.mc.displayWidth, this.mc.displayHeight);
 		fireEvent(new PC_GresPaintEvent(this, EventType.PRE, ts));
 		onDrawTick(ts);
+		PC_GresRenderer.setupGuiItemLighting();
+		PC_GresRenderer.disableGuiItemLighting();
 		GL11.glEnable(GL11.GL_SCISSOR_TEST);
 		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glDepthMask(false);
 		doPaint(new PC_Vec2(0, 0), null, scaledresolution.getScaleFactor(), this.mc.displayHeight, ts, 1.0f);
+		GL11.glDepthMask(true);
 		GL11.glDisable(GL11.GL_SCISSOR_TEST);
 		GL11.glDisable(GL11.GL_BLEND);
 		drawMouseItemStack(mouse);
@@ -391,18 +392,7 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 					text = EnumChatFormatting.YELLOW+"0";
 				}
 			}
-			GL11.glTranslated(0, 0, 100);
-			RenderHelper.enableGUIStandardItemLighting();
-			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-			int k = 240;
-			int i1 = 240;
-			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, k / 1.0F, i1 / 1.0F);
-			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-			PC_GresRenderer.drawItemStack(mouse.x-8, mouse.y-8, holdItemStack, text);
-			GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-			RenderHelper.disableStandardItemLighting();
-			GL11.glTranslated(0, 0, -100);
+			PC_GresRenderer.drawItemStackAllreadyLighting(mouse.x-8, mouse.y-8, holdItemStack, text);
 		}
 	}
 	
@@ -586,7 +576,7 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 		if(renderGray){
              PC_GresRenderer.drawGradientRect(x, y, 16, 16, -2130706433, -2130706433);
 		}
-		PC_GresRenderer.drawEasyItemStack(x, y, itemStack, text);
+		PC_GresRenderer.drawItemStackAllreadyLighting(x, y, itemStack, text);
 		if(renderGrayAfter){
             PC_GresRenderer.drawGradientRect(x, y, 16, 16, -2130706433, -2130706433);
 		}

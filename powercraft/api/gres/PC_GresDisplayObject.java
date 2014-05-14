@@ -104,7 +104,7 @@ public class PC_GresDisplayObject implements PC_IGresEventListener {
 		}else if(d instanceof ItemStack){
 			int nx = x + width/2-8;
 			int ny = y + height/2-8;
-			PC_GresRenderer.drawItemStack(nx, ny, (ItemStack)d, null);
+			PC_GresRenderer.drawItemStackAllreadyLighting(nx, ny, (ItemStack)d, null);
 		}else if(d instanceof PC_GresTexture){
 			((PC_GresTexture)d).draw(x, y, width, height, 0);
 		}

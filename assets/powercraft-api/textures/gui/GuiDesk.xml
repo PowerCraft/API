@@ -53,6 +53,8 @@
 		<Subtexture name="ArrowDown" size="6, 4" frame="6, 4, 0, 0" loc_active="168, 3" loc_mouseDown="168, 3" loc_mouseOver="168, 3" loc_disabled="168, 3"></Subtexture>
 		<Subtexture name="ArrowLeft" size="4, 6" frame="4, 6, 0, 0" loc_active="174, 0" loc_mouseDown="174, 0" loc_mouseOver="174, 0" loc_disabled="174, 0"></Subtexture>
 		<Subtexture name="ArrowRight" size="4, 6" frame="4, 6, 0, 0" loc_active="178, 0" loc_mouseDown="178, 0" loc_mouseOver="178, 0" loc_disabled="178, 0"></Subtexture>
+		<Subtexture name="ItemSelectFull" size="16, 16" frame="16, 16, 0, 0" loc_active="166, 8" loc_mouseDown="166, 8" loc_mouseOver="166, 8" loc_disabled="166, 8"></Subtexture>
+		<Subtexture name="ItemSelectEmpty" size="16, 16" frame="16, 16, 0, 0" loc_active="166, 24" loc_mouseDown="166, 24" loc_mouseOver="166, 24" loc_disabled="166, 24"></Subtexture>
 	</Texture>
 	<Texture textureName="Images.png">
 		<Subtexture name="I_ON" size="16, 16" frame="16, 16, 0, 0" loc_active="0, 0" loc_mouseDown="0, 0" loc_mouseOver="0, 0" loc_disabled="0, 0"></Subtexture>

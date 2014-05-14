@@ -15,6 +15,7 @@ import net.minecraft.util.IIcon;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import powercraft.api.renderer.PC_OpenGL;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -92,34 +93,39 @@ public class PC_GresRenderer {
 			font  = fontRenderer;
 		GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glEnable(GL11.GL_DEPTH_TEST);
+        GL11.glDepthMask(true);
+        GL11.glDepthFunc(GL11.GL_LEQUAL);
+        itemRenderer.zLevel = 200;
 		itemRenderer.renderItemAndEffectIntoGUI(font, mc.getTextureManager(), itemStack, x, y);
         itemRenderer.renderItemOverlayIntoGUI(font, mc.getTextureManager(), itemStack, x, y, text);
+        itemRenderer.zLevel = 0;
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glDisable(GL11.GL_DEPTH_TEST);
         GL11.glEnable(GL11.GL_BLEND);
+        GL11.glDepthMask(false);
+        PC_OpenGL.checkError("drawEasyItemStack");
     }
     
 	public static void drawItemStack(int x, int y, ItemStack itemStack, String text) {
 		if(itemStack==null)
 			return;
-		GL11.glTranslated(0, 0, 100);
-		RenderHelper.enableGUIStandardItemLighting();
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-		int k = 240;
-		int i1 = 240;
-		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, k / 1.0F, i1 / 1.0F);
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		setupGuiItemLighting();
+		enableGuiItemLighting();
 		drawEasyItemStack(x, y, itemStack, text);
         GL11.glEnable(GL11.GL_BLEND);
-        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-		RenderHelper.disableStandardItemLighting();
-		GL11.glTranslated(0, 0, -100);
+        disableGuiItemLighting();
+	}
+	
+	public static void drawItemStackAllreadyLighting(int x, int y, ItemStack itemStack, String text) {
+		if(itemStack==null)
+			return;
+		enableGuiItemLighting();
+		drawEasyItemStack(x, y, itemStack, text);
+        GL11.glEnable(GL11.GL_BLEND);
+        disableGuiItemLighting();
 	}
 
 	public static void drawTooltip(int x, int y, int wWidth, int wHeigth, List<String> list) {
-		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-		RenderHelper.disableStandardItemLighting();
 		GL11.glDisable(GL11.GL_LIGHTING);
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
@@ -169,10 +175,7 @@ public class PC_GresRenderer {
 			}
 			ny += 10;
 		}
-		GL11.glEnable(GL11.GL_LIGHTING);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
-		RenderHelper.enableStandardItemLighting();
-		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 		GL11.glEnable(GL11.GL_BLEND);
 	}
     
@@ -218,6 +221,29 @@ public class PC_GresRenderer {
         tessellator.addVertexWithUV(x + width, y, 0, icon.getMaxU(), icon.getMinV());
         tessellator.addVertexWithUV(x, y, 0, icon.getMinU(), icon.getMinV());
         tessellator.draw();
+	}
+
+	public static void setupGuiItemLighting() {
+		RenderHelper.enableGUIStandardItemLighting();
+	}
+
+	public static void disableGuiItemLighting() {
+		RenderHelper.disableStandardItemLighting();
+		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+		
+	}
+	
+	public static void enableGuiItemLighting() {
+		GL11.glEnable(GL11.GL_LIGHTING);
+        GL11.glEnable(GL11.GL_LIGHT0);
+        GL11.glEnable(GL11.GL_LIGHT1);
+        GL11.glEnable(GL11.GL_COLOR_MATERIAL);
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+		int k = 240;
+		int i1 = 240;
+		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, k / 1.0F, i1 / 1.0F);
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 	
 }

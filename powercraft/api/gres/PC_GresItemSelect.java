@@ -33,22 +33,27 @@ public class PC_GresItemSelect extends PC_GresComponent {
 	
 	@Override
 	protected PC_Vec2I calculateMinSize() {
-		return new PC_Vec2I(16, 16);
+		return new PC_Vec2I(18, 18);
 	}
 	
 	@Override
 	protected PC_Vec2I calculateMaxSize() {
-		return new PC_Vec2I(16, 16);
+		return new PC_Vec2I(18, 18);
 	}
 	
 	@Override
 	protected PC_Vec2I calculatePrefSize() {
-		return new PC_Vec2I(16, 16);
+		return new PC_Vec2I(18, 18);
 	}
 	
 	@Override
 	protected void paint(PC_Rect scissor, double scale, int displayHeight, float timeStamp, float zoom) {
-		PC_GresRenderer.drawEasyItemStack(0, 0, this.itemStack, null);
+		if(this.itemStack==null){
+			drawTexture("ItemSelectEmpty", 1, 1, 16, 16);
+		}else{
+			drawTexture("ItemSelectFull", 1, 1, 16, 16);
+		}
+		PC_GresRenderer.drawItemStackAllreadyLighting(1, 1, this.itemStack, null);
 	}
 
 	@Override

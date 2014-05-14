@@ -32,6 +32,7 @@ import powercraft.api.gres.font.PC_FontRenderer;
 import powercraft.api.gres.font.PC_Fonts;
 import powercraft.api.gres.history.PC_GresHistory;
 import powercraft.api.gres.nodesys.PC_GresNodesysNodeFrame;
+import powercraft.api.renderer.PC_OpenGL;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -519,13 +520,13 @@ public abstract class PC_GresComponent {
 			PC_Rect scissor = setDrawRect(scissorOld, rect, scale, displayHeight, zoomm);
 			if(scissor==null)
 				return;
-			GL11.glPushMatrix();
+			PC_OpenGL.pushMatrix();
 			GL11.glTranslatef(this.rect.x, this.rect.y, 0);
 			GL11.glScalef(tzoom, tzoom, 0);
 			GL11.glColor3f(1.0f, 1.0f, 1.0f);
 			paint(scissor, scale, displayHeight, timeStamp, zoomm);
 			doDebugRendering(0, 0, rect.width, rect.height);
-			GL11.glPopMatrix();
+			PC_OpenGL.popMatrix();
 		}
 	}
 

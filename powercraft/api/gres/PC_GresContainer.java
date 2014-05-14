@@ -19,6 +19,7 @@ import powercraft.api.PC_Vec2;
 import powercraft.api.PC_Vec2I;
 import powercraft.api.gres.history.PC_GresHistory;
 import powercraft.api.gres.layout.PC_IGresLayout;
+import powercraft.api.renderer.PC_OpenGL;
 
 
 @SuppressWarnings("unused")
@@ -307,7 +308,7 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 			if(scissor==null)
 				return;
 			PC_Rect oldRect = new PC_Rect(rect);
-			GL11.glPushMatrix();
+			PC_OpenGL.pushMatrix();
 			GL11.glTranslatef(this.rect.x, this.rect.y, 0);
 			GL11.glScalef(tzoom, tzoom, 0);
 			GL11.glColor3f(1.0f, 1.0f, 1.0f);
@@ -326,14 +327,14 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 					iterator.previous().doPaint(noffset, scissor, scale, displayHeight, timeStamp, zoomm);
 				}
 			}
-			GL11.glPopMatrix();
-			GL11.glPushMatrix();
+			PC_OpenGL.popMatrix();
+			PC_OpenGL.pushMatrix();
 			GL11.glTranslatef(this.rect.x, this.rect.y, 0);
 			GL11.glScalef(tzoom, tzoom, 0);
 			GL11.glColor3f(1.0f, 1.0f, 1.0f);
 			setDrawRect(scissorOld, oldRect, scale, displayHeight, zoomm);
 			postPaint(scissor, scale, displayHeight, timeStamp, zoomm);
-			GL11.glPopMatrix();
+			PC_OpenGL.popMatrix();
 		}
 	}
 

@@ -3,14 +3,11 @@ package powercraft.api.gres;
 
 import java.util.List;
 
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 import powercraft.api.PC_ClientUtils;
 import powercraft.api.PC_Rect;
@@ -174,14 +171,6 @@ public class PC_GresInventory extends PC_GresComponent {
 			}
 		}
 		
-		RenderHelper.enableGUIStandardItemLighting();
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-		int k = 240;
-		int i1 = 240;
-		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, k / 1.0F, i1 / 1.0F);
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-
 		PC_GresGuiHandler guiHandler = getGuiHandler();
 
 		for (int x = 0, xp = 2+(this.slotWidth-18)/2; x < this.slots.length; x++, xp += this.slotWidth) {
@@ -192,9 +181,6 @@ public class PC_GresInventory extends PC_GresComponent {
 				}
 			}
 		}
-		
-		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-		RenderHelper.disableStandardItemLighting();
 	}
 	
 	@Override
