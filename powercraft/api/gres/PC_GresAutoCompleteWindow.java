@@ -3,6 +3,8 @@ package powercraft.api.gres;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.init.Items;
+
 import org.lwjgl.input.Keyboard;
 
 import powercraft.api.PC_Vec2I;
@@ -25,8 +27,10 @@ public class PC_GresAutoCompleteWindow extends PC_GresNeedFocusFrame{
 	public static void makeCompleteWindow(PC_GresGuiHandler guiHandler, PC_GresMultilineHighlightingTextEdit textEdit, PC_AutoCompleteDisplay display, PC_GresHistory history){
 		if(display.display){
 			int num = 0;
-			for(PC_StringListPart part:display.parts){
-				num += part.size();
+			if(display.parts!=null){
+				for(PC_StringListPart part:display.parts){
+					num += part.size();
+				}
 			}
 			display.display = num!=0;
 		}
@@ -213,10 +217,11 @@ public class PC_GresAutoCompleteWindow extends PC_GresNeedFocusFrame{
 					this.infoWindow.setMinSize(new PC_Vec2I(120, this.rect.height));
 					this.infoWindow.setSize(new PC_Vec2I(120, this.rect.height));
 					this.infoWindow.setLayout(new PC_GresLayoutVertical());
-					getGuiHandler().add(this.infoWindow);
-					this.infoWindow.addOtherAllowed(this);
 					addOtherAllowed(this.infoWindow);
+					this.infoWindow.addOtherAllowed(this);
+					getGuiHandler().add(this.infoWindow);
 					this.infoWindow.moveToTop();
+					listBox.takeFocus();
 					this.lastTickMove = -1;
 				}
 			}else{
@@ -248,6 +253,7 @@ public class PC_GresAutoCompleteWindow extends PC_GresNeedFocusFrame{
 				this.sa.getContainer().removeAll();
 				this.sa.getContainer().setSize(new PC_Vec2I(0, 0));
 				addLabel(this.sa.getContainer(), info);
+				this.listBox.takeFocus();
 			}
 		}
 	}

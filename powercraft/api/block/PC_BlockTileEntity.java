@@ -28,6 +28,8 @@ import powercraft.api.PC_BlockTemperatures;
 import powercraft.api.PC_Direction;
 import powercraft.api.PC_Registry;
 import powercraft.api.PC_Utils;
+import powercraft.api.beam.PC_BeamHitResult;
+import powercraft.api.beam.PC_IBeam;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -635,6 +637,15 @@ public abstract class PC_BlockTileEntity extends PC_AbstractBlockBase implements
 			return te.getTemperature();
 		}
 		return PC_BlockTemperatures.DEFAULT_TEMPERATURE;
+	}
+	
+	@SuppressWarnings({ "static-method", "unused" })
+	public PC_BeamHitResult onHitByBeam(World world, int x, int y, int z, PC_IBeam beam){
+		PC_TileEntity te = PC_Utils.getTileEntity(world, x, y, z, PC_TileEntity.class);
+		if(te!=null){
+			return te.onHitByBeam(beam);
+		}
+		return PC_BeamHitResult.STANDARD;
 	}
 	
 }

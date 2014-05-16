@@ -11,8 +11,12 @@ public interface PC_IBeam {
 	
 	public void setPosition(PC_Vec3 pos);
 	
+	public PC_LightValue getLightValue();
+	
 	public PC_Vec3 getColor();
 	
-	public PC_IBeam getNewBeam(PC_Vec3 startPos, PC_Vec3 newDirection, PC_Vec3 newColor);
+	public double getLength();
+	
+	public PC_IBeam getNewBeam(double maxLength, PC_Vec3 startPos, PC_Vec3 newDirection, PC_LightFilter filter);
 	
 }

@@ -1,7 +1,10 @@
 package powercraft.api;
 
+import powercraft.api.PC_Field.Flag;
+import net.minecraft.nbt.NBTTagCompound;
 
-public class PC_Vec3 {
+
+public class PC_Vec3 implements PC_INBT {
 
 	public double x;
 	public double y;
@@ -27,6 +30,11 @@ public class PC_Vec3 {
 		this.z = vec.z;
 	}
 
+	public PC_Vec3(NBTTagCompound nbtTagCompound, Flag flag) {
+		this.x = nbtTagCompound.getDouble("x");
+		this.y = nbtTagCompound.getDouble("y");
+		this.z = nbtTagCompound.getDouble("z");
+	}
 
 	@Override
 	public boolean equals(Object obj) {
@@ -81,6 +89,19 @@ public class PC_Vec3 {
 	public PC_Vec3 normalize() {
 		double l = length();
 		return new PC_Vec3(this.x/l, this.y/l, this.z/l);
+	}
+
+
+	public double dot(PC_Vec3 vec) {
+		return x*vec.x+y*vec.y+z*vec.z;
+	}
+
+
+	@Override
+	public void saveToNBT(NBTTagCompound tag, Flag flag) {
+		tag.setDouble("x", this.x);
+		tag.setDouble("y", this.y);
+		tag.setDouble("z", this.z);
 	}
 
 }

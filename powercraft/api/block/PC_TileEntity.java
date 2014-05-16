@@ -34,6 +34,8 @@ import powercraft.api.PC_Field.Flag;
 import powercraft.api.PC_Logger;
 import powercraft.api.PC_NBTTagHandler;
 import powercraft.api.PC_Utils;
+import powercraft.api.beam.PC_BeamHitResult;
+import powercraft.api.beam.PC_IBeam;
 import powercraft.api.gres.PC_Gres;
 import powercraft.api.gres.PC_GresBaseWithInventory;
 import powercraft.api.gres.PC_IGresGui;
@@ -556,6 +558,9 @@ public class PC_TileEntity extends TileEntity {
 					}
 					Class<?> type = field.getType();
 					Object nvalue = PC_NBTTagHandler.loadFromNBT(nbtTagCompound, name, type, flag);
+					if(info.notNull() && nvalue==null){
+						throw new RuntimeException("Null");
+					}
 					results.put(Result.SET, nvalue);
 				}
 			}
@@ -832,6 +837,10 @@ public class PC_TileEntity extends TileEntity {
 	@SuppressWarnings({ "static-method", "unused" })
 	public boolean canProvideStrongPower(PC_Direction side) {
 		return true;
+	}
+
+	public PC_BeamHitResult onHitByBeam(PC_IBeam beam) {
+		return PC_BeamHitResult.STANDARD;
 	}
 
 }

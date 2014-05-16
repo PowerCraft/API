@@ -17,12 +17,12 @@ public class PC_GresNodesysGroup {
 	public PC_GresNodesysGroup(){
 		PC_GresNodesysNode node = new PC_GresNodesysNode("Group In");
 		PC_GresNodesysEntry entry = new PC_GresNodesysEntry("");
-		entry.add(new PC_GresNodesysConnectionEmpty(false, this));
+		entry.add(new PC_GresNodesysConnectionEmpty(false, this, null));
 		node.add(entry);
 		this.grid.add(node);
 		node = new PC_GresNodesysNode("Group Out");
 		entry = new PC_GresNodesysEntry("");
-		entry.add(new PC_GresNodesysConnectionEmpty(true, this));
+		entry.add(new PC_GresNodesysConnectionEmpty(true, this, null));
 		node.add(entry);
 		this.grid.add(node);
 	}

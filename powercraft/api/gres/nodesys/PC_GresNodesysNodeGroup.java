@@ -45,7 +45,7 @@ public class PC_GresNodesysNodeGroup extends PC_GresNodesysNode {
 	
 	public void onPinAdded(boolean left, boolean isInput, int color, int compGroup, String text, int index) {
 		PC_GresNodesysEntry entry = new PC_GresNodesysEntry(text);
-		entry.add(new PC_GresNodesysConnection(isInput, left, color, compGroup));
+		entry.add(new PC_GresNodesysConnection(isInput, left, color, compGroup, null));
 		if(left){
 			add(entry);
 		}else{

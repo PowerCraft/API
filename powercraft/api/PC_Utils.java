@@ -37,6 +37,7 @@ import powercraft.api.block.PC_AbstractBlockBase;
 import powercraft.api.block.PC_Block;
 import powercraft.api.block.PC_BlockTileEntity;
 import powercraft.api.block.PC_TileEntity;
+import powercraft.api.building.PC_Build.ItemStackSpawn;
 import powercraft.api.reflect.PC_Reflection;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
@@ -69,6 +70,14 @@ public class PC_Utils {
 		return as(world.getTileEntity(x, y, z), c);
 	}
 
+	public static TileEntity getTileEntity(IBlockAccess world, PC_Vec3I pos) {
+		return world.getTileEntity(pos.x, pos.y, pos.z);
+	}
+
+	public static <T> T getTileEntity(IBlockAccess world, PC_Vec3I pos, Class<T> c) {
+		return getTileEntity(world, pos.x, pos.y, pos.z, c);
+	}
+	
 	public static Block getBlock(IBlockAccess world, int x, int y, int z) {
 		return world.getBlock(x, y, z);
 	}
@@ -347,6 +356,16 @@ public class PC_Utils {
 
 	public static void spawnItems(World world, PC_Vec3 pos, List<ItemStack> itemStack) {
 		spawnItems(world, pos.x, pos.y, pos.z, itemStack);
+	}
+
+	public static void spawnItems(World world, List<ItemStackSpawn> itemStacks) {
+		if (!world.isRemote && world.getGameRules().getGameRuleBooleanValue("doTileDrops") && itemStacks != null) {
+			for (ItemStackSpawn itemStack : itemStacks) {
+				if (itemStack != null) {
+					spawnItemChecked(world, itemStack.pos.x, itemStack.pos.y, itemStack.pos.z, itemStack.itemStack);
+				}
+			}
+		}
 	}
 
 	private static void spawnItemChecked(World world, double x, double y, double z, ItemStack itemStack) {
@@ -685,6 +704,24 @@ public class PC_Utils {
 			}
 		}
 		return bits;
+	}
+
+	public static boolean isBlockReplaceable(World world, int x, int y, int z) {
+		Block block = getBlock(world, x, y, z);
+		if(block.isReplaceable(world, x, y, z))
+			return true;
+		return block==Blocks.snow_layer||block == Blocks.vine || block == Blocks.tallgrass || block == Blocks.deadbush;
+	}
+
+	public static PC_Vec3 getLookDir(EntityPlayer player) {
+		float pitch = (float) (player.rotationPitch*Math.PI/180);
+		double y = -PC_MathHelper.sin(pitch);
+		double o = PC_MathHelper.cos(pitch);
+		float yaw = (float) (player.rotationYaw*Math.PI/180);
+		double x = PC_MathHelper.sin(-yaw)*o;
+		double z = PC_MathHelper.cos(-yaw)*o;
+		PC_Vec3 lookDir = new PC_Vec3(x, y, z);
+		return lookDir;
 	}
 	
 }

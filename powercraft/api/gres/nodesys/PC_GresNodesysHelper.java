@@ -3,8 +3,6 @@ package powercraft.api.gres.nodesys;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.lwjgl.input.Keyboard;
-
 import nodecode.core.INodeFactoryDescriptor;
 import nodecode.core.Node;
 import nodecode.core.NodeFactory;
@@ -29,10 +27,6 @@ import powercraft.api.gres.PC_GresItemSelect;
 import powercraft.api.gres.PC_GresListBoxElement;
 import powercraft.api.gres.PC_GresTextEdit;
 import powercraft.api.gres.PC_GresTextEdit.PC_GresInputType;
-import powercraft.api.gres.events.PC_GresEvent;
-import powercraft.api.gres.events.PC_GresKeyEvent;
-import powercraft.api.gres.events.PC_IGresEventListener;
-import powercraft.api.gres.nodesys.PC_GresNodesysNode.ButtonPressed;
 
 
 public final class PC_GresNodesysHelper {
@@ -105,7 +99,7 @@ public final class PC_GresNodesysHelper {
 				entry = makeEntry(node.getProgOut(0));
 			}else{
 				int pinColor = getColorInt(node.getProgOut(0).getColor());
-				entry.add(new PC_GresNodesysConnection(true, false, pinColor, 0));
+				entry.add(new PC_GresNodesysConnection(true, false, pinColor, 0, node.getProgOut(0)));
 			}
 		}
 		guiNode.add(entry);
@@ -139,17 +133,17 @@ public final class PC_GresNodesysHelper {
 			int pinColor = getColorInt(((PinBaseImp)obj).getColor());
 			if(obj instanceof PinProgramIn){
 				PinProgramIn progIn = (PinProgramIn)obj;
-				entry.add(new PC_GresNodesysConnection(false, true, pinColor, 0));
+				entry.add(new PC_GresNodesysConnection(false, true, pinColor, 0, progIn));
 			}else if(obj instanceof PinProgramOut){
 				PinProgramOut progOut = (PinProgramOut)obj;
-				entry.add(new PC_GresNodesysConnection(true, false, pinColor, 0));
+				entry.add(new PC_GresNodesysConnection(true, false, pinColor, 0, progOut));
 			}else if(obj instanceof PinValueIn){
 				PinValueIn<?> valueIn = (PinValueIn<?>)obj;
-				entry.add(new PC_GresNodesysConnection(true, true, pinColor, 1));
+				entry.add(new PC_GresNodesysConnection(true, true, pinColor, 1, valueIn));
 				entry.add(makeValueIn(valueIn.getData()));
 			}else if(obj instanceof PinValueOut){
 				PinValueOut<?> valueOut = (PinValueOut<?>)obj;
-				entry.add(new PC_GresNodesysConnection(false, false, pinColor, 1));
+				entry.add(new PC_GresNodesysConnection(false, false, pinColor, 1, valueOut));
 			}
 		}else if(obj instanceof ValueHandler){
 			entry = new PC_GresNodesysEntry("unknown");
