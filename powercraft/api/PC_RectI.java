@@ -168,12 +168,12 @@ public class PC_RectI {
 	}
 
 	public PC_RectI enclosing(PC_RectI rect) {
-		int xx1 = x<rect.x?x:rect.x;
-		int yy1 = y<rect.y?y:rect.y;
-		int c1 = x+width;
+		int xx1 = this.x<rect.x?this.x:rect.x;
+		int yy1 = this.y<rect.y?this.y:rect.y;
+		int c1 = this.x+this.width;
 		int c2 = rect.x+rect.width;
 		int xx2 = c1>c2?c1:c2;
-		c1 = y+height;
+		c1 = this.y+this.height;
 		c2 = rect.y+rect.height;
 		int yy2 = c1>c2?c1:c2;
 		return new PC_RectI(xx1, yy1, xx2-xx1, yy2-yy1);

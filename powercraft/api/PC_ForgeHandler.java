@@ -3,10 +3,12 @@ package powercraft.api;
 import java.util.List;
 import java.util.Random;
 
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.MinecraftForge;
 import powercraft.api.block.PC_AbstractBlockBase;
@@ -63,6 +65,14 @@ public final class PC_ForgeHandler implements IFuelHandler, IWorldGenerator {
 				pre.setCanceled(true);
 			}
 		}
+	}
+	
+	@SuppressWarnings("static-method")
+	@SubscribeEvent
+	@SideOnly(Side.CLIENT)
+	public void onGuiOpened(GuiOpenEvent event){
+		GuiScreen gui = event.gui;
+		PC_Hacks.hackGui(gui);
 	}
 	
 }

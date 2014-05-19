@@ -27,6 +27,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -722,6 +725,26 @@ public class PC_Utils {
 		double z = PC_MathHelper.cos(-yaw)*o;
 		PC_Vec3 lookDir = new PC_Vec3(x, y, z);
 		return lookDir;
+	}
+	
+	public static void sendMessage(EntityPlayer player, String message){
+		sendMessage(player, new ChatComponentText(message));
+	}
+	
+	public static void sendMessageToTranslate(EntityPlayer player, String message, Object...args){
+		sendMessage(player, new ChatComponentTranslation(message, args));
+	}
+	
+	public static void sendMessage(EntityPlayer player, IChatComponent chatComponent){
+		player.addChatMessage(chatComponent);
+	}
+
+	public static void onUpdateInfoRecived() {
+		INSTANCE.iOnUpdateInfoRecived();
+	}
+	
+	void iOnUpdateInfoRecived(){
+		//
 	}
 	
 }

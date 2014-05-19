@@ -114,4 +114,9 @@ public final class PC_ClientUtils extends PC_Utils {
 		mc().effectRenderer.addEffect(entityFX);
 	}
 	
+	@Override
+	void iOnUpdateInfoRecived(){
+		PC_Hacks.hackGui(mc().currentScreen);
+	}
+	
 }

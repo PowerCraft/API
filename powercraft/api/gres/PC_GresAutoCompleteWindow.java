@@ -3,8 +3,6 @@ package powercraft.api.gres;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.init.Items;
-
 import org.lwjgl.input.Keyboard;
 
 import powercraft.api.PC_Vec2I;
@@ -221,7 +219,7 @@ public class PC_GresAutoCompleteWindow extends PC_GresNeedFocusFrame{
 					this.infoWindow.addOtherAllowed(this);
 					getGuiHandler().add(this.infoWindow);
 					this.infoWindow.moveToTop();
-					listBox.takeFocus();
+					this.listBox.takeFocus();
 					this.lastTickMove = -1;
 				}
 			}else{

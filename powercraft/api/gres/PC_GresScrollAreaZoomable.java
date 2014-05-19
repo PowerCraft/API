@@ -54,6 +54,7 @@ public class PC_GresScrollAreaZoomable extends PC_GresComponent {
 		return this.container.getPrefSize().add(12);
 	}
 
+	@SuppressWarnings("hiding")
 	@Override
 	protected void paint(PC_Rect scissor, double scale, int displayHeight, float timeStamp, float zoom) {
 		if(!this.mouseDown){

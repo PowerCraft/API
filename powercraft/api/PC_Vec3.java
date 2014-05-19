@@ -30,6 +30,7 @@ public class PC_Vec3 implements PC_INBT {
 		this.z = vec.z;
 	}
 
+	@SuppressWarnings("unused")
 	public PC_Vec3(NBTTagCompound nbtTagCompound, Flag flag) {
 		this.x = nbtTagCompound.getDouble("x");
 		this.y = nbtTagCompound.getDouble("y");
@@ -93,7 +94,7 @@ public class PC_Vec3 implements PC_INBT {
 
 
 	public double dot(PC_Vec3 vec) {
-		return x*vec.x+y*vec.y+z*vec.z;
+		return this.x*vec.x+this.y*vec.y+this.z*vec.z;
 	}
 
 

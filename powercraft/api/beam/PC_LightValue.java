@@ -25,8 +25,8 @@ public class PC_LightValue {
 	
 	public PC_Vec3 toColor(){
 		PC_Vec3 color = new PC_Vec3();
-		for(int i=0; i<frequencyAndIntensity.length; i+=2){
-			color = color.add(getColorForFrequencyAndIntensity(frequencyAndIntensity[i], frequencyAndIntensity[i+1]));
+		for(int i=0; i<this.frequencyAndIntensity.length; i+=2){
+			color = color.add(getColorForFrequencyAndIntensity(this.frequencyAndIntensity[i], this.frequencyAndIntensity[i+1]));
 		}
 		return color;
 	}
@@ -91,19 +91,19 @@ public class PC_LightValue {
 		if(filter==null)
 			return this;
 		List<Double> list = new ArrayList<Double>();
-		for(int i=0; i<frequencyAndIntensity.length; i+=2){
-			double frequency = frequencyAndIntensity[i];
-			double intensity = filter.filter(frequency, frequencyAndIntensity[i+1]);
+		for(int i=0; i<this.frequencyAndIntensity.length; i+=2){
+			double frequency = this.frequencyAndIntensity[i];
+			double intensity = filter.filter(frequency, this.frequencyAndIntensity[i+1]);
 			if(intensity>0){
-				list.add(frequency);
-				list.add(intensity);
+				list.add(Double.valueOf(frequency));
+				list.add(Double.valueOf(intensity));
 			}
 		}
 		if(list.isEmpty())
 			return null;
 		double[] d = new double[list.size()];
 		for(int i=0; i<d.length; i++){
-			d[i] = list.get(i);
+			d[i] = list.get(i).doubleValue();
 		}
 		return new PC_LightValue(d);
 	}

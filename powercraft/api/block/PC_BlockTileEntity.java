@@ -639,7 +639,7 @@ public abstract class PC_BlockTileEntity extends PC_AbstractBlockBase implements
 		return PC_BlockTemperatures.DEFAULT_TEMPERATURE;
 	}
 	
-	@SuppressWarnings({ "static-method", "unused" })
+	@Override
 	public PC_BeamHitResult onHitByBeam(World world, int x, int y, int z, PC_IBeam beam){
 		PC_TileEntity te = PC_Utils.getTileEntity(world, x, y, z, PC_TileEntity.class);
 		if(te!=null){

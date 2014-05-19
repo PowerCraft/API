@@ -13,6 +13,7 @@ import powercraft.api.item.PC_Items;
 import powercraft.api.multiblock.PC_Multiblocks;
 import powercraft.api.network.PC_PacketHandler;
 import powercraft.api.script.miniscript.PC_Miniscript;
+import powercraft.api.version.PC_UpdateChecker;
 import powercraft.core.PCco_Core;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -48,13 +49,13 @@ public final class PC_Api extends PC_Module {
 	}
 	
 	private PC_Api(){
-		
+		PC_UpdateChecker.check();
 	}
 	
 	@SuppressWarnings({ "static-method", "unused" })
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
-
+		
 		PC_Modules.construct();
 		
 		PC_PacketHandler.register();

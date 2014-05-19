@@ -14,9 +14,9 @@ public class PC_LightFilter {
 	
 	public double filter(double frequency, double intensity) {
 		double diff = Double.POSITIVE_INFINITY;
-		for(int i=0; i<frequencyBand.length; i+=2){
-			double start = frequencyBand[i];
-			double end = frequencyBand[i+1];
+		for(int i=0; i<this.frequencyBand.length; i+=2){
+			double start = this.frequencyBand[i];
+			double end = this.frequencyBand[i+1];
 			double ldiff;
 			if(frequency<start){
 				ldiff = start-frequency;

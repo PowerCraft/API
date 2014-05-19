@@ -839,6 +839,7 @@ public class PC_TileEntity extends TileEntity {
 		return true;
 	}
 
+	@SuppressWarnings({ "static-method", "unused" })
 	public PC_BeamHitResult onHitByBeam(PC_IBeam beam) {
 		return PC_BeamHitResult.STANDARD;
 	}

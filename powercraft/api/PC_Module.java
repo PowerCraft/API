@@ -6,6 +6,7 @@ import java.util.Arrays;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import powercraft.api.PC_ResourceReloadListener.PC_IResourceReloadListener;
+import powercraft.api.version.PC_Version;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.ModMetadata;
@@ -21,7 +22,8 @@ public abstract class PC_Module implements PC_IResourceReloadListener {
 	private final PC_CreativeTab creativeTab;
 	private final ModContainer mod;
 	private final Configuration config;
-
+	private final PC_Version version;
+	
 	public PC_Module() {
 		PC_Modules.addModule(this);
 		this.creativeTab = new PC_CreativeTab(Loader.instance().activeModContainer().getName(), this);
@@ -38,6 +40,14 @@ public abstract class PC_Module implements PC_IResourceReloadListener {
 		this.config = new Configuration(new File(Loader.instance().getConfigDir(), this.mod.getName()
 				+ ".cfg"));
 		this.config.load();
+		PC_Version v;
+		try{
+			v = PC_Version.pharse(this.mod.getVersion());
+		}catch(Exception e){
+			PC_Logger.severe("Error while pharsing version %s of %s", metadata.version, metadata.name);
+			v = new PC_Version("error", 0);
+		}
+		this.version = v;
 		moduleBootstrap();
 		PC_ResourceReloadListener.registerResourceReloadListener(this);
 	}
@@ -112,6 +122,10 @@ public abstract class PC_Module implements PC_IResourceReloadListener {
 	@Override
 	public void onResourceReload() {
 		getMetadata().description = PC_Lang.translate("desk."+this.mod.getName());
+	}
+
+	public PC_Version getVersion(){
+		return this.version;
 	}
 	
 }
