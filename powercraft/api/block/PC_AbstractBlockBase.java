@@ -48,7 +48,11 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 		PC_Blocks.addBlock(this);
 		this.module = PC_Utils.getActiveMod();
 	}
-
+	
+	PC_AbstractBlockBase(PC_BlockType type) {
+		this(type.material);
+	}
+	
 	@SuppressWarnings("static-method")
 	public Class<? extends PC_ItemBlock> getItemBlock(){
 		return PC_ItemBlock.class;

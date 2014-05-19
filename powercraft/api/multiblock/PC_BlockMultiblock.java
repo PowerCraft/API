@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.WeakHashMap;
 
-import net.minecraft.block.material.Material;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.renderer.DestroyBlockProgress;
 import net.minecraft.client.renderer.RenderBlocks;
@@ -25,6 +24,7 @@ import powercraft.api.PC_TickHandler;
 import powercraft.api.PC_TickHandler.PC_IRenderTickHandler;
 import powercraft.api.PC_Utils;
 import powercraft.api.block.PC_BlockTileEntity;
+import powercraft.api.block.PC_BlockType;
 import powercraft.api.block.PC_TileEntity;
 import powercraft.api.network.PC_PacketHandler;
 import powercraft.api.network.packet.PC_PacketSelectMultiblockTile;
@@ -39,7 +39,7 @@ public final class PC_BlockMultiblock extends PC_BlockTileEntity implements PC_I
 	static WeakHashMap<EntityPlayer, PC_MultiblockIndex> playerSelection = new WeakHashMap<EntityPlayer, PC_MultiblockIndex>();
 	
 	PC_BlockMultiblock() {
-		super(Material.ground);
+		super(PC_BlockType.MACHINE);
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 	

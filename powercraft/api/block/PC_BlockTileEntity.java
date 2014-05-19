@@ -39,6 +39,10 @@ public abstract class PC_BlockTileEntity extends PC_AbstractBlockBase implements
 		super(material);
 	}
 	
+	public PC_BlockTileEntity(PC_BlockType type) {
+		super(type);
+	}
+	
 	public abstract Class<? extends PC_TileEntity> getTileEntityClass();
 	
 	@Override

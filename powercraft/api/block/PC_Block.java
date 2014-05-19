@@ -15,6 +15,10 @@ public abstract class PC_Block extends PC_AbstractBlockBase {
 	public PC_Block(Material material) {
 		super(material);
 	}
+	
+	public PC_Block(PC_BlockType type) {
+		super(type);
+	}
 
 	@Override
 	public boolean canRotate() {
