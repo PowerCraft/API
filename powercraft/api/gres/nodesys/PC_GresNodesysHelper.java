@@ -98,7 +98,7 @@ public final class PC_GresNodesysHelper {
 	public static PC_GresNodesysNode nodeToGuiNode(PC_Node node){
 		PC_NodeDescriptor descriptor = node.getDescriptor();
 		PC_GresNodesysNode guiNode = new PC_GresNodesysNode(PC_NodeGridHelper.getNameOnly(descriptor.getName()));
-		PC_NodeComponent[] components = descriptor.getComponents();
+		PC_NodeComponent[] components = node.getComponents();
 		for(int i=0; i<components.length; i++){
 			guiNode.add(makeEntry(components[i]));
 		}
