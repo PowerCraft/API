@@ -173,6 +173,7 @@ public final class PC_Renderer implements ISimpleBlockRenderingHandler, IItemRen
 		fakeBlock.icons = icons;
 		fakeBlock.colorMultiplier = colorMultipier;
 		fakeBlock.setLightLevel(lightValue/15.0f);
+		fakeBlock.setBlockBounds((float)renderer.renderMinX, (float)renderer.renderMinY, (float)renderer.renderMinZ, (float)renderer.renderMaxX, (float)renderer.renderMaxY, (float)renderer.renderMaxZ);
 		renderer.renderStandardBlock(fakeBlock, x, y, z);
 	}
 	
@@ -180,7 +181,9 @@ public final class PC_Renderer implements ISimpleBlockRenderingHandler, IItemRen
 		fakeBlock.icons = icons;
 		fakeBlock.colorMultiplier = colorMultipier;
 		fakeBlock.setLightLevel(lightValue/15.0f);
+		fakeBlock.setBlockBounds((float)renderer.renderMinX, (float)renderer.renderMinY, (float)renderer.renderMinZ, (float)renderer.renderMaxX, (float)renderer.renderMaxY, (float)renderer.renderMaxZ);
 		renderer.renderBlockAsItem(fakeBlock, 0, 1);
+		GL11.glRotatef(-90.0F, 0.0F, 1.0F, 0.0F);
 	}
 	
 }
