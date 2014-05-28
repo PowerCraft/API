@@ -4,17 +4,18 @@ import org.lwjgl.input.Keyboard;
 
 import powercraft.api.gres.PC_GresComponent;
 import powercraft.api.gres.history.PC_GresHistory;
-import powercraft.api.nodesys.PC_NodeGridBase;
+import powercraft.api.nodesys.PC_NodeGrid;
+import powercraft.api.nodesys.node.PC_NodeGroup;
 
 
 public class PC_GresNodesysNodeGroup extends PC_GresNodesysNode {
 
 	private PC_GresNodesysGroup group;
 	
-	public PC_GresNodesysNodeGroup(String name, PC_NodeGridBase base) {
-		super(name);
+	public PC_GresNodesysNodeGroup(PC_NodeGroup node) {
+		super(node);
 		setButtonName("NodesysGroup");
-		group = new PC_GresNodesysGroup(base);
+		this.group = new PC_GresNodesysGroup(new PC_NodeGrid(node.getParent().getBase()));
 		this.group.addUser(this);
 	}
 

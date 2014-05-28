@@ -16,7 +16,6 @@ import powercraft.api.gres.PC_GresComponent;
 import powercraft.api.gres.PC_GresContainer;
 import powercraft.api.gres.history.PC_GresHistory;
 import powercraft.api.nodesys.PC_NodeGrid;
-import powercraft.api.nodesys.PC_NodeGridBase;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

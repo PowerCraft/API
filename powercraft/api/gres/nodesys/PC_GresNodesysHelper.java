@@ -21,8 +21,9 @@ import powercraft.api.nodesys.PC_NodeGridHelper;
 import powercraft.api.nodesys.PC_NodeValueInputDropdown;
 import powercraft.api.nodesys.PC_NodeValueInputTextbox;
 import powercraft.api.nodesys.node.PC_Node;
+import powercraft.api.nodesys.node.PC_NodeGroup;
+import powercraft.api.nodesys.node.descriptor.PC_NodeDescriptorGroup;
 import powercraft.api.nodesys.type.PC_NodeObjectType;
-import powercraft.api.nodesys.type.PC_NodeObjectTypeNumber;
 
 
 @SuppressWarnings("unchecked")
@@ -56,7 +57,6 @@ public final class PC_GresNodesysHelper {
 		}
 		layout.put("Split", new PC_GresListBoxElement("Layout.Split", "Split"));
 		layout.put("Frame", new PC_GresListBoxElement("Layout.Frame", "Frame"));
-		layout.put("Group", new PC_GresListBoxElement("Layout.Group", "Group"));
 		allNodes = makeTree(map);
 	}
 	
@@ -78,8 +78,8 @@ public final class PC_GresNodesysHelper {
 			grid.add(new PC_GresNodesysConnectionSplit().setLocation(pos));
 		}else if(name.equals("Layout.Frame")){
 			grid.add(new PC_GresNodesysNodeFrame().setLocation(pos));
-		}else if(name.equals("Layout.Group")){
-			PC_GresNodesysNode node = new PC_GresNodesysNodeGroup("Group", grid.getGrid().getBase());
+		}else if(name.equals("Group.Group")){
+			PC_GresNodesysNode node = new PC_GresNodesysNodeGroup(new PC_NodeGroup(PC_NodeDescriptorGroup.INSTANCE, grid.getGrid(), false));
 			PC_GresNodesysEntry entry = new PC_GresNodesysEntry("Group");
 			List<String> groups = new ArrayList<String>();
 			groups.add("This");
@@ -96,8 +96,7 @@ public final class PC_GresNodesysHelper {
 	}
 	
 	public static PC_GresNodesysNode nodeToGuiNode(PC_Node node){
-		PC_NodeDescriptor descriptor = node.getDescriptor();
-		PC_GresNodesysNode guiNode = new PC_GresNodesysNode(PC_NodeGridHelper.getNameOnly(descriptor.getName()));
+		PC_GresNodesysNode guiNode = new PC_GresNodesysNode(node);
 		PC_NodeComponent[] components = node.getComponents();
 		for(int i=0; i<components.length; i++){
 			guiNode.add(makeEntry(components[i]));

@@ -5,6 +5,7 @@ import java.util.List;
 
 import powercraft.api.nodesys.PC_NodeGrid;
 import powercraft.api.nodesys.PC_NodeGridBase;
+import powercraft.api.nodesys.PC_NodeGridHelper;
 
 
 public class PC_GresNodesysGroup {
@@ -17,14 +18,14 @@ public class PC_GresNodesysGroup {
 	
 	private List<Pin> outputs = new ArrayList<Pin>();
 	
-	public PC_GresNodesysGroup(PC_NodeGridBase base){
-		grid = new PC_GresNodesysGrid(new PC_NodeGrid(base));
-		PC_GresNodesysNode node = new PC_GresNodesysNode("Group In");
+	public PC_GresNodesysGroup(PC_NodeGrid ng){
+		this.grid = new PC_GresNodesysGrid(ng);
+		PC_GresNodesysNode node = new PC_GresNodesysNode(PC_NodeGridHelper.makeEmptyNode(ng, "Input.GroupInput"));
 		PC_GresNodesysEntry entry = new PC_GresNodesysEntry("");
 		entry.add(new PC_GresNodesysConnectionEmpty(false, this));
 		node.add(entry);
 		this.grid.add(node);
-		node = new PC_GresNodesysNode("Group Out");
+		node = new PC_GresNodesysNode(PC_NodeGridHelper.makeEmptyNode(ng, "Output.GroupOutput"));
 		entry = new PC_GresNodesysEntry("");
 		entry.add(new PC_GresNodesysConnectionEmpty(true, this));
 		node.add(entry);

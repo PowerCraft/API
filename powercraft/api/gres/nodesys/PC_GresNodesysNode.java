@@ -15,6 +15,7 @@ import powercraft.api.gres.events.PC_GresEvent;
 import powercraft.api.gres.history.PC_GresHistory;
 import powercraft.api.gres.layout.PC_GresLayoutVertical;
 import powercraft.api.gres.layout.PC_IGresLayout;
+import powercraft.api.nodesys.node.PC_Node;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -35,6 +36,8 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 	private boolean canCollaps;
 	
 	private String rigthButton;
+	
+	private PC_Node node;
 	
 	private static final Layout LAYOUT = new Layout();
 	
@@ -110,10 +113,11 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 		}
 	}
 	
-	public PC_GresNodesysNode(String name){
+	public PC_GresNodesysNode(PC_Node node){
+		this.node = node;
 		this.frame.y = 13;
 		super.setLayout(LAYOUT);
-		setText(name);
+		setText(node.getLabel());
 		setSize(calculateMinSize());
 		this.canCollaps = true;
 		setAlignH(H.LEFT);

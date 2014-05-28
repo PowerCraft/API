@@ -28,7 +28,7 @@ public class PC_NodeDescriptorGroup extends PC_NodeDescriptor {
 
 	@Override
 	public PC_NodeComponent[] getComponents() {
-		return null;
+		return new PC_NodeComponent[0];
 	}
 
 	@Override

@@ -103,6 +103,7 @@ public class PC_GresNodesysConnectionSplit extends PC_GresComponent implements P
 	protected boolean handleMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton, boolean doubleClick, PC_GresHistory history) {
 		if(eventButton==0){
 			this.makeConnection = true;
+			mousePos.setTo(new PC_Vec2(mouse).mul(getRecursiveZoom()).add(getRealLocation()));
 		}else if(eventButton==1){
 			List<PC_GresComponent> selected = PC_GresNodesysGrid.gridFor(this).selected;
 			if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)){

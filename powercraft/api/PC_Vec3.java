@@ -105,4 +105,9 @@ public class PC_Vec3 implements PC_INBT {
 		tag.setDouble("z", this.z);
 	}
 
+
+	public PC_Vec3 cross(PC_Vec3 other) {
+		return new PC_Vec3(this.y*other.z-this.z*other.y, this.z*other.x-this.x*other.z, this.x*other.y-this.y*other.x);
+	}
+
 }
