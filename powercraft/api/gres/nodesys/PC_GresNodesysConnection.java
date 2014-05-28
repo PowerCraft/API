@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.renderer.Tessellator;
-import nodecode.core.PinBase;
 
 import org.lwjgl.opengl.GL11;
 
@@ -30,7 +29,7 @@ public class PC_GresNodesysConnection extends PC_GresComponent implements PC_IGr
 	protected int compGroup;
 	protected List<PC_IGresNodesysConnection> connections = new ArrayList<PC_IGresNodesysConnection>();
 	
-	public PC_GresNodesysConnection(boolean isInput, boolean left, int color, int compGroup, PinBase pin){
+	public PC_GresNodesysConnection(boolean isInput, boolean left, int color, int compGroup){
 		this.isInput = isInput;
 		this.left = left;
 		this.color = color;
@@ -214,11 +213,6 @@ public class PC_GresNodesysConnection extends PC_GresComponent implements PC_IGr
 	@Override
 	public String getName() {
 		return getParent().getText();
-	}
-
-	@Override
-	public PinBase getPin() {
-		return null;
 	}
 	
 }

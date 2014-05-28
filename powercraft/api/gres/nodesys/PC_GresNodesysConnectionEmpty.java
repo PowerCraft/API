@@ -1,6 +1,5 @@
 package powercraft.api.gres.nodesys;
 
-import nodecode.core.PinBase;
 import powercraft.api.PC_Vec2I;
 import powercraft.api.gres.PC_GresComponent;
 import powercraft.api.gres.history.PC_GresHistory;
@@ -12,8 +11,8 @@ public class PC_GresNodesysConnectionEmpty extends PC_GresNodesysConnection {
 	
 	private PC_GresNodesysGroup group;
 	
-	public PC_GresNodesysConnectionEmpty(boolean left, PC_GresNodesysGroup group, PinBase pin) {
-		super(false, left, 0x80FFFFFF, -1, pin);
+	public PC_GresNodesysConnectionEmpty(boolean left, PC_GresNodesysGroup group) {
+		super(false, left, 0x80FFFFFF, -1);
 		this.group = group;
 	}
 	
@@ -52,7 +51,7 @@ public class PC_GresNodesysConnectionEmpty extends PC_GresNodesysConnection {
 			if(t!=3){
 				PC_GresNodesysEntry entry = new PC_GresNodesysEntry("");
 				this.input = asInput?1:2;
-				entry.add(new PC_GresNodesysConnectionEmpty(this.left, this.group, null/*TODO*/));
+				entry.add(new PC_GresNodesysConnectionEmpty(this.left, this.group/*TODO*/));
 				getParent().getParent().add(entry);
 				this.color = con.getColor();
 				this.compGroup = con.getCompGroup();

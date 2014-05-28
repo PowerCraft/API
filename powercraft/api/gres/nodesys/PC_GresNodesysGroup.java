@@ -3,10 +3,13 @@ package powercraft.api.gres.nodesys;
 import java.util.ArrayList;
 import java.util.List;
 
+import powercraft.api.nodesys.PC_NodeGrid;
+import powercraft.api.nodesys.PC_NodeGridBase;
+
 
 public class PC_GresNodesysGroup {
 	
-	private PC_GresNodesysGrid grid = new PC_GresNodesysGrid();
+	private PC_GresNodesysGrid grid;
 	
 	private List<PC_GresNodesysNodeGroup> users = new ArrayList<PC_GresNodesysNodeGroup>();
 	
@@ -14,15 +17,16 @@ public class PC_GresNodesysGroup {
 	
 	private List<Pin> outputs = new ArrayList<Pin>();
 	
-	public PC_GresNodesysGroup(){
+	public PC_GresNodesysGroup(PC_NodeGridBase base){
+		grid = new PC_GresNodesysGrid(new PC_NodeGrid(base));
 		PC_GresNodesysNode node = new PC_GresNodesysNode("Group In");
 		PC_GresNodesysEntry entry = new PC_GresNodesysEntry("");
-		entry.add(new PC_GresNodesysConnectionEmpty(false, this, null));
+		entry.add(new PC_GresNodesysConnectionEmpty(false, this));
 		node.add(entry);
 		this.grid.add(node);
 		node = new PC_GresNodesysNode("Group Out");
 		entry = new PC_GresNodesysEntry("");
-		entry.add(new PC_GresNodesysConnectionEmpty(true, this, null));
+		entry.add(new PC_GresNodesysConnectionEmpty(true, this));
 		node.add(entry);
 		this.grid.add(node);
 	}

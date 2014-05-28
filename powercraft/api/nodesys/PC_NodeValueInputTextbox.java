@@ -17,4 +17,8 @@ public class PC_NodeValueInputTextbox implements PC_INodeValueInput {
 		this.type = type;
 	}
 	
+	public InputType getInputType(){
+		return type;
+	}
+	
 }

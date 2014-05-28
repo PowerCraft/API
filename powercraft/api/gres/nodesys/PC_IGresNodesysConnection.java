@@ -1,6 +1,5 @@
 package powercraft.api.gres.nodesys;
 
-import nodecode.core.PinBase;
 import powercraft.api.PC_Vec2;
 
 
@@ -21,7 +20,5 @@ public interface PC_IGresNodesysConnection {
 	public int getColor();
 
 	public String getName();
-
-	public PinBase getPin();
 	
 }

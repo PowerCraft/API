@@ -1,6 +1,8 @@
 package powercraft.api.nodesys;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -44,6 +46,10 @@ public final class PC_NodeGridHelper {
 	
 	public static PC_Node loadFrom(PC_NodeGrid parent, NBTTagCompound nbtTagCompound){
 		return nodes.get(nbtTagCompound.getString("NodeNameID")).create(parent, true);
+	}
+	
+	public static List<PC_NodeDescriptor> getNodeDescroptors(){
+		return new ArrayList<PC_NodeDescriptor>(nodes.values());
 	}
 	
 	public static void registerType(PC_NodeObjectType type){

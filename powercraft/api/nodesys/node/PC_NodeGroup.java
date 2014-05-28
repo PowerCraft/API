@@ -6,8 +6,6 @@ import powercraft.api.nodesys.PC_NodeComponent;
 import powercraft.api.nodesys.PC_NodeDescriptor;
 import powercraft.api.nodesys.PC_NodeGrid;
 
-
-
 public class PC_NodeGroup extends PC_Node {
 
 	private PC_NodeGrid grid;

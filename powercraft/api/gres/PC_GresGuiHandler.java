@@ -138,7 +138,7 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 
 
 	@Override
-	public void setSize(PC_Vec2I size) {
+	public PC_GresComponent setSize(PC_Vec2I size) {
 
 		throw new IllegalArgumentException("GresGuiHandler can't set size");
 	}

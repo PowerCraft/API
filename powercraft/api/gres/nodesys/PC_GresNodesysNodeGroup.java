@@ -4,15 +4,17 @@ import org.lwjgl.input.Keyboard;
 
 import powercraft.api.gres.PC_GresComponent;
 import powercraft.api.gres.history.PC_GresHistory;
+import powercraft.api.nodesys.PC_NodeGridBase;
 
 
 public class PC_GresNodesysNodeGroup extends PC_GresNodesysNode {
 
-	private PC_GresNodesysGroup group = new PC_GresNodesysGroup();
+	private PC_GresNodesysGroup group;
 	
-	public PC_GresNodesysNodeGroup(String name) {
+	public PC_GresNodesysNodeGroup(String name, PC_NodeGridBase base) {
 		super(name);
 		setButtonName("NodesysGroup");
+		group = new PC_GresNodesysGroup(base);
 		this.group.addUser(this);
 	}
 
@@ -45,7 +47,7 @@ public class PC_GresNodesysNodeGroup extends PC_GresNodesysNode {
 	
 	public void onPinAdded(boolean left, boolean isInput, int color, int compGroup, String text, int index) {
 		PC_GresNodesysEntry entry = new PC_GresNodesysEntry(text);
-		entry.add(new PC_GresNodesysConnection(isInput, left, color, compGroup, null));
+		entry.add(new PC_GresNodesysConnection(isInput, left, color, compGroup));
 		if(left){
 			add(entry);
 		}else{

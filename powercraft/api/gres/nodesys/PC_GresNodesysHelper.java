@@ -1,34 +1,31 @@
 package powercraft.api.gres.nodesys;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
-import nodecode.core.INodeFactoryDescriptor;
-import nodecode.core.Node;
-import nodecode.core.NodeFactory;
-import nodecode.core.PinBaseImp;
-import nodecode.core.PinProgramIn;
-import nodecode.core.PinProgramOut;
-import nodecode.core.PinValueIn;
-import nodecode.core.PinValueOut;
-import nodecode.core.ValueHandler;
-import nodecode.core.ValueType;
-import nodecode.core.ValueType.COLOR;
-import nodecode.type.ItemStackData;
-import nodecode.type.SelectionData;
 import powercraft.api.PC_ImmutableArrayList;
 import powercraft.api.PC_ImmutableList;
 import powercraft.api.PC_Utils;
 import powercraft.api.PC_Vec2I;
-import powercraft.api.gres.PC_GresAlign.H;
 import powercraft.api.gres.PC_GresComboBox;
 import powercraft.api.gres.PC_GresComponent;
-import powercraft.api.gres.PC_GresItemSelect;
 import powercraft.api.gres.PC_GresListBoxElement;
 import powercraft.api.gres.PC_GresTextEdit;
 import powercraft.api.gres.PC_GresTextEdit.PC_GresInputType;
+import powercraft.api.nodesys.PC_INodeValueInput;
+import powercraft.api.nodesys.PC_NodeComponent;
+import powercraft.api.nodesys.PC_NodeDescriptor;
+import powercraft.api.nodesys.PC_NodeGridHelper;
+import powercraft.api.nodesys.PC_NodeValueInputDropdown;
+import powercraft.api.nodesys.PC_NodeValueInputTextbox;
+import powercraft.api.nodesys.node.PC_Node;
+import powercraft.api.nodesys.type.PC_NodeObjectType;
+import powercraft.api.nodesys.type.PC_NodeObjectTypeNumber;
 
 
+@SuppressWarnings("unchecked")
 public final class PC_GresNodesysHelper {
 	
 	public final static List<PC_GresListBoxElement> allNodes;
@@ -38,142 +35,132 @@ public final class PC_GresNodesysHelper {
 	}
 	
 	static{
-		List<PC_GresListBoxElement> base = new ArrayList<PC_GresListBoxElement>();
-		List<PC_GresListBoxElement> prog = new ArrayList<PC_GresListBoxElement>();
-		List<PC_GresListBoxElement> maths = new ArrayList<PC_GresListBoxElement>();
-		for(INodeFactoryDescriptor descriptor:NodeFactory.getAvailableNodes()){
-			switch(descriptor.getSpecialType()){
-			case FLOW:
-				prog.add(new PC_GresListBoxElement(descriptor.getUniqueTypeID(), descriptor.getDefaultName()));
-				break;
-			case CONVERT:
-			case MERGE:
-			case SPLIT:
-				maths.add(new PC_GresListBoxElement(descriptor.getUniqueTypeID(), descriptor.getDefaultName()));
-				break;
-			case STORAGE:
-			default:
-				break;
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		for(PC_NodeDescriptor descriptor:PC_NodeGridHelper.getNodeDescroptors()){
+			String name = descriptor.getName();
+			String[] keys = name.split("\\.");
+			HashMap<String, Object> m = map;
+			for(int i=0; i<keys.length-1; i++){
+				Object mm = m.get(keys[i]);
+				if(!(mm instanceof HashMap)){
+					mm = new HashMap<String, Object>();
+					m.put(keys[i], mm);
+				}
+				m = (HashMap<String, Object>)mm;
 			}
+			m.put(keys[keys.length-1], new PC_GresListBoxElement(descriptor.getName(), keys[keys.length-1]));
 		}
-		base.add(new PC_GresListBoxElement("Prog",new PC_ImmutableList<PC_GresListBoxElement>(prog)));
-		base.add(new PC_GresListBoxElement("Convert",new PC_ImmutableList<PC_GresListBoxElement>(maths)));
-		List<PC_GresListBoxElement> layout = new ArrayList<PC_GresListBoxElement>();
-		layout.add(new PC_GresListBoxElement(7, "Split"));
-		layout.add(new PC_GresListBoxElement(8, "Frame"));
-		layout.add(new PC_GresListBoxElement(9, "Group"));
-		base.add(new PC_GresListBoxElement("Layout",new PC_ImmutableList<PC_GresListBoxElement>(layout)));
-		allNodes = new PC_ImmutableList<PC_GresListBoxElement>(base);
+		HashMap<String, Object> layout = (HashMap<String, Object>) map.get("Layout");
+		if(layout==null){
+			map.put("Layout", layout = new HashMap<String, Object>());
+		}
+		layout.put("Split", new PC_GresListBoxElement("Layout.Split", "Split"));
+		layout.put("Frame", new PC_GresListBoxElement("Layout.Frame", "Frame"));
+		layout.put("Group", new PC_GresListBoxElement("Layout.Group", "Group"));
+		allNodes = makeTree(map);
 	}
 	
-	public static void addNodeToGrid(PC_GresNodesysGrid grid, PC_Vec2I pos, int id){
-		if(id==7){
-			grid.add(new PC_GresNodesysConnectionSplit());
-		}else if(id==8){
-			grid.add(new PC_GresNodesysNodeFrame());
-		}else if(id==9){
-			PC_GresNodesysNode node = new PC_GresNodesysNodeGroup("Group");
+	private static List<PC_GresListBoxElement> makeTree(HashMap<String, Object> map){
+		List<PC_GresListBoxElement> list = new ArrayList<PC_GresListBoxElement>();
+		for(Entry<String, Object>e:map.entrySet()){
+			Object o = e.getValue();
+			if(o instanceof PC_GresListBoxElement){
+				list.add((PC_GresListBoxElement)o);
+			}else{
+				list.add(new PC_GresListBoxElement(e.getKey(), makeTree((HashMap<String, Object>) o)));
+			}
+		}
+		return new PC_ImmutableList<PC_GresListBoxElement>(list);
+	}
+	
+	public static void addNodeToGrid(PC_GresNodesysGrid grid, PC_Vec2I pos, String name){
+		if(name.equals("Layout.Split")){
+			grid.add(new PC_GresNodesysConnectionSplit().setLocation(pos));
+		}else if(name.equals("Layout.Frame")){
+			grid.add(new PC_GresNodesysNodeFrame().setLocation(pos));
+		}else if(name.equals("Layout.Group")){
+			PC_GresNodesysNode node = new PC_GresNodesysNodeGroup("Group", grid.getGrid().getBase());
 			PC_GresNodesysEntry entry = new PC_GresNodesysEntry("Group");
 			List<String> groups = new ArrayList<String>();
 			groups.add("This");
 			entry.add(new PC_GresComboBox(groups, 0));
 			node.add(entry);
-			grid.add(node);
+			grid.add(node.setLocation(pos));
 		}else{
-			grid.add(nodeToGuiNode(makeNodeByID(id)));
+			grid.add(nodeToGuiNode(makeNodeByID(grid, name)).setLocation(pos));
 		}
 	}
 	
-	public static Node makeNodeByID(int id){
-		return NodeFactory.getNewNodeForTypeID(id);
+	public static PC_Node makeNodeByID(PC_GresNodesysGrid grid, String name){
+		return PC_NodeGridHelper.makeEmptyNode(grid.getGrid(), name);
 	}
 	
-	public static PC_GresNodesysNode nodeToGuiNode(Node node){
-		PC_GresNodesysNode guiNode = new PC_GresNodesysNode(node.getDefaultName());
-		PC_GresNodesysEntry entry = null;
-		if(node.getAmountOfProgIn()>0){
-			entry = makeEntry(node.getProgIn(0));
-		}
-		if(node.getAmountOfProgOut()>0){
-			if(entry==null){
-				entry = makeEntry(node.getProgOut(0));
-			}else{
-				int pinColor = getColorInt(node.getProgOut(0).getColor());
-				entry.add(new PC_GresNodesysConnection(true, false, pinColor, 0, node.getProgOut(0)));
-			}
-		}
-		guiNode.add(entry);
-		for(int i=1; i<node.getAmountOfProgIn(); i++){
-			guiNode.add(makeEntry(node.getProgIn(i)));
-		}
-		for(int i=1; i<node.getAmountOfProgOut(); i++){
-			guiNode.add(makeEntry(node.getProgOut(i)));
-		}
-		for(int i=0; i<node.getAmountOfValOut(); i++){
-			guiNode.add(makeEntry(node.getValOut(i)));
-		}
-		for(int i=0; i<node.getAmountOfConfigs(); i++){
-			guiNode.add(makeEntry(node.getConfig(i)));
-		}
-		for(int i=0; i<node.getAmountOfValIn(); i++){
-			guiNode.add(makeEntry(node.getValIn(i)));
+	public static PC_GresNodesysNode nodeToGuiNode(PC_Node node){
+		PC_NodeDescriptor descriptor = node.getDescriptor();
+		PC_GresNodesysNode guiNode = new PC_GresNodesysNode(PC_NodeGridHelper.getNameOnly(descriptor.getName()));
+		PC_NodeComponent[] components = descriptor.getComponents();
+		for(int i=0; i<components.length; i++){
+			guiNode.add(makeEntry(components[i]));
 		}
 		return guiNode;
 	}
 	
-	public static PC_GresNodesysEntry makeEntry(Object obj){
-		PC_GresNodesysEntry entry;
-		if(obj instanceof PinBaseImp){
-			if(obj instanceof PinProgramIn){
-				entry = new PC_GresNodesysEntry("Prog Flow");
-				entry.setAlignH(H.CENTER);
-			}else{
-				entry = new PC_GresNodesysEntry(((PinBaseImp)obj).getName());
-			}
-			int pinColor = getColorInt(((PinBaseImp)obj).getColor());
-			if(obj instanceof PinProgramIn){
-				PinProgramIn progIn = (PinProgramIn)obj;
-				entry.add(new PC_GresNodesysConnection(false, true, pinColor, 0, progIn));
-			}else if(obj instanceof PinProgramOut){
-				PinProgramOut progOut = (PinProgramOut)obj;
-				entry.add(new PC_GresNodesysConnection(true, false, pinColor, 0, progOut));
-			}else if(obj instanceof PinValueIn){
-				PinValueIn<?> valueIn = (PinValueIn<?>)obj;
-				entry.add(new PC_GresNodesysConnection(true, true, pinColor, 1, valueIn));
-				entry.add(makeValueIn(valueIn.getData()));
-			}else if(obj instanceof PinValueOut){
-				PinValueOut<?> valueOut = (PinValueOut<?>)obj;
-				entry.add(new PC_GresNodesysConnection(false, false, pinColor, 1, valueOut));
-			}
-		}else if(obj instanceof ValueHandler){
-			entry = new PC_GresNodesysEntry("unknown");
-			entry.add(makeValueIn(((ValueHandler<?>)obj).getData()));
-		}else{
-			return null;
+	public static PC_GresNodesysEntry makeEntry(PC_NodeComponent component){
+		PC_GresNodesysEntry entry = new PC_GresNodesysEntry(component.getName());
+		PC_NodeObjectType type = component.getType();
+		int io = component.getIOType();
+		int color = type.getColor();
+		if((io&PC_NodeComponent.TYPE_IN)!=0){
+			entry.add(new PC_GresNodesysConnection(!type.swap(), true, color, type.group()));
 		}
+		if((io&PC_NodeComponent.TYPE_OUT)!=0){
+			entry.add(new PC_GresNodesysConnection(type.swap(), false, color, type.group()));
+		}
+		PC_GresComponent c = makeValueIn(type, component.getValueInputType(), component.getDefault());
+		if(c!=null)
+			entry.add(c);
 		return entry;
 	}
 	
-	public static PC_GresComponent makeValueIn(ValueType<?> valueType){
-		if(valueType instanceof ItemStackData){
-			return new PC_GresItemSelect();
-		}else if(valueType instanceof SelectionData){
-			PC_GresComboBox comboBox = new PC_GresComboBox(new PC_ImmutableArrayList<String>(((SelectionData)valueType).getOptions()), 0);
-			return comboBox;
-		}
-		Class<?> c = valueType.getType();
-		if(c == Number.class || c==Double.class || c==Float.class){
-			return new PC_GresTextEdit("0", 10, PC_GresInputType.SIGNED_FLOAT);
-		}else if(c==Integer.class || c==Long.class || c==Short.class|| c==Byte.class){
-			return new PC_GresTextEdit("0", 10, PC_GresInputType.INT);
-		}else if(c == String.class){
-			return new PC_GresTextEdit("", 10);
+	public static PC_GresComponent makeValueIn(PC_NodeObjectType type, PC_INodeValueInput input, Object _default){
+		if(input instanceof PC_NodeValueInputTextbox){
+			PC_NodeValueInputTextbox textbox = (PC_NodeValueInputTextbox)input;
+			PC_GresInputType t;
+			switch(textbox.getInputType()){
+			case FLOAT:
+				t = PC_GresInputType.SIGNED_FLOAT;
+				break;
+			case INTEGER:
+				t = PC_GresInputType.INT;
+				break;
+			case STRING:
+				t = PC_GresInputType.TEXT;
+				break;
+			case UFLOAT:
+				t = PC_GresInputType.UNSIGNED_FLOAT;
+				break;
+			case UINTEGER:
+				t = PC_GresInputType.UNSIGNED_INT;
+				break;
+			default:
+				t = PC_GresInputType.TEXT;
+				break;
+			}
+			return new PC_GresTextEdit(_default==null?"":_default.toString(), 10, t);
+		}else if(input instanceof PC_NodeValueInputDropdown){
+			PC_NodeValueInputDropdown dropdown = (PC_NodeValueInputDropdown)input;
+			List<String> l = new PC_ImmutableArrayList<String>(dropdown.getValues());
+			int select;
+			if(_default instanceof Number){
+				select = ((Number)_default).intValue();
+			}else{
+				select = l.indexOf(_default);
+			}
+			if(select<0)
+				select=0;
+			return new PC_GresComboBox(l, select);
 		}
 		return null;
-	}
-	
-	public static int getColorInt(COLOR c){
-		return 0x80000000|c.rgb;
 	}
 	
 	public static PC_IGresNodesysConnection getConnection(PC_IGresNodesysConnection forConnection, PC_GresComponent c){

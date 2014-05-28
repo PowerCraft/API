@@ -15,6 +15,8 @@ import powercraft.api.PC_Vec2I;
 import powercraft.api.gres.PC_GresComponent;
 import powercraft.api.gres.PC_GresContainer;
 import powercraft.api.gres.history.PC_GresHistory;
+import powercraft.api.nodesys.PC_NodeGrid;
+import powercraft.api.nodesys.PC_NodeGridBase;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -27,6 +29,12 @@ public class PC_GresNodesysGrid extends PC_GresContainer {
 	
 	private final PC_Vec2I lastMousePos = new PC_Vec2I(0, 0);
 	
+	private PC_NodeGrid grid;
+	
+	public PC_GresNodesysGrid(PC_NodeGrid grid) {
+		this.grid = grid;
+	}
+
 	@Override
 	protected PC_Vec2I calculateMinSize() {
 		return new PC_Vec2I(1000, 1000);
@@ -265,7 +273,9 @@ public class PC_GresNodesysGrid extends PC_GresContainer {
 		}
 		return list.get(0);
 	}
-	
-	
+
+	public PC_NodeGrid getGrid() {
+		return grid;
+	}
 	
 }

@@ -7,6 +7,7 @@ import java.util.List;
 import net.minecraft.world.World;
 import powercraft.api.PC_Direction;
 import powercraft.api.PC_Vec3I;
+import powercraft.api.nodesys.node.PC_Node;
 
 
 public class PC_GridExecutor {
@@ -32,8 +33,25 @@ public class PC_GridExecutor {
 			return false;
 		int thisNode = nextNode;
 		nextNode = -1;
-		Object[] in = null;
-		Object[] outputs = grid.getNode(thisNode).execute(this, nextPin, in);
+		PC_Node node = grid.getNode(thisNode);
+		PC_NodeDescriptor descriptor = node.getDescriptor();
+		PC_NodeComponent[] components = descriptor.getComponents();
+		int ins = 0;
+		for(PC_NodeComponent component:components){
+			if((component.getIOType()&PC_NodeComponent.TYPE_IN)!=0){
+				ins++;
+			}
+		}
+		Object[] in = new Object[ins];
+		ins = 0;
+		for(PC_NodeComponent component:components){
+			if((component.getIOType()&PC_NodeComponent.TYPE_IN)!=0){
+				PC_NodeConnection connection = node.getConnectedNodeAt(ins);
+				in[ins] = getNodeOutputData(grid.getIDOf(connection.node), connection.pin);
+				ins++;
+			}
+		}
+		Object[] outputs = node.execute(this, nextPin, in);
 		actualData.setNodeOutputs(thisNode, outputs);
 		return nextNode!=-1;
 	}

@@ -171,11 +171,13 @@ public abstract class PC_GresComponent {
 	}
 
 
-	public void setLocation(PC_Vec2I location) {
+	public PC_GresComponent setLocation(PC_Vec2I location) {
 
 		if (this.rect.setLocation(location)) {
 			notifyChange();
 		}
+		
+		return this;
 	}
 
 
@@ -185,11 +187,13 @@ public abstract class PC_GresComponent {
 	}
 
 
-	public void setSize(PC_Vec2I size) {
+	public PC_GresComponent setSize(PC_Vec2I size) {
 
 		if (this.rect.setSize(size)) {
 			notifyChange();
 		}
+		
+		return this;
 	}
 
 

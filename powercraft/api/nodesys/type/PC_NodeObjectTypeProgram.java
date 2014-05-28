@@ -45,5 +45,10 @@ public class PC_NodeObjectTypeProgram extends PC_NodeObjectType {
 	public Object copy(Object defaultValue) {
 		return null;
 	}
+	
+	@Override
+	public boolean swap(){
+		return true;
+	}
 
 }

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.renderer.Tessellator;
-import nodecode.core.PinBase;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -29,8 +28,6 @@ public class PC_GresNodesysConnectionSplit extends PC_GresComponent implements P
 	private boolean makeConnection;
 	
 	private List<PC_IGresNodesysConnection> outputs = new ArrayList<PC_IGresNodesysConnection>();
-	
-	private PinBase pin;
 	
 	@Override
 	protected PC_Vec2I calculateMinSize() {
@@ -203,11 +200,6 @@ public class PC_GresNodesysConnectionSplit extends PC_GresComponent implements P
 	@Override
 	public String getName() {
 		return this.input == null ? this.outputs.isEmpty() ? null : this.outputs.get(0).getName() : this.input.getName();
-	}
-
-	@Override
-	public PinBase getPin() {
-		return pin;
 	}
 	
 }

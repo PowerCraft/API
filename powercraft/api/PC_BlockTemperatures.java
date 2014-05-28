@@ -129,7 +129,7 @@ public final class PC_BlockTemperatures {
 	 */
 	public static void setTemperatureFor(Block block, int temperature){
 		if(block instanceof PC_AbstractBlockBase || block instanceof IFluidBlock){
-			PC_Logger.warning("PowerCraft Blocks or IFluidBlock's have a funktion for temperature");
+			PC_Logger.warning("PowerCraft Blocks and IFluidBlock's have a function for temperature");
 		}else{
 			blockTemperatures.put(block, Integer.valueOf(temperature));
 		}

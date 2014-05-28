@@ -9,4 +9,8 @@ public class PC_NodeValueInputDropdown implements PC_INodeValueInput {
 		this.values = values;
 	}
 	
+	public String[] getValues(){
+		return values;
+	}
+	
 }
