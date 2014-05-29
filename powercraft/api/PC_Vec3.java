@@ -65,6 +65,10 @@ public class PC_Vec3 implements PC_INBT {
 		this.y = vec.y;
 		this.z = vec.z;
 	}
+	
+	public PC_Vec3 neg(){
+		return mul(-1);
+	}
 
 	public PC_Vec3 mul(double v) {
 		return new PC_Vec3(this.x*v, this.y*v, this.z*v);
@@ -74,6 +78,10 @@ public class PC_Vec3 implements PC_INBT {
 		return new PC_Vec3(this.x+vec.x, this.y+vec.y, this.z+vec.z);
 	}
 
+	public PC_Vec3 add(double value) {
+		return new PC_Vec3(this.x+value, this.y+value, this.z+value);
+	}
+	
 	public PC_Vec3 sub(PC_Vec3 vec) {
 		return new PC_Vec3(this.x-vec.x, this.y-vec.y, this.z-vec.z);
 	}

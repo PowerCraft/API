@@ -172,6 +172,7 @@ public abstract class PC_BlockTileEntity extends PC_AbstractBlockBase implements
 		if(te!=null){
 			te.onNeighborBlockChange(neighbor);
 		}
+		super.onNeighborBlockChange(world, x, y, z, neighbor);
 	}
 
 	@Override

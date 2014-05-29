@@ -16,7 +16,7 @@ public abstract class PC_Module implements PC_IResourceReloadListener {
 	public static final String POWERCRAFT = "PowerCraft";
 	public static final String POWERCRAFT_URL = "http://powercrafting.net";
 	public static final String POWERCRAFT_LOGOFILE = "/powercraft/PowerCraft.png";
-	public static final String[] POWERCRAFT_AUTHORS = { "XOR", "Rapus", "Buggi", "zcraftler" };
+	public static final String[] POWERCRAFT_AUTHORS = { "XOR", "Rapus95", "Buggi", "zcraftler" };
 	public static final String POWERCRAFT_CREDITS = "MightyPork, RxD, LOLerul2";
 
 	private final PC_CreativeTab creativeTab;
