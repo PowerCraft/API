@@ -23,6 +23,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public final class PC_Renderer implements ISimpleBlockRenderingHandler, IItemRenderer {
 
+	public static final int PASS_SOLIDE = 0;
+	public static final int PASS_TRANSPARENT = 1;
+
 	private static PC_FakeBlockForRenderer fakeBlock = new PC_FakeBlockForRenderer();
 	
 	private static PC_Renderer instance;
