@@ -747,4 +747,16 @@ public class PC_Utils {
 		//
 	}
 	
+	public static void spawnBlockBreakParticles(World world, PC_Vec3I pos) {
+		spawnBlockBreakParticles(world, pos.x, pos.y, pos.z);
+	}
+	
+	public static void spawnBlockBreakParticles(World world, int x, int y, int z) {
+		if(!world.isRemote){
+			Block block = PC_Utils.getBlock(world, x, y, z);
+			int meta = PC_Utils.getMetadata(world, x, y, z);
+			world.playAuxSFXAtEntity(null, 2001, x, y, z, Block.getIdFromBlock(block) + (meta << 12));
+		}
+	}
+	
 }

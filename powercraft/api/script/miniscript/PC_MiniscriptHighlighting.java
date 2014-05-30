@@ -16,7 +16,7 @@ import powercraft.api.gres.PC_GresComponent;
 import powercraft.api.gres.autoadd.PC_AutoAdd;
 import powercraft.api.gres.autoadd.PC_AutoComplete;
 import powercraft.api.gres.autoadd.PC_AutoCompleteDisplay;
-import powercraft.api.gres.autoadd.PC_SortedStringList;
+import powercraft.api.gres.autoadd.PC_SortedList;
 import powercraft.api.gres.autoadd.PC_StringAdd;
 import powercraft.api.gres.autoadd.PC_StringListPart;
 import powercraft.api.gres.autoadd.PC_StringWithInfo;
@@ -111,12 +111,12 @@ public final class PC_MiniscriptHighlighting {
 		HashMap<String, PC_GresDocumentLine> label2Line = new HashMap<String, PC_GresDocumentLine>();
 		HashMap<PC_GresDocumentLine, String> line2Label = new HashMap<PC_GresDocumentLine, String>();
 		private InfoCollector infoCollector = new InfoCollector(this);
-		PC_SortedStringList labelNames = new PC_SortedStringList();
-		private PC_SortedStringList asmInstructions = new PC_SortedStringList();
-		private PC_SortedStringList registers = new PC_SortedStringList();
+		PC_SortedList<PC_StringWithInfo> labelNames = new PC_SortedList<PC_StringWithInfo>();
+		private PC_SortedList<PC_StringWithInfo> asmInstructions = new PC_SortedList<PC_StringWithInfo>();
+		private PC_SortedList<PC_StringWithInfo> registers = new PC_SortedList<PC_StringWithInfo>();
 		
-		private HashMap<String, PC_SortedStringList> consts = new HashMap<String, PC_SortedStringList>();
-		private HashMap<String, PC_SortedStringList> pointers = new HashMap<String, PC_SortedStringList>();
+		private HashMap<String, PC_SortedList<PC_StringWithInfo>> consts = new HashMap<String, PC_SortedList<PC_StringWithInfo>>();
+		private HashMap<String, PC_SortedList<PC_StringWithInfo>> pointers = new HashMap<String, PC_SortedList<PC_StringWithInfo>>();
 		
 		AutoComplete(HashMap<String, PC_StringWithInfo> consts, HashMap<String, PC_StringWithInfo> pointers){
 			for(String asm:MINISCRIPT_ASM){
@@ -130,7 +130,7 @@ public final class PC_MiniscriptHighlighting {
 			addTo(this.consts, PC_Miniscript.getDefaultReplacements());
 		}
 
-		private static void addTo(HashMap<String, PC_SortedStringList> map, HashMap<String, PC_StringWithInfo> other){
+		private static void addTo(HashMap<String, PC_SortedList<PC_StringWithInfo>> map, HashMap<String, PC_StringWithInfo> other){
 			for(Entry<String, PC_StringWithInfo> c:other.entrySet()){
 				String key = c.getKey();
 				int p = key.lastIndexOf('.');
@@ -139,9 +139,9 @@ public final class PC_MiniscriptHighlighting {
 				}else{
 					key = key.substring(0, p);
 				}
-				PC_SortedStringList list = map.get(key);
+				PC_SortedList<PC_StringWithInfo> list = map.get(key);
 				if(list==null){
-					map.put(key, list = new PC_SortedStringList());
+					map.put(key, list = new PC_SortedList<PC_StringWithInfo>());
 				}
 				list.add(c.getValue());
 			}

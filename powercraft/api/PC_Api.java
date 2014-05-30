@@ -22,6 +22,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerAboutToStartEvent;
+import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 
 /**
  * 
@@ -102,6 +103,12 @@ public final class PC_Api extends PC_Module {
 		PC_PacketHandler.setupPackets();
 	}
 
+	@SuppressWarnings({ "static-method", "unused" })
+	@EventHandler
+	public void onServerStopping(FMLServerStoppedEvent serverStoppedEvent){
+		PC_WorldSaveData.onServerStopping();
+	}
+	
 	public static ItemStack creativTabItemStack;
 	
 	@Override

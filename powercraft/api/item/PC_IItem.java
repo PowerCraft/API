@@ -1,6 +1,7 @@
 package powercraft.api.item;
 
 import powercraft.api.PC_Module;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -22,5 +23,7 @@ public interface PC_IItem {
 	public String[] getOreNames();
 
 	public void initRecipes();
+
+	public float updateDigSpeed(ItemStack itemStack, float speed, int x, int y, int z, EntityPlayer entityPlayer);
 	
 }

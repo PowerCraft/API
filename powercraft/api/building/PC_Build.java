@@ -39,12 +39,17 @@ public final class PC_Build {
 			this.itemStack = itemStack;
 		}
 		
+		public ItemStackSpawn(PC_Vec3I pos, ItemStack itemStack) {
+			this.pos = pos;
+			this.itemStack = itemStack;
+		}
+		
 	}
 	
-	public static PC_ISpecialHarvesting getSpecialHarvestingFor(World world, int x, int y, int z, Block block, int meta){
+	public static PC_ISpecialHarvesting getSpecialHarvestingFor(World world, int x, int y, int z){
 		for(int i=0; i<3; i++){
 			for(PC_ISpecialHarvesting specialHarvesting:specialHarvestings){
-				if(specialHarvesting.useFor(world, x, y, z, block, meta, i)){
+				if(specialHarvesting.useFor(world, x, y, z, i)){
 					return specialHarvesting;
 				}
 			}
@@ -52,50 +57,70 @@ public final class PC_Build {
 		return null;
 	}
 	
-	public static List<ItemStackSpawn> harvestWithDropPos(World world, PC_Vec3I pos, int fortune){
-		return harvestWithDropPos(world, pos.x, pos.y, pos.z, fortune);
+	public static PC_Harvest getHarvest(World world, PC_Vec3I pos, int usesLeft){
+		return getHarvest(world, pos.x, pos.y, pos.z, usesLeft);
 	}
 	
-	public static List<ItemStackSpawn> harvestWithDropPos(World world, int x, int y, int z, int fortune){
+	public static PC_Harvest getHarvest(World world, int x, int y, int z, int usesLeft){
+		PC_ISpecialHarvesting specialHarvesting = getSpecialHarvestingFor(world, x, y, z);
+		if(specialHarvesting!=null){
+			return specialHarvesting.harvest(world, x, y, z, usesLeft);
+		}
 		Block block = PC_Utils.getBlock(world, x, y, z);
 		if(block==null)
 			return null;
-		int meta = PC_Utils.getMetadata(world, x, y, z);
-		PC_ISpecialHarvesting specialHarvesting = getSpecialHarvestingFor(world, x, y, z, block, meta);
-		if(specialHarvesting!=null){
-			return specialHarvesting.harvest(world, x, y, z, block, meta, fortune);
-		}
-		List<ItemStack> drops = harvestEasy(world, x, y, z, fortune);
-		if(drops==null)
+		if(!canHarvest(world, x, y, z, block)){
 			return null;
-		List<ItemStackSpawn> dropsWithPos = new ArrayList<ItemStackSpawn>();
-		for(ItemStack drop:drops){
-			dropsWithPos.add(new ItemStackSpawn(x, y, z, drop));
 		}
-		return dropsWithPos;
+		PC_Harvest harvest = new PC_Harvest();
+		harvest.positions.add(new PC_Vec3I(x, y, z));
+		return harvest;
 	}
 	
-	public static List<ItemStack> harvest(World world, PC_Vec3I pos, int fortune){
-		return harvest(world, pos.x, pos.y, pos.z, fortune);
+	public static List<ItemStackSpawn> harvestWithDropPos(World world, PC_Harvest harvest, int fortune){
+		return harvestWithDropPos(world, harvest.positions, fortune);
 	}
 	
-	public static List<ItemStack> harvest(World world, int x, int y, int z, int fortune){
-		Block block = PC_Utils.getBlock(world, x, y, z);
-		if(block==null)
-			return null;
-		int meta = PC_Utils.getMetadata(world, x, y, z);
-		PC_ISpecialHarvesting specialHarvesting = getSpecialHarvestingFor(world, x, y, z, block, meta);
-		if(specialHarvesting!=null){
-			List<ItemStackSpawn> dropsWithPos = specialHarvesting.harvest(world, x, y, z, block, meta, fortune);
-			if(dropsWithPos==null)
-				return null;
-			List<ItemStack> drops = new ArrayList<ItemStack>();
-			for(ItemStackSpawn dropWithPos:dropsWithPos){
-				drops.add(dropWithPos.itemStack);
-			}
+	public static List<ItemStackSpawn> harvestWithDropPos(World world, List<PC_Vec3I> positions, int fortune){
+		List<ItemStackSpawn> drops = new ArrayList<ItemStackSpawn>();
+		if(positions==null)
 			return drops;
+		for(PC_Vec3I position:positions){
+			List<ItemStack> dropss = getDrops(world, position, fortune);
+			for(ItemStack drop:dropss){
+				drops.add(new ItemStackSpawn(position, drop));
+			}
+			PC_Utils.spawnBlockBreakParticles(world, position);
+			PC_Utils.setAir(world, position);
 		}
-		return harvestEasy(world, x, y, z, fortune);
+		return drops;
+	}
+	
+	public static List<ItemStack> harvest(World world, PC_Harvest harvest, int fortune){
+		return harvest(world, harvest.positions, fortune);
+	}
+	
+	public static List<ItemStack> harvest(World world, List<PC_Vec3I> positions, int fortune){
+		List<ItemStack> drops = new ArrayList<ItemStack>();
+		if(positions==null)
+			return drops;
+		for(PC_Vec3I position:positions){
+			drops.addAll(getDrops(world, position, fortune));
+			PC_Utils.spawnBlockBreakParticles(world, position);
+			PC_Utils.setAir(world, position);
+		}
+		return drops;
+	}
+	
+	public static List<ItemStack> getDrops(World world, PC_Vec3I position, int fortune){
+		Block block = PC_Utils.getBlock(world, position);
+		if(block==null){
+			return new ArrayList<ItemStack>();
+		}
+		List<ItemStack> list = block.getDrops(world, position.x, position.y, position.z, PC_Utils.getMetadata(world, position), fortune);
+		if(list==null)
+			return new ArrayList<ItemStack>();
+		return list;
 	}
 	
 	public static List<ItemStack> harvestEasy(World world, int x, int y, int z, int fortune){

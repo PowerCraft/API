@@ -5,12 +5,14 @@ import java.util.Random;
 
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
 import powercraft.api.block.PC_AbstractBlockBase;
 import powercraft.api.block.PC_Blocks;
 import powercraft.api.entity.PC_IEntity;
@@ -73,6 +75,18 @@ public final class PC_ForgeHandler implements IFuelHandler, IWorldGenerator {
 	public void onGuiOpened(GuiOpenEvent event){
 		GuiScreen gui = event.gui;
 		PC_Hacks.hackGui(gui);
+	}
+	
+	@SuppressWarnings("static-method")
+	@SubscribeEvent
+	public void getDigSpeed(BreakSpeed speed){
+		ItemStack itemStack = speed.entityPlayer.getCurrentEquippedItem();
+		if(itemStack!=null){
+			Item item = itemStack.getItem();
+			if(item instanceof PC_IItem){
+				speed.newSpeed = ((PC_IItem)item).updateDigSpeed(itemStack, speed.newSpeed, speed.x, speed.y, speed.z, speed.entityPlayer);
+			}
+		}
 	}
 	
 }

@@ -127,6 +127,11 @@ public class PC_ItemArmor extends ItemArmor implements PC_IItem, ISpecialArmor {
 		//
 	}
 	
+	@Override
+	public float updateDigSpeed(ItemStack itemStack, float speed, int x, int y, int z, EntityPlayer entityPlayer){
+		return speed;
+	}
+	
 	@SuppressWarnings({ "static-method", "unused" })
 	@SideOnly(Side.CLIENT)
 	public boolean handleRenderType(ItemStack itemStack, ItemRenderType type) {

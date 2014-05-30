@@ -20,5 +20,7 @@ public interface PC_IBeam {
 	public double getRemainingLength();
 	
 	public PC_IBeam getNewBeam(double maxLength, PC_Vec3 startPos, PC_Vec3 newDirection, PC_LightFilter filter);
+
+	public void noTrace();
 	
 }

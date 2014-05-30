@@ -17,6 +17,9 @@ public class PC_TickHandler {
 
 	private static final PC_TickHandler INSTANCE = new PC_TickHandler();
 	
+	private static int count = 0;
+	private static final List<PC_IBaseTickHandler> toAdd = new ArrayList<PC_IBaseTickHandler>();
+	private static final List<PC_IBaseTickHandler> toDelete = new ArrayList<PC_IBaseTickHandler>();
 	private static final List<PC_ITickHandler> tickHandlers = new ArrayList<PC_ITickHandler>();
 	private static final List<PC_IWorldTickHandler> worldTickHandlers = new ArrayList<PC_IWorldTickHandler>();
 	private static final List<PC_IPlayerTickHandler> playerTickHandlers = new ArrayList<PC_IPlayerTickHandler>();
@@ -30,17 +33,54 @@ public class PC_TickHandler {
 	private PC_TickHandler(){}
 	
 	public static void registerTickHandler(PC_IBaseTickHandler tickHandler){
-		if(tickHandler instanceof PC_ITickHandler){
-			tickHandlers.add((PC_ITickHandler) tickHandler);
+		if(count==0){
+			if(tickHandler instanceof PC_ITickHandler){
+				tickHandlers.add((PC_ITickHandler) tickHandler);
+			}
+			if(tickHandler instanceof PC_IWorldTickHandler){
+				worldTickHandlers.add((PC_IWorldTickHandler) tickHandler);
+			}
+			if(tickHandler instanceof PC_IPlayerTickHandler){
+				playerTickHandlers.add((PC_IPlayerTickHandler) tickHandler);
+			}
+			if(tickHandler instanceof PC_IRenderTickHandler){
+				renderTickHandlers.add((PC_IRenderTickHandler) tickHandler);
+			}
+		}else{
+			toAdd.add(tickHandler);
 		}
-		if(tickHandler instanceof PC_IWorldTickHandler){
-			worldTickHandlers.add((PC_IWorldTickHandler) tickHandler);
+	}
+	
+	public static void removeTickHander(PC_IBaseTickHandler tickHandler) {
+		if(count==0){
+			tickHandlers.remove(tickHandler);
+			worldTickHandlers.remove(tickHandler);
+			playerTickHandlers.remove(tickHandler);
+			renderTickHandlers.remove(tickHandler);
+		}else{
+			toDelete.add(tickHandler);
 		}
-		if(tickHandler instanceof PC_IPlayerTickHandler){
-			playerTickHandlers.add((PC_IPlayerTickHandler) tickHandler);
+	}
+	
+	private static void startIteration(){
+		synchronized(INSTANCE){
+			count++;
 		}
-		if(tickHandler instanceof PC_IRenderTickHandler){
-			renderTickHandlers.add((PC_IRenderTickHandler) tickHandler);
+	}
+	
+	private static void endIteration(){
+		synchronized(INSTANCE){
+			count--;
+			if(count==0){
+				for(PC_IBaseTickHandler tickHandler:toAdd){
+					registerTickHandler(tickHandler);
+				}
+				toAdd.clear();
+				for(PC_IBaseTickHandler tickHandler:toDelete){
+					removeTickHander(tickHandler);
+				}
+				toDelete.clear();
+			}
 		}
 	}
 	
@@ -61,6 +101,7 @@ public class PC_TickHandler {
 	
 	private static void onStartTickEvent(TickEvent event){
 		PC_Side side = PC_Side.from(event.side);
+		startIteration();
 		switch(event.type){
 		case CLIENT:
 		case SERVER:
@@ -89,10 +130,12 @@ public class PC_TickHandler {
 		default:
 			break;
 		}
+		endIteration();
 	}
 	
 	private static void onEndTickEvent(TickEvent event){
 		PC_Side side = PC_Side.from(event.side);
+		startIteration();
 		switch(event.type){
 		case CLIENT:
 		case SERVER:
@@ -121,6 +164,7 @@ public class PC_TickHandler {
 		default:
 			break;
 		}
+		endIteration();
 	}
 	
 	static interface PC_IBaseTickHandler{

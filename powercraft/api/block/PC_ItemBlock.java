@@ -109,6 +109,11 @@ public class PC_ItemBlock extends ItemBlock implements PC_IItem {
 	}
 
 	@Override
+	public float updateDigSpeed(ItemStack itemStack, float speed, int x, int y, int z, EntityPlayer entityPlayer){
+		return speed;
+	}
+	
+	@Override
 	public int getBurnTime(ItemStack fuel) {
 		return 0;
 	}
@@ -159,5 +164,5 @@ public class PC_ItemBlock extends ItemBlock implements PC_IItem {
 	public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean advancedItemTooltips) {
 		((PC_AbstractBlockBase)this.field_150939_a).addInformation(itemStack, player, list, advancedItemTooltips);
 	}
-
+	
 }

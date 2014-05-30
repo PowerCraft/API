@@ -5,7 +5,7 @@ import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -13,7 +13,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import org.w3c.dom.Document;
@@ -28,7 +27,7 @@ import powercraft.api.PC_Direction;
 import powercraft.api.PC_Logger;
 import powercraft.api.PC_MathHelper;
 import powercraft.api.PC_Utils;
-import powercraft.api.building.PC_Build.ItemStackSpawn;
+import powercraft.api.PC_Vec3I;
 import powercraft.api.reflect.PC_Security;
 
 
@@ -36,7 +35,6 @@ public class PC_TreeHarvesting implements PC_ISpecialHarvesting {
 	
 	private static final PC_TreeHarvesting INSTANCE = new PC_TreeHarvesting();
 	private static final File folder = PC_Utils.getPowerCraftFile("trees", null);
-	private static int MAXRECURSION = 1000;
 	private static List<Tree> trees;
 	
 	private PC_TreeHarvesting(){
@@ -52,98 +50,106 @@ public class PC_TreeHarvesting implements PC_ISpecialHarvesting {
 	}
 	
 	@Override
-	public boolean useFor(World world, int x, int y, int z, Block block, int meta, int priority) {
+	public boolean useFor(World world, int x, int y, int z, int priority) {
 		if(priority<2){
 			return false;
 		}
+		Block block = PC_Utils.getBlock(world, x, y, z);
+		int meta = PC_Utils.getMetadata(world, x, y, z);
 		return getTreeFor(block, meta)!=null;
 	}
 	
 	@Override
-	public List<ItemStackSpawn> harvest(World world, int x, int y, int z, Block block, int meta, int fortune) {
+	public PC_Harvest harvest(World world, int x, int y, int z, int usesLeft) {
+		PC_Harvest harvest = new PC_Harvest();
+		Block block = PC_Utils.getBlock(world, x, y, z);
+		int meta = PC_Utils.getMetadata(world, x, y, z);
 		Tree tree = getTreeFor(block, meta);
-		List<ItemStackSpawn> drops = new ArrayList<ItemStackSpawn>();
-		if(!world.isRemote)
-			harvestWood(world, x, y, z, block, meta, fortune, tree, drops, 0);
-		return drops;
-	}
-	
-	@SuppressWarnings("unused")
-	public void harvestWood(World world, int x, int y, int z, Block block, int meta, int fortune, Tree tree, List<ItemStackSpawn> drops, int recursion){
-		List<ItemStack> blockDrops = PC_Build.harvestEasy(world, x, y, z, fortune);
-		if(blockDrops!=null){
-			for(ItemStack blockDrop:blockDrops){
-				drops.add(new ItemStackSpawn(x, y, z, blockDrop));
+		List<PC_Vec3I> list = harvest.positions = new ArrayList<PC_Vec3I>();
+		List<PC_Vec3I> markedVorWoodTest = new ArrayList<PC_Vec3I>();
+		List<PC_Vec3I> markedVorLeaveTest = new ArrayList<PC_Vec3I>();
+		markedVorWoodTest.add(new PC_Vec3I(x, y, z));
+		while(!markedVorWoodTest.isEmpty()){
+			PC_Vec3I pos = markedVorWoodTest.remove(markedVorWoodTest.size()-1);
+			if(testWoodBlock(world, pos, tree)){
+				list.add(pos);
+				for(PC_Direction dir:PC_Direction.VALID_DIRECTIONS){
+					PC_Vec3I p = pos.offset(dir);
+					if(!(list.contains(p) || markedVorWoodTest.contains(p) || markedVorLeaveTest.contains(p))){
+						markedVorWoodTest.add(p);
+					}
+				}
+			}else{
+				markedVorLeaveTest.add(pos);
 			}
 		}
-		Block b;
-		int m;
-		if(recursion<MAXRECURSION){
-			for (int nx = x - 1; nx <= x + 1; nx++) {
-				for (int ny = y - 1; ny <= y + 1; ny++) {
-					for (int nz = z - 1; nz <= z + 1; nz++) {
-						b = PC_Utils.getBlock(world, nx, ny, nz);
-						m = PC_Utils.getMetadata(world, nx, ny, nz);
-						if(b!=null){
-							if(tree.woods.contains(new TreeState(PC_Utils.getBlockSID(b), m))){
-								harvestWood(world, nx, ny, nz, b, m, fortune, tree, drops, recursion+1);
-							}
+		markedVorWoodTest.addAll(list);
+		harvest.itemUse = list.size();
+		if(harvest.itemUse>usesLeft && usesLeft!=-1){
+			int max = 0;
+			HashMap<Integer, List<PC_Vec3I>> hm = new HashMap<Integer, List<PC_Vec3I>>();
+			for(PC_Vec3I pos:list){
+				if(pos.y>max)
+					max = pos.y;
+				List<PC_Vec3I> l = hm.get(Integer.valueOf(pos.y));
+				if(l==null){
+					hm.put(Integer.valueOf(pos.y), l = new ArrayList<PC_Vec3I>());
+				}
+				l.add(pos);
+			}
+			list.clear();
+			for(int i=max; i>=0; i--){
+				List<PC_Vec3I> l = hm.get(Integer.valueOf(i));
+				if(l!=null){
+					if(l.size()+list.size()>usesLeft){
+						int diff = usesLeft-list.size();
+						while(diff>0){
+							diff--;
+							list.add(l.remove((int)(Math.random()*l.size())));
 						}
+					}else{
+						list.addAll(l);
 					}
 				}
-			}
-			for (int nx = x - 1; nx <= x + 1; nx++) {
-				for (int ny = y - 1; ny <= y + 1; ny++) {
-					for (int nz = z - 1; nz <= z + 1; nz++) {
-						b = PC_Utils.getBlock(world, nx, ny, nz);
-						m = PC_Utils.getMetadata(world, nx, ny, nz);
-						if(b!=null){
-							if(tree.leaves.contains(new TreeState(PC_Utils.getBlockSID(b), m))){
-								harvestLeaves(world, nx, ny, nz, b, m, fortune, tree, drops, recursion+1);
-							}
-						}
-					}
+				if(list.size()>=usesLeft){
+					break;
 				}
 			}
-			b = PC_Utils.getBlock(world, x, y-1, z);
-			if(b!=null){
-				Iterator<ItemStackSpawn> i = drops.iterator();
-				while(i.hasNext()){
-					ItemStackSpawn drop = i.next();
-					for(TreeState sampling:tree.saplings){
-						if(PC_Utils.getItemForBlock(PC_Utils.getBlock(sampling.blockSID)) == drop.itemStack.getItem() && (sampling.metadata == drop.itemStack.getItemDamage() || sampling.metadata==-1)){
-							if(PC_Build.tryUseItem(world, x, y-1, z, PC_Direction.UP, drop.itemStack)){
-								if(drop.itemStack.stackSize<=0){
-									i.remove();
-								}
-								return;
-							}
-						}
+			harvest.itemUse = list.size();
+		}
+		harvest.digTimeMultiply = 1+((list.size()-1)/2.0f);
+		while(!markedVorLeaveTest.isEmpty()){
+			PC_Vec3I pos = markedVorLeaveTest.remove(markedVorLeaveTest.size()-1);
+			if(testLeaveBlock(world, pos, tree, markedVorWoodTest)){
+				list.add(pos);
+				for(PC_Direction dir:PC_Direction.VALID_DIRECTIONS){
+					PC_Vec3I p = pos.offset(dir);
+					if(!(list.contains(p) || markedVorLeaveTest.contains(p))){
+						markedVorLeaveTest.add(p);
 					}
 				}
 			}
 		}
+		return harvest;
 	}
 	
-	private static boolean isLeaveOrLog(World world, int x, int y, int z, Tree tree){
-		Block b = PC_Utils.getBlock(world, x, y, z);
-		int m = PC_Utils.getMetadata(world, x, y, z);
-		TreeState ts = new TreeState(PC_Utils.getBlockSID(b), m);
-		return tree.woods.contains(ts)||tree.leaves.contains(ts);
+	public static boolean testWoodBlock(World world, PC_Vec3I pos, Tree tree){
+		Block block = PC_Utils.getBlock(world, pos);
+		int meta = PC_Utils.getMetadata(world, pos);
+		return block!=null && tree.woods.contains(new TreeState(PC_Utils.getBlockSID(block), meta));
 	}
 	
-	private static boolean isConnectedToLog(World world, int x, int y, int z, Tree tree){
+	private static boolean isConnectedToLog(World world, PC_Vec3I pos, Tree tree, List<PC_Vec3I> marked){
 		int range = 4;
 		for(int i=-range; i<=range; i++){
 			for(int j=-range; j<=range; j++){
 				for(int k=-range; k<=range; k++){
 					if(PC_MathHelper.abs(i)+PC_MathHelper.abs(j)+PC_MathHelper.abs(k)<=range){
-						Block b = PC_Utils.getBlock(world, x+i, y+j, z+k);
-						int m = PC_Utils.getMetadata(world, x+i, y+j, z+k);
-						if(tree.woods.contains(new TreeState(PC_Utils.getBlockSID(b), m))){
+						PC_Vec3I p = pos.offset(i, j, k);
+						if(!marked.contains(p) && testWoodBlock(world, pos.offset(i, j, k), tree)){
 							boolean ok = true;
 							for(int l=1; l<range; l++){
-								if(!isLeaveOrLog(world, (int)(x+i*l/4.0f+0.5f), (int)(y+j*l/4.0f+0.5f), (int)(z+k*l/4.0f+0.5f), tree)){
+								if(!isLeave(world, (int)(pos.x+i*l/4.0f+0.5f), (int)(pos.y+j*l/4.0f+0.5f), (int)(pos.z+k*l/4.0f+0.5f), tree)){
 									ok = false;
 									break;
 								}
@@ -158,33 +164,17 @@ public class PC_TreeHarvesting implements PC_ISpecialHarvesting {
 		return false;
 	}
 	
-	@SuppressWarnings("unused")
-	public void harvestLeaves(World world, int x, int y, int z, Block block, int meta, int fortune, Tree tree, List<ItemStackSpawn> drops, int recursion){
-		if(isConnectedToLog(world, x, y, z, tree))
-			return;
-		List<ItemStack> blockDrops = PC_Build.harvestEasy(world, x, y, z, fortune);
-		if(blockDrops!=null){
-			for(ItemStack blockDrop:blockDrops){
-				drops.add(new ItemStackSpawn(x, y, z, blockDrop));
-			}
-		}
-		Block b;
-		int m;
-		if(recursion<MAXRECURSION){
-			for (int nx = x - 1; nx <= x + 1; nx++) {
-				for (int ny = y - 1; ny <= y + 1; ny++) {
-					for (int nz = z - 1; nz <= z + 1; nz++) {
-						b = PC_Utils.getBlock(world, nx, ny, nz);
-						m = PC_Utils.getMetadata(world, nx, ny, nz);
-						if(b!=null){
-							if(tree.leaves.contains(new TreeState(PC_Utils.getBlockSID(b), m))){
-								harvestLeaves(world, nx, ny, nz, b, m, fortune, tree, drops, recursion+1);
-							}
-						}
-					}
-				}
-			}
-		}
+	public static boolean testLeaveBlock(World world, PC_Vec3I pos, Tree tree, List<PC_Vec3I> marked){
+		Block block = PC_Utils.getBlock(world, pos);
+		int meta = PC_Utils.getMetadata(world, pos);
+		return block!=null && tree.leaves.contains(new TreeState(PC_Utils.getBlockSID(block), meta)) && !isConnectedToLog(world, pos, tree, marked);
+	}
+	
+	private static boolean isLeave(World world, int x, int y, int z, Tree tree){
+		Block b = PC_Utils.getBlock(world, x, y, z);
+		int m = PC_Utils.getMetadata(world, x, y, z);
+		TreeState ts = new TreeState(PC_Utils.getBlockSID(b), m);
+		return tree.leaves.contains(ts);
 	}
 
 	private static Tree getTreeFor(Block block, int meta){
@@ -212,25 +202,21 @@ public class PC_TreeHarvesting implements PC_ISpecialHarvesting {
 			Tree tree = new Tree();
 			tree.woods.add(new TreeState(Blocks.log, i, 3));
 			tree.leaves.add(new TreeState(Blocks.leaves, i, 3));
-			tree.saplings.add(new TreeState(Blocks.sapling, i));
 			trees.add(tree);
 		}
 		for(int i=0; i<2; i++){
 			Tree tree = new Tree();
 			tree.woods.add(new TreeState(Blocks.log2, i, 3));
 			tree.leaves.add(new TreeState(Blocks.leaves2, i, 3));
-			tree.saplings.add(new TreeState(Blocks.sapling, i+4));
 			trees.add(tree);
 		}
 		
 		Tree tree = new Tree();
 		tree.woods.add(new TreeState(Blocks.brown_mushroom_block, -1));
-		tree.saplings.add(new TreeState(Blocks.brown_mushroom, 0));
 		trees.add(tree);
 		
 		tree = new Tree();
 		tree.woods.add(new TreeState(Blocks.red_mushroom_block, -1));
-		tree.saplings.add(new TreeState(Blocks.red_mushroom, 0));
 		trees.add(tree);
 		
 		PC_Logger.finer("Loading XML configuration for trees.");
@@ -332,19 +318,10 @@ public class PC_TreeHarvesting implements PC_ISpecialHarvesting {
 					}
 
 
-					// <sapling>
-					NodeList saplinglist = tree.getElementsByTagName("sapling");
-					Element sapling = null;
-					if (saplinglist.getLength() == 1) {
-						sapling = (Element) saplinglist.item(0);
-					}
-
-
 					// parse wood.
 
 					TreeState woodStruct;
 					TreeState leavesStruct = null;
-					TreeState saplingStruct = null;
 
 					String woodId_s = wood.getAttribute("id");
 
@@ -387,36 +364,11 @@ public class PC_TreeHarvesting implements PC_ISpecialHarvesting {
 
 					}
 
-					if (sapling != null) {
-
-						String saplingId_s = sapling.getAttribute("id");
-
-						if (saplingId_s.equals("")) {
-							PC_Logger.warning("Tree manager - parseFile - Error while parsing " + file + " - bad sapling ID");
-							continue treeloop;
-						}
-
-						String saplingMeta_s = sapling.getAttribute("meta");
-
-						if (saplingMeta_s.equals("") || !saplingMeta_s.matches("[0-9]+")) {
-							PC_Logger.warning("Tree manager - parseFile - Error while parsing " + file + " - bad sapling meta");
-							continue treeloop;
-						}
-
-						int sapling_meta = Integer.parseInt(saplingMeta_s);
-
-						saplingStruct = new TreeState(saplingId_s, sapling_meta);
-
-					}
-
 					Tree ttree = new Tree();
 					
 					ttree.woods.add(woodStruct);
 					if(leavesStruct!=null){
 						ttree.leaves.add(leavesStruct);
-					}
-					if(saplingStruct!=null){
-						ttree.saplings.add(saplingStruct);
 					}
 					trees.add(ttree);
 
@@ -490,7 +442,6 @@ public class PC_TreeHarvesting implements PC_ISpecialHarvesting {
 		
 		public List<TreeState> woods = new ArrayList<TreeState>();
 		public List<TreeState> leaves = new ArrayList<TreeState>();
-		public List<TreeState> saplings = new ArrayList<TreeState>();
 		
 		public Tree() {
 			

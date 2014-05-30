@@ -13,6 +13,7 @@ import powercraft.api.entity.PC_IEntity;
 import powercraft.api.item.PC_IItem;
 import powercraft.api.item.PC_Item;
 import powercraft.api.item.PC_ItemArmor;
+import powercraft.api.item.PC_ItemTool;
 import powercraft.api.multiblock.PC_MultiblockItem;
 import powercraft.api.multiblock.PC_Multiblocks;
 import powercraft.api.reflect.PC_Security;
@@ -58,7 +59,7 @@ public final class PC_ClientRegistry extends PC_Registry {
 	}
 	
 	public static PC_IconRegistry getIconRegistry(IIconRegister iconRegister, PC_IItem item) {
-		PC_Security.allowedCaller("PC_IconRegistryImpl(IIconRegister, PC_IItem)", PC_Item.class, PC_ItemArmor.class);
+		PC_Security.allowedCaller("PC_IconRegistryImpl(IIconRegister, PC_IItem)", PC_Item.class, PC_ItemArmor.class, PC_ItemTool.class);
 		return new PC_IconRegistryImpl(iconRegister, item.getModule(), item.getTextureFolderName());
 	}
 

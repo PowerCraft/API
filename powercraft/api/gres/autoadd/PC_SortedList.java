@@ -6,15 +6,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-public class PC_SortedStringList implements List<PC_StringWithInfo> {
+public class PC_SortedList<T extends Comparable<T>> implements List<T> {
 
-	private List<PC_StringWithInfo> sortedList = new ArrayList<PC_StringWithInfo>();
+	private List<T> sortedList = new ArrayList<T>();
 	
 	@Override
-	public boolean add(PC_StringWithInfo e) {
-		ListIterator<PC_StringWithInfo> li = this.sortedList.listIterator();
+	public boolean add(T e) {
+		ListIterator<T> li = this.sortedList.listIterator();
 		while(li.hasNext()){
-			PC_StringWithInfo s = li.next();
+			T s = li.next();
 			int comp = s.compareTo(e);
 			if(comp==0){
 				return false;
@@ -29,20 +29,20 @@ public class PC_SortedStringList implements List<PC_StringWithInfo> {
 	}
 
 	@Override
-	public void add(int index, PC_StringWithInfo element) {
+	public void add(int index, T element) {
 		add(element);
 	}
 
 	@Override
-	public boolean addAll(Collection<? extends PC_StringWithInfo> c) {
-		for(PC_StringWithInfo s:c){
+	public boolean addAll(Collection<? extends T> c) {
+		for(T s:c){
 			add(s);
 		}
 		return true;
 	}
 
 	@Override
-	public boolean addAll(int index, Collection<? extends PC_StringWithInfo> c) {
+	public boolean addAll(int index, Collection<? extends T> c) {
 		return addAll(c);
 	}
 
@@ -62,7 +62,7 @@ public class PC_SortedStringList implements List<PC_StringWithInfo> {
 	}
 
 	@Override
-	public PC_StringWithInfo get(int index) {
+	public T get(int index) {
 		return this.sortedList.get(index);
 	}
 
@@ -77,7 +77,7 @@ public class PC_SortedStringList implements List<PC_StringWithInfo> {
 	}
 
 	@Override
-	public Iterator<PC_StringWithInfo> iterator() {
+	public Iterator<T> iterator() {
 		return this.sortedList.iterator();
 	}
 
@@ -87,25 +87,25 @@ public class PC_SortedStringList implements List<PC_StringWithInfo> {
 	}
 
 	@Override
-	public ListIterator<PC_StringWithInfo> listIterator() {
-		return new LI(this.sortedList.listIterator());
+	public ListIterator<T> listIterator() {
+		return new LI<T>(this.sortedList.listIterator());
 	}
 
 	@Override
-	public ListIterator<PC_StringWithInfo> listIterator(int index) {
-		return new LI(this.sortedList.listIterator(index));
+	public ListIterator<T> listIterator(int index) {
+		return new LI<T>(this.sortedList.listIterator(index));
 	}
 
-	private static class LI implements ListIterator<PC_StringWithInfo>{
+	private static class LI<T> implements ListIterator<T>{
 		
-		private ListIterator<PC_StringWithInfo> li;
+		private ListIterator<T> li;
 
-		LI(ListIterator<PC_StringWithInfo> li){
+		LI(ListIterator<T> li){
 			this.li = li;
 		}
 		
 		@Override
-		public void add(PC_StringWithInfo e) {
+		public void add(T e) {
 			throw new UnsupportedOperationException();
 		}
 
@@ -120,7 +120,7 @@ public class PC_SortedStringList implements List<PC_StringWithInfo> {
 		}
 
 		@Override
-		public PC_StringWithInfo next() {
+		public T next() {
 			return this.li.next();
 		}
 
@@ -130,7 +130,7 @@ public class PC_SortedStringList implements List<PC_StringWithInfo> {
 		}
 
 		@Override
-		public PC_StringWithInfo previous() {
+		public T previous() {
 			return this.li.previous();
 		}
 
@@ -145,7 +145,7 @@ public class PC_SortedStringList implements List<PC_StringWithInfo> {
 		}
 
 		@Override
-		public void set(PC_StringWithInfo e) {
+		public void set(T e) {
 			throw new UnsupportedOperationException();
 		}
 		
@@ -157,7 +157,7 @@ public class PC_SortedStringList implements List<PC_StringWithInfo> {
 	}
 
 	@Override
-	public PC_StringWithInfo remove(int index) {
+	public T remove(int index) {
 		return this.sortedList.remove(index);
 	}
 
@@ -172,7 +172,7 @@ public class PC_SortedStringList implements List<PC_StringWithInfo> {
 	}
 
 	@Override
-	public PC_StringWithInfo set(int index, PC_StringWithInfo element) {
+	public T set(int index, T element) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -182,7 +182,7 @@ public class PC_SortedStringList implements List<PC_StringWithInfo> {
 	}
 
 	@Override
-	public List<PC_StringWithInfo> subList(int fromIndex, int toIndex) {
+	public List<T> subList(int fromIndex, int toIndex) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -192,7 +192,7 @@ public class PC_SortedStringList implements List<PC_StringWithInfo> {
 	}
 
 	@Override
-	public <T> T[] toArray(T[] a) {
+	public <A> A[] toArray(A[] a) {
 		return this.sortedList.toArray(a);
 	}
 

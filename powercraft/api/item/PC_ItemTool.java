@@ -1,5 +1,11 @@
 package powercraft.api.item;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -7,6 +13,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemTool;
 import net.minecraft.world.World;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.client.IItemRenderer.ItemRendererHelper;
@@ -18,23 +25,45 @@ import powercraft.api.PC_Utils;
 import powercraft.api.gres.PC_Gres;
 import powercraft.api.gres.PC_IGresGuiOpenHandler;
 import powercraft.api.inventory.PC_InventoryUtils;
+
+import com.google.common.collect.Sets;
+
 import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public abstract class PC_Item extends Item implements PC_IItem{
+
+public class PC_ItemTool extends ItemTool implements PC_IItem {
 
 	private static final CreativeTabs[] NULLCREATIVTABS = {};
 	
 	private final ModContainer module;
 	private CreativeTabs[] creativeTabs = NULLCREATIVTABS;
 	private boolean constructed;
+	private Set<? extends Material> properMaterials;
 	
-	public PC_Item(){
+	protected PC_ItemTool(float damageVsEntity, ToolMaterial toolMaterial, Object[] proper) {
+		super(damageVsEntity, toolMaterial, listOf(proper, Block.class));
+		this.properMaterials = listOf(proper, Material.class);
 		PC_Items.addItem(this);
 		this.module = PC_Utils.getActiveMod();
 	}
+
+	private static <T> Set<T> listOf(Object[] oa, Class<T> c){
+		List<T> list = new ArrayList<T>();
+		for(Object o:oa){
+			if(c.isAssignableFrom(o.getClass())){
+				list.add(c.cast(o));
+			}
+		}
+		return Sets.newHashSet(list);
+	}
+	
+	@Override
+	public float func_150893_a(ItemStack itemstack, Block block){
+        return block!=null && this.properMaterials.contains(block.getMaterial()) ? this.efficiencyOnProperMaterial : super.func_150893_a(itemstack, block);
+    }
 	
 	@Override
 	public final PC_Module getModule() {

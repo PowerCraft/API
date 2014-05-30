@@ -1,6 +1,9 @@
 package powercraft.api;
 
-public class PC_Vec4I {
+import net.minecraft.nbt.NBTTagCompound;
+import powercraft.api.PC_Field.Flag;
+
+public class PC_Vec4I implements PC_INBT {
 
 	public int x;
 	public int y;
@@ -19,6 +22,22 @@ public class PC_Vec4I {
 		this.w = _w;
 	}
 
+	@SuppressWarnings("unused")
+	public PC_Vec4I(NBTTagCompound tag, Flag flag) {
+		this.x = tag.getInteger("x");
+		this.y = tag.getInteger("y");
+		this.z = tag.getInteger("z");
+		this.w = tag.getInteger("w");
+	}
+	
+	@Override
+	public void saveToNBT(NBTTagCompound tag, Flag flag) {
+		tag.setInteger("x", this.x);
+		tag.setInteger("y", this.y);
+		tag.setInteger("z", this.z);
+		tag.setInteger("w", this.w);
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 

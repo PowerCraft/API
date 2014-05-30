@@ -1,6 +1,7 @@
 package powercraft.api.xml;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -14,6 +15,20 @@ import powercraft.api.PC_Logger;
 
 
 public class PC_XMLLoader {
+	
+	public static PC_XMLNode load(File file){
+		try{
+			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+			Document doc = docBuilder.parse(file);
+			doc.getDocumentElement().normalize();
+			return load(doc.getChildNodes().item(0));
+		}catch(Exception e){
+			PC_Logger.severe("Error while reading xml");
+			PC_Logger.throwing("PC_XMLLoader", "load", e);
+			return null;
+		}
+	}
 	
 	public static PC_XMLNode load(String file){
 		try{

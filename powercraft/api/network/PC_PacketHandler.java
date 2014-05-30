@@ -20,6 +20,7 @@ import powercraft.api.PC_Api;
 import powercraft.api.PC_Logger;
 import powercraft.api.PC_Side;
 import powercraft.api.PC_Utils;
+import powercraft.api.building.PC_PacketBlockBreaking;
 import powercraft.api.network.packet.PC_PacketClickWindow;
 import powercraft.api.network.packet.PC_PacketEntityMessageCTS;
 import powercraft.api.network.packet.PC_PacketEntityMessageSTC;
@@ -86,6 +87,7 @@ public final class PC_PacketHandler extends SimpleChannelInboundHandler<PC_Packe
 			PC_PacketHandler.registerPacket(PC_PacketSetSlot.class);
 			PC_PacketHandler.registerPacket(PC_PacketWindowItems.class);
 			PC_PacketHandler.registerPacket(PC_PacketClickWindow.class);
+			PC_PacketHandler.registerPacket(PC_PacketBlockBreaking.class);
 		}
 	}
 	
