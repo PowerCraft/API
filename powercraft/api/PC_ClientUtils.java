@@ -11,6 +11,7 @@ import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.WorldSettings.GameType;
+import powercraft.api.reflect.PC_Fields;
 import powercraft.api.reflect.PC_Reflection;
 import powercraft.api.renderer.PC_Renderer;
 import cpw.mods.fml.relauncher.Side;
@@ -75,8 +76,7 @@ public final class PC_ClientUtils extends PC_Utils {
 	 */
 	@Override
 	GameType iGetGameTypeFor(EntityPlayer player) {
-
-		return PC_Reflection.getValue(PlayerControllerMP.class, mc().playerController, 10, GameType.class);
+		return PC_Fields.Client.PlayerControllerMP_currentGameType.getValue(mc().playerController);
 	}
 
 	/**

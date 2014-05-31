@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.WeakHashMap;
 
-import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.renderer.DestroyBlockProgress;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.RenderGlobal;
@@ -28,7 +27,7 @@ import powercraft.api.block.PC_BlockType;
 import powercraft.api.block.PC_TileEntity;
 import powercraft.api.network.PC_PacketHandler;
 import powercraft.api.network.packet.PC_PacketSelectMultiblockTile;
-import powercraft.api.reflect.PC_Reflection;
+import powercraft.api.reflect.PC_Fields;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -222,9 +221,8 @@ public final class PC_BlockMultiblock extends PC_BlockTileEntity implements PC_I
 			}
 		}
 		
-		@SuppressWarnings("boxing")
 		private static void resetClientDigging(int x, int y, int z, int side){
-			if(PC_Reflection.getValue(PlayerControllerMP.class, PC_ClientUtils.mc().playerController, 9, boolean.class)){
+			if(PC_Fields.Client.PlayerControllerMP_isHittingBlock.getValue(PC_ClientUtils.mc().playerController).booleanValue()){
 				PC_ClientUtils.mc().playerController.resetBlockRemoving();
 				if(!PC_Utils.isCreative(PC_ClientUtils.mc().thePlayer)){
 					PC_ClientUtils.mc().playerController.clickBlock(x, y, z, side);
@@ -265,8 +263,8 @@ public final class PC_BlockMultiblock extends PC_BlockTileEntity implements PC_I
 	@SideOnly(Side.CLIENT)
 	public static void drawBlockDamages(RenderBlocks renderer){
 		RenderGlobal renderGlobal = PC_ClientUtils.mc().renderGlobal;
-		IIcon[] destroyBlockIcons = PC_Reflection.getValue(RenderGlobal.class, renderGlobal, 31, IIcon[].class);
-		Map<Integer, DestroyBlockProgress> damagedBlocks = PC_Reflection.getValue(RenderGlobal.class, renderGlobal, 29, Map.class);
+		IIcon[] destroyBlockIcons = PC_Fields.Client.RenderGlobal_destroyBlockIcons.getValue(renderGlobal);
+		Map<Integer, DestroyBlockProgress> damagedBlocks =  PC_Fields.Client.RenderGlobal_damagedBlocks.getValue(renderGlobal);
 		for(Entry<Integer, DestroyBlockProgress> e:damagedBlocks.entrySet()){
 			EntityPlayer player = (EntityPlayer) PC_ClientUtils.mc().theWorld.getEntityByID(e.getKey().intValue());
 			DestroyBlockProgress destroyblockprogress = e.getValue();

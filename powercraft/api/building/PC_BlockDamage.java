@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.client.renderer.DestroyBlockProgress;
-import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import powercraft.api.PC_ClientUtils;
@@ -15,13 +14,13 @@ import powercraft.api.PC_Field.Flag;
 import powercraft.api.PC_NBTTagHandler;
 import powercraft.api.PC_Side;
 import powercraft.api.PC_TickHandler;
-import powercraft.api.PC_Utils;
 import powercraft.api.PC_TickHandler.PC_ITickHandler;
+import powercraft.api.PC_Utils;
 import powercraft.api.PC_Vec4I;
 import powercraft.api.PC_WorldSaveData;
 import powercraft.api.building.PC_Build.ItemStackSpawn;
 import powercraft.api.network.PC_PacketHandler;
-import powercraft.api.reflect.PC_Reflection;
+import powercraft.api.reflect.PC_Fields;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -113,8 +112,11 @@ public class PC_BlockDamage extends PC_WorldSaveData implements PC_ITickHandler 
 		if(side==PC_Side.SERVER){
 			Iterator<PC_Vec4I> i = this.damages.keySet().iterator();
 			while(i.hasNext()){
-				if(!this.updated.contains(i.next()))
+				PC_Vec4I v4 = i.next();
+				if(!this.updated.contains(v4)){
 					i.remove();
+					PC_PacketHandler.sendToAllAround(new PC_PacketBlockBreaking(v4.x, v4.y, v4.z, -1), v4.w, v4.x, v4.y, v4.z, 32);
+				}
 			}
 		}
 	}
@@ -122,8 +124,8 @@ public class PC_BlockDamage extends PC_WorldSaveData implements PC_ITickHandler 
 	@SuppressWarnings("unchecked")
 	@SideOnly(Side.CLIENT)
 	static void setClientDamage(int x, int y, int z, int damage){
-		Map<Number, DestroyBlockProgress> damagedBlocks = PC_Reflection.getValue(RenderGlobal.class, PC_ClientUtils.mc().renderGlobal, 29, Map.class);
-		int cloudTickCounter = PC_Reflection.getValue(RenderGlobal.class, PC_ClientUtils.mc().renderGlobal, 19, int.class).intValue();
+		Map<Number, DestroyBlockProgress> damagedBlocks = PC_Fields.Client.RenderGlobal_damagedBlocks.getValue(PC_ClientUtils.mc().renderGlobal);
+		int cloudTickCounter = PC_Fields.Client.RenderGlobal_cloudTickCounter.getValue(PC_ClientUtils.mc().renderGlobal).intValue();
 		PosDamage pd = new PosDamage(x, y, z);
 		if(damage==-1){
 			damagedBlocks.remove(pd);

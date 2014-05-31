@@ -31,6 +31,14 @@ public class PC_LightValue {
 		return color;
 	}
 	
+	public double getIntensity(){
+		double intensity = 0;
+		for(int i=1; i<this.frequencyAndIntensity.length; i+=2){
+			intensity += this.frequencyAndIntensity[i];
+		}
+		return intensity;
+	}
+	
 	private static double adjust(double color, double factor){
 		final float GAMMA = 0.8f;
 		if(color==0){

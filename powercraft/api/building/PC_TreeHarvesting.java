@@ -23,7 +23,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 import powercraft.api.PC_Api;
-import powercraft.api.PC_Direction;
 import powercraft.api.PC_Logger;
 import powercraft.api.PC_MathHelper;
 import powercraft.api.PC_Utils;
@@ -73,10 +72,16 @@ public class PC_TreeHarvesting implements PC_ISpecialHarvesting {
 			PC_Vec3I pos = markedVorWoodTest.remove(markedVorWoodTest.size()-1);
 			if(testWoodBlock(world, pos, tree)){
 				list.add(pos);
-				for(PC_Direction dir:PC_Direction.VALID_DIRECTIONS){
-					PC_Vec3I p = pos.offset(dir);
-					if(!(list.contains(p) || markedVorWoodTest.contains(p) || markedVorLeaveTest.contains(p))){
-						markedVorWoodTest.add(p);
+				for(int i=-1; i<=1; i++){
+					for(int j=-1; j<=1; j++){
+						for(int k=-1; k<=1; k++){
+							if(i!=0 || j!=0 || k!=0){
+								PC_Vec3I p = pos.offset(i, j, k);
+								if(!(list.contains(p) || markedVorWoodTest.contains(p) || markedVorLeaveTest.contains(p))){
+									markedVorWoodTest.add(p);
+								}
+							}
+						}
 					}
 				}
 			}else{
@@ -122,10 +127,16 @@ public class PC_TreeHarvesting implements PC_ISpecialHarvesting {
 			PC_Vec3I pos = markedVorLeaveTest.remove(markedVorLeaveTest.size()-1);
 			if(testLeaveBlock(world, pos, tree, markedVorWoodTest)){
 				list.add(pos);
-				for(PC_Direction dir:PC_Direction.VALID_DIRECTIONS){
-					PC_Vec3I p = pos.offset(dir);
-					if(!(list.contains(p) || markedVorLeaveTest.contains(p))){
-						markedVorLeaveTest.add(p);
+				for(int i=-1; i<=1; i++){
+					for(int j=-1; j<=1; j++){
+						for(int k=-1; k<=1; k++){
+							if(i!=0 || j!=0 || k!=0){
+								PC_Vec3I p = pos.offset(i, j, k);
+								if(!(list.contains(p) || markedVorLeaveTest.contains(p))){
+									markedVorLeaveTest.add(p);
+								}
+							}
+						}
 					}
 				}
 			}

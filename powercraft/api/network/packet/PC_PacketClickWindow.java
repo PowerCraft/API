@@ -9,12 +9,11 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.play.server.S32PacketConfirmTransaction;
-import net.minecraft.util.IntHashMap;
 import net.minecraft.world.World;
 import powercraft.api.network.PC_Packet;
 import powercraft.api.network.PC_PacketClientToServer;
 import powercraft.api.network.PC_PacketHandler;
-import powercraft.api.reflect.PC_Reflection;
+import powercraft.api.reflect.PC_Fields;
 
 
 public class PC_PacketClickWindow extends PC_PacketClientToServer {
@@ -73,8 +72,8 @@ public class PC_PacketClickWindow extends PC_PacketClientToServer {
             	player.updateHeldItem();
             	player.isChangingQuantityOnly = false;
             }else{
-            	PC_Reflection.getValue(NetHandlerPlayServer.class, playServer, 13, IntHashMap.class).addKey(player.openContainer.windowId, Short.valueOf((short)this.transactionID));
-                player.playerNetServerHandler.sendPacket(new S32PacketConfirmTransaction(this.windowId, (short) this.transactionID, false));
+            	PC_Fields.NetHandlerPlayServer_field_147372_n.getValue(playServer).addKey(player.openContainer.windowId, Short.valueOf((short)this.transactionID));
+            	player.playerNetServerHandler.sendPacket(new S32PacketConfirmTransaction(this.windowId, (short) this.transactionID, false));
                 player.openContainer.setPlayerIsPresent(player, false);
                 ArrayList<ItemStack> itemStacks = new ArrayList<ItemStack>();
 

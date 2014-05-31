@@ -130,7 +130,21 @@ public final class PC_Reflection {
 	public static <T> T getValue(Class<?> clazz, Object object, int index, Class<T> type) {
 		try {
 			Field field = findNearestBestField(clazz, index, type);
-			field.setAccessible(true);
+			setAccessible(field);
+			return (T) field.get(object);
+		} catch(SecurityException se){
+			onSecurityException(se);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T> T getValue(PC_ReflectionField<?, T> f, Object object) {
+		try {
+			Field field = f.getField();
+			setAccessible(field);
 			return (T) field.get(object);
 		} catch(SecurityException se){
 			onSecurityException(se);
@@ -144,6 +158,19 @@ public final class PC_Reflection {
 
 		try {
 			Field field = findNearestBestField(clazz, index, type);
+			setAccessible(field);
+			field.set(object, value);
+		} catch(SecurityException se){
+			onSecurityException(se);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void setValue(PC_ReflectionField<?, ?> f, Object object, Object value) {
+
+		try {
+			Field field = f.getField();
 			field.setAccessible(true);
 			field.set(object, value);
 		} catch(SecurityException se){
@@ -157,7 +184,7 @@ public final class PC_Reflection {
 
 		try {
 			Field field = findNearestBestField(clazz, index, type);
-			field.setAccessible(true);
+			setAccessible(field);
 			Field field_modifiers = Field.class.getDeclaredField("modifiers");
 			field_modifiers.setAccessible(true);
 			int modifier = field_modifiers.getInt(field);
@@ -177,6 +204,38 @@ public final class PC_Reflection {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static void setValueAndFinals(PC_ReflectionField<?, ?> f, Object object, Object value) {
+
+		try {
+			Field field = f.getField();
+			setAccessible(field);
+			Field field_modifiers = Field.class.getDeclaredField("modifiers");
+			field_modifiers.setAccessible(true);
+			int modifier = field_modifiers.getInt(field);
+
+			if ((modifier & Modifier.FINAL) != 0) {
+				field_modifiers.setInt(field, modifier & ~Modifier.FINAL);
+			}
+
+			field.set(object, value);
+
+			if ((modifier & Modifier.FINAL) != 0) {
+				field_modifiers.setInt(field, modifier);
+			}
+
+		} catch(SecurityException se){
+			onSecurityException(se);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void setAccessible(Field field){
+		try{
+			field.setAccessible(true);
+		}catch(Exception e){/**/}
 	}
 
 	public static Field[] getDeclaredFields(Class<?> c){
