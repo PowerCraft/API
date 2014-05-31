@@ -15,9 +15,11 @@ import powercraft.api.PC_Field.Flag;
 import powercraft.api.PC_NBTTagHandler;
 import powercraft.api.PC_Side;
 import powercraft.api.PC_TickHandler;
+import powercraft.api.PC_Utils;
 import powercraft.api.PC_TickHandler.PC_ITickHandler;
 import powercraft.api.PC_Vec4I;
 import powercraft.api.PC_WorldSaveData;
+import powercraft.api.building.PC_Build.ItemStackSpawn;
 import powercraft.api.network.PC_PacketHandler;
 import powercraft.api.reflect.PC_Reflection;
 import cpw.mods.fml.relauncher.Side;
@@ -29,7 +31,7 @@ public class PC_BlockDamage extends PC_WorldSaveData implements PC_ITickHandler 
 	private static final String NAME = "powercraft-blockdamage";
 	
 	private List<PC_Vec4I> updated = new ArrayList<PC_Vec4I>(); 
-	private HashMap<PC_Vec4I, Float> damages = new HashMap<PC_Vec4I, Float>(); 
+	private HashMap<PC_Vec4I, float[]> damages = new HashMap<PC_Vec4I, float[]>(); 
 	private static PC_BlockDamage INSTANCE;
 	
 	private static PC_BlockDamage getInstance(){
@@ -46,7 +48,7 @@ public class PC_BlockDamage extends PC_WorldSaveData implements PC_ITickHandler 
 	
 	@Override
 	public void readFromNBT(NBTTagCompound nbtTagCompound) {
-		PC_NBTTagHandler.loadMapFromNBT(nbtTagCompound, "damages", this.damages, PC_Vec4I.class, Float.class, Flag.SAVE);
+		PC_NBTTagHandler.loadMapFromNBT(nbtTagCompound, "damages", this.damages, PC_Vec4I.class, float[].class, Flag.SAVE);
 	}
 
 	@Override
@@ -66,28 +68,37 @@ public class PC_BlockDamage extends PC_WorldSaveData implements PC_ITickHandler 
 			return false;
 		PC_Vec4I v4 = new PC_Vec4I(x, y, z, world.provider.dimensionId);
 		getInstance();
-		Float damage = INSTANCE.damages.get(v4);
-		float d = 0;
+		float[] damage = INSTANCE.damages.get(v4);
 		int pd = -1;
-		if(damage!=null){
-			d = damage.floatValue();
-			pd = (int)d;
+		if(damage==null){
+			damage = new float[2];
+			PC_Harvest harvest = PC_Build.getHarvest(world, x, y, z, -1);
+			if(harvest==null){
+				damage[1] = 1;
+			}else{
+				damage[1] = harvest.digTimeMultiply;
+			}
+			INSTANCE.damages.put(v4, damage);
+		}else{
+			pd = (int)damage[0];
 		}
-		d += amount;
-		int npd = (int)d;
-		if(d>=10){
+		damage[0] += amount/damage[1];
+		INSTANCE.markDirty();
+		int npd = (int)damage[0];
+		if(damage[0]>=10){
 			INSTANCE.updated.remove(v4);
 			INSTANCE.damages.remove(v4);
 			INSTANCE.markDirty();
 			PC_PacketHandler.sendToAllAround(new PC_PacketBlockBreaking(x, y, z, -1), v4.w, x, y, z, 32);
+			PC_Harvest harvest = PC_Build.getHarvest(world, x, y, z, -1);
+			List<ItemStackSpawn> list = PC_Build.harvestWithDropPos(world, harvest, 0);
+			PC_Utils.spawnItems(world, list);
 			return true;
 		}
 		if(pd!=npd)
 			PC_PacketHandler.sendToAllAround(new PC_PacketBlockBreaking(x, y, z, npd), v4.w, x, y, z, 32);
 		if(!INSTANCE.updated.contains(v4))
 			INSTANCE.updated.add(v4);
-		INSTANCE.damages.put(v4, Float.valueOf(d));
-		INSTANCE.markDirty();
 		return false;
 	}
 	
