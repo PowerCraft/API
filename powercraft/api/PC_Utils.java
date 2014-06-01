@@ -738,14 +738,6 @@ public class PC_Utils {
 	public static void sendMessage(EntityPlayer player, IChatComponent chatComponent){
 		player.addChatMessage(chatComponent);
 	}
-
-	public static void onUpdateInfoRecived() {
-		INSTANCE.iOnUpdateInfoRecived();
-	}
-	
-	void iOnUpdateInfoRecived(){
-		//
-	}
 	
 	public static void spawnBlockBreakParticles(World world, PC_Vec3I pos) {
 		spawnBlockBreakParticles(world, pos.x, pos.y, pos.z);

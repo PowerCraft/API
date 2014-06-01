@@ -78,6 +78,9 @@ public final class PC_Build {
 	}
 	
 	public static List<ItemStackSpawn> harvestWithDropPos(World world, PC_Harvest harvest, int fortune){
+		if(harvest==null){
+			return null;
+		}
 		return harvestWithDropPos(world, harvest.positions, fortune);
 	}
 	

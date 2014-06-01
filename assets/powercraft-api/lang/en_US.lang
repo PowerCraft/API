@@ -1,2 +1,4 @@
 desk.PowerCraft-Api=API for all the PowerCraft Modules
 itemGroup.PowerCraft-Api=PowerCraft-Api
+PC.out.of.date=PowerCraft out of date
+PC.version.show=Your: %s, Newest: %s

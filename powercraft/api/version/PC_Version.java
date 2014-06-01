@@ -59,8 +59,18 @@ public class PC_Version implements Comparable<PC_Version> {
 		return this.version[i];
 	}
 	
+	private static final String[] prereleases = {"snapshot", "alpha", "a", "beta", "b"};
+	
 	public boolean isPreRelease(){
-		return this.type!=null&&(this.type.equalsIgnoreCase("beta")||this.type.equalsIgnoreCase("prerelease"));
+		if(this.type!=null){
+			String t = this.type.toLowerCase();
+			for(String prerelease:prereleases){
+				if(prerelease.equals(t)){
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	

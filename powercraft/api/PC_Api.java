@@ -35,7 +35,7 @@ import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 public final class PC_Api extends PC_Module {
 	
 	public static final String NAME = POWERCRAFT+"-Api";
-	public static final String VERSION = "1.7.2";
+	public static final String VERSION = PC_Build.BUILD_VERSION;
 	public static final String DEPENDENCIES = "required-before:"+PCco_Core.NAME+"@"+PCco_Core.VERSION;
 	
 	static{
@@ -50,7 +50,9 @@ public final class PC_Api extends PC_Module {
 	}
 	
 	private PC_Api(){
-		PC_UpdateChecker.check();
+		if(getConfig().get("options", "checkupdates", true).getBoolean(true)){
+			PC_UpdateChecker.check();
+		}
 	}
 	
 	@SuppressWarnings({ "static-method", "unused" })
@@ -94,6 +96,7 @@ public final class PC_Api extends PC_Module {
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
 		PC_Miniscript.loadDefaultReplacements();
+		PC_Modules.saveConfig();
 	}
 	
 	@SuppressWarnings({ "unused", "static-method" })

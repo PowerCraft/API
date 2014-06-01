@@ -50,8 +50,9 @@ public abstract class PC_Module implements PC_IResourceReloadListener {
 		this.version = v;
 		moduleBootstrap();
 		PC_ResourceReloadListener.registerResourceReloadListener(this);
+		PC_Extractor.extract(this.mod.getSource());
 	}
-
+	
 	protected void moduleBootstrap() {
 		//
 	}

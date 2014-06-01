@@ -35,10 +35,6 @@ public final class PC_Fields {
 	public static final int INDEX_GuiMainMenu_notificationLine1 = 12;
 	public static final int INDEX_GuiMainMenu_notificationLine2 = 13;
 	public static final int INDEX_GuiMainMenu_notificationLink = 14;
-	public static final int INDEX_GuiMainMenu_notificationLine2Width = 19;
-	public static final int INDEX_GuiMainMenu_notificationLine1Width = 20;
-	public static final int INDEX_GuiMainMenu_notificationLeft = 21;
-	public static final int INDEX_GuiMainMenu_notificationRight = 22;
 	
 	public static final PC_ReflectionField<NetHandlerPlayServer, IntHashMap> NetHandlerPlayServer_field_147372_n = new PC_ReflectionField<NetHandlerPlayServer, IntHashMap>(NetHandlerPlayServer.class, INDEX_NetHandlerPlayServer_field_147372_n, IntHashMap.class);
 	public static final PC_ReflectionField<EntityLivingBase, Integer> EntityLivingBase_recentlyHit = new PC_ReflectionField<EntityLivingBase, Integer>(EntityLivingBase.class, INDEX_EntityLivingBase_recentlyHit, int.class);
@@ -57,10 +53,6 @@ public final class PC_Fields {
 		public static final PC_ReflectionField<GuiMainMenu, String> GuiMainMenu_notificationLine1 = new PC_ReflectionField<GuiMainMenu, String>(GuiMainMenu.class, INDEX_GuiMainMenu_notificationLine1, String.class);
 		public static final PC_ReflectionField<GuiMainMenu, String> GuiMainMenu_notificationLine2 = new PC_ReflectionField<GuiMainMenu, String>(GuiMainMenu.class, INDEX_GuiMainMenu_notificationLine2, String.class);
 		public static final PC_ReflectionField<GuiMainMenu, String> GuiMainMenu_notificationLink = new PC_ReflectionField<GuiMainMenu, String>(GuiMainMenu.class, INDEX_GuiMainMenu_notificationLink, String.class);
-		public static final PC_ReflectionField<GuiMainMenu, Integer> GuiMainMenu_notificationLine2Width = new PC_ReflectionField<GuiMainMenu, Integer>(GuiMainMenu.class, INDEX_GuiMainMenu_notificationLine2Width, int.class);
-		public static final PC_ReflectionField<GuiMainMenu, Integer> GuiMainMenu_notificationLine1Width = new PC_ReflectionField<GuiMainMenu, Integer>(GuiMainMenu.class, INDEX_GuiMainMenu_notificationLine1Width, int.class);
-		public static final PC_ReflectionField<GuiMainMenu, Integer> GuiMainMenu_notificationLeft = new PC_ReflectionField<GuiMainMenu, Integer>(GuiMainMenu.class, INDEX_GuiMainMenu_notificationLeft, int.class);
-		public static final PC_ReflectionField<GuiMainMenu, Integer> GuiMainMenu_notificationRight = new PC_ReflectionField<GuiMainMenu, Integer>(GuiMainMenu.class, INDEX_GuiMainMenu_notificationRight, int.class);
 	}
 	
 }

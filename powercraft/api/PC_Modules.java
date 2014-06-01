@@ -34,6 +34,12 @@ public final class PC_Modules {
 		}
 	}
 	
+	public static void saveConfig() {
+		for(PC_Module module:modules){
+			module.saveConfig();
+		}
+	}
+	
 	private PC_Modules(){
 		PC_Utils.staticClassConstructor();
 	}

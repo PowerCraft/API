@@ -69,7 +69,7 @@ public class PC_BlockDamage extends PC_WorldSaveData implements PC_ITickHandler 
 		getInstance();
 		float[] damage = INSTANCE.damages.get(v4);
 		int pd = -1;
-		if(damage==null){
+		if(damage==null || damage.length!=2){
 			damage = new float[2];
 			PC_Harvest harvest = PC_Build.getHarvest(world, x, y, z, -1);
 			if(harvest==null){
