@@ -46,6 +46,7 @@ public abstract class PC_Grid<G extends PC_Grid<G, T, N, E>, T extends PC_IGridT
 	
 	protected void removeTile(T tile){
 		PC_TileHolder<G, T, N, E> tileHolder = getTileHolderFor(tile);
+		System.out.println(tileHolder+":"+this+":"+tile+":"+tile.getGrid());
 		tileHolder.getAsNode(tile).remove();
 		tile.setGrid(null);
 		splitGridsIfAble();

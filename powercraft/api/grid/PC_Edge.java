@@ -56,6 +56,7 @@ public class PC_Edge<G extends PC_Grid<G, T, N, E>, T extends PC_IGridTile<G, T,
 		if(edge==this){
 			this.start=null;
 			this.end=null;
+			this.tiles.add(0, tile);
 		}else if(this.start==node){
 			this.tiles.add(0, tile);
 			if(edge.start==node){
