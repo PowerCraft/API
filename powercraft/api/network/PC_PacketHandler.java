@@ -37,6 +37,7 @@ import powercraft.api.network.packet.PC_PacketTileEntitySync;
 import powercraft.api.network.packet.PC_PacketWindowItems;
 import powercraft.api.network.packet.PC_PacketWrongPassword;
 import powercraft.api.network.packet.PC_PacketWrongPassword2;
+import powercraft.api.reflect.PC_Reflection;
 import powercraft.api.reflect.PC_Security;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -167,16 +168,13 @@ public final class PC_PacketHandler extends SimpleChannelInboundHandler<PC_Packe
 
 	static PC_Packet getPacketFromByteBuf(ByteBuf buf) {
 		int id = buf.readInt();
-		try {
-			PC_Packet packet = packets[id].newInstance();
-			packet.fromByteBuffer(buf);
-			return packet;
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
+		PC_Packet packet = PC_Reflection.newInstance(packets[id]);
+		if(packet==null){
+			PC_Logger.severe("Can't create packet %s", packets[id]);
+			return null;
 		}
-		return null;
+		packet.fromByteBuffer(buf);
+		return packet;
 	}
 
 	static void writePacketToByteBuf(PC_Packet packet, ByteBuf buf) {

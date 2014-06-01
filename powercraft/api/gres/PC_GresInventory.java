@@ -112,7 +112,8 @@ public class PC_GresInventory extends PC_GresComponent {
 
 	@Override
 	protected void paint(PC_Rect scissor, double scale, int displayHeight, float timeStamp, float zoom) {
-
+		GL11.glDisable(GL11.GL_LIGHTING);
+		GL11.glColor3f(1, 1, 1);
 		PC_GresTexture[] textures = new PC_GresTexture[6];
 		PC_GresTexture[] textures1 = new PC_GresTexture[6];
 		PC_GresTexture[] textures2 = new PC_GresTexture[6];
@@ -122,6 +123,7 @@ public class PC_GresInventory extends PC_GresComponent {
 			textures2[i] = PC_Gres.getGresTexture(colorTextureNamesV[i]);
 		}
 		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		for (int x = 0; x < this.slots.length; x++) {
 			for (int y = 0; y < this.slots[x].length; y++) {
 				drawTexture(textureName, x * this.slotWidth+1, y * this.slotHeight+1, this.slotWidth, this.slotHeight);
@@ -172,7 +174,6 @@ public class PC_GresInventory extends PC_GresComponent {
 		}
 		
 		PC_GresGuiHandler guiHandler = getGuiHandler();
-
 		for (int x = 0, xp = 2+(this.slotWidth-18)/2; x < this.slots.length; x++, xp += this.slotWidth) {
 			for (int y = 0, yp = 2+(this.slotHeight-18)/2; y < this.slots[x].length; y++, yp += this.slotHeight) {
 				if (this.slots[x][y] != null) {

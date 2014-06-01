@@ -13,7 +13,7 @@ public class PC_StringListPart implements List<PC_StringWithInfo> {
 	int end;
 	private String lastSearch;
 	
-	public PC_StringListPart(PC_SortedList sortedList){
+	public PC_StringListPart(PC_SortedList<PC_StringWithInfo> sortedList){
 		this.sortedList = sortedList;
 		this.end = sortedList.size();
 	}

@@ -75,7 +75,7 @@ public class PC_GresListBoxWithoutScroll extends PC_GresComponent {
 		if(obj instanceof PC_GresListBoxElement){
 			return (PC_GresListBoxElement)obj;
 		}else if(obj instanceof String){
-			return new PC_GresListBoxElement(-1, (String)obj);
+			return new PC_GresListBoxElement(null, (String)obj);
 		}
 		return null;
 	}

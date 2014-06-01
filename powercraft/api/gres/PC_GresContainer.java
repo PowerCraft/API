@@ -310,7 +310,7 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 			PC_Rect oldRect = new PC_Rect(rect);
 			PC_OpenGL.pushMatrix();
 			GL11.glTranslatef(this.rect.x, this.rect.y, 0);
-			GL11.glScalef(tzoom, tzoom, 0);
+			GL11.glScalef(tzoom, tzoom, 1);
 			GL11.glColor3f(1.0f, 1.0f, 1.0f);
 			paint(scissor, scale, displayHeight, timeStamp, zoomm);
 			doDebugRendering(0, 0, rect.width, rect.height);
@@ -330,7 +330,7 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 			PC_OpenGL.popMatrix();
 			PC_OpenGL.pushMatrix();
 			GL11.glTranslatef(this.rect.x, this.rect.y, 0);
-			GL11.glScalef(tzoom, tzoom, 0);
+			GL11.glScalef(tzoom, tzoom, 1);
 			GL11.glColor3f(1.0f, 1.0f, 1.0f);
 			setDrawRect(scissorOld, oldRect, scale, displayHeight, zoomm);
 			postPaint(scissor, scale, displayHeight, timeStamp, zoomm);

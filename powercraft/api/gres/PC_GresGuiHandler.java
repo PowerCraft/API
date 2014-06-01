@@ -235,12 +235,15 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 		PC_GresRenderer.disableGuiItemLighting();
 		GL11.glEnable(GL11.GL_SCISSOR_TEST);
 		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glDisable(GL11.GL_DEPTH_TEST);
 		GL11.glDepthMask(false);
 		doPaint(new PC_Vec2(0, 0), null, scaledresolution.getScaleFactor(), this.mc.displayHeight, ts, 1.0f);
 		GL11.glDepthMask(true);
 		GL11.glDisable(GL11.GL_SCISSOR_TEST);
 		GL11.glDisable(GL11.GL_BLEND);
 		drawMouseItemStack(mouse);
+		GL11.glDepthMask(true);
+		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		fireEvent(new PC_GresPaintEvent(this, EventType.POST, ts));
 	}
 	

@@ -30,6 +30,7 @@ import powercraft.api.PC_Registry;
 import powercraft.api.PC_Utils;
 import powercraft.api.beam.PC_BeamHitResult;
 import powercraft.api.beam.PC_IBeam;
+import powercraft.api.reflect.PC_Reflection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -47,14 +48,7 @@ public abstract class PC_BlockTileEntity extends PC_AbstractBlockBase implements
 	
 	@Override
 	public PC_TileEntity createNewTileEntity(World world, int metadata){
-		try {
-			return getTileEntityClass().newInstance();
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		}
-		return null;
+		return PC_Reflection.newInstance(getTileEntityClass());
 	}
 	
 	@Override

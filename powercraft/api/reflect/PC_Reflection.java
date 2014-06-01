@@ -1,13 +1,18 @@
 package powercraft.api.reflect;
 
 
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.EnumMap;
 
 import powercraft.api.PC_Logger;
 import powercraft.api.PC_Utils;
 import powercraft.api.reflect.PC_Processor.Result;
+import cpw.mods.fml.relauncher.ReflectionHelper;
 
 
 public final class PC_Reflection {
@@ -48,7 +53,7 @@ public final class PC_Reflection {
 		@SuppressWarnings("boxing")
 		@Override
 		public Class<?> getCallerClass(int num) {
-			StackTraceElement[] stackTraceElements = new Exception().getStackTrace();
+			StackTraceElement[] stackTraceElements = new Throwable().getStackTrace();
 			if (stackTraceElements.length > 3 + num) {
 				try {
 					return Class.forName(stackTraceElements[3 + num].getClassName());
@@ -86,9 +91,9 @@ public final class PC_Reflection {
 	}
 	
 	@SuppressWarnings("boxing")
-	public static Field findNearestBestField(Class<?> clazz, int index, Class<?> type) {
+	public static Field findNearestBestField(Class<?> clasz, int index, Class<?> type) {
 
-		Field fields[] = clazz.getDeclaredFields();
+		Field fields[] = clasz.getDeclaredFields();
 		Field f;
 		int i = index;
 		if (i >= 0 && i < fields.length) {
@@ -107,7 +112,7 @@ public final class PC_Reflection {
 			if (max < fields.length) {
 				f = fields[max];
 				if (type.isAssignableFrom(f.getType())) {
-					PC_Logger.warning("Field in %s which should be at index %s not found, now using index %s", clazz, i, max);
+					PC_Logger.warning("Field in %s which should be at index %s not found, now using index %s", clasz, i, max);
 					return f;
 				}
 				max++;
@@ -115,21 +120,21 @@ public final class PC_Reflection {
 			if (min >= 0) {
 				f = fields[min];
 				if (type.isAssignableFrom(f.getType())) {
-					PC_Logger.warning("Field in %s which should be at index %s not found, now using index %s", clazz, i, min);
+					PC_Logger.warning("Field in %s which should be at index %s not found, now using index %s", clasz, i, min);
 					return f;
 				}
 				min--;
 			}
 		}
-		PC_Logger.severe("Field in %s which should be at index %s not found", clazz, i);
+		PC_Logger.severe("Field in %s which should be at index %s not found", clasz, i);
 		return null;
 	}
 
 
 	@SuppressWarnings("unchecked")
-	public static <T> T getValue(Class<?> clazz, Object object, int index, Class<T> type) {
+	public static <T> T getValue(Class<?> clasz, Object object, int index, Class<T> type) {
 		try {
-			Field field = findNearestBestField(clazz, index, type);
+			Field field = findNearestBestField(clasz, index, type);
 			setAccessible(field);
 			return (T) field.get(object);
 		} catch(SecurityException se){
@@ -154,10 +159,10 @@ public final class PC_Reflection {
 		return null;
 	}
 
-	public static void setValue(Class<?> clazz, Object object, int index, Class<?> type, Object value) {
+	public static void setValue(Class<?> clasz, Object object, int index, Class<?> type, Object value) {
 
 		try {
-			Field field = findNearestBestField(clazz, index, type);
+			Field field = findNearestBestField(clasz, index, type);
 			setAccessible(field);
 			field.set(object, value);
 		} catch(SecurityException se){
@@ -171,7 +176,7 @@ public final class PC_Reflection {
 
 		try {
 			Field field = f.getField();
-			field.setAccessible(true);
+			setAccessible(field);
 			field.set(object, value);
 		} catch(SecurityException se){
 			onSecurityException(se);
@@ -180,10 +185,10 @@ public final class PC_Reflection {
 		}
 	}
 
-	public static void setValueAndFinals(Class<?> clazz, Object object, int index, Class<?> type, Object value) {
+	public static void setValueAndFinals(Class<?> clasz, Object object, int index, Class<?> type, Object value) {
 
 		try {
-			Field field = findNearestBestField(clazz, index, type);
+			Field field = findNearestBestField(clasz, index, type);
 			setAccessible(field);
 			Field field_modifiers = Field.class.getDeclaredField("modifiers");
 			field_modifiers.setAccessible(true);
@@ -207,7 +212,6 @@ public final class PC_Reflection {
 	}
 	
 	public static void setValueAndFinals(PC_ReflectionField<?, ?> f, Object object, Object value) {
-
 		try {
 			Field field = f.getField();
 			setAccessible(field);
@@ -232,10 +236,28 @@ public final class PC_Reflection {
 		}
 	}
 	
-	public static void setAccessible(Field field){
+	private static Method AccessibleObject_setAccessible0;
+	
+	public static void setAccessible(AccessibleObject ao){
+		if(AccessibleObject_setAccessible0!=null){
+			try{
+				AccessibleObject_setAccessible0.invoke(null, ao, Boolean.TRUE);
+			}catch(Exception e){/**/}
+		}
 		try{
-			field.setAccessible(true);
-		}catch(Exception e){/**/}
+			ao.setAccessible(true);
+		}catch(Exception e){
+			try{
+				ReflectionHelper.setPrivateValue(AccessibleObject.class, ao, Boolean.TRUE, "override");
+			}catch(Exception ee){
+				if(AccessibleObject_setAccessible0==null){
+					try{
+						AccessibleObject_setAccessible0 = ReflectionHelper.findMethod(AccessibleObject.class, ao, new String[]{"setAccessible0"}, AccessibleObject.class, boolean.class);
+						AccessibleObject_setAccessible0.invoke(null, ao, Boolean.TRUE);
+					}catch(Exception eee){/**/}
+				}
+			}
+		}
 	}
 
 	public static Field[] getDeclaredFields(Class<?> c){
@@ -259,7 +281,7 @@ public final class PC_Reflection {
 			for(Field field:fields){
 				results.clear();
 				try{
-					field.setAccessible(true);
+					setAccessible(field);
 					Object value = field.get(obj);
 					processor.process(field, value, results);
 					if(results.containsKey(Result.SET)){
@@ -292,6 +314,38 @@ public final class PC_Reflection {
 		} catch (IllegalAccessException e) {
 			PC_Logger.severe("Cannot access constructor %s", c);
 		}
+		return null;
+	}
+	
+	public static <T> T newInstanceNoHandling(Class<T> c, Class<?>[] types, Object...values) throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		try {
+			Constructor<T> cc = c.getConstructor(types);
+			setAccessible(cc);
+			return cc.newInstance(values);
+		} catch (SecurityException e){
+			onSecurityException(e);
+		}
+		return null;
+	}
+	
+	public static <T> T newInstance(Class<T> c, Class<?>[] types, Object...values) {
+		try {
+			Constructor<T> cc = c.getConstructor(types);
+			setAccessible(cc);
+			return cc.newInstance(values);
+		} catch (SecurityException e){
+			onSecurityException(e);
+		} catch (InstantiationException e) {
+			PC_Logger.severe("Error while constructing %s", c);
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			PC_Logger.severe("Cannot access constructor %s", c);
+		} catch (NoSuchMethodException e) {
+			PC_Logger.severe("Cannot find constructor %s", c);
+		} catch (Exception e) {
+			PC_Logger.severe("Error in constructor %s", c);
+			e.printStackTrace();
+		} 
 		return null;
 	}
 	

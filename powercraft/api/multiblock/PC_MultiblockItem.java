@@ -1,7 +1,5 @@
 package powercraft.api.multiblock;
 
-import java.lang.reflect.Constructor;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -12,6 +10,7 @@ import powercraft.api.PC_IconRegistry;
 import powercraft.api.PC_Logger;
 import powercraft.api.PC_Utils;
 import powercraft.api.item.PC_Item;
+import powercraft.api.reflect.PC_Reflection;
 import powercraft.core.PCco_Core;
 
 public abstract class PC_MultiblockItem extends PC_Item {
@@ -33,21 +32,11 @@ public abstract class PC_MultiblockItem extends PC_Item {
 
 	public PC_MultiblockObject getMultiblockObject(ItemStack itemStack) {
 		Class<? extends PC_MultiblockObject> c = getMultiblockObjectClass();
-		try {
-			Constructor<? extends PC_MultiblockObject> constr = c.getConstructor(ItemStack.class);
-			try{
-				return constr.newInstance(itemStack);
-			}catch(Exception e){
-				e.printStackTrace();
-				PC_Logger.severe("Faild to generate multiblock tile entity");
-			}
-			return null;
-		} catch (Exception e) {
-			//
-		}
-		try {
-			return c.newInstance();
-		} catch (Exception e) {
+		try{
+			return PC_Reflection.newInstanceNoHandling(c, new Class<?>[]{ItemStack.class}, itemStack);
+		}catch(NoSuchMethodException e){
+			return PC_Reflection.newInstance(c);
+		}catch(Exception e){
 			e.printStackTrace();
 			PC_Logger.severe("Faild to generate multiblock tile entity");
 		}

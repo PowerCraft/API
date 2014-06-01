@@ -92,13 +92,15 @@ public class PC_GresRenderer {
 		if(font==null)
 			font  = fontRenderer;
 		GL11.glEnable(GL11.GL_LIGHTING);
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glDepthMask(true);
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glDepthFunc(GL11.GL_LEQUAL);
+        PC_OpenGL.pushMatrix();
         itemRenderer.zLevel = 200;
 		itemRenderer.renderItemAndEffectIntoGUI(font, mc.getTextureManager(), itemStack, x, y);
         itemRenderer.renderItemOverlayIntoGUI(font, mc.getTextureManager(), itemStack, x, y, text);
         itemRenderer.zLevel = 0;
+        PC_OpenGL.popMatrix();
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glDisable(GL11.GL_DEPTH_TEST);
         GL11.glEnable(GL11.GL_BLEND);
@@ -230,7 +232,9 @@ public class PC_GresRenderer {
 	public static void disableGuiItemLighting() {
 		RenderHelper.disableStandardItemLighting();
 		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-		
+		OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
 	}
 	
 	public static void enableGuiItemLighting() {
@@ -240,10 +244,13 @@ public class PC_GresRenderer {
         GL11.glEnable(GL11.GL_COLOR_MATERIAL);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-		int k = 240;
+		/*int k = 240;
 		int i1 = 240;
 		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, k / 1.0F, i1 / 1.0F);
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);*/
 	}
 	
 }
