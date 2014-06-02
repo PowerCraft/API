@@ -46,7 +46,7 @@ public final class PC_Hacks {
 				PC_TickHandler.registerTickHandler(ticker);
 			}else{
 				PC_Version v = PC_Api.INSTANCE.getVersion();
-				PC_VersionInfo nv = ui.getNewestVersion("Api", true);
+				PC_VersionInfo nv = ui.getNewestVersion("Api", PC_Api.showPreversions);
 				if(nv!=null && nv.getVersion().compareTo(v)>0){
 					hackInfo(gui, PC_Lang.translate("PC.out.of.date"), PC_Lang.translate("PC.version.show", v, nv.getVersion()), nv.getDownloadLink());
 				}

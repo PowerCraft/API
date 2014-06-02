@@ -53,6 +53,7 @@ public final class PC_Api extends PC_Module {
 		if(getConfig().get("options", "checkupdates", true).getBoolean(true)){
 			PC_UpdateChecker.check();
 		}
+		showPreversions = getConfig().get("options", "showPreversions", false).getBoolean(false);
 	}
 	
 	@SuppressWarnings({ "static-method", "unused" })
@@ -119,4 +120,6 @@ public final class PC_Api extends PC_Module {
 		return creativTabItemStack;
 	}
 
+	public static boolean showPreversions;
+	
 }

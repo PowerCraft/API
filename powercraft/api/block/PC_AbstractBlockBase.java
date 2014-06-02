@@ -94,14 +94,12 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 		return this;
 	}
 
-	@SuppressWarnings("hiding")
 	void construct() {
-		PC_Module module = getModule();
 		Object[] itemBlockConstructorData = getItemBlockConstructorData();
 		if(itemBlockConstructorData==null)
 			itemBlockConstructorData = new Object[0];
 		setBlockName(getRegisterName());
-		GameRegistry.registerBlock(this, getItemBlock(), getRegisterName(), module.getModId(), itemBlockConstructorData);
+		GameRegistry.registerBlock(this, getItemBlock(), getRegisterName(), itemBlockConstructorData);
 		String[] oreNames = getOreNames();
 		if(oreNames!=null){
 			for(String oreName:oreNames){

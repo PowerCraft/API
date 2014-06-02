@@ -32,7 +32,7 @@ public class PC_Version implements Comparable<PC_Version> {
 			int v2 = o.version.length>i?o.version[i]:0;
 			if(v1>v2){
 				return i+1;
-			}else if(v2<v1){
+			}else if(v1<v2){
 				return -i-1;
 			}
 		}

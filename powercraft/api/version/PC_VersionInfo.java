@@ -28,5 +28,10 @@ public class PC_VersionInfo implements Comparable<PC_VersionInfo>{
 	public boolean isPreRelease(){
 		return this.version.isPreRelease();
 	}
+
+	@Override
+	public String toString() {
+		return "PC_VersionInfo [version=" + this.version + ", download=" + this.download + "]";
+	}
 	
 }
