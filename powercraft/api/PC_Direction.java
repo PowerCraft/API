@@ -59,7 +59,7 @@ public enum PC_Direction {
         {
             return VALID_DIRECTIONS[id];
         }
-        return null;
+        return UNKNOWN;
     }
     
     public static PC_Direction fromRotationY(int rotation) {

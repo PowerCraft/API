@@ -387,6 +387,7 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 		if (holdItemStack == null) {
 			drawTooltip(mouse);
 		}else{
+			GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
 			String text = null;
 			holdItemStack = holdItemStack.copy();
 			if(this.selectedSlots.size()>1){

@@ -17,6 +17,7 @@ import net.minecraft.network.INetHandler;
 import net.minecraft.network.Packet;
 import net.minecraft.world.World;
 import powercraft.api.PC_Api;
+import powercraft.api.PC_CtrlPressed;
 import powercraft.api.PC_Logger;
 import powercraft.api.PC_Side;
 import powercraft.api.PC_Utils;
@@ -89,6 +90,7 @@ public final class PC_PacketHandler extends SimpleChannelInboundHandler<PC_Packe
 			PC_PacketHandler.registerPacket(PC_PacketWindowItems.class);
 			PC_PacketHandler.registerPacket(PC_PacketClickWindow.class);
 			PC_PacketHandler.registerPacket(PC_PacketBlockBreaking.class);
+			PC_PacketHandler.registerPacket(PC_CtrlPressed.Packet.class);
 		}
 	}
 	

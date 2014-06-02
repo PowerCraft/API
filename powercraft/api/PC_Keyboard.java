@@ -7,6 +7,7 @@ import net.minecraft.client.settings.KeyBinding;
 
 import org.lwjgl.input.Keyboard;
 
+import powercraft.api.PC_TickHandler.PC_ITickHandler;
 import powercraft.api.reflect.PC_Security;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -14,8 +15,8 @@ import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-
-public final class PC_Keyboard {
+@SideOnly(Side.CLIENT)
+public final class PC_Keyboard implements PC_ITickHandler{
 	
 	static List<PC_KeyHandler> handlers = new ArrayList<PC_KeyHandler>();
 	
@@ -23,8 +24,9 @@ public final class PC_Keyboard {
 	
 	@SideOnly(Side.CLIENT)
 	static void register(){
-		PC_Security.allowedCaller("PC_ResourceListener.register()", PC_ClientUtils.class);
+		PC_Security.allowedCaller("PC_Keyboard.register()", PC_ClientUtils.class);
 		FMLCommonHandler.instance().bus().register(INSTANCE);
+		PC_TickHandler.registerTickHandler(INSTANCE);
 	}
 	
 	private PC_Keyboard(){
@@ -75,7 +77,26 @@ public final class PC_Keyboard {
 		public abstract void onPressed();
 		
 		public abstract void onRelease();
+
+		void checkUnpressed() {
+			if(!getIsKeyPressed() && this.state){
+				onRelease();
+				this.state = false;
+			}
+		}
 		
+	}
+
+	@Override
+	public void onStartTick(PC_Side side) {
+		//
+	}
+
+	@Override
+	public void onEndTick(PC_Side side) {
+		for(PC_KeyHandler handler:handlers){
+			handler.checkUnpressed();
+		}
 	}
 	
 }

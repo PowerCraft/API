@@ -185,5 +185,33 @@ public final class PC_MathHelper {
 		}
 		return sqrt_double(vv);
 	}
+
+	public static PC_Vec3 to45Angles(PC_Vec3 vec) {
+		double x = vec.x;
+		if(x>0.5){
+			x=1;
+		}else if(x<-0.5){
+			x=-1;
+		}else{
+			x=0;
+		}
+		double y = vec.y;
+		if(y>0.5){
+			y=1;
+		}else if(y<-0.5){
+			y=-1;
+		}else{
+			y=0;
+		}
+		double z = vec.z;
+		if(z>0.5){
+			z=1;
+		}else if(z<-0.5){
+			z=-1;
+		}else{
+			z=0;
+		}
+		return new PC_Vec3(x, y, z).normalize();
+	}
     
 }

@@ -47,6 +47,7 @@ public final class PC_ClientUtils extends PC_Utils {
 		isClient.set(Boolean.TRUE);
 		PC_ResourceReloadListener.register();
 		PC_Keyboard.register();
+		PC_CtrlPressed.register();
 		
 	}
 
