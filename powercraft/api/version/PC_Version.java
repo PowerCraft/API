@@ -59,7 +59,7 @@ public class PC_Version implements Comparable<PC_Version> {
 		return this.version[i];
 	}
 	
-	private static final String[] prereleases = {"snapshot", "alpha", "a", "beta", "b"};
+	private static final String[] prereleases = {"testbuild", "snapshot", "alpha", "a", "beta", "b"};
 	
 	public boolean isPreRelease(){
 		if(this.type!=null){
