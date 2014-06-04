@@ -200,7 +200,7 @@ public class PC_GresWindow extends PC_GresContainer {
 	
 	@SuppressWarnings("hiding")
 	@Override
-	protected Slot getSlotAtPosition(PC_Vec2I position) {
+	public Slot getSlotAtPosition(PC_Vec2I position) {
 		Slot slot = super.getSlotAtPosition(position);
 		if (slot != null) return slot;
 		if (this.visible) {

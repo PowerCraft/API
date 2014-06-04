@@ -54,12 +54,21 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 	private boolean takeAll;
 	private int scale;
 	
+	private final PC_Vec2I lastMouse = new PC_Vec2I(-1, -1);
+	
 	private long last = System.currentTimeMillis();
 	
 	private PC_GresHistory history = new PC_GresHistory(100);
 	
+	private int workings;
+	
+	private int workingTick;
+	
 	protected PC_GresGuiHandler(PC_IGresGui gui) {
-
+		this.fontColors[0] = -1;
+		this.fontColors[1] = -1;
+		this.fontColors[2] = -1;
+		this.fontColors[3] = -1;
 		this.gui = gui;
 		this.mc = PC_ClientUtils.mc();
 		super.setLayout(new PC_IGresLayout() {
@@ -191,6 +200,33 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 	protected void paint(PC_Rect scissor, double scale, int displayHeight, float timeStamp, float zoom) {
 
 		PC_GresRenderer.drawGradientRect(0, 0, this.rect.width, this.rect.height, -1072689136, -804253680);
+		int t = (this.workingTick/2)%8;
+		if(t>0 && this.workings>0){
+			String s;
+			switch(t){
+			case 1:
+			case 7:
+				s=".";
+				break;
+			case 2:
+			case 6:
+				s="..";
+				break;
+			case 3:
+			case 5:
+				s="...";
+				break;
+			case 4:
+				s="....";
+				break;
+			default:
+				s="";
+				break;
+			}
+			String l = t>4?s:"....";
+			int size = fontRenderer.getStringSize(l).x;
+			drawString(s, this.rect.width-size-3, 3, false);
+		}
 	}
 
 
@@ -214,6 +250,7 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 
 	protected void eventUpdateScreen() {
 		fireEvent(new PC_GresTickEvent(this, EventType.PRE));
+		this.workingTick++;
 		onTick();
 		fireEvent(new PC_GresTickEvent(this, EventType.POST));
 		if (!this.mc.thePlayer.isEntityAlive() || this.mc.thePlayer.isDead){
@@ -324,7 +361,7 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 
 
 	protected void eventMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton, boolean doubleClick) {
-
+		this.lastMouse.setTo(mouse);
 		setFocus(this.mouseOverComponent);
 		inventoryMouseDown(mouse, buttons, eventButton, doubleClick);
 		this.focusedComponent.onMouseButtonDown(mouse.sub(new PC_Vec2I(this.focusedComponent.getRealLocation())).div(this.focusedComponent.getRecursiveZoom()), buttons, eventButton, doubleClick, this.history);
@@ -332,14 +369,14 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 
 
 	protected void eventMouseButtonUp(PC_Vec2I mouse, int buttons, int eventButton) {
-
+		this.lastMouse.setTo(mouse);
 		inventoryMouseUp(mouse, buttons, eventButton);
 		this.focusedComponent.onMouseButtonUp(mouse.sub(new PC_Vec2I(this.focusedComponent.getRealLocation())).div(this.focusedComponent.getRecursiveZoom()), buttons, eventButton, this.history);
 	}
 
 
 	protected void eventMouseMove(PC_Vec2I mouse, int buttons) {
-
+		this.lastMouse.setTo(mouse);
 		checkMouseOverComponent(mouse, buttons);
 		inventoryMouseMove(mouse, buttons);
 		this.mouseOverComponent.onMouseMove(mouse.sub(new PC_Vec2I(this.mouseOverComponent.getRealLocation())).div(this.mouseOverComponent.getRecursiveZoom()), buttons, this.history);
@@ -349,6 +386,7 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 
 
 	protected void eventMouseWheel(PC_Vec2I mouse, int buttons, int wheel) {
+		this.lastMouse.setTo(mouse);
 		PC_GresComponent c = this.focusedComponent;
 		while(c!=null && !c.onMouseWheel(mouse.sub(new PC_Vec2I(c.getRealLocation())).div(c.getRecursiveZoom()), buttons, wheel, this.history)){
 			c = c.getParent();
@@ -603,6 +641,22 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 	@Override
 	protected void addToBase(PC_GresComponent c){
 		add(c);
+	}
+
+	public PC_Vec2I getMousePos() {
+		return this.lastMouse;
+	}
+	
+	public void addWorking(){
+		if(this.workings==0)
+			this.workingTick=0;
+		this.workings++;
+	}
+	
+	public void removeWorking(){
+		if(this.workings>0){
+			this.workings--;
+		}
 	}
 	
 }

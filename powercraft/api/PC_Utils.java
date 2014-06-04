@@ -21,7 +21,11 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.ShapedRecipes;
+import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
@@ -36,11 +40,15 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldSettings.GameType;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.oredict.ShapedOreRecipe;
+import net.minecraftforge.oredict.ShapelessOreRecipe;
 import powercraft.api.block.PC_AbstractBlockBase;
 import powercraft.api.block.PC_Block;
 import powercraft.api.block.PC_BlockTileEntity;
 import powercraft.api.block.PC_TileEntity;
 import powercraft.api.building.PC_Build.ItemStackSpawn;
+import powercraft.api.inventory.PC_InventoryUtils;
+import powercraft.api.reflect.PC_Fields;
 import powercraft.api.reflect.PC_Reflection;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
@@ -51,6 +59,8 @@ public class PC_Utils {
 
 	public static final int BLOCK_NOTIFY = 1, BLOCK_UPDATE = 2, BLOCK_ONLY_SERVERSIDE = 4;
 
+	public static final int WILDCARD_VALUE = Short.MAX_VALUE;
+	
 	PC_Utils() throws InstanceAlreadyExistsException {
 		if (INSTANCE != null) {
 			throw new InstanceAlreadyExistsException();
@@ -749,6 +759,127 @@ public class PC_Utils {
 			int meta = PC_Utils.getMetadata(world, x, y, z);
 			world.playAuxSFXAtEntity(null, 2001, x, y, z, Block.getIdFromBlock(block) + (meta << 12));
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public static List<IRecipe> getRecipesForProduct(ItemStack prod) {
+		List<IRecipe> recipes = new ArrayList<IRecipe>(CraftingManager.getInstance().getRecipeList());
+		List<IRecipe> ret = new ArrayList<IRecipe>();
+
+		for (IRecipe recipe : recipes) {
+			ItemStack out = recipe.getRecipeOutput();
+			if (PC_InventoryUtils.itemStacksEqual(out, prod)){
+				ret.add(recipe);
+			}
+		}
+
+		return ret;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static List<ItemStack>[][] getExpectedInput(IRecipe recipe, int width, int hight) {
+		List<ItemStack>[][] list;
+		int w = width;
+		int h = hight;
+		if (recipe instanceof ShapedRecipes) {
+			ShapedRecipes sr = (ShapedRecipes)recipe;
+			int sizeX = sr.recipeWidth;
+			int sizeY = sr.recipeHeight;
+			ItemStack[] stacks = sr.recipeItems;
+			if (w == -1)
+				w = sizeX;
+			if (h == -1)
+				h = sizeY;
+			if (sizeX > w || sizeY > h)
+				return null;
+			list = new List[w][h];
+			int i = 0;
+			for (int y = 0; y < sizeY; y++) {
+				for (int x = 0; x < sizeX; x++) {
+					if (i < stacks.length) {
+						if (stacks[i] != null) {
+							list[x][y] = new ArrayList<ItemStack>();
+							list[x][y].add(stacks[i]);
+						}
+					}
+					i++;
+				}
+			}
+		} else if (recipe instanceof ShapelessRecipes) {
+			List<ItemStack> stacks = ((ShapelessRecipes) recipe).recipeItems;
+			if (w == -1)
+				w = stacks.size();
+			if (h == -1)
+				h = 1;
+			if (h * w < stacks.size())
+				return null;
+			list = new List[w][h];
+			int i = 0;
+			for (int y = 0; y < h; y++) {
+				for (int x = 0; x < w; x++) {
+					if (i < stacks.size()) {
+						list[x][y] = new ArrayList<ItemStack>();
+						list[x][y].add(stacks.get(i));
+					}
+					i++;
+				}
+			}
+		} else if (recipe instanceof ShapedOreRecipe){
+			ShapedOreRecipe sor = (ShapedOreRecipe)recipe;
+			int sizeX = PC_Fields.ShapedOreRecipe_width.getValue(sor).intValue();
+			Object[] stacks = sor.getInput();
+			int sizeY = stacks.length/sizeX;
+			if (w == -1)
+				w = sizeX;
+			if (h == -1)
+				h = sizeY;
+			if (sizeX > w || sizeY > h)
+				return null;
+			list = new List[w][h];
+			int i = 0;
+			for (int y = 0; y < sizeY; y++) {
+				for (int x = 0; x < sizeX; x++) {
+					if (i < stacks.length) {
+						list[x][y] = getItemStacksForOreItem(stacks[i]);
+					}
+					i++;
+				}
+			}
+		} else if (recipe instanceof ShapelessOreRecipe){
+			ShapelessOreRecipe sor = (ShapelessOreRecipe)recipe;
+			List<Object> stacks = sor.getInput();
+			if (w == -1)
+				w = stacks.size();
+			if (h == -1)
+				h = 1;
+			if (h * w < stacks.size())
+				return null;
+			list = new List[w][h];
+			int i = 0;
+			for (int y = 0; y < h; y++) {
+				for (int x = 0; x < w; x++) {
+					if (i < stacks.size()) {
+						list[x][y] = getItemStacksForOreItem(stacks.get(i));
+					}
+					i++;
+				}
+			}
+		} else {
+			return null;
+		}
+		return list;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static List<ItemStack> getItemStacksForOreItem(Object oreItem) {
+		if(oreItem instanceof ItemStack){
+			List<ItemStack> list = new ArrayList<ItemStack>();
+			list.add((ItemStack) oreItem);
+			return list;
+		}else if(oreItem instanceof List){
+			return new ArrayList<ItemStack>((List<ItemStack>) oreItem);
+		}
+		return null;
 	}
 	
 }

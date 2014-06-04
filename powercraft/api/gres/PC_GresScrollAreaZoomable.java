@@ -162,7 +162,7 @@ public class PC_GresScrollAreaZoomable extends PC_GresComponent {
 
 	@SuppressWarnings("hiding")
 	@Override
-	protected Slot getSlotAtPosition(PC_Vec2I position) {
+	public Slot getSlotAtPosition(PC_Vec2I position) {
 		if (this.visible) {
 			PC_RectI rect = this.container.getRect();
 			if (rect.contains(position) && position.x < this.rect.width-getTextureDefaultSize(scrollVFrame).x && position.y < this.rect.height-getTextureDefaultSize(scrollHFrame).y){

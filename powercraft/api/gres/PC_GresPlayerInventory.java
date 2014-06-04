@@ -65,7 +65,7 @@ public class PC_GresPlayerInventory extends PC_GresInventory {
 
 
 	@Override
-	protected Slot getSlotAtPosition(PC_Vec2I position) {
+	public Slot getSlotAtPosition(PC_Vec2I position) {
 
 		if (position.y < this.slotHeight * 3) {
 			return super.getSlotAtPosition(position);

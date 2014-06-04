@@ -12,6 +12,7 @@ import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.IntHashMap;
 import net.minecraft.world.WorldSettings.GameType;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 import powercraft.api.PC_Utils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -35,11 +36,14 @@ public final class PC_Fields {
 	public static final int INDEX_GuiMainMenu_notificationLine1 = 12;
 	public static final int INDEX_GuiMainMenu_notificationLine2 = 13;
 	public static final int INDEX_GuiMainMenu_notificationLink = 14;
+	public static final int INDEX_ShapedOreRecipe_width = 4;
 	
 	public static final PC_ReflectionField<NetHandlerPlayServer, IntHashMap> NetHandlerPlayServer_field_147372_n = new PC_ReflectionField<NetHandlerPlayServer, IntHashMap>(NetHandlerPlayServer.class, INDEX_NetHandlerPlayServer_field_147372_n, IntHashMap.class);
 	public static final PC_ReflectionField<EntityLivingBase, Integer> EntityLivingBase_recentlyHit = new PC_ReflectionField<EntityLivingBase, Integer>(EntityLivingBase.class, INDEX_EntityLivingBase_recentlyHit, int.class);
 	public static final PC_ReflectionField<EntityXPOrb, EntityPlayer> EntityXPOrb_closestPlayer = new PC_ReflectionField<EntityXPOrb, EntityPlayer>(EntityXPOrb.class, INDEX_EntityXPOrb_closestPlayer, EntityPlayer.class);
 	public static final PC_ReflectionField<EntityXPOrb, Integer> EntityXPOrb_xpTargetColor = new PC_ReflectionField<EntityXPOrb, Integer>(EntityXPOrb.class, INDEX_EntityXPOrb_xpTargetColor, int.class);
+	public static final PC_ReflectionField<ShapedOreRecipe, Integer> ShapedOreRecipe_width = new PC_ReflectionField<ShapedOreRecipe, Integer>(ShapedOreRecipe.class, INDEX_ShapedOreRecipe_width, int.class);
+	
 	
 	@SideOnly(Side.CLIENT)
 	public static final class Client{

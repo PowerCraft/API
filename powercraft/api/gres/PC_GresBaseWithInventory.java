@@ -31,7 +31,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 
-public abstract class PC_GresBaseWithInventory extends Container implements PC_IInventory, PC_IInventorySizeOverrider {
+public class PC_GresBaseWithInventory extends Container implements PC_IInventory, PC_IInventorySizeOverrider {
 
 	public static boolean SETTING_OK;
 

@@ -55,6 +55,7 @@
 		<Subtexture name="ArrowRight" size="4, 6" frame="4, 6, 0, 0" loc_active="178, 0" loc_mouseDown="178, 0" loc_mouseOver="178, 0" loc_disabled="178, 0"></Subtexture>
 		<Subtexture name="ItemSelectFull" size="16, 16" frame="16, 16, 0, 0" loc_active="166, 8" loc_mouseDown="166, 8" loc_mouseOver="166, 8" loc_disabled="166, 8"></Subtexture>
 		<Subtexture name="ItemSelectEmpty" size="16, 16" frame="16, 16, 0, 0" loc_active="166, 24" loc_mouseDown="166, 24" loc_mouseOver="166, 24" loc_disabled="166, 24"></Subtexture>
+		<Subtexture name="Craft" size="12, 11" frame="12, 11, 0, 0" loc_active="114, 35" loc_mouseDown="114, 35" loc_mouseOver="114, 35" loc_disabled="114, 35"></Subtexture>
 	</Texture>
 	<Texture textureName="Images.png">
 		<Subtexture name="I_ON" size="16, 16" frame="16, 16, 0, 0" loc_active="0, 0" loc_mouseDown="0, 0" loc_mouseOver="0, 0" loc_disabled="0, 0"></Subtexture>

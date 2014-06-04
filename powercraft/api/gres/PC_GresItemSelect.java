@@ -270,7 +270,15 @@ public class PC_GresItemSelect extends PC_GresComponent {
 		            Item item = iterator.next();
 
 		            if (item != null){
-		            	item.getSubItems(item, null, l);
+		            	if(item.getCreativeTab()==null){
+		            		try{
+		            			item.getSubItems(item, null, l);
+		            		}catch(Throwable e){
+		            			l.add(new ItemStack(item));
+		            		}
+		            	}else{
+		            		item.getSubItems(item, item.getCreativeTab(), l);
+		            	}
 		            }
 		            if(this.stop)
 		        		break;

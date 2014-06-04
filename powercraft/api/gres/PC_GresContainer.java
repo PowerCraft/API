@@ -403,7 +403,7 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 
 	@SuppressWarnings("hiding")
 	@Override
-	protected Slot getSlotAtPosition(PC_Vec2I position) {
+	public Slot getSlotAtPosition(PC_Vec2I position) {
 
 		if (this.visible && getChildRect().contains(position)) {
 			PC_Vec2I nposition = position.sub(this.frame.getLocation());

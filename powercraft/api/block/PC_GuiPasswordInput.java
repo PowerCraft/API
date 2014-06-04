@@ -26,13 +26,16 @@ final class PC_GuiPasswordInput implements PC_IGresGui, PC_IGresEventListener {
 	private PC_GresLabel status;
 	private PC_GresButton ok;
 	private PC_GresButton cancel;
+	private PC_GresGuiHandler gui;
 	
 	PC_GuiPasswordInput(PC_TileEntity tileEntity) {
 		this.tileEntity = tileEntity;
 	}
 
+	@SuppressWarnings("hiding")
 	@Override
 	public void initGui(PC_GresGuiHandler gui) {
+		this.gui = gui;
 		PC_GresWindow window = new PC_GresWindow("Password Input");
 		window.setLayout(new PC_GresLayoutVertical());
 		this.password = new PC_GresTextEdit("", 20, PC_GresInputType.PASSWORD);
@@ -73,6 +76,7 @@ final class PC_GuiPasswordInput implements PC_IGresGui, PC_IGresEventListener {
 	}
 
 	private void send(){
+		this.gui.addWorking();
 		this.status.setText("Sending ...");
 		this.ok.setEnabled(false);
 		PC_PacketHandler.sendToServer(new PC_PacketPasswordReply(this.tileEntity, this.password.getText()));
@@ -80,6 +84,7 @@ final class PC_GuiPasswordInput implements PC_IGresGui, PC_IGresEventListener {
 
 	void wrongPassword(PC_TileEntity te) {
 		if(this.tileEntity==te){
+			this.gui.removeWorking();
 			this.status.setText("Failed, wrong password");
 			this.ok.setEnabled(true);
 		}

@@ -185,7 +185,7 @@ public class PC_GresInventory extends PC_GresComponent {
 	}
 	
 	@Override
-	protected Slot getSlotAtPosition(PC_Vec2I position) {
+	public Slot getSlotAtPosition(PC_Vec2I position) {
 
 		int x = position.x / this.slotWidth;
 		int y = position.y / this.slotHeight;

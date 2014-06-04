@@ -69,9 +69,11 @@ public class PC_ItemArmor extends ItemArmor implements PC_IItem, ISpecialArmor {
 	public Item setCreativeTab(CreativeTabs creativeTab) {
 		if(creativeTab==null){
 			this.creativeTabs = NULLCREATIVTABS;
+			super.setCreativeTab(null);
 		}else{
 			if(this.constructed){
 				this.creativeTabs = PC_Utils.getCreativeTabsFor(creativeTab, getModule());
+				super.setCreativeTab(getModule().getCreativeTab());
 			}else{
 				this.creativeTabs = new CreativeTabs[]{creativeTab};
 			}

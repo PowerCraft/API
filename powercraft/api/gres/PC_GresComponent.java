@@ -24,14 +24,15 @@ import powercraft.api.gres.events.PC_GresMouseButtonEventResult;
 import powercraft.api.gres.events.PC_GresMouseEvent;
 import powercraft.api.gres.events.PC_GresMouseEventResult;
 import powercraft.api.gres.events.PC_GresMouseMoveEvent;
+import powercraft.api.gres.events.PC_GresMouseMoveEventResult;
 import powercraft.api.gres.events.PC_GresMouseWheelEvent;
+import powercraft.api.gres.events.PC_GresMouseWheelEventResult;
 import powercraft.api.gres.events.PC_GresTooltipGetEvent;
 import powercraft.api.gres.events.PC_IGresEventListener;
 import powercraft.api.gres.events.PC_IGresEventListenerEx;
 import powercraft.api.gres.font.PC_FontRenderer;
 import powercraft.api.gres.font.PC_Fonts;
 import powercraft.api.gres.history.PC_GresHistory;
-import powercraft.api.gres.nodesys.PC_GresNodesysNodeFrame;
 import powercraft.api.renderer.PC_OpenGL;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -619,10 +620,13 @@ public abstract class PC_GresComponent {
 
 		PC_GresMouseEvent event = new PC_GresMouseMoveEvent(this, mouse, buttons, PC_GresMouseMoveEvent.Event.MOVE, history);
 		fireEvent(event);
+		boolean result = true;
 		if (!event.isConsumed()) {
-			return handleMouseMove(mouse, buttons, history);
+			result = handleMouseMove(mouse, buttons, history);
 		}
-		return true;
+		PC_GresMouseMoveEventResult ev = new PC_GresMouseMoveEventResult(this, mouse, buttons, PC_GresMouseMoveEvent.Event.MOVE, result, history);
+		fireEvent(ev);
+		return ev.getResult();
 	}
 
 
@@ -696,7 +700,9 @@ public abstract class PC_GresComponent {
 	protected final boolean onMouseWheel(PC_Vec2I mouse, int buttons, int wheel, PC_GresHistory history) {
 		PC_GresMouseWheelEvent event = new PC_GresMouseWheelEvent(this, mouse, buttons, wheel, history);
 		onMouseWheel(event, history);
-		return event.isConsumed();
+		PC_GresMouseWheelEventResult ev = new PC_GresMouseWheelEventResult(this, mouse, buttons, event.isConsumed(), history);
+		fireEvent(ev);
+		return ev.getResult();
 	}
 
 	protected void onMouseWheel(PC_GresMouseWheelEvent event, PC_GresHistory history) {
@@ -759,7 +765,7 @@ public abstract class PC_GresComponent {
 
 
 	@SuppressWarnings("static-method")
-	protected Slot getSlotAtPosition(PC_Vec2I position) {
+	public Slot getSlotAtPosition(PC_Vec2I position) {
 
 		return null;
 	}

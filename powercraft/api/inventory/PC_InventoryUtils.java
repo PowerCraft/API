@@ -693,6 +693,8 @@ public final class PC_InventoryUtils {
 		if(one == null && two == null) return true;
 		if(one == null || two == null) return false;
 		if(!(one.getItem()==two.getItem())) return false;
+		if(one.getItemDamage()==PC_Utils.WILDCARD_VALUE || two.getItemDamage()==PC_Utils.WILDCARD_VALUE)
+			return true;
 		if(!(one.getItemDamage()==two.getItemDamage())) return false;
 		return ItemStack.areItemStackTagsEqual(one, two);
 	}

@@ -60,9 +60,11 @@ public abstract class PC_Item extends Item implements PC_IItem{
 	public Item setCreativeTab(CreativeTabs creativeTab) {
 		if(creativeTab==null){
 			this.creativeTabs = NULLCREATIVTABS;
+			super.setCreativeTab(null);
 		}else{
 			if(this.constructed){
 				this.creativeTabs = PC_Utils.getCreativeTabsFor(creativeTab, getModule());
+				super.setCreativeTab(getModule().getCreativeTab());
 			}else{
 				this.creativeTabs = new CreativeTabs[]{creativeTab};
 			}
