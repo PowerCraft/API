@@ -5,25 +5,33 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import powercraft.api.PC_ImmutableArrayList;
 import powercraft.api.PC_ImmutableList;
 import powercraft.api.PC_Utils;
 import powercraft.api.PC_Vec2I;
+import powercraft.api.gres.PC_GresAlign.Fill;
 import powercraft.api.gres.PC_GresComboBox;
 import powercraft.api.gres.PC_GresComponent;
+import powercraft.api.gres.PC_GresGroupContainer;
+import powercraft.api.gres.PC_GresItemSelect;
 import powercraft.api.gres.PC_GresListBoxElement;
 import powercraft.api.gres.PC_GresTextEdit;
 import powercraft.api.gres.PC_GresTextEdit.PC_GresInputType;
+import powercraft.api.gres.layout.PC_GresLayoutVertical;
 import powercraft.api.nodesys.PC_INodeValueInput;
 import powercraft.api.nodesys.PC_NodeComponent;
 import powercraft.api.nodesys.PC_NodeDescriptor;
 import powercraft.api.nodesys.PC_NodeGridHelper;
 import powercraft.api.nodesys.PC_NodeValueInputDropdown;
+import powercraft.api.nodesys.PC_NodeValueInputItemStack;
 import powercraft.api.nodesys.PC_NodeValueInputTextbox;
 import powercraft.api.nodesys.node.PC_Node;
 import powercraft.api.nodesys.node.PC_NodeGroup;
 import powercraft.api.nodesys.node.descriptor.PC_NodeDescriptorGroup;
 import powercraft.api.nodesys.type.PC_NodeObjectType;
+import powercraft.api.nodesys.type.PC_NodeObjectTypeItemStack;
 
 
 @SuppressWarnings("unchecked")
@@ -121,30 +129,41 @@ public final class PC_GresNodesysHelper {
 		return entry;
 	}
 	
+	public static PC_GresInputType fromTextboxInputType(PC_NodeValueInputTextbox textbox){
+		switch(textbox.getInputType()){
+		case FLOAT:
+			return PC_GresInputType.SIGNED_FLOAT;
+		case INTEGER:
+			return PC_GresInputType.INT;
+		case STRING:
+			return PC_GresInputType.TEXT;
+		case UFLOAT:
+			return PC_GresInputType.UNSIGNED_FLOAT;
+		case UINTEGER:
+			return PC_GresInputType.UNSIGNED_INT;
+		default:
+			return PC_GresInputType.TEXT;
+		}
+	}
+	
 	public static PC_GresComponent makeValueIn(PC_NodeObjectType type, PC_INodeValueInput input, Object _default){
-		if(input instanceof PC_NodeValueInputTextbox){
-			PC_NodeValueInputTextbox textbox = (PC_NodeValueInputTextbox)input;
-			PC_GresInputType t;
-			switch(textbox.getInputType()){
-			case FLOAT:
-				t = PC_GresInputType.SIGNED_FLOAT;
-				break;
-			case INTEGER:
-				t = PC_GresInputType.INT;
-				break;
-			case STRING:
-				t = PC_GresInputType.TEXT;
-				break;
-			case UFLOAT:
-				t = PC_GresInputType.UNSIGNED_FLOAT;
-				break;
-			case UINTEGER:
-				t = PC_GresInputType.UNSIGNED_INT;
-				break;
-			default:
-				t = PC_GresInputType.TEXT;
-				break;
+		if(type == PC_NodeObjectTypeItemStack.INSTANCE){
+			ItemStack is = (ItemStack)_default;
+			if(input instanceof PC_NodeValueInputTextbox){
+				PC_GresGroupContainer gc = new PC_GresGroupContainer();
+				gc.setLayout(new PC_GresLayoutVertical());
+				gc.add(new PC_GresTextEdit(is==null?"item name":Item.itemRegistry.getNameForObject(is.getItem()), 100, PC_GresInputType.TEXT).setFill(Fill.BOTH));
+				gc.add(new PC_GresTextEdit(is==null?"meta":""+is.getItemDamage(), 5, PC_GresInputType.INT).setFill(Fill.BOTH));
+				gc.add(new PC_GresTextEdit(is==null?"stacksize":""+is.stackSize, 3, PC_GresInputType.INT).setFill(Fill.BOTH));
+				return gc;
+			}else if(input instanceof PC_NodeValueInputItemStack){
+				PC_GresItemSelect gresItemSelect = new PC_GresItemSelect();
+				gresItemSelect.setItemStack(is);
+				return gresItemSelect;
 			}
+		}
+		if(input instanceof PC_NodeValueInputTextbox){
+			PC_GresInputType t = fromTextboxInputType((PC_NodeValueInputTextbox)input);
 			return new PC_GresTextEdit(_default==null?"":_default.toString(), 10, t);
 		}else if(input instanceof PC_NodeValueInputDropdown){
 			PC_NodeValueInputDropdown dropdown = (PC_NodeValueInputDropdown)input;
