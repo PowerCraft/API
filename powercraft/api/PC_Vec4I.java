@@ -21,6 +21,14 @@ public class PC_Vec4I implements PC_INBT {
 		this.z = _z;
 		this.w = _w;
 	}
+	
+	public PC_Vec4I(PC_Vec4I vec) {
+
+		this.x = vec.x;
+		this.y = vec.y;
+		this.z = vec.z;
+		this.w = vec.w;
+	}
 
 	@SuppressWarnings("unused")
 	public PC_Vec4I(NBTTagCompound tag, Flag flag) {

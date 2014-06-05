@@ -10,7 +10,7 @@ public class PC_NodeObjectVector3 extends PC_NodeObjectType {
 	public Object castTo(Object object) {
 		if(object instanceof ItemStack){
 			ItemStack is = (ItemStack) object;
-			return new Number[]{is.};
+			//return new Number[]{is.};
 			}
 		return false;
 	}

@@ -2,6 +2,7 @@ package powercraft.api;
 
 import java.util.Random;
 
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 
 public final class PC_MathHelper {
@@ -212,6 +213,10 @@ public final class PC_MathHelper {
 			z=0;
 		}
 		return new PC_Vec3(x, y, z).normalize();
+	}
+
+	public static boolean xInsideY(AxisAlignedBB x, AxisAlignedBB y) {
+		return x.minX>=y.minX && x.minY>=y.minY && x.minZ>=y.minZ && x.maxX<=y.maxX && x.maxY<=y.maxY && x.maxZ<=y.maxZ;
 	}
     
 }

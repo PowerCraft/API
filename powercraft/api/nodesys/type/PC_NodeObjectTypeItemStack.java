@@ -11,7 +11,7 @@ public class PC_NodeObjectTypeItemStack extends PC_NodeObjectType {
 	
 	@Override
 	public Object castTo(Object object) {
-		if(object )
+		//if(object )
 		return null;
 	}
 

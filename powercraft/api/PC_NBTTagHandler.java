@@ -341,10 +341,10 @@ public final class PC_NBTTagHandler {
 	 * @return the object
 	 */
 	public static <T extends Map<E, F>, E, F> T loadMapFromNBT(NBTTagCompound nbtTagCompound, String name, T map, Class<E> ce, Class<F> cf, Flag flag){
+		map.clear();
 		NBTBase base = nbtTagCompound.getTag(name);
 		if(base==null)
 			return null;
-		map.clear();
 		NBTTagList list = (NBTTagList)base;
 		for(int i=0; i<list.tagCount(); i++){
 			NBTTagCompound com = list.getCompoundTagAt(i);

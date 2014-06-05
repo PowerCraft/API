@@ -881,5 +881,20 @@ public class PC_Utils {
 		}
 		return null;
 	}
+
+	@SuppressWarnings("unchecked")
+	public static <E extends Entity>List<E> getEntitiesWithinAABB(World world, AxisAlignedBB aabb, Class<E> c) {
+		return world.getEntitiesWithinAABB(c, aabb);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static List<Entity> getEntitiesWithinAABB(World world, AxisAlignedBB aabb) {
+		return world.getEntitiesWithinAABB(Entity.class, aabb);
+	}
+
+	public static AxisAlignedBB getBoundingBox(Entity entity) {
+		AxisAlignedBB bb = entity.getBoundingBox();
+		return bb==null?entity.boundingBox:bb;
+	}
 	
 }
