@@ -117,12 +117,12 @@ public final class PC_Gres {
 		
 	}
 
-	public static void openGui(EntityPlayer player, PC_TileEntity tileEntity) {
+	public static void openGui(EntityPlayer player, PC_TileEntity tileEntity, Object...params) {
 
 		if (player instanceof EntityPlayerMP && tileEntity instanceof PC_IGresGuiOpenHandler) {
 			EntityPlayerMP playerMP = (EntityPlayerMP) player;
-			PC_GresBaseWithInventory container = ((PC_IGresGuiOpenHandler) tileEntity).openServerGui(player);
-			NBTTagCompound sendToClient = ((PC_IGresGuiOpenHandler) tileEntity).sendOnGuiOpenToClient(player);
+			PC_GresBaseWithInventory container = ((PC_IGresGuiOpenHandler) tileEntity).openServerGui(player, params);
+			NBTTagCompound sendToClient = ((PC_IGresGuiOpenHandler) tileEntity).sendOnGuiOpenToClient(player, params);
 			if(sendToClient==null){
 				sendToClient = new NBTTagCompound();
 			}
@@ -141,12 +141,12 @@ public final class PC_Gres {
 		}
 	}
 
-	public static void openGui(EntityPlayer player, PC_IEntity entity) {
+	public static void openGui(EntityPlayer player, PC_IEntity entity, Object...params) {
 
 		if (player instanceof EntityPlayerMP && entity instanceof PC_IGresGuiOpenHandler) {
 			EntityPlayerMP playerMP = (EntityPlayerMP) player;
-			PC_GresBaseWithInventory container = ((PC_IGresGuiOpenHandler) entity).openServerGui(player);
-			NBTTagCompound sendToClient = ((PC_IGresGuiOpenHandler) entity).sendOnGuiOpenToClient(player);
+			PC_GresBaseWithInventory container = ((PC_IGresGuiOpenHandler) entity).openServerGui(player, params);
+			NBTTagCompound sendToClient = ((PC_IGresGuiOpenHandler) entity).sendOnGuiOpenToClient(player, params);
 			if(sendToClient==null){
 				sendToClient = new NBTTagCompound();
 			}
@@ -165,14 +165,14 @@ public final class PC_Gres {
 		}
 	}
 	
-	public static void openGui(EntityPlayer player, String guiOpenHandlerName) {
+	public static void openGui(EntityPlayer player, String guiOpenHandlerName, Object...params) {
 
 		if (player instanceof EntityPlayerMP) {
 			PC_IGresGuiOpenHandler guiOpenHandler = guiOpenHandlers.get(guiOpenHandlerName);
 			if (guiOpenHandler != null) {
 				EntityPlayerMP playerMP = (EntityPlayerMP) player;
-				PC_GresBaseWithInventory container = guiOpenHandler.openServerGui(player);
-				NBTTagCompound sendToClient = guiOpenHandler.sendOnGuiOpenToClient(player);
+				PC_GresBaseWithInventory container = guiOpenHandler.openServerGui(player, params);
+				NBTTagCompound sendToClient = guiOpenHandler.sendOnGuiOpenToClient(player, params);
 				if(sendToClient==null){
 					sendToClient = new NBTTagCompound();
 				}
@@ -191,12 +191,12 @@ public final class PC_Gres {
 		}
 	}
 	
-	public static void openGui(EntityPlayer player, Item item) {
+	public static void openGui(EntityPlayer player, Item item, Object...params) {
 
 		if (player instanceof EntityPlayerMP && item instanceof PC_IGresGuiOpenHandler) {
 			EntityPlayerMP playerMP = (EntityPlayerMP) player;
-			PC_GresBaseWithInventory container = ((PC_IGresGuiOpenHandler) item).openServerGui(player);
-			NBTTagCompound sendToClient = ((PC_IGresGuiOpenHandler) item).sendOnGuiOpenToClient(player);
+			PC_GresBaseWithInventory container = ((PC_IGresGuiOpenHandler) item).openServerGui(player, params);
+			NBTTagCompound sendToClient = ((PC_IGresGuiOpenHandler) item).sendOnGuiOpenToClient(player, params);
 			if(sendToClient==null){
 				sendToClient = new NBTTagCompound();
 			}

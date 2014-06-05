@@ -24,16 +24,18 @@ public class PC_GresSlider extends PC_GresComponent {
 		return this.progress;
 	}
 	
-	public void setProgress(float progress){
+	public PC_GresSlider setProgress(float progress){
 		this.progress = progress;
+		return this;
 	}
 	
 	public float getSteps(){
 		return this.steps;
 	}
 	
-	public void setProgress(int steps){
+	public PC_GresSlider setSteps(int steps){
 		this.steps = steps;
+		return this;
 	}
 	
 	

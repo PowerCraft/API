@@ -26,17 +26,19 @@ public interface PC_IGresGuiOpenHandler {
 	 * if there's no inventory in that GUI then this always must return null
 	 * else it returns the container object
 	 * @param player the player who tries to open the guy
+	 * @param params TODO
 	 * @return the Container Object of the GUI that shall be opened or null if there is no inventory
 	 */
-	public PC_GresBaseWithInventory openServerGui(EntityPlayer player);
+	public PC_GresBaseWithInventory openServerGui(EntityPlayer player, Object[] params);
 
 	/**
 	 * 
 	 * Data to send to client
 	 * 
 	 * @param player the player who opened the GUI
+	 * @param params TODO
 	 * @return the data to send to the client
 	 */
-	public NBTTagCompound sendOnGuiOpenToClient(EntityPlayer player);
+	public NBTTagCompound sendOnGuiOpenToClient(EntityPlayer player, Object[] params);
 	
 }
