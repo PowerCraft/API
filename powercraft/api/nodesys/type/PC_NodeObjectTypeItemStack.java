@@ -1,5 +1,6 @@
 package powercraft.api.nodesys.type;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 
@@ -11,7 +12,8 @@ public class PC_NodeObjectTypeItemStack extends PC_NodeObjectType {
 	
 	@Override
 	public Object castTo(Object object) {
-		//if(object )
+		if(object instanceof ItemStack)
+			return object;
 		return null;
 	}
 
