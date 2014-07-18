@@ -1,6 +1,7 @@
 package powercraft.api;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
@@ -16,8 +17,8 @@ public final class PC_OreDictionary {
         return OreDictionary.getOreName(id);
     }
     
-    public static int getOreID(ItemStack itemStack){
-        return OreDictionary.getOreID(itemStack);
+    public static int[] getOreIDs(ItemStack itemStack){
+        return OreDictionary.getOreIDs(itemStack);
     }
 
     public static ArrayList<ItemStack> getOres(String name){
@@ -28,7 +29,7 @@ public final class PC_OreDictionary {
         return OreDictionary.getOreNames();
     }
 
-    public static ArrayList<ItemStack> getOres(int id){
+    public static List<ItemStack> getOres(int id){
         return OreDictionary.getOres(Integer.valueOf(id));
     }
 

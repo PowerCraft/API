@@ -5,6 +5,7 @@ import java.io.IOException;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.nbt.NBTSizeTracker;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetHandler;
 import powercraft.api.PC_Logger;
@@ -49,7 +50,7 @@ public abstract class PC_Packet {
 		byte[] bytes = new byte[buf.readInt()];
 		buf.readBytes(bytes);
 		try {
-			return CompressedStreamTools.decompress(bytes);
+			return CompressedStreamTools.func_152457_a(bytes, new NBTSizeTracker(2097152L));
 		} catch (IOException e) {
 			e.printStackTrace();
 			PC_Logger.severe("Error while decompressing NBTTag");

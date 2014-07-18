@@ -463,7 +463,7 @@ public class PC_Utils {
 	}
 
 	public static boolean isOP(String username) {
-		return mcs().getConfigurationManager().getOps().contains(username);
+		return mcs().getConfigurationManager().func_152603_m().func_152700_a(username)!=null;
 	}
 
 	public static PC_Side getSide() {

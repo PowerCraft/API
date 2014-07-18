@@ -239,7 +239,7 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 			this.gui.initGui(this);
 			this.initialized = true;
 		}
-		ScaledResolution scaledresolution = new ScaledResolution(this.mc.gameSettings, this.mc.displayWidth, this.mc.displayHeight);
+		ScaledResolution scaledresolution = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
 		int newScale = scaledresolution.getScaleFactor();
 		if(newScale!=this.scale){
 			this.scale = newScale;
@@ -265,7 +265,7 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 		float ts = (t-this.last)/1000.0f;
 		this.last = t;
 		
-		ScaledResolution scaledresolution = new ScaledResolution(this.mc.gameSettings, this.mc.displayWidth, this.mc.displayHeight);
+		ScaledResolution scaledresolution = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
 		fireEvent(new PC_GresPaintEvent(this, EventType.PRE, ts));
 		onDrawTick(ts);
 		PC_GresRenderer.setupGuiItemLighting();

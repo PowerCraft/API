@@ -59,7 +59,7 @@ public abstract class PC_MultiblockObject implements PC_INBT{
 		return null;
 	}
 	public AxisAlignedBB getSelectedBoundingBox() {
-		AxisAlignedBB aabb = AxisAlignedBB.getAABBPool().getAABB(0, 0, 0, 0, 0, 0);
+		AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(0, 0, 0, 0, 0, 0);
 		List<AxisAlignedBB> list = getCollisionBoundingBoxes();
 		if(list==null){
 			return aabb;

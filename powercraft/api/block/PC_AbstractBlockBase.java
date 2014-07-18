@@ -97,12 +97,11 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 	}
 
 	void construct() {
-		PC_Module m = getModule();
 		Object[] itemBlockConstructorData = getItemBlockConstructorData();
 		if(itemBlockConstructorData==null)
 			itemBlockConstructorData = new Object[0];
 		setBlockName(getRegisterName());
-		GameRegistry.registerBlock(this, getItemBlock(), getRegisterName(), m.getModId(), itemBlockConstructorData);
+		GameRegistry.registerBlock(this, getItemBlock(), getRegisterName(), itemBlockConstructorData);
 		String[] oreNames = getOreNames();
 		if(oreNames!=null){
 			for(String oreName:oreNames){
@@ -175,7 +174,7 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 	
 	public AxisAlignedBB getMainCollisionBoundingBoxPre(World world, int x, int y, int z) {
 		setBlockBoundsBasedOnState(world, x, y, z);
-		return AxisAlignedBB.getAABBPool().getAABB(this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ);
+		return AxisAlignedBB.getBoundingBox(this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ);
 	}
 	
 	@Override
