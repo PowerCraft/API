@@ -32,10 +32,10 @@ public final class PC_Fields {
 	public static final int INDEX_RenderGlobal_destroyBlockIcons = 31;
 	public static final int INDEX_PlayerControllerMP_isHittingBlock = 9;
 	public static final int INDEX_PlayerControllerMP_currentGameType = 10;
-	public static final int INDEX_GuiMainMenu_splashText = 4;
-	public static final int INDEX_GuiMainMenu_notificationLine1 = 12;
-	public static final int INDEX_GuiMainMenu_notificationLine2 = 13;
-	public static final int INDEX_GuiMainMenu_notificationLink = 14;
+	public static final int INDEX_GuiMainMenu_splashText = 3;
+	public static final int INDEX_GuiMainMenu_notificationLine1 = 8;
+	public static final int INDEX_GuiMainMenu_notificationLine2 = 9;
+	public static final int INDEX_GuiMainMenu_notificationLink = 10;
 	public static final int INDEX_ShapedOreRecipe_width = 4;
 	
 	public static final PC_ReflectionField<NetHandlerPlayServer, IntHashMap> NetHandlerPlayServer_field_147372_n = new PC_ReflectionField<NetHandlerPlayServer, IntHashMap>(NetHandlerPlayServer.class, INDEX_NetHandlerPlayServer_field_147372_n, IntHashMap.class);

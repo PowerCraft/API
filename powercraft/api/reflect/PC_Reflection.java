@@ -92,7 +92,6 @@ public final class PC_Reflection {
 	
 	@SuppressWarnings("boxing")
 	public static Field findNearestBestField(Class<?> clasz, int index, Class<?> type) {
-
 		Field fields[] = clasz.getDeclaredFields();
 		Field f;
 		int i = index;
