@@ -49,7 +49,7 @@ public class PC_Registry {
 		INSTANCE.iRegisterEntity(entity, name, entityTypeID, module, trackingRange, updateFrequency, sendsVelocityUpdates, type);
 	}
 	
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	<E extends Entity & PC_IEntity>void iRegisterEntity(Class<? extends Entity> entity, String name, int entityTypeID, PC_Module module, int trackingRange, int updateFrequency, boolean sendsVelocityUpdates, PC_EntityType<E> type){
 		EntityRegistry.registerModEntity(entity, name, entityTypeID, module, trackingRange, updateFrequency, sendsVelocityUpdates);
 	}
@@ -58,7 +58,6 @@ public class PC_Registry {
 		INSTANCE.iPlaySound(x, y, z, sound, soundVolume, pitch);
 	}
 	
-	@SuppressWarnings("unused")
 	void iPlaySound(double x, double y, double z, String sound, float soundVolume, float pitch) {
 		//
 	}

@@ -15,8 +15,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public abstract class PC_EntityType<E extends Entity & PC_IEntity> {
 
 	private final ModContainer module;
-	
-	@SuppressWarnings("unused")
+
 	private boolean constructed;
 	
 	private int entityTypeID;
@@ -44,7 +43,6 @@ public abstract class PC_EntityType<E extends Entity & PC_IEntity> {
 		return getEntity().getSimpleName();
 	}
 	
-	@SuppressWarnings("hiding")
 	void construct() {
 		PC_Module module = getModule();
 		this.entityTypeID = EntityRegistry.findGlobalUniqueEntityId();
@@ -63,7 +61,6 @@ public abstract class PC_EntityType<E extends Entity & PC_IEntity> {
 		return getEntity().getSimpleName().replaceAll("PC.*_(Entity)?", "");
 	}
 
-	@SuppressWarnings("unused")
 	public void registerIcons(PC_IconRegistry iconRegistry) {
 		//
 	}

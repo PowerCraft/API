@@ -10,12 +10,9 @@ public class PC_Vec4I implements PC_INBT {
 	public int z;
 	public int w;
 
-	public PC_Vec4I() {
-
-	}
+	public PC_Vec4I() {}
 
 	public PC_Vec4I(int _x, int _y, int _z, int _w) {
-
 		this.x = _x;
 		this.y = _y;
 		this.z = _z;
@@ -23,14 +20,12 @@ public class PC_Vec4I implements PC_INBT {
 	}
 	
 	public PC_Vec4I(PC_Vec4I vec) {
-
 		this.x = vec.x;
 		this.y = vec.y;
 		this.z = vec.z;
 		this.w = vec.w;
 	}
 
-	@SuppressWarnings("unused")
 	public PC_Vec4I(NBTTagCompound tag, Flag flag) {
 		this.x = tag.getInteger("x");
 		this.y = tag.getInteger("y");
@@ -48,7 +43,6 @@ public class PC_Vec4I implements PC_INBT {
 	
 	@Override
 	public boolean equals(Object obj) {
-
 		if (obj instanceof PC_Vec4I) {
 			PC_Vec4I vec = (PC_Vec4I) obj;
 			return vec.x == this.x && vec.y == this.y && vec.z == this.z && vec.w == this.w;
@@ -58,13 +52,11 @@ public class PC_Vec4I implements PC_INBT {
 
 	@Override
 	public int hashCode() {
-
 		return (this.x) ^ 78 + (this.x) ^ 34 + (this.y) ^ 12 + (this.z);
 	}
 
 	@Override
 	public String toString() {
-
 		return "Vec4I[" + this.x + ", " + this.y + ", " + this.z + ", " + this.w + "]";
 	}
 
@@ -85,9 +77,10 @@ public class PC_Vec4I implements PC_INBT {
 	public static PC_Vec4I sum(PC_Vec4I... vec) {
 		PC_Vec4I result = new PC_Vec4I(0, 0, 0, 0);
 		for (PC_Vec4I cvec : vec) {
-			try {
+			try{
 				result.add(cvec);
-			} catch (NullPointerException e) {//
+			}catch (NullPointerException e){
+				;
 			}
 		}
 		return result;

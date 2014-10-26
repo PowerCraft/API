@@ -30,7 +30,7 @@ public final class PC_OreDictionary {
     }
 
     public static List<ItemStack> getOres(int id){
-        return getOres(getOreName(id));
+        return OreDictionary.getOres(Integer.valueOf(id));
     }
 
     public static boolean itemMatches(ItemStack target, ItemStack input, boolean strict){

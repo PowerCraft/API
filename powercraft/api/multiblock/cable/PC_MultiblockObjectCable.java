@@ -49,8 +49,7 @@ public abstract class PC_MultiblockObjectCable extends PC_MultiblockObject imple
 	protected abstract IIcon getCableCornerIcon();
 
 	protected abstract IIcon getCableSideIcon();
-	
-	@SuppressWarnings("hiding")
+
 	protected abstract IIcon getCableLineIcon(int index);
 
 
@@ -71,7 +70,6 @@ public abstract class PC_MultiblockObjectCable extends PC_MultiblockObject imple
 		return (this.specialConnection>>>(n*2))&0x3;
 	}
 
-	@SuppressWarnings("hiding")
 	protected int canConnectToMultiblock(PC_MultiblockObject multiblock, PC_Direction dir, PC_Direction dir2) {
 		if (multiblock.getClass() != getClass()) return 0;
 		PC_MultiblockObjectCable cable = (PC_MultiblockObjectCable)multiblock;
@@ -83,14 +81,11 @@ public abstract class PC_MultiblockObjectCable extends PC_MultiblockObject imple
 		return cable.getMask();
 	}
 
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	protected int canConnectToBlock(World world, int x, int y, int z, Block block, PC_Direction dir, PC_Direction dir2) {
-
 		return 0;
 	}
 
-
-	@SuppressWarnings("hiding")
 	private int canConnectToBlock(World world, int x, int y, int z, PC_Direction dir, PC_Direction dir2) {
 
 		Block block = PC_Utils.getBlock(world, x, y, z);
@@ -109,7 +104,7 @@ public abstract class PC_MultiblockObjectCable extends PC_MultiblockObject imple
 		return 0;
 	}
 
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	protected boolean canConnectThrough(World world, int x, int y, int z, PC_Direction dir, PC_Direction dir2){
 		Block block = PC_Utils.getBlock(world, x, y, z);
 		if (block == null || block.isAir(world, x, y, z) || block instanceof PC_BlockMultiblock){
@@ -117,8 +112,7 @@ public abstract class PC_MultiblockObjectCable extends PC_MultiblockObject imple
 		}
 		return false;
 	}
-	
-	@SuppressWarnings("unused")
+
 	private int canConnectTo(PC_Direction dir, PC_Direction dir2, int oldConnection, int oldSpecialConnection) {
 
 		World world = getWorld();
@@ -279,7 +273,6 @@ public abstract class PC_MultiblockObjectCable extends PC_MultiblockObject imple
 		}
 	}
 
-	@SuppressWarnings("hiding")
 	@Override
 	public void renderWorldBlock(RenderBlocks renderer) {
 		int[] connections = new int[4];

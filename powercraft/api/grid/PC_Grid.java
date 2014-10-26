@@ -71,7 +71,7 @@ public abstract class PC_Grid<G extends PC_Grid<G, T, N, E>, T extends PC_IGridT
 		//
 	}
 	
-	@SuppressWarnings({ "unchecked", "hiding" })
+	@SuppressWarnings({ "unchecked" })
 	protected void addAll(List<N> nodes, List<E> edges){
 		this.nodes.addAll(nodes);
 		this.edges.addAll(edges);
@@ -134,7 +134,6 @@ public abstract class PC_Grid<G extends PC_Grid<G, T, N, E>, T extends PC_IGridT
 		}
 	}
 	
-	@SuppressWarnings({ "unused", "hiding" })
 	protected void moveToOtherGrid(List<N> nodes, List<E> edges){
 		//
 	}

@@ -12,15 +12,12 @@ public class PC_RedstoneGrid extends PC_Grid<PC_RedstoneGrid, PC_IRedstoneGridTi
 	
 	private static class Factory implements PC_IGridFactory<PC_RedstoneGrid, PC_IRedstoneGridTile, PC_RedstoneNode, PC_RedstoneEdge>{
 
-		Factory() {
-			
-		}
+		Factory(){}
 
 		@Override
 		public PC_RedstoneGrid make(PC_IRedstoneGridTile tile) {
 			return new PC_RedstoneGrid(tile);
 		}
-		
 	}
 	
 	protected boolean firstTick = true;
@@ -65,7 +62,6 @@ public class PC_RedstoneGrid extends PC_Grid<PC_RedstoneGrid, PC_IRedstoneGridTi
 		
 	}
 
-	@SuppressWarnings("hiding")
 	@Override
 	protected void addAll(List<PC_RedstoneNode> nodes, List<PC_RedstoneEdge> edges) {
 		super.addAll(nodes, edges);

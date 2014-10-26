@@ -144,7 +144,7 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 		return getIcon(PC_Direction.fromSide(side), metadata);
 	}
 
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	public List<AxisAlignedBB> getCollisionBoundingBoxes(World world, int x, int y, int z, Entity entity){
 		return null;
 	}
@@ -197,7 +197,7 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 		return PC_Utils.rotateAABB(world, x, y, z, box).offset(x, y, z);
 	}
 
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, PC_Direction side) {
 		return false;
 	}
@@ -221,12 +221,11 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 		return 0;
 	}
 
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	public boolean canProvideStrongPower(IBlockAccess world, int x, int y, int z, PC_Direction side){
 		return true;
 	}
 	
-	@SuppressWarnings("unused")
 	public boolean canRedstoneConnect(IBlockAccess world, int x, int y, int z, PC_Direction side, int faceSide){
 		return canProvidePower();
 	}
@@ -236,7 +235,7 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 		return canRedstoneConnect(world, x, y, z, PC_Utils.getSidePosition(world, x, y, z, side), PC_Utils.getSideRotation(world, x, y, z, side, faceSide));
 	}
 	
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	public int getRedstonePowerValue(IBlockAccess world, int x, int y, int z, PC_Direction side, int faceSide){
 		return 0;
 	}
@@ -246,7 +245,6 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 		return getRedstonePowerValue(world, x, y, z, PC_Utils.getSidePosition(world, x, y, z, side), PC_Utils.getSideRotation(world, x, y, z, side, faceSide));
 	}
 	
-	@SuppressWarnings("unused")
 	public void setRedstonePowerValue(World world, int x, int y, int z, PC_Direction side, int faceSide, int value){
 		//
 	}
@@ -256,7 +254,7 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 		setRedstonePowerValue(world, x, y, z, PC_Utils.getSidePosition(world, x, y, z, side), PC_Utils.getSideRotation(world, x, y, z, side, faceSide), value);
 	}
 	
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	public int getComparatorInput(World world, int x, int y, int z, PC_Direction side) {
 		return 0;
 	}
@@ -272,7 +270,6 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 		registerIcons(PC_ClientRegistry.getIconRegistry(iconRegister, this));
 	}
 
-	@SuppressWarnings("unused")
 	public void registerIcons(PC_IconRegistry iconRegistry){
 		//
 	}
@@ -327,7 +324,7 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 		return canRedstoneConnect(world, x, y, z, PC_Utils.getSidePosition(world, x, y, z, side), -1);
 	}
 
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	public boolean canSustainPlant(IBlockAccess world, int x, int y, int z, PC_Direction side, IPlantable plantable) {
 		return false;
 	}
@@ -347,7 +344,7 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 		return PC_Utils.getValidRotations(world, x, y, z);
 	}
 
-	@SuppressWarnings({ "unused", "static-method" })
+	@SuppressWarnings({ "static-method" })
 	public boolean recolourBlock(World world, int x, int y, int z, PC_Direction side, int colour) {
 		return false;
 	}
@@ -357,7 +354,6 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 		return recolourBlock(world, x, y, z, PC_Utils.getSidePosition(world, x, y, z, side), colour);
 	}
 
-	@SuppressWarnings("unused")
 	public boolean shouldCheckWeakPower(IBlockAccess world, int x, int y, int z, PC_Direction side) {
 		 return isNormalCube();
 	}
@@ -393,7 +389,6 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 		return PC_Renderer.getInstance().getRenderId();
 	}
 
-	@SuppressWarnings("unused")
 	public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider) {
 		//
 	}
@@ -402,7 +397,7 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 		return this.creativeTabs;
 	}
 
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	public int getTemperature(World world, int x, int y, int z) {
 		return PC_BlockTemperatures.DEFAULT_TEMPERATURE;
 	}
@@ -424,17 +419,16 @@ public abstract class PC_AbstractBlockBase extends Block implements PC_RedstoneC
 		return canBlockStay(world, x, y, z) && super.canPlaceBlockAt(world, x, y, z);
 	}
 	
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	public PC_BeamHitResult onHitByBeam(World world, int x, int y, int z, PC_IBeam beam){
 		return PC_BeamHitResult.STANDARD;
 	}
 
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	public boolean canBeHarvested(World world, int x, int y, int z) {
 		return false;
 	}
 
-	@SuppressWarnings("unused")
 	public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> list, boolean advancedItemTooltips) {
 		//
 	}

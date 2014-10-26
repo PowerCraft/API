@@ -37,7 +37,6 @@ public final class PC_Weasel {
 	
 	private static PC_WeaselModule weaselModule;
 	
-	@SuppressWarnings("hiding")
 	public static void register(PC_WeaselModule weaselModule){
 		PC_Weasel.weaselModule = weaselModule;
 	}

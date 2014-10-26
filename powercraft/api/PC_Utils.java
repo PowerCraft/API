@@ -581,7 +581,6 @@ public class PC_Utils {
 		return new String(digest.digest(s.getBytes()));
 	}
 
-	@SuppressWarnings("unused")
 	public static int getSideRotation(IBlockAccess world, int x, int y, int z, PC_Direction side, int faceSide) {
 		notImplementedYet("getSideRotation");
 		// TODO Auto-generated method stub
@@ -624,7 +623,7 @@ public class PC_Utils {
 		return INSTANCE.iIsEntityFX(entity);
 	}
 
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	boolean iIsEntityFX(Entity entity) {
 		return false;
 	}

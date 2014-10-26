@@ -6,3 +6,6 @@
 
 # for kde users
 *.directory
+
+#Mac OS X
+.DS_Store

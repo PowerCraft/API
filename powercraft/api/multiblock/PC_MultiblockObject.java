@@ -102,7 +102,6 @@ public abstract class PC_MultiblockObject implements PC_INBT{
 		//
 	}
 
-	@SuppressWarnings("unused")
 	public void onClicked(EntityPlayer player) {
 		//
 	}
@@ -111,17 +110,16 @@ public abstract class PC_MultiblockObject implements PC_INBT{
 		return new ItemStack(PC_Multiblocks.getItem(this), 1, 0);
 	}
 
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	public boolean onBlockActivated(EntityPlayer player) {
 		return false;
 	}
 
-	@SuppressWarnings("unused")
 	public void onNeighborBlockChange(Block neighbor) {
 		onChange();
 	}
 
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	public float getPlayerRelativeHardness(EntityPlayer player) {
 		return 0;
 	}
@@ -135,7 +133,7 @@ public abstract class PC_MultiblockObject implements PC_INBT{
 		return 0;
 	}
 
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	public boolean isLadder(EntityLivingBase entity) {
 		return false;
 	}
@@ -150,12 +148,10 @@ public abstract class PC_MultiblockObject implements PC_INBT{
 		return 0;
 	}
 
-	@SuppressWarnings("unused")
 	public void onNeighborTEChange(int tileX, int tileY, int tileZ) {
 		onChange();
 	}
 
-	@SuppressWarnings("unused")
 	public void renderWorldBlock(RenderBlocks renderer) {
 		//
 	}
@@ -165,17 +161,17 @@ public abstract class PC_MultiblockObject implements PC_INBT{
 		return false;
 	}
 
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	public boolean canConnectRedstone(PC_Direction side) {
 		return false;
 	}
 
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	public boolean canMixWith(PC_MultiblockObject multiblockObject) {
 		return false;
 	}
 
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	public PC_MultiblockObject mixWith(PC_MultiblockObject multiblockObject) {
 		return null;
 	}
@@ -215,7 +211,6 @@ public abstract class PC_MultiblockObject implements PC_INBT{
 		this.multiblock.markDirty();
 	}
 	
-	@SuppressWarnings({ "hiding" })
 	public boolean isUsing(PC_MultiblockIndex index, PC_MultiblockObject multiblockObject){
 		return this.index == index && !canMixWith(multiblockObject);
 	}
@@ -255,7 +250,6 @@ public abstract class PC_MultiblockObject implements PC_INBT{
 		onLoadedFromNBT(flag);
 	}
 	
-	@SuppressWarnings("unused")
 	protected void onLoadedFromNBT(Flag flag){
 		//
 	}
@@ -297,17 +291,16 @@ public abstract class PC_MultiblockObject implements PC_INBT{
 		//
 	}
 
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	public int getRedstonePowerValue(PC_Direction side) {
 		return 0;
 	}
 
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	public boolean canProvideStrongPower(PC_Direction side) {
 		return true;
 	}
-	
-	@SuppressWarnings("unused")
+
 	public <T extends PC_IGridTile<?, T, ?, ?>> T getGridTile(int flags, Class<T> tileClass){
 		if(tileClass.isAssignableFrom(getClass())){
 			return tileClass.cast(this);

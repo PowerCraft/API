@@ -32,7 +32,6 @@ final class PC_GuiPasswordInput implements PC_IGresGui, PC_IGresEventListener {
 		this.entity = entity;
 	}
 
-	@SuppressWarnings("hiding")
 	@Override
 	public void initGui(PC_GresGuiHandler gui) {
 		this.gui = gui;
@@ -82,7 +81,6 @@ final class PC_GuiPasswordInput implements PC_IGresGui, PC_IGresEventListener {
 		PC_PacketHandler.sendToServer(new PC_PacketPasswordReply2(this.entity, this.password.getText()));
 	}
 
-	@SuppressWarnings("hiding")
 	void wrongPassword(PC_Entity entity) {
 		if(this.entity==entity){
 			this.gui.removeWorking();

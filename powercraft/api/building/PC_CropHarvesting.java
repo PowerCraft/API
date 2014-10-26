@@ -163,7 +163,6 @@ public final class PC_CropHarvesting implements PC_ISpecialHarvesting {
 	 * 
 	 * @param file the file to load
 	 */
-	@SuppressWarnings("hiding")
 	private static void parseFile(File file) {
 
 		PC_XMLNode node = PC_XMLLoader.load(file);

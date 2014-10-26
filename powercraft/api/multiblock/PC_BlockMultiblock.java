@@ -74,8 +74,7 @@ public final class PC_BlockMultiblock extends PC_BlockTileEntity implements PC_I
 		}
 		return best;
 	}
-	
-	@SuppressWarnings("unused")
+
 	private static MovingObjectPosition doRay(World world, int x, int y, int z, Vec3 inpos, Vec3 inray, AxisAlignedBB aabb) {
 		Vec3 pos = inpos.addVector(-x, -y, -z);
 		Vec3 ray = inray.addVector(-x, -y, -z);
@@ -86,24 +85,18 @@ public final class PC_BlockMultiblock extends PC_BlockTileEntity implements PC_I
         Vec3 vecZmin = pos.getIntermediateWithZValue(ray, aabb.minZ);
         Vec3 vecZmax = pos.getIntermediateWithZValue(ray, aabb.maxZ);
 
-        if (!isVecInsideYZBounds(vecXmin, aabb)){
+        if (!isVecInsideYZBounds(vecXmin, aabb))
             vecXmin = null;
-        }
-        if (!isVecInsideYZBounds(vecXmax, aabb)){
+        if (!isVecInsideYZBounds(vecXmax, aabb))
             vecXmax = null;
-        }
-        if (!isVecInsideXZBounds(vecYmin, aabb)){
+        if (!isVecInsideXZBounds(vecYmin, aabb))
             vecYmin = null;
-        }
-        if (!isVecInsideXZBounds(vecYmax, aabb)){
+        if (!isVecInsideXZBounds(vecYmax, aabb))
             vecYmax = null;
-        }
-        if (!isVecInsideXYBounds(vecZmin, aabb)){
+        if (!isVecInsideXYBounds(vecZmin, aabb))
             vecZmin = null;
-        }
-        if (!isVecInsideXYBounds(vecZmax, aabb)){
+        if (!isVecInsideXYBounds(vecZmax, aabb))
             vecZmax = null;
-        }
 
         Vec3 shortestVec = vecXmin;
 

@@ -95,7 +95,6 @@ public class PC_WeaselGrid extends PC_Grid<PC_WeaselGrid, PC_IWeaselGridTile, PC
 		super.removeTile(tile);
 	}
 
-	@SuppressWarnings("hiding")
 	@Override
 	protected void moveToOtherGrid(List<PC_WeaselNode> nodes, List<PC_WeaselEdge> edges) {
 		for(PC_WeaselNode node:nodes){
@@ -113,8 +112,7 @@ public class PC_WeaselGrid extends PC_Grid<PC_WeaselGrid, PC_IWeaselGridTile, PC
 			}
 		}
 	}
-	
-	@SuppressWarnings("hiding")
+
 	@Override
 	protected void addAll(List<PC_WeaselNode> nodes, List<PC_WeaselEdge> edges) {
 		for(PC_WeaselNode node:nodes){

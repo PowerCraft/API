@@ -51,7 +51,6 @@ public class PC_GresNodesysEntry extends PC_GresContainer implements PC_IGresNod
 		}
 	}
 	
-	@SuppressWarnings("hiding")
 	@Override
 	protected PC_Vec2I calculateMinSize() {
 		PC_Vec2I min = new PC_Vec2I(PC_GresNodesysConnection.RADIUS_DETECTION*4, PC_GresNodesysConnection.RADIUS_DETECTION*2);
@@ -98,7 +97,6 @@ public class PC_GresNodesysEntry extends PC_GresContainer implements PC_IGresNod
 		return calculateMinSize();
 	}
 	
-	@SuppressWarnings("hiding")
 	@Override
 	public void updateLayout() {
 		if(this.rv){
@@ -116,7 +114,6 @@ public class PC_GresNodesysEntry extends PC_GresContainer implements PC_IGresNod
 		}
 	}
 
-	@SuppressWarnings("hiding")
 	@Override
 	protected void paint(PC_Rect scissor, double scale, int displayHeight, float timeStamp, float zoom) {
 		if(!this.rv)

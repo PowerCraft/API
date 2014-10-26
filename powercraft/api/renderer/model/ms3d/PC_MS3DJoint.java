@@ -40,8 +40,7 @@ public class PC_MS3DJoint {
 	void setComment(String comment) {
 		this.comment = comment;
 	}
-	
-	@SuppressWarnings("unused")
+
 	void patch(int jointSubVersion, PC_MS3DInputStream loaderInputStream) throws IOException {
 		this.color = loaderInputStream.readVec3();
 	}

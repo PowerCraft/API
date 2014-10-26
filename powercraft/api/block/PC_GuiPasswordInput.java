@@ -32,7 +32,6 @@ final class PC_GuiPasswordInput implements PC_IGresGui, PC_IGresEventListener {
 		this.tileEntity = tileEntity;
 	}
 
-	@SuppressWarnings("hiding")
 	@Override
 	public void initGui(PC_GresGuiHandler gui) {
 		this.gui = gui;

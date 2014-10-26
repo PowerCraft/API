@@ -110,7 +110,6 @@ public class PC_GresScrollArea extends PC_GresComponent {
 		this.container.setParentVisible(this.visible);
 	}
 
-	@SuppressWarnings("hiding")
 	@Override
 	protected void doPaint(PC_Vec2 offset, PC_Rect scissorOld, double scale, int displayHeight, float timeStamp, float zoom) {
 		if (this.visible) {
@@ -134,8 +133,6 @@ public class PC_GresScrollArea extends PC_GresComponent {
 		}
 	}
 
-
-	@SuppressWarnings("hiding")
 	@Override
 	public PC_GresComponent getComponentAtPosition(PC_Vec2I position) {
 		if (this.visible) {
@@ -149,7 +146,6 @@ public class PC_GresScrollArea extends PC_GresComponent {
 		return null;
 	}
 
-	@SuppressWarnings("hiding")
 	@Override
 	public void getComponentsAtPosition(PC_Vec2I position, List<PC_GresComponent> list) {
 
@@ -172,7 +168,6 @@ public class PC_GresScrollArea extends PC_GresComponent {
 		this.container.onDrawTick(timeStamp);
 	}
 
-	@SuppressWarnings("hiding")
 	@Override
 	public Slot getSlotAtPosition(PC_Vec2I position) {
 		if (this.visible) {

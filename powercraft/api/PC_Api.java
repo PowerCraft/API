@@ -34,9 +34,9 @@ import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 @Mod(modid = PC_Api.NAME, name = PC_Api.NAME, version = PC_Api.VERSION, dependencies=PC_Api.DEPENDENCIES)
 public final class PC_Api extends PC_Module {
 	
-	public static final String NAME = POWERCRAFT+"-Api";
+	public static final String NAME = POWERCRAFT + "-Api";
 	public static final String VERSION = PC_Build.BUILD_VERSION;
-	public static final String DEPENDENCIES = "required-before:"+PCco_Core.NAME+"@"+PCco_Core.VERSION;
+	public static final String DEPENDENCIES = "required-before:" + PCco_Core.NAME + "@" + PCco_Core.VERSION;
 	
 	static{
 		PC_Bootstrap.prepare();
@@ -56,10 +56,9 @@ public final class PC_Api extends PC_Module {
 		showPreversions = getConfig().get("options", "showPreversions", false).getBoolean(false);
 	}
 	
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
-		
 		PC_Modules.construct();
 		
 		PC_PacketHandler.register();
@@ -86,28 +85,27 @@ public final class PC_Api extends PC_Module {
 	}
 
 
-	@SuppressWarnings("unused")
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
 		//
 	}
 
 
-	@SuppressWarnings({ "unused", "static-method" })
+	@SuppressWarnings({ "static-method" })
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
 		PC_Miniscript.loadDefaultReplacements();
 		PC_Modules.saveConfig();
 	}
 	
-	@SuppressWarnings({ "unused", "static-method" })
+	@SuppressWarnings({ "static-method" })
 	@EventHandler
 	public void serverStarted(FMLServerAboutToStartEvent start) {
 		PC_Utils.markThreadAsServer();
 		PC_PacketHandler.setupPackets();
 	}
 
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	@EventHandler
 	public void onServerStopping(FMLServerStoppedEvent serverStoppedEvent){
 		PC_WorldSaveData.onServerStopping();

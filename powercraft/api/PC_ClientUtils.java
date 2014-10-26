@@ -24,7 +24,6 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author XOR
  *
  */
-@SuppressWarnings("unused")
 @SideOnly(Side.CLIENT)
 public final class PC_ClientUtils extends PC_Utils {
 
@@ -84,7 +83,6 @@ public final class PC_ClientUtils extends PC_Utils {
 	 * is this game running on client
 	 * @return always yes
 	 */
-	@SuppressWarnings("hiding")
 	@Override
 	PC_Side iGetSide(){
 		Boolean isClient = PC_ClientUtils.isClient.get();

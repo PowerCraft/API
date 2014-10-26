@@ -294,7 +294,6 @@ public class PC_GresBaseWithInventory extends Container implements PC_IInventory
 	}
 
 
-	@SuppressWarnings("hiding")
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer player) {
 		return this.inventory.isUseableByPlayer(player);
@@ -389,7 +388,6 @@ public class PC_GresBaseWithInventory extends Container implements PC_IInventory
         this.dragSlots.clear();
     }
 	
-	@SuppressWarnings("hiding")
 	@Override
 	public ItemStack slotClick(int slotNumber, int mouseButton, int transfer, EntityPlayer player){
         ItemStack itemstack = null;

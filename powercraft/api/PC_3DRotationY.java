@@ -17,8 +17,7 @@ public class PC_3DRotationY implements PC_3DRotation {
 	public PC_3DRotationY(Entity entity){
 		this.rotation = PC_Utils.getRotation(entity);
 	}
-	
-	@SuppressWarnings("unused")
+
 	public PC_3DRotationY(NBTTagCompound nbtTagCompound, Flag flag){
 		this.rotation = nbtTagCompound.getByte("rotation");
 	}

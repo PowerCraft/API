@@ -85,7 +85,6 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 		return new PC_Vec2I(300, 200);
 	}
 
-	@SuppressWarnings("hiding")
 	@Override
 	protected void paint(PC_Rect scissor, double scale, int displayHeight, float timeStamp, float zoom) {
 		
@@ -199,8 +198,7 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 			return new PC_Vec2I[]{start, end};
 		return new PC_Vec2I[]{end, start};
 	}
-	
-	@SuppressWarnings("hiding")
+
 	private int drawLine(int lineNum, PC_GresDocumentLine line, int x, int y){
 		PC_Vec2I[] selected = sort(this.mouseSelectStart, this.mouseSelectEnd);
 		String text = line.getHighlightedString();
@@ -426,8 +424,7 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 		PC_GresDocumentLine line = this.document.getLine(pos.y);
 		return PC_FontRenderer.getStringSize(PC_Formatter.substring(line.getHighlightedString(), 0, pos.x), this.fontTexture, 1.0f/this.scale).x;
 	}
-	
-	@SuppressWarnings("hiding")
+
 	private int getPositionFromString(PC_Vec2I pos){
 		if(pos.y>=this.document.getLines()){
 			pos.y=this.document.getLines()-1;
@@ -466,8 +463,7 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 			showCompleteWindow(history);
 		}
 	}
-	
-	@SuppressWarnings("hiding")
+
 	@Override
 	protected boolean handleKeyTyped(char key, int keyCode, boolean repeat, PC_GresHistory history) {
 		super.handleKeyTyped(key, keyCode, repeat, history);
@@ -741,7 +737,6 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 		return true;
 	}
 
-	@SuppressWarnings("hiding")
 	private void moveViewToSelect(){
 		int d1 = getTextureDefaultSize(scrollHFrame).y;
 		int d2 = getTextureDefaultSize(scrollVFrame).x;
@@ -900,7 +895,6 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 			this.docLength -= size.y;
 		}
 
-		@SuppressWarnings("hiding")
 		@Override
 		public void onLineChanged(PC_GresDocumentLine line) {
 			String text = line.getHighlightedString();
@@ -1050,18 +1044,17 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 			return null;
 		return new PC_Vec2I(x, y);
 	}
-	
-	@SuppressWarnings("hiding")
+
 	private int getPositionFromStringAsCharPos(PC_Vec2I pos){
-		if(pos.y>=this.document.getLines()){
-			pos.y=this.document.getLines()-1;
+		if(pos.y >= this.document.getLines()){
+			pos.y = this.document.getLines() - 1;
 		}
 		PC_GresDocumentLine line = this.document.getLine(pos.y);
 		String text = line.getHighlightedString();
 		int length = PC_Formatter.removeFormatting(text).length();
-		for(int i=1; i<=length; i++){
-			int l = PC_FontRenderer.getStringSize(PC_Formatter.substring(text, 0, i), this.fontTexture, 1.0f/this.scale).x;
-			if(l>pos.x){
+		for(int i = 1; i <= length; i++){
+			int l = PC_FontRenderer.getStringSize(PC_Formatter.substring(text, 0, i), this.fontTexture, 1.0f / this.scale).x;
+			if(l > pos.x){
 				return i-1;
 			}
 		}
@@ -1071,21 +1064,18 @@ public class PC_GresMultilineHighlightingTextEdit extends PC_GresComponent {
 	@Override
 	protected List<String> getTooltip(PC_Vec2I position) {
 		PC_Vec2I pos = getMousePositionInStringAsCharPos(position);
-		if(pos==null)
-			return null;
+		if(pos==null) return null;
 		PC_GresDocumentLine line = this.document.getLine(pos.y);
-		if(line.errors==null)
+		if(line.errors == null)
 			return null;
 		Message s = line.errors[pos.x];
-		if(s==null)
+		if(s == null)
 			return null;
 		List<String> list = new ArrayList<String>();
 		String sl[] = s.getMessage().split("\n");
 		for(String ss:sl){
 			ss = ss.trim();
-			if(!ss.isEmpty()){
-				list.add(ss);
-			}
+			if(!ss.isEmpty()) list.add(ss);
 		}
 		return list;
 	}

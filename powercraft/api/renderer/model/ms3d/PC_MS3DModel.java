@@ -351,8 +351,7 @@ public class PC_MS3DModel extends PC_Model implements PC_IResourceReloadListener
 			renderGroup(i, matrixes);
 		}
 	}
-	
-	@SuppressWarnings("hiding")
+
 	private void renderGroup(int groupID, PC_Matrix[] matrixes){
 		PC_MS3DGroup group = this.groups[groupID];
 		PC_MS3DMaterial material;

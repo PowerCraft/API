@@ -54,7 +54,6 @@ public class PC_GresScrollAreaZoomable extends PC_GresComponent {
 		return this.container.getPrefSize().add(12);
 	}
 
-	@SuppressWarnings("hiding")
 	@Override
 	protected void paint(PC_Rect scissor, double scale, int displayHeight, float timeStamp, float zoom) {
 		if(!this.mouseDown){
@@ -96,7 +95,6 @@ public class PC_GresScrollAreaZoomable extends PC_GresComponent {
 		this.container.setParentVisible(this.visible);
 	}
 
-	@SuppressWarnings("hiding")
 	@Override
 	protected void doPaint(PC_Vec2 offset, PC_Rect scissorOld, double scale, int displayHeight, float timeStamp, float zoom) {
 		if (this.visible) {
@@ -121,8 +119,6 @@ public class PC_GresScrollAreaZoomable extends PC_GresComponent {
 		}
 	}
 
-
-	@SuppressWarnings("hiding")
 	@Override
 	public PC_GresComponent getComponentAtPosition(PC_Vec2I position) {
 		if (this.visible) {
@@ -135,20 +131,18 @@ public class PC_GresScrollAreaZoomable extends PC_GresComponent {
 		}
 		return null;
 	}
-	
-	@SuppressWarnings("hiding")
+
 	@Override
 	public void getComponentsAtPosition(PC_Vec2I position, List<PC_GresComponent> list) {
 
 		if (this.visible) {
 			PC_RectI rect = this.container.getRectScaled();
-			if (rect.contains(position)&& position.x < this.rect.width-getTextureDefaultSize(scrollVFrame).x && position.y < this.rect.height-getTextureDefaultSize(scrollHFrame).y){
+			if (rect.contains(position) && position.x < this.rect.width - getTextureDefaultSize(scrollVFrame).x && position.y < this.rect.height-getTextureDefaultSize(scrollHFrame).y){
 				this.container.getComponentsAtPosition(position.sub(rect.getLocation()), list);
 			}
 			list.add(this);
 		}
 	}
-
 
 	@Override
 	protected void onTick() {
@@ -160,12 +154,11 @@ public class PC_GresScrollAreaZoomable extends PC_GresComponent {
 		this.container.onDrawTick(timeStamp);
 	}
 
-	@SuppressWarnings("hiding")
 	@Override
 	public Slot getSlotAtPosition(PC_Vec2I position) {
 		if (this.visible) {
 			PC_RectI rect = this.container.getRect();
-			if (rect.contains(position) && position.x < this.rect.width-getTextureDefaultSize(scrollVFrame).x && position.y < this.rect.height-getTextureDefaultSize(scrollHFrame).y){
+			if (rect.contains(position) && position.x < this.rect.width - getTextureDefaultSize(scrollVFrame).x && position.y < this.rect.height-getTextureDefaultSize(scrollHFrame).y){
 				Slot slot = this.container.getSlotAtPosition(position.sub(rect.getLocation()));
 				if (slot != null) return slot;
 			}

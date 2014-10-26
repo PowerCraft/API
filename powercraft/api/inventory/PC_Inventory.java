@@ -23,7 +23,6 @@ public class PC_Inventory implements IInventory, Iterable<ItemStack>, PC_INBT {
 	private final int flags;
 	private IInventory parentInventory;
 	
-	@SuppressWarnings("unused")
 	public PC_Inventory(NBTTagCompound tag, Flag flag){
 		this.name = tag.getString("name");
 		this.stackLimit = tag.getInteger("stackLimit");

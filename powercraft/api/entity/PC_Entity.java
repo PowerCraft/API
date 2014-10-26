@@ -113,7 +113,6 @@ public abstract class PC_Entity extends Entity implements PC_IEntity {
 		});
 	}
 
-	@SuppressWarnings("unused")
 	protected void onLoadedFromNBT(Flag flag) {
 		//
 	}
@@ -147,7 +146,6 @@ public abstract class PC_Entity extends Entity implements PC_IEntity {
 		onMessage(player, nbtTagCompound);
 	}
 
-	@SuppressWarnings("unused")
 	public void onMessage(EntityPlayer player, NBTTagCompound nbtTagCompound) {
 		//
 	}
@@ -168,8 +166,7 @@ public abstract class PC_Entity extends Entity implements PC_IEntity {
 			return PC_Utils.isClient();
 		return this.worldObj.isRemote;
 	}
-
-	@SuppressWarnings("hiding")
+	
 	@Override
 	public void onClientMessageCheck(EntityPlayer player,
 			NBTTagCompound nbtTagCompound, long session) {
@@ -195,7 +192,6 @@ public abstract class PC_Entity extends Entity implements PC_IEntity {
 				|| this.password != null;
 	}
 
-	@SuppressWarnings("hiding")
 	public final boolean checkPassword(EntityPlayer player, String password) {
 		return canDoWithoutPassword(player)
 				|| (this.password != null && this.password.equals(password));
@@ -214,7 +210,6 @@ public abstract class PC_Entity extends Entity implements PC_IEntity {
 		return false;
 	}
 
-	@SuppressWarnings("hiding")
 	@Override
 	public final boolean guiOpenPasswordReply(EntityPlayer player,
 			String password) {
@@ -238,7 +233,6 @@ public abstract class PC_Entity extends Entity implements PC_IEntity {
 			this.session = session;
 	}
 
-	@SuppressWarnings("hiding")
 	@Override
 	public long getNewSession(EntityPlayer player) {
 		if (isClient())

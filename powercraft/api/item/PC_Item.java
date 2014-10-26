@@ -73,7 +73,6 @@ public abstract class PC_Item extends Item implements PC_IItem{
 	}
 	
 	@Override
-	@SuppressWarnings("hiding")
 	public final void construct() {
 		PC_Module module = getModule();
 		setUnlocalizedName(getRegisterName());
@@ -105,7 +104,6 @@ public abstract class PC_Item extends Item implements PC_IItem{
 		registerIcons(PC_ClientRegistry.getIconRegistry(iconRegister, this));
 	}
 
-	@SuppressWarnings("unused")
 	public void registerIcons(PC_IconRegistry iconRegistry){
 		//
 	}
@@ -130,19 +128,18 @@ public abstract class PC_Item extends Item implements PC_IItem{
 		return speed;
 	}
 	
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	@SideOnly(Side.CLIENT)
 	public boolean handleRenderType(ItemStack itemStack, ItemRenderType type) {
 		return false;
 	}
 
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	@SideOnly(Side.CLIENT)
 	public boolean shouldUseRenderHelper(ItemStack itemStack, ItemRenderType type, ItemRendererHelper helper) {
 		return false;
 	}
 
-	@SuppressWarnings("unused")
 	@SideOnly(Side.CLIENT)
 	public void renderItem(ItemStack itemStack, ItemRenderType type, Object[] data) {
 		//

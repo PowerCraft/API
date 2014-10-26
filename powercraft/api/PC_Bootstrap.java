@@ -18,7 +18,6 @@ public final class PC_Bootstrap {
 	/**
 	 * initialize Utils and Registry and logger
 	 */
-	@SuppressWarnings("unused")
 	static void prepare() {
 		try{
 			if(FMLCommonHandler.instance().getSide()==Side.CLIENT){

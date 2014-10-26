@@ -195,7 +195,6 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 	}
 
 
-	@SuppressWarnings("hiding")
 	@Override
 	protected void paint(PC_Rect scissor, double scale, int displayHeight, float timeStamp, float zoom) {
 
@@ -258,8 +257,6 @@ public class PC_GresGuiHandler extends PC_GresContainer {
         }
 	}
 
-
-	@SuppressWarnings("unused")
 	protected void eventDrawScreen(PC_Vec2I mouse, float timeStamp) {
 		long t = System.currentTimeMillis();
 		float ts = (t-this.last)/1000.0f;
@@ -418,8 +415,7 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 	private ItemStack getMouseItemStack(){
 		return this.mc.thePlayer.inventory.getItemStack();
 	}
-	
-	@SuppressWarnings("hiding")
+
 	private void drawMouseItemStack(PC_Vec2I mouse){
 		ItemStack holdItemStack = getMouseItemStack();
 		if (holdItemStack == null) {
@@ -437,8 +433,7 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 			PC_GresRenderer.drawItemStackAllreadyLighting(mouse.x-8, mouse.y-8, holdItemStack, text);
 		}
 	}
-	
-	@SuppressWarnings("unused")
+
 	private void inventoryMouseMove(PC_Vec2I mouse, int buttons){
 		this.slotOver = getSlotAtPosition(mouse);
 		if(!this.takeAll && this.slotOver!=null && getMouseItemStack()!=null && this.stackSize!=-1 && this.slotClickButton!=-1 && isItemStacksCompatibleForSlot(getMouseItemStack(), this.slotOver) && canDragIntoSlot(this.slotOver)){
@@ -527,8 +522,7 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 			sendMouseClickToServer(this.slotOver.slotNumber, this.slotClickButton, 0);
 		}
 	}
-	
-	@SuppressWarnings("unused")
+
 	private void inventoryMouseUp(PC_Vec2I mouse, int buttons, int eventButton){
 		if(this.slotClickButton==eventButton && this.slotOver!=null && this.slotOver.getHasStack() && this.selectedSlots.size()<=1){
 			onSlotClicked();
@@ -582,8 +576,7 @@ public class PC_GresGuiHandler extends PC_GresContainer {
 	        PC_PacketHandler.sendToServer(new PC_PacketClickWindow(((PC_GresBaseWithInventory)this.gui).windowId, slotNumber, mouseButton, transfer, transactionID, itemstack));
 		}
 	}
-	
-	@SuppressWarnings("hiding")
+
 	protected void renderSlot(int x, int y, Slot slot) {
 		boolean renderGray = false;
 		String text = null;

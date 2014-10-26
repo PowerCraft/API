@@ -26,7 +26,6 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@SuppressWarnings("unused")
 @SideOnly(Side.CLIENT)
 public final class PC_ClientRegistry extends PC_Registry {
 

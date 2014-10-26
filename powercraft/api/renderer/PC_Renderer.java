@@ -107,7 +107,6 @@ public final class PC_Renderer implements ISimpleBlockRenderingHandler, IItemRen
 		return this.renderID;
 	}
 
-	@SuppressWarnings("unused")
 	public static void renderBlockInInventory(Block block, int metadata, int modelId, RenderBlocks renderer){
 		Tessellator tessellator = Tessellator.instance;
 
@@ -148,8 +147,7 @@ public final class PC_Renderer implements ISimpleBlockRenderingHandler, IItemRen
 		GL11.glTranslatef(0.5F, 0.5F, 0.5F);
 		renderer.unlockBlockBounds();
 	}
-	
-	@SuppressWarnings("unused")
+
 	public static boolean renderBlockInWorld(IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer){
 		renderer.renderStandardBlock(block, x, y, z);
 		return true;
@@ -170,8 +168,7 @@ public final class PC_Renderer implements ISimpleBlockRenderingHandler, IItemRen
 		renderer.uvRotateWest = 0;
 		renderer.uvRotateEast = 0;
 	}
-	
-	@SuppressWarnings("unused")
+
 	public static void renderStandardBlockInWorld(IBlockAccess world, int x, int y, int z, IIcon[] icons, int colorMultipier, int lightValue, RenderBlocks renderer){
 		fakeBlock.icons = icons;
 		fakeBlock.colorMultiplier = colorMultipier;
