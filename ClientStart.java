@@ -29,7 +29,7 @@ public class ClientStart {
 				}
 			}
 		}
-		Launch.main(new String[]{"--version", "1.6", "--tweakClass", "cpw.mods.fml.common.launcher.FMLTweaker", "--accessToken", "0", "--username", userName, assetsDir!=""?"--assetsDir":"", assetsDir});
+		Launch.main(new String[]{"--version", "1.6", "--tweakClass", "cpw.mods.fml.common.launcher.FMLTweaker", "--userProperties", "{}", "--accessToken", "0", "--username", userName, assetsDir!=""?"--assetsDir":"", assetsDir});
 	}
 	
 }
