@@ -18,7 +18,6 @@ public class PC_Node<G extends PC_Grid<G, T, N, E>, T extends PC_IGridTile<G, T,
 		return true;
 	}
 	
-	@SuppressWarnings("hiding")
 	@Override
 	protected boolean hasTile(T tile) {
 		return this.tile==tile;
@@ -28,7 +27,7 @@ public class PC_Node<G extends PC_Grid<G, T, N, E>, T extends PC_IGridTile<G, T,
 		this.edges.set(this.edges.indexOf(edge), replace);
 	}
 
-	@SuppressWarnings({ "unchecked", "hiding" })
+	@SuppressWarnings({ "unchecked" })
 	@Override
 	protected N getAsNode(T tile) {
 		return (N) this;

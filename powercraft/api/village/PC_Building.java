@@ -25,12 +25,10 @@ public class PC_Building implements IVillageCreationHandler {
 		this.pieceLimit = pieceLimit;
 	}
 	
-	@SuppressWarnings("unused")
 	public int getPieceWeight(Random random, int terrainType){
 		return this.pieceWeight;
 	}
 	
-	@SuppressWarnings("unused")
 	public int getPieceLimit(Random random, int terrainType){
 		return this.pieceLimit;
 	}

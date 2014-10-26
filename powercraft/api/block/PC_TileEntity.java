@@ -125,7 +125,6 @@ public class PC_TileEntity extends TileEntity {
 		//
 	}
 
-	@SuppressWarnings("unused")
 	public void onNeighborBlockChange(Block neighbor) {
 		int newRedstoneValue = PC_Utils.getRedstoneValue(this.worldObj, this.xCoord, this.yCoord, this.zCoord);
 		updateRedstone(newRedstoneValue);
@@ -243,22 +242,19 @@ public class PC_TileEntity extends TileEntity {
 			this.worldObj.func_147451_t(this.xCoord, this.yCoord, this.zCoord);
 	}
 
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	public float getPlayerRelativeHardness(EntityPlayer player) {
 		return Float.NaN;
 	}
 
-	@SuppressWarnings("unused")
 	public void onEntityWalking(Entity entity) {
 		//
 	}
 
-	@SuppressWarnings("unused")
 	public void onBlockClicked(EntityPlayer player) {
 		//
 	}
 
-	@SuppressWarnings("unused")
 	public void velocityToAddToEntity(Entity entity, Vec3 velocity) {
 		//
 	}
@@ -268,12 +264,10 @@ public class PC_TileEntity extends TileEntity {
 		return 16777215;
 	}
 
-	@SuppressWarnings("unused")
 	public void onEntityCollidedWithBlock(Entity entity) {
 		//
 	}
 
-	@SuppressWarnings("unused")
 	public void onFallenUpon(Entity entity, float fallDistance) {
 		//
 	}
@@ -291,7 +285,7 @@ public class PC_TileEntity extends TileEntity {
 		return -1;
 	}
 
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	public boolean isLadder(EntityLivingBase entity) {
 		return false;
 	}
@@ -301,12 +295,12 @@ public class PC_TileEntity extends TileEntity {
 		return false;
 	}
 
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	public ArrayList<ItemStack> getDrops(int fortune) {
 		return null;
 	}
 
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	public boolean canCreatureSpawn(EnumCreatureType type) {
 		return false;
 	}
@@ -316,23 +310,22 @@ public class PC_TileEntity extends TileEntity {
 		return false;
 	}
 
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	public float getExplosionResistance(Entity entity, double explosionX, double explosionY, double explosionZ) {
 		return Float.NaN;
 	}
 
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	public ItemStack getPickBlock(MovingObjectPosition target) {
 		return null;
 	}
 
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	@SideOnly(Side.CLIENT)
 	public boolean addDestroyEffects(EffectRenderer effectRenderer) {
 		return false;
 	}
 
-	@SuppressWarnings("unused")
 	public void onPlantGrow(int sourceX, int sourceY, int sourceZ) {
 		//
 	}
@@ -347,12 +340,12 @@ public class PC_TileEntity extends TileEntity {
 		return -1;
 	}
 
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	public boolean canEntityDestroy(Entity entity) {
 		return true;
 	}
 
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	public boolean isBeaconBase(int beaconX, int beaconY, int beaconZ) {
 		return false;
 	}
@@ -362,12 +355,10 @@ public class PC_TileEntity extends TileEntity {
 		return 0;
 	}
 
-	@SuppressWarnings("unused")
 	public void onNeighborTEChange(int tileX, int tileY, int tileZ) {
 		//
 	}
 
-	@SuppressWarnings("unused")
 	public void onBlockPostSet(PC_Direction side, ItemStack stack, EntityPlayer player, float hitX, float hitY,
 			float hitZ) {
 		//
@@ -378,12 +369,12 @@ public class PC_TileEntity extends TileEntity {
 		return null;
 	}
 
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	public IIcon getIcon(PC_Direction side) {
 		return null;
 	}
 
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	public List<AxisAlignedBB> getCollisionBoundingBoxes(Entity entity) {
 		return null;
 	}
@@ -399,7 +390,6 @@ public class PC_TileEntity extends TileEntity {
 		return null;
 	}
 
-	@SuppressWarnings("unused")
 	public boolean onBlockActivated(EntityPlayer player, PC_Direction side) {
 
 		if (this instanceof PC_IGresGuiOpenHandler) {
@@ -425,52 +415,50 @@ public class PC_TileEntity extends TileEntity {
 		return false;
 	}
 
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	public int getComparatorInput(PC_Direction side) {
 		return 0;
 	}
 
-	@SuppressWarnings("unused")
 	public boolean isSideSolid(PC_Direction side) {
 		return getBlockType().isNormalCube(this.worldObj, this.xCoord, this.yCoord, this.zCoord);
 	}
 
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	public int getFlammability(PC_Direction side) {
 		return 0;
 	}
 
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	public boolean isFlammable(PC_Direction side) {
 		return false;
 	}
 
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	public int getFireSpreadSpeed(PC_Direction side) {
 		return 0;
 	}
 
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	public boolean isFireSource(PC_Direction side) {
 		return false;
 	}
 
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	public boolean canSilkHarvest(EntityPlayer player) {
 		return false;
 	}
 
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	public boolean canSustainPlant(PC_Direction side, IPlantable plantable) {
 		return false;
 	}
 
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	public boolean recolourBlock(PC_Direction side, int colour) {
 		return false;
 	}
 
-	@SuppressWarnings("unused")
 	public boolean shouldCheckWeakPower(PC_Direction side) {
 		return getBlockType().isNormalCube();
 	}
@@ -485,17 +473,15 @@ public class PC_TileEntity extends TileEntity {
 		return false;
 	}
 
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	public boolean set3DRotation(PC_3DRotation rotation) {
 		return false;
 	}
 
-	@SuppressWarnings("unused")
 	public void openContainer(Container container) {
 		//		
 	}
 
-	@SuppressWarnings("unused")
 	public void closeContainer(Container container) {
 		//
 	}
@@ -613,7 +599,6 @@ public class PC_TileEntity extends TileEntity {
 		super.writeToNBT(nbtTagCompound);
 	}
 
-	@SuppressWarnings("unused")
 	public void onLoadedFromNBT(Flag flag) {
 		//
 	}
@@ -626,7 +611,6 @@ public class PC_TileEntity extends TileEntity {
 		return this.owner == null || this.owner.equals(player.getGameProfile().getName()) || this.password != null;
 	}
 
-	@SuppressWarnings("hiding")
 	public final boolean checkPassword(EntityPlayer player, String password) {
 		return canDoWithoutPassword(player) || (this.password != null && this.password.equals(password));
 	}
@@ -644,7 +628,6 @@ public class PC_TileEntity extends TileEntity {
 		return false;
 	}
 
-	@SuppressWarnings("hiding")
 	public final boolean guiOpenPasswordReply(EntityPlayer player, String password) {
 		String md5password = PC_Utils.getMD5(password);
 		if (checkPassword(player, md5password)) {
@@ -665,7 +648,6 @@ public class PC_TileEntity extends TileEntity {
 			this.session = session;
 	}
 
-	@SuppressWarnings("hiding")
 	public long getNewSession(EntityPlayer player) {
 		if (isClient())
 			return 0;
@@ -715,22 +697,19 @@ public class PC_TileEntity extends TileEntity {
 				modelId, renderer);
 	}
 
-	@SuppressWarnings("unused")
 	public boolean canRedstoneConnect(PC_Direction side, int faceSide) {
 		return getBlockType().canProvidePower();
 	}
 
-	@SuppressWarnings({ "unused", "static-method" })
+	@SuppressWarnings({ "static-method" })
 	public int getRedstonePowerValue(PC_Direction side, int faceSide) {
 		return 0;
 	}
 
-	@SuppressWarnings("unused")
 	public void setRedstonePowerValue(PC_Direction side, int faceSide, int value) {
 		updateRedstone(value);
 	}
 
-	@SuppressWarnings("hiding")
 	public final void onClientMessageCheck(EntityPlayer player, NBTTagCompound nbtTagCompound, long session,
 			boolean intern) {
 		Session pSession = sessions.get(player);
@@ -752,7 +731,6 @@ public class PC_TileEntity extends TileEntity {
 		onMessage(player, nbtTagCompound);
 	}
 
-	@SuppressWarnings("unused")
 	public void onInternMessage(EntityPlayer player, NBTTagCompound nbtTagCompound) {
 		if (nbtTagCompound.getInteger("type") == 0) {
 			if (nbtTagCompound.hasKey("workWhen")) {
@@ -763,7 +741,6 @@ public class PC_TileEntity extends TileEntity {
 		}
 	}
 
-	@SuppressWarnings("unused")
 	public void onMessage(EntityPlayer player, NBTTagCompound nbtTagCompound) {
 		//
 	}
@@ -810,7 +787,6 @@ public class PC_TileEntity extends TileEntity {
 		return this.workWhen;
 	}
 
-	@SuppressWarnings("unused")
 	public void onAdded(EntityPlayer player) {
 		if (this instanceof PC_IGridHolder) {
 			((PC_IGridHolder) this).getGridIfNull();
@@ -829,17 +805,16 @@ public class PC_TileEntity extends TileEntity {
 		return PC_BlockTemperatures.DEFAULT_TEMPERATURE;
 	}
 
-	@SuppressWarnings("unused")
 	public void onPreAdded(EntityPlayer player) {
 		//
 	}
 
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	public boolean canProvideStrongPower(PC_Direction side) {
 		return true;
 	}
 
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	public PC_BeamHitResult onHitByBeam(PC_IBeam beam) {
 		return PC_BeamHitResult.STANDARD;
 	}

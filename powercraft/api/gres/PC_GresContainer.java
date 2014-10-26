@@ -1,6 +1,5 @@
 package powercraft.api.gres;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
@@ -21,8 +20,6 @@ import powercraft.api.gres.history.PC_GresHistory;
 import powercraft.api.gres.layout.PC_IGresLayout;
 import powercraft.api.renderer.PC_OpenGL;
 
-
-@SuppressWarnings("unused")
 @SideOnly(Side.CLIENT)
 public abstract class PC_GresContainer extends PC_GresComponent {
 
@@ -291,8 +288,6 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 		}
 	}
 
-
-	@SuppressWarnings("hiding")
 	@Override
 	protected void doPaint(PC_Vec2 offset, PC_Rect scissorOld, double scale, int displayHeight, float timeStamp, float zoom) {
 
@@ -342,7 +337,6 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 		//
 	}
 
-	@SuppressWarnings("hiding")
 	@Override
 	public PC_GresComponent getComponentAtPosition(PC_Vec2I position) {
 
@@ -364,7 +358,6 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 		return null;
 	}
 
-	@SuppressWarnings("hiding")
 	@Override
 	public void getComponentsAtPosition(PC_Vec2I position, List<PC_GresComponent> list) {
 
@@ -400,8 +393,6 @@ public abstract class PC_GresContainer extends PC_GresComponent {
 		}
 	}
 
-
-	@SuppressWarnings("hiding")
 	@Override
 	public Slot getSlotAtPosition(PC_Vec2I position) {
 

@@ -82,7 +82,6 @@ public class PC_ItemArmor extends ItemArmor implements PC_IItem, ISpecialArmor {
 	}
 	
 	@Override
-	@SuppressWarnings("hiding")
 	public final void construct() {
 		PC_Module module = getModule();
 		setUnlocalizedName(getRegisterName());
@@ -109,7 +108,6 @@ public class PC_ItemArmor extends ItemArmor implements PC_IItem, ISpecialArmor {
 		registerIcons(PC_ClientRegistry.getIconRegistry(iconRegister, this));
 	}
 
-	@SuppressWarnings("unused")
 	public void registerIcons(PC_IconRegistry iconRegistry){
 		//
 	}
@@ -134,19 +132,18 @@ public class PC_ItemArmor extends ItemArmor implements PC_IItem, ISpecialArmor {
 		return speed;
 	}
 	
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	@SideOnly(Side.CLIENT)
 	public boolean handleRenderType(ItemStack itemStack, ItemRenderType type) {
 		return false;
 	}
 
-	@SuppressWarnings({ "static-method", "unused" })
+	@SuppressWarnings({ "static-method" })
 	@SideOnly(Side.CLIENT)
 	public boolean shouldUseRenderHelper(ItemStack itemStack, ItemRenderType type, ItemRendererHelper helper) {
 		return false;
 	}
 
-	@SuppressWarnings("unused")
 	@SideOnly(Side.CLIENT)
 	public void renderItem(ItemStack itemStack, ItemRenderType type, Object[] data) {
 		//
@@ -172,7 +169,6 @@ public class PC_ItemArmor extends ItemArmor implements PC_IItem, ISpecialArmor {
 		return getModule().getName()+":textures/items/"+getTextureFolderName()+"/"+this.textureName+".png";
 	}
 
-	@SuppressWarnings("hiding")
 	@Override
 	public boolean isValidArmor(ItemStack stack, int armorType, Entity entity) {
 		return this.armorType==armorType;

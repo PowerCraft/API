@@ -78,7 +78,6 @@ public class PC_ItemBlock extends ItemBlock implements PC_IItem {
         return false;
 	}
 
-	@SuppressWarnings("unused")
 	public int getMetadata(World world, ItemStack itemStack) {
 		return getMetadata(itemStack);
 	}
@@ -124,7 +123,6 @@ public class PC_ItemBlock extends ItemBlock implements PC_IItem {
 		registerIcons(PC_ClientRegistry.getIconRegistry(iconRegister, this));
 	}
 
-	@SuppressWarnings("unused")
 	public void registerIcons(PC_IconRegistry iconRegistry){
 		//
 	}

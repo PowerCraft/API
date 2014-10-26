@@ -139,7 +139,6 @@ public class PC_GresAutoCompleteWindow extends PC_GresNeedFocusFrame{
 		super.onScaleChanged(newScale);
 	}
 	
-	@SuppressWarnings("hiding") 
 	void makeAdd(PC_GresHistory history){
 		String text = this.listBox.getSelected();
 		if(text==null){
@@ -150,7 +149,6 @@ public class PC_GresAutoCompleteWindow extends PC_GresNeedFocusFrame{
 		}
 	}
 	
-	@SuppressWarnings("hiding")
 	private void makeAdd(String text, PC_GresHistory history){
 		this.textEdit.autoComplete(text.substring(this.done), history);
 		if(!text.endsWith("."))
@@ -267,7 +265,6 @@ public class PC_GresAutoCompleteWindow extends PC_GresNeedFocusFrame{
 	
 	private static class Listener implements PC_IGresEventListener{
 
-		@SuppressWarnings("hiding")
 		private PC_GresAutoCompleteWindow completeWindow;
 		
 		Listener(PC_GresAutoCompleteWindow completeWindow) {

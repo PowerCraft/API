@@ -423,13 +423,11 @@ public class PC_WeaselSourceIterator {
 	private void parserMessage(String key, Object...args){
 		parserMessage(key, new PC_WeaselLineDesk(this.startline, this.startlinepos, this.line, this.pos), args);
 	}
-	
-	@SuppressWarnings("unused")
+
 	private void parserMessage(String key, PC_WeaselLineDesk lineDesk, Object...args){
 		//
 	}
-	
-	@SuppressWarnings("unused")
+
 	private char preview(int p){
 		if(this.lineString.length()>this.pos+p){
 			return this.lineString.charAt(this.pos+p);

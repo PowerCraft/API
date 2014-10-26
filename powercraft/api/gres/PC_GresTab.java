@@ -80,7 +80,6 @@ public class PC_GresTab extends PC_GresContainer {
 		return this.children.size()>0?this.children.get(0).getPrefSize():new PC_Vec2I(-1, -1);
 	}
 
-	@SuppressWarnings("hiding")
 	@Override
 	protected void doPaint(PC_Vec2 offset, PC_Rect scissorOld, double scale, int displayHeight, float timeStamp, float zoom) {
 
@@ -139,7 +138,6 @@ public class PC_GresTab extends PC_GresContainer {
 		return this.tabsScroll/(float)over;
 	}
 
-	@SuppressWarnings("hiding")
 	@Override
 	public PC_GresComponent getComponentAtPosition(PC_Vec2I position) {
 
@@ -156,7 +154,6 @@ public class PC_GresTab extends PC_GresContainer {
 		return null;
 	}
 
-	@SuppressWarnings("hiding")
 	@Override
 	public void getComponentsAtPosition(PC_Vec2I position, List<PC_GresComponent> list) {
 
@@ -170,12 +167,11 @@ public class PC_GresTab extends PC_GresContainer {
 			list.add(this);
 		}
 	}
-	
-	@SuppressWarnings("hiding")
+
 	@Override
 	public Slot getSlotAtPosition(PC_Vec2I position) {
 
-		if (this.visible && this.children.size()>0) {
+		if (this.visible && this.children.size() > 0) {
 			PC_Vec2I nposition = position.sub(this.frame.getLocation());
 			PC_GresComponent child = this.children.get(0);
 			PC_RectI rect = child.getRect();
@@ -196,7 +192,7 @@ public class PC_GresTab extends PC_GresContainer {
 	}
 	
 	private void clampTabScroll(){
-		if(this.tabsScroll<0){
+		if(this.tabsScroll < 0){
 			this.tabsScroll = 0;
 		}else{
 			int width = 0;
@@ -204,7 +200,7 @@ public class PC_GresTab extends PC_GresContainer {
 				width += fontRenderer.getStringSize(tab.tab).x+4;
 			}
 			int over = width-(this.rect.width-2);
-			if(over<0){
+			if(over < 0){
 				this.tabsScroll = 0;
 			}else{
 				if(this.tabsScroll>over){

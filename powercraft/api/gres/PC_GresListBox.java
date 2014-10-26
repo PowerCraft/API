@@ -106,7 +106,6 @@ public class PC_GresListBox extends PC_GresComponent {
 		return this.enabled && this.parentEnabled ? this.mouseDown && selectBar==bar ? 2 : this.mouseOver && overBar==bar ? 1 : 0 : 3;
 	}
 	
-	@SuppressWarnings("hiding")
 	private int drawElement(int element, int x, int y){
 		String text = this.elements.get(element);
 		int state = this.enabled && this.parentEnabled ? this.selected==element ? 2 : this.mouseOverElement==element ? 1 : 0 : 3;

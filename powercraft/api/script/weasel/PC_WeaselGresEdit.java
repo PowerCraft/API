@@ -115,7 +115,6 @@ public class PC_WeaselGresEdit extends PC_GresGroupContainer implements PC_IGres
 		return this.container;
 	}
 	
-	@SuppressWarnings("hiding")
 	@Override
 	public void onEvent(PC_GresEvent event) {
 		PC_GresComponent component = event.getComponent();

@@ -546,7 +546,7 @@ public abstract class PC_BlockTileEntity extends PC_AbstractBlockBase implements
 		int metadata = PC_Utils.getMetadata(world, x, y, z);
 		if(canHarvestBlock(player, metadata)){
 			onHarvestBlock(world, player, x, y, z);
-			return super.removedByPlayer(world, player, x, y, z, false);
+			return super.removedByPlayer(world, player, x, y, z);
 		}
 		return false;
 	}

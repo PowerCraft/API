@@ -120,7 +120,6 @@ public class PC_GresWindow extends PC_GresContainer {
 		drawString(this.text, this.frame.x, 4, this.rect.width - this.frame.width - this.frame.x, PC_GresAlign.H.CENTER, false);
 	}
 	
-	@SuppressWarnings("hiding")
 	@Override
 	protected void doPaint(PC_Vec2 offset, PC_Rect scissorOld, double scale, int displayHeight, float timeStamp, float zoom) {
 		if (this.visible) {
@@ -158,7 +157,6 @@ public class PC_GresWindow extends PC_GresContainer {
 		}
 	}
 	
-	@SuppressWarnings("hiding")
 	@Override
 	public PC_GresComponent getComponentAtPosition(PC_Vec2I position) {
 		PC_GresComponent component = super.getComponentAtPosition(position);
@@ -198,7 +196,6 @@ public class PC_GresWindow extends PC_GresContainer {
 		}
 	}
 	
-	@SuppressWarnings("hiding")
 	@Override
 	public Slot getSlotAtPosition(PC_Vec2I position) {
 		Slot slot = super.getSlotAtPosition(position);

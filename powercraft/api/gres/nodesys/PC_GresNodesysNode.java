@@ -231,7 +231,6 @@ public class PC_GresNodesysNode extends PC_GresContainer implements PC_IGresNode
 		return this.enabled && this.parentEnabled ? selected.contains(this) ? selected.get(selected.size()-1)==this ? 1 : 2 : 0 : 3;
 	}
 	
-	@SuppressWarnings("hiding")
 	@Override
 	protected boolean handleMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton, boolean doubleClick, PC_GresHistory history) {
 		PC_Vec2I max = new PC_Vec2I();

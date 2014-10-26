@@ -54,8 +54,7 @@ public abstract class PC_TileEntityScriptable extends PC_TileEntity {
 		int x = Arrays.asList(vec).indexOf(name);
 		return x==-1?0:x;
 	}
-	
-	@SuppressWarnings("hiding")
+
 	public void setSource(String source){
 		this.diagnostic = null;
 		this.script = null;
@@ -91,8 +90,7 @@ public abstract class PC_TileEntityScriptable extends PC_TileEntity {
 	protected int[] getExt(){
 		return this.ext;
 	}
-	
-	@SuppressWarnings("hiding")
+
 	protected void invoke(int entryVector){
 		if(this.e!=null || this.script==null || isClient())
 			return;

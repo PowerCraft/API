@@ -347,8 +347,7 @@ public final class PC_Reflection {
 		} 
 		return null;
 	}
-	
-	@SuppressWarnings("unused")
+
 	static void onSecurityException(SecurityException e){
 		if(!thrownSecurityExceptionBefore){
 			PC_Logger.warning("PowerCraft has no permission for reflection");

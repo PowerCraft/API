@@ -32,8 +32,7 @@ public class PC_PacketSelectMultiblockTile2 extends PC_PacketServerToClient {
 		this.tile = tile.ordinal();
 		this.player = player.getEntityId();
 	}
-	
-	@SuppressWarnings("hiding")
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	protected PC_Packet doAndReply(NetHandlerPlayClient iNetHandler, World world, EntityPlayer player) {

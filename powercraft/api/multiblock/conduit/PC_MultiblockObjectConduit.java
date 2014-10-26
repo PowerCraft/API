@@ -62,12 +62,11 @@ public abstract class PC_MultiblockObjectConduit extends PC_MultiblockObject imp
 		//
 	}
 
-	@SuppressWarnings({ "unused", "static-method" })
+	@SuppressWarnings({ "static-method" })
 	public int canConnectToBlock(World world, int x, int y, int z, PC_Direction side, Block block, int oldConnectionInfo){
 		return 0;
 	}
-	
-	@SuppressWarnings("unused")
+
 	public int canConnectToMultiblock(World world, int x, int y, int z, PC_Direction side, PC_MultiblockObject multiblockObject, int oldConnectionInfo){
 		return multiblockObject.getClass() == getClass()?1:0;
 	}

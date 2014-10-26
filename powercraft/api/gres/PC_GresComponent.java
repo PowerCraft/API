@@ -1,6 +1,5 @@
 package powercraft.api.gres;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,8 +36,6 @@ import powercraft.api.renderer.PC_OpenGL;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-
-@SuppressWarnings("unused")
 @SideOnly(Side.CLIENT)
 public abstract class PC_GresComponent {
 
@@ -510,8 +507,6 @@ public abstract class PC_GresComponent {
 		return rect;
 	}
 
-
-	@SuppressWarnings("hiding")
 	protected void doPaint(PC_Vec2 offset, PC_Rect scissorOld, double scale, int displayHeight, float timeStamp, float zoom) {
 
 		if (this.visible) {
@@ -885,26 +880,20 @@ public abstract class PC_GresComponent {
 		return texture.getDefaultSize();
 	}
 
-
-	@SuppressWarnings("hiding")
 	protected void drawString(String text, int x, int y, boolean shadow) {
 		PC_Vec2I size = fontRenderer.getStringSize(text);
 		drawString(text, x, y, size.x, size.y, PC_GresAlign.H.LEFT, PC_GresAlign.V.TOP, shadow);
 	}
 
-
-	@SuppressWarnings("hiding")
 	protected void drawString(String text, int x, int y, int width, PC_GresAlign.H alignH, boolean shadow) {
 		PC_Vec2I size = fontRenderer.getStringSize(text);
 		drawString(text, x, y, width, size.y, alignH, PC_GresAlign.V.TOP, shadow);
 	}
 
-	@SuppressWarnings("hiding")
 	protected void drawString(String text, int x, int y, int width, int height, PC_GresAlign.H alignH, PC_GresAlign.V alignV, boolean shadow) {
 		drawString(text, x, y, width, height, alignH, alignV, shadow, getCState());
 	}
 
-	@SuppressWarnings("hiding")
 	protected void drawString(String text, int x, int y, int width, int height, PC_GresAlign.H alignH, PC_GresAlign.V alignV, boolean shadow, int state) {
 		int nx = x, ny = y;
 		PC_Vec2I size = fontRenderer.getStringSize(text);

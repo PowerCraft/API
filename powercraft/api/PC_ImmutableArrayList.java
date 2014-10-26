@@ -103,7 +103,6 @@ public final class PC_ImmutableArrayList<E> implements List<E> {
 		return listIterator(0);
 	}
 
-	@SuppressWarnings("hiding")
 	@Override
 	public ListIterator<E> listIterator(int start) {
 		return new ImmutableListIterator(start);
@@ -194,7 +193,6 @@ public final class PC_ImmutableArrayList<E> implements List<E> {
 		return this.end-this.start;
 	}
 
-	@SuppressWarnings("hiding")
 	@Override
 	public List<E> subList(int start, int end) {
 		if(end>size())

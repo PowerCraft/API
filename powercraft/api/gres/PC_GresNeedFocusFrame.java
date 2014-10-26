@@ -69,12 +69,11 @@ public class PC_GresNeedFocusFrame extends PC_GresFrame {
 		this.allowedOthers.remove(component);
 	}
 	
-	@SuppressWarnings("hiding")
 	public boolean isFocusAllowed(PC_GresComponent focus){
 		if(isParentOf(this, focus))
 			return true;
 		for(PC_GresComponent c:this.allowedOthers){
-			if(c==focus){
+			if(c == focus){
 				return true;
 			}else if(c instanceof PC_GresContainer){
 				if(isParentOf((PC_GresContainer)c, focus))

@@ -25,7 +25,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 
-public final class PC_BlockDamage extends PC_WorldSaveData implements PC_ITickHandler {
+public class PC_BlockDamage extends PC_WorldSaveData implements PC_ITickHandler {
 	
 	private static final String NAME = "powercraft-blockdamage";
 	

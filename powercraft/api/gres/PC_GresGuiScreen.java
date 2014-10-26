@@ -58,26 +58,19 @@ class PC_GresGuiScreen extends GuiScreen {
 			eventMouseWheel(mouse, this.buttons, eventWheel>0?1:-1);
 		}
 	}
-	
-	@SuppressWarnings("hiding")
+
 	private void eventMouseButtonDown(PC_Vec2I mouse, int buttons, int eventButton, boolean doubleClick) {
 		this.guiHandler.eventMouseButtonDown(mouse, buttons, eventButton, doubleClick);
 	}
 
-
-	@SuppressWarnings("hiding")
 	private void eventMouseButtonUp(PC_Vec2I mouse, int buttons, int eventButton) {
 		this.guiHandler.eventMouseButtonUp(mouse, buttons, eventButton);
 	}
 
-
-	@SuppressWarnings("hiding")
 	private void eventMouseMove(PC_Vec2I mouse, int buttons) {
 		this.guiHandler.eventMouseMove(mouse, buttons);
 	}
 
-
-	@SuppressWarnings("hiding")
 	private void eventMouseWheel(PC_Vec2I mouse, int buttons, int wheel) {
 		this.guiHandler.eventMouseWheel(mouse, buttons, wheel);
 	}

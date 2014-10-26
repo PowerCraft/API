@@ -112,8 +112,6 @@ public abstract class PC_MultiblockItem extends PC_Item {
 		return false;
 	}
 
-
-	@SuppressWarnings("unused")
 	public int handleMultiblockClick(ItemStack itemStack, EntityPlayer entityPlayer, World world, int x, int y, int z, PC_Direction side, float xHit,
 			float yHit, float zHit, boolean secoundTry) {
 		PC_Direction s = side;
@@ -196,7 +194,6 @@ public abstract class PC_MultiblockItem extends PC_Item {
 		return 0;
 	}
 
-	@SuppressWarnings("unused")
 	public void loadMultiblockIcons(PC_IconRegistry iconRegistry) {
 		//
 	}
